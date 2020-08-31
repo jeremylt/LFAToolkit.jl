@@ -1,0 +1,8 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+LFAToolkit = "3f92b583-c0aa-4596-8bdf-f02f6c0a52df"
+
+[compat]
+Documenter = "=0.25.2"
+DocumenterTools = "=0.1.6"

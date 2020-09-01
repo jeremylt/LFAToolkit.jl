@@ -5,7 +5,6 @@ dist: focal
 
 julia:
   - 1.0
-  - 1.5
   - nightly
 
 notifications:
@@ -22,6 +21,15 @@ jobs:
   allow_failures:
     - julia: nightly
   include:
+    - stage: "style"
+      julia: 1.5
+      os: linux
+      dist: focal
+      script:
+        - julia --project -e 'using Pkg; Pkg.add("JuliaFormatter")'
+        - julia --project -e 'using JuliaFormatter; format("src")'
+        - git diff --exit-code
+      after_success: skip
     - stage: "documentation"
       julia: 1.5
       os: linux

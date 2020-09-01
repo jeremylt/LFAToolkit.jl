@@ -1,11 +1,8 @@
 language: julia
+julia: 1.5
 
 os: linux
 dist: focal
-
-julia:
-  - 1.0
-  - nightly
 
 notifications:
   email: false
@@ -21,7 +18,13 @@ jobs:
   allow_failures:
     - julia: nightly
   include:
-    - stage: "style"
+    - name: "jula 1.0"
+      julia: 1.0
+    - name: "julia 1.5"
+      julia: 1.5
+    - name: "julia nightly"
+      julia: nightly
+    - name: "style"
       julia: 1.5
       os: linux
       dist: focal
@@ -31,6 +34,7 @@ jobs:
         - git diff src/ --exit-code
       after_success: skip
     - stage: "documentation"
+      name: "documentation"
       julia: 1.5
       os: linux
       dist: focal

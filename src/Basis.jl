@@ -1,3 +1,6 @@
+"""
+Finite element basis for function spaces and test spaces
+"""
 struct Basis
     p::Int
     q::Int

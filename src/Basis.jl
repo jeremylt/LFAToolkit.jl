@@ -3,20 +3,20 @@ struct Basis
     q::Int
     numbercomponents::Int
     istensor::Bool
-    quadraturepoints::Array{Fload64}
-    quadratureweights::Array{Fload64}
-    interpolation::Array{Fload64}
-    gradient::Array{Fload64}
+    quadraturepoints::Array{Float64}
+    quadratureweights::Array{Float64}
+    interpolation::Array{Float64}
+    gradient::Array{Float64}
 end
 
 function TensorBasis(
     p1d::Int,
     q1d::Int,
     numbercomponents1d::Int,
-    quadraturepoints1d::Array{Fload64},
-    quadratureweights1d::Array{Fload64},
-    interpolation1d::Array{Fload64},
-    gradient1d::Array{Fload64},
+    quadraturepoints1d::Array{Float64},
+    quadratureweights1d::Array{Float64},
+    interpolation1d::Array{Float64},
+    gradient1d::Array{Float64},
 )
     Basis(
         p1d,
@@ -34,10 +34,10 @@ function NonTensorBasis(
     p::Int,
     q::Int,
     numbercomponents::Int,
-    quadraturepoints::Array{Fload64},
-    quadratureweights::Array{Fload64},
-    interpolation::Array{Fload64},
-    gradient::Array{Fload64},
+    quadraturepoints::Array{Float64},
+    quadratureweights::Array{Float64},
+    interpolation::Array{Float64},
+    gradient::Array{Float64},
 )
     Basis(
         p,

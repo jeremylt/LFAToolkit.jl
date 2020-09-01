@@ -1,0 +1,1 @@
+@enum EvaluationMode interpolation gradient quadratureweights

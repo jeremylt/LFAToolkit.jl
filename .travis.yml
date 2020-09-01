@@ -28,7 +28,7 @@ jobs:
       script:
         - julia --project -e 'using Pkg; Pkg.add("JuliaFormatter")'
         - julia --project -e 'using JuliaFormatter; format("src")'
-        - git diff --exit-code
+        - git diff src/ --exit-code
       after_success: skip
     - stage: "documentation"
       julia: 1.5

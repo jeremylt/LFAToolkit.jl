@@ -1,6 +1,6 @@
 module LFAToolkit
 export greet
 
-greet() = print("Hello World!")
+greet() = "Hello World!"
 
 end # module

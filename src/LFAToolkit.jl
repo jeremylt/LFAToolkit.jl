@@ -1,8 +1,6 @@
 module LFAToolkit
 
-export greet
-
-greet() = "Hello World!"
+export TensorH1LagrangeBasis
 
 include("Enums.jl")
 include("Basis.jl")

@@ -1,3 +1,7 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# Finite element bases
+# ---------------------------------------------------------------------------------------------------------------------
+
 """
 Finite element basis for function spaces and test spaces
 """
@@ -13,6 +17,10 @@ struct Basis
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
 end
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Internal use constructors
+# ---------------------------------------------------------------------------------------------------------------------
 
 """
 Constructor for tensor product basis
@@ -70,10 +78,31 @@ function NonTensorBasis(
     )
 end
 
-"""
-    gaussquadtarute()
+# ---------------------------------------------------------------------------------------------------------------------
+# Utility functions for polynomial bases
+# ---------------------------------------------------------------------------------------------------------------------
 
-   Construct a Gauss-Legendre quadrature
+"""
+    gaussquadrature()
+
+    Construct a Gauss-Legendre quadrature
+
+    ```@meta
+    DocTestSetup = quote
+      using LFAToolkit
+    end
+    ```
+
+    ```jldoctest
+    quadraturepoints = LFAToolkit.gaussquadrature(5)
+
+    # output
+    ([-0.906179845938664, -0.5384693101056831, 1.232595164407831e-32, 0.5384693101056831, 0.906179845938664], [0.2369268850561885, 0.47862867049936647, 0.5688888888888889, 0.47862867049936647, 0.2369268850561885])
+    ```
+
+    ```@meta
+    DocTestSetup = nothing
+    ```
 """
 function gaussquadrature(q::Int)
     quadraturepoints = zeros(Float64, q)
@@ -122,7 +151,36 @@ end
 """
     lobattoquadrature()
 
-   Construct a Gauss-Lobatto quadrature
+    Construct a Gauss-Lobatto quadrature
+
+    ```@meta
+    DocTestSetup = quote
+      using LFAToolkit
+    end
+    ```
+
+    ```jldoctest
+    quadraturepoints = LFAToolkit.lobattoquadrature(5, false)
+
+    # output
+    5-element Array{Float64,1}:
+    -1.0
+    -0.6546536707079771
+    -1.530808498934193e-17
+     0.6546536707079771
+     1.0
+    ```
+   
+    ```jldoctest
+    quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, false)
+
+    # output
+    ([-1.0, -0.6546536707079771, -1.530808498934193e-17, 0.6546536707079771, 1.0], [0.1, 0.5444444444444443, 0.7111111111111111, 0.5444444444444443, 0.1])
+    ```
+
+    ```@meta
+    DocTestSetup = nothing
+    ```
 """
 function lobattoquadrature(q::Int, weights::Bool)
     quadraturepoints = zeros(Float64, q)
@@ -189,8 +247,31 @@ function lobattoquadrature(q::Int, weights::Bool)
     end
 end
 
+# ---------------------------------------------------------------------------------------------------------------------
+# User utility constructors
+# ---------------------------------------------------------------------------------------------------------------------
+
 """
-    TensorH1LagrangeBasis
+    TensorH1LagrangeBasis()
+
+    Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
+
+    ```@meta
+    DocTestSetup = quote
+        using LFAToolkit
+    end
+    ```
+
+    ```jldoctest
+    basis = TensorH1LagrangeBasis(4, 4, 1, 1)
+
+    # output
+    LFAToolkit.Basis(4, 4, 1, 1, true, [-1.0, -0.4472135954999579, 0.4472135954999579, 1.0], [-0.8611363115940526, -0.3399810435848563, 0.3399810435848563, 0.8611363115940526], [0.34785484513745374, 0.6521451548625461, 0.6521451548625461, 0.34785484513745374], [0.6299431661034454 0.472558747113818 -0.14950343104607952 0.04700151782881607; -0.07069479527385582 0.972976186258263 0.13253992624542693 -0.03482131722983419; -0.03482131722983419 0.13253992624542696 0.9729761862582628 -0.07069479527385582; 0.04700151782881607 -0.14950343104607955 0.47255874711381796 0.6299431661034455], [-2.341837415390958 2.787944890537088 -0.6351041115519563 0.18899663640582656; -0.5167021357255352 -0.48795249031352683 1.3379050992756671 -0.3332504732366054; 0.33325047323660545 -1.3379050992756674 0.4879524903135269 0.5167021357255351; -0.1889966364058266 0.6351041115519563 -2.7879448905370876 2.3418374153909585])
+    ```
+
+    ```@meta
+    DocTestSetup = nothing
+    ```
 """
 function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercomponents::Int)
     # Get nodes, quadrature points, and weights
@@ -237,3 +318,5 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
         gradient1d,
     )
 end
+
+# ---------------------------------------------------------------------------------------------------------------------

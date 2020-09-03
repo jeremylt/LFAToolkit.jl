@@ -48,7 +48,19 @@ end
 # Operator construction
 # ---------------------------------------------------------------------------------------------------------------------
 
-inputs = [OperatorField(basis, EvaluationMode.interpolation)]
-outputs = [OperatorField(basis, EvaluationMode.interpolation)]
+inputs = [
+    OperatorField(basis, EvaluationMode.interpolation, FieldMode.active),
+    OperatorField(basis, EvaluationMode.quadratureweights, FieldMode.passive),
+]
+outputs = [OperatorField(basis, EvaluationMode.interpolation, FieldMode.active)]
+
+function weakform(u::Float64, w::Float64)
+    v = u * w
+    return [v]
+end
+
+operator = Operator(weakform, inputs, outputs)
+
+stencil = getstencil(operator)
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -145,6 +145,8 @@ function gaussquadrature(q::Int)
         quadratureweights[i+1] = wi
         quadratureweights[q-i] = wi
     end
+
+    # Return
     return quadraturepoints, quadratureweights
 end
 
@@ -240,6 +242,8 @@ function lobattoquadrature(q::Int, weights::Bool)
             quadratureweights[q-i] = wi
         end
     end
+
+    # Return
     if weights
         return quadraturepoints, quadratureweights
     else

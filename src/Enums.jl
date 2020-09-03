@@ -2,9 +2,13 @@
 # Enumerated types
 # ---------------------------------------------------------------------------------------------------------------------
 
+module EvaluationMode
+
 """
 Basis evaluation mode for operator inputs and outputs
 """
-@enum EvaluationMode interpolation gradient quadratureweights
+@enum EvalMode interpolation gradient quadratureweights
+
+end # submodule
 
 # ---------------------------------------------------------------------------------------------------------------------

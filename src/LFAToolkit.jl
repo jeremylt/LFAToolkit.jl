@@ -8,7 +8,10 @@ module LFAToolkit
 # User avaliable types and methods
 # ---------------------------------------------------------------------------------------------------------------------
 
-export TensorH1LagrangeBasis
+export EvaluationMode
+export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
+export OperatorField
+export Operator
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Imports

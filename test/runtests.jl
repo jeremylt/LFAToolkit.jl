@@ -48,19 +48,36 @@ end
 # Operator construction
 # ---------------------------------------------------------------------------------------------------------------------
 
+# Mass operator
 inputs = [
-    OperatorField(basis, EvaluationMode.interpolation, FieldMode.active),
-    OperatorField(basis, EvaluationMode.quadratureweights, FieldMode.passive),
+    OperatorField(basis, EvaluationMode.interpolation),
+    OperatorField(basis, EvaluationMode.quadratureweights),
 ]
-outputs = [OperatorField(basis, EvaluationMode.interpolation, FieldMode.active)]
+outputs = [OperatorField(basis, EvaluationMode.interpolation)]
 
-function weakform(u::Float64, w::Float64)
+function massweakform(u::Float64, w::Float64)
     v = u * w
     return [v]
 end
 
-operator = Operator(weakform, inputs, outputs)
+mass = Operator(massweakform, inputs, outputs)
 
-stencil = getstencil(operator)
+stencil = getstencil(mass)
+
+# Diffusion operator
+inputs = [
+    OperatorField(basis, EvaluationMode.gradient),
+    OperatorField(basis, EvaluationMode.quadratureweights),
+]
+outputs = [OperatorField(basis, EvaluationMode.gradient)]
+
+function diffusionweakform(du::Float64, w::Float64)
+    dv = du * w
+    return [dv]
+end
+
+diffusion = Operator(diffusionweakform, inputs, outputs)
+
+stencil = getstencil(diffusion)
 
 # ---------------------------------------------------------------------------------------------------------------------

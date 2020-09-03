@@ -15,16 +15,4 @@ module EvaluationMode
 
 end # submodule
 
-module FieldMode
-
-"""
-    Field evaluation mode for operator inputs and outputs
-
-    Active - field represents unknowns or test functions
-    Passive - field represents static data
-"""
-@enum FMode active passive
-
-end # submodule
-
 # ---------------------------------------------------------------------------------------------------------------------

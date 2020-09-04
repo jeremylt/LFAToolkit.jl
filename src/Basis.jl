@@ -53,7 +53,7 @@ Construct a Gauss-Legendre quadrature
 ```jldoctest
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
-# Verify
+# verify
 truepoints = [-sqrt(5 + 2*sqrt(10/7))/3, -sqrt(5 - 2*sqrt(10/7))/3, 0.0, sqrt(5 - 2*sqrt(10/7))/3, sqrt(5 + 2*sqrt(10/7))/3];
 trueweights = [(322-13*sqrt(70))/900, (322+13*sqrt(70))/900, 128/225, (322+13*sqrt(70))/900, (322-13*sqrt(70))/900];
 
@@ -75,9 +75,13 @@ function gaussquadrature(q::Int)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
-    # Bulid qrefid, qweight1d
+    if q < 2
+        throw(DomanError(basis.dimension, "q must be greater than or equal to 2")) # COV_EXCL_LINE
+    end
+
+    # build qrefid, qweight1d
     for i = 0:floor(Int, q / 2)
-        # Guess
+        # guess
         xi = cos(pi * (2 * i + 1.0) / (2 * q))
         # Pn(xi)
         p0 = 1.0
@@ -88,7 +92,7 @@ function gaussquadrature(q::Int)
             p0 = p1
             p1 = p2
         end
-        # First Newton Step
+        # first Newton step
         dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
         xi = xi - p2 / dp2
         # Newton to convergence
@@ -113,7 +117,7 @@ function gaussquadrature(q::Int)
         quadratureweights[q-i] = wi
     end
 
-    # Return
+    # return
     return quadraturepoints, quadratureweights
 end
 
@@ -126,7 +130,7 @@ Construct a Gauss-Lobatto quadrature
 
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
 
-# Verify
+# verify
 truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
 
 diff = truepoints - quadraturepoints;
@@ -141,7 +145,7 @@ end
 ```jldoctest
 quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 
-# Verify
+# verify
 truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
@@ -164,10 +168,10 @@ function lobattoquadrature(q::Int, weights::Bool)
     quadratureweights = zeros(Float64, q)
 
     if q < 2
-        throw(DomanError())
+        throw(DomanError(basis.dimension, "q must be greater than or equal to 2")) # COV_EXCL_LINE
     end
 
-    # Endpoints
+    # endpoints
     quadraturepoints[1] = -1.0
     quadraturepoints[q] = 1.0
     if weights
@@ -176,9 +180,9 @@ function lobattoquadrature(q::Int, weights::Bool)
         quadratureweights[q] = wi
     end
 
-    # Bulid qrefid, qweight1d
+    # build qrefid, qweight1d
     for i = 1:floor(Int, (q - 1) / 2)
-        # Guess
+        # guess
         xi = cos(pi * i / (q - 1.0))
         # Pn(xi)
         p0 = 1.0
@@ -189,7 +193,7 @@ function lobattoquadrature(q::Int, weights::Bool)
             p0 = p1
             p1 = p2
         end
-        # First Newton Step
+        # first Newton step
         dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
         d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
         xi = xi - dp2 / d2p2
@@ -218,7 +222,7 @@ function lobattoquadrature(q::Int, weights::Bool)
         end
     end
 
-    # Return
+    # return
     if weights
         return quadraturepoints, quadratureweights
     else
@@ -238,7 +242,7 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 ```jldoctest
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 
-# Verify
+# verify
 if basis.p1d != 4
     println("Incorrect P1d");
 end
@@ -257,11 +261,11 @@ end
 ```
 """
 function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercomponents::Int)
-    # Get nodes, quadrature points, and weights
+    # get nodes, quadrature points, and weights
     nodes1d = lobattoquadrature(p1d, false)
     quadraturepoints1d, quadratureweights1d = gaussquadrature(q1d)
 
-    # Build interpolation, gradient matrices
+    # build interpolation, gradient matrices
     # Fornberg, 1998
     interpolation1d = zeros(Float64, q1d, p1d)
     gradient1d = zeros(Float64, q1d, p1d)
@@ -288,7 +292,7 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
         end
     end
 
-    # Use Constructor
+    # use basic constructor
     return TensorBasis(
         p1d,
         q1d,
@@ -315,7 +319,7 @@ Get full interpolation matrix for basis
 basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
 
-# Verify
+# verify
 for i in 1:3
     sum = 0.0
     for j = 1:4
@@ -334,7 +338,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
 
-# Verify
+# verify
 for i in 1:3^2
     sum = 0.0
     for j = 1:4^2
@@ -353,7 +357,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 3, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
 
-# Verify
+# verify
 for i in 1:3^3
     sum = 0.0
     for j = 1:4^3
@@ -380,9 +384,10 @@ function getinterpolation(basis::TensorBasis)
         # 2D
         return kron(basis.interpolation1d, basis.interpolation1d)
     elseif basis.dimension == 3
-        # 2D
+        # 3D
         return kron(basis.interpolation1d, basis.interpolation1d, basis.interpolation1d)
     end
+    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
 end
 
 """
@@ -394,7 +399,7 @@ Get full gradient matrix for basis
 basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 gradient = LFAToolkit.getgradient(basis);
 
-# Verify
+# verify
 for i in 1:3
     sum = 0.0
     for j = 1:4
@@ -413,7 +418,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 gradient = LFAToolkit.getgradient(basis);
 
-# Verify
+# verify
 for d in 1:2, i in 1:3^2
     sum = 0.0
     for j = 1:4^2
@@ -432,7 +437,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 3, 1);
 gradient = LFAToolkit.getgradient(basis);
 
-# Verify
+# verify
 for d in 1:3, i in 1:3^3
     sum = 0.0
     for j = 1:4^3
@@ -474,6 +479,7 @@ function getgradient(basis::TensorBasis)
         end
         return gradient
     end
+    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
 end
 
 """
@@ -485,7 +491,7 @@ Get full quadrature weights vector for basis
 basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
-# Verify
+# verify
 trueweights = [5/9, 8/9, 5/9];
 
 diff = trueweights - quadratureweights;
@@ -501,7 +507,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
-# Verify
+# verify
 trueweights1d = [5/9, 8/9, 5/9];
 trueweights = kron(trueweights1d, trueweights1d);
 
@@ -518,7 +524,7 @@ end
 basis = TensorH1LagrangeBasis(4, 3, 3, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
-# Verify
+# verify
 trueweights1d = [5/9, 8/9, 5/9];
 trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
 
@@ -543,13 +549,14 @@ function getquadratureweights(basis::TensorBasis)
         # 2D
         return kron(basis.quadratureweights1d, basis.quadratureweights1d)
     elseif basis.dimension == 3
-        # 2D
+        # 3D
         return kron(
             basis.quadratureweights1d,
             basis.quadratureweights1d,
             basis.quadratureweights1d,
         )
     end
+    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

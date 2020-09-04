@@ -52,7 +52,6 @@ Construct a Gauss-Legendre quadrature
 
 ```jldoctest
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
-
 println(quadraturepoints);
 println(quadratureweights);
 
@@ -114,7 +113,7 @@ Construct a Gauss-Lobatto quadrature
 
 ```jldoctest
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
-println(quadraturepoints)
+println(quadraturepoints);
 
 # output
 [-1.0, -0.6546536707079771, -1.530808498934193e-17, 0.6546536707079771, 1.0]

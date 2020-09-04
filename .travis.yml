@@ -12,18 +12,25 @@ notifications:
 #  - julia --project -e 'using Pkg; Pkg.build(); Pkg.test(; coverage=true)';
 
 after_success:
-  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())';
+  - julia -e 'using Pkg; Pkg.add("Coverage");
+                         using Coverage;
+                         Codecov.submit(Codecov.process_folder())'
 
 jobs:
   allow_failures:
     - julia: nightly
+
   include:
+# Testing
     - name: "jula 1.0"
       julia: 1.0
+
     - name: "julia 1.5"
       julia: 1.5
+
     - name: "julia nightly"
       julia: nightly
+
     - name: "style"
       julia: 1.5
       os: linux
@@ -35,6 +42,8 @@ jobs:
         - julia --project -e 'using JuliaFormatter; format("test")'
         - git diff --exit-code test/
       after_success: skip
+
+# Documentation
     - stage: "documentation"
       name: "documentation"
       julia: 1.5

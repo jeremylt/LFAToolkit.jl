@@ -9,7 +9,7 @@ module LFAToolkit
 # ---------------------------------------------------------------------------------------------------------------------
 
 export EvaluationMode, FieldMode
-export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
+export TensorH1LagrangeBasis
 export OperatorField
 export Operator, getstencil
 

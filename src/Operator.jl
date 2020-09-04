@@ -20,7 +20,7 @@ stencildict = Dict{Operator,Array{Float64}}()
 """
     getstencil()
 
-Compute or retreive the stencil of operator for computing the symbol
+    Compute or retreive the stencil of operator for computing the symbol
 """
 function getstencil(operator::Operator)
     iscomputed = haskey(stencildict, operator)

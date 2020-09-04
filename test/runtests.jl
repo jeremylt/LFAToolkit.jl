@@ -24,29 +24,30 @@ gradient = [
     -0.18899664 0.63510411 -2.78794489 2.34183742
 ]
 
-basis = TensorH1LagrangeBasis(4, 4, 1, 1)
+basis = TensorH1LagrangeBasis(p, q, dimension, numbercomponents)
 
-@test basis.p == p
-@test basis.q == q
+@test basis.p1d == p
+@test basis.q1d == q
 @test basis.dimension == dimension
 @test basis.numbercomponents == numbercomponents
-@test basis.istensor == true
 
 tol = 1e-7
 for i = 1:p
-    @test abs(basis.nodes[i] - nodes[i]) < tol
+    @test abs(basis.nodes1d[i] - nodes[i]) < tol
 end
 for i = 1:q
-    @test abs(basis.quadraturepoints[i] - quadraturepoints[i]) < tol
+    @test abs(basis.quadraturepoints1d[i] - quadraturepoints[i]) < tol
 end
 for i = 1:q, j = 1:p
-    @test abs(basis.interpolation[i, j] - interpolation[i, j]) < tol
-    @test abs(basis.gradient[i, j] - gradient[i, j]) < tol
+    @test abs(basis.interpolation1d[i, j] - interpolation[i, j]) < tol
+    @test abs(basis.gradient1d[i, j] - gradient[i, j]) < tol
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Operator construction
 # ---------------------------------------------------------------------------------------------------------------------
+
+basis = TensorH1LagrangeBasis(4, 4, 2, 1)
 
 # Mass operator
 inputs = [
@@ -71,7 +72,7 @@ inputs = [
 ]
 outputs = [OperatorField(basis, EvaluationMode.gradient)]
 
-function diffusionweakform(du::Float64, w::Float64)
+function diffusionweakform(du::Array{Float64,1}, w::Float64)
     dv = du * w
     return [dv]
 end

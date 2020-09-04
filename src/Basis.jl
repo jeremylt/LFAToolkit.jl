@@ -5,12 +5,35 @@
 """
 Finite element basis for function spaces and test spaces
 """
-struct Basis
+abstract type Basis end
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Basic basis types
+# ---------------------------------------------------------------------------------------------------------------------
+
+"""
+Tensor product basis
+"""
+struct TensorBasis <: Basis
+    p1d::Int
+    q1d::Int
+    dimension::Int
+    numbercomponents::Int
+    nodes1d::Array{Float64}
+    quadraturepoints1d::Array{Float64}
+    quadratureweights1d::Array{Float64}
+    interpolation1d::Array{Float64,2}
+    gradient1d::Array{Float64,2}
+end
+
+"""
+Non-tensor basis
+"""
+struct NonTensorBasis <: Basis
     p::Int
     q::Int
     dimension::Int
     numbercomponents::Int
-    istensor::Bool
     nodes::Array{Float64}
     quadraturepoints::Array{Float64}
     quadratureweights::Array{Float64}
@@ -19,67 +42,7 @@ struct Basis
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Internal use constructors
-# ---------------------------------------------------------------------------------------------------------------------
-
-"""
-Constructor for tensor product basis
-"""
-function TensorBasis(
-    p1d::Int,
-    q1d::Int,
-    dimension::Int,
-    numbercomponents::Int,
-    nodes1d::Array{Float64},
-    quadraturepoints1d::Array{Float64},
-    quadratureweights1d::Array{Float64},
-    interpolation1d::Array{Float64,2},
-    gradient1d::Array{Float64,2},
-)
-    Basis(
-        p1d,
-        q1d,
-        dimension,
-        numbercomponents,
-        true,
-        nodes1d,
-        quadraturepoints1d,
-        quadratureweights1d,
-        interpolation1d,
-        gradient1d,
-    )
-end
-
-"""
-Constructor for non-tensor basis
-"""
-function NonTensorBasis(
-    p::Int,
-    q::Int,
-    dimension::Int,
-    numbercomponents::Int,
-    nodes::Array{Float64},
-    quadraturepoints::Array{Float64},
-    quadratureweights::Array{Float64},
-    interpolation::Array{Float64,2},
-    gradient::Array{Float64,2},
-)
-    Basis(
-        p,
-        q,
-        dimension,
-        numbercomponents,
-        false,
-        nodes,
-        quadraturepoints,
-        quadratureweights,
-        interpolation,
-        gradient,
-    )
-end
-
-# ---------------------------------------------------------------------------------------------------------------------
-# Utility functions for polynomial bases
+# Utility functions for generating polynomial bases
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -270,7 +233,7 @@ end
     basis = TensorH1LagrangeBasis(4, 4, 1, 1)
 
     # output
-    LFAToolkit.Basis(4, 4, 1, 1, true, [-1.0, -0.4472135954999579, 0.4472135954999579, 1.0], [-0.8611363115940526, -0.3399810435848563, 0.3399810435848563, 0.8611363115940526], [0.34785484513745374, 0.6521451548625461, 0.6521451548625461, 0.34785484513745374], [0.6299431661034454 0.472558747113818 -0.14950343104607952 0.04700151782881607; -0.07069479527385582 0.972976186258263 0.13253992624542693 -0.03482131722983419; -0.03482131722983419 0.13253992624542696 0.9729761862582628 -0.07069479527385582; 0.04700151782881607 -0.14950343104607955 0.47255874711381796 0.6299431661034455], [-2.341837415390958 2.787944890537088 -0.6351041115519563 0.18899663640582656; -0.5167021357255352 -0.48795249031352683 1.3379050992756671 -0.3332504732366054; 0.33325047323660545 -1.3379050992756674 0.4879524903135269 0.5167021357255351; -0.1889966364058266 0.6351041115519563 -2.7879448905370876 2.3418374153909585])
+    LFAToolkit.TensorBasis(4, 4, 1, 1, [-1.0, -0.4472135954999579, 0.4472135954999579, 1.0], [-0.8611363115940526, -0.3399810435848563, 0.3399810435848563, 0.8611363115940526], [0.34785484513745374, 0.6521451548625461, 0.6521451548625461, 0.34785484513745374], [0.6299431661034454 0.472558747113818 -0.14950343104607952 0.04700151782881607; -0.07069479527385582 0.972976186258263 0.13253992624542693 -0.03482131722983419; -0.03482131722983419 0.13253992624542696 0.9729761862582628 -0.07069479527385582; 0.04700151782881607 -0.14950343104607955 0.47255874711381796 0.6299431661034455], [-2.341837415390958 2.787944890537088 -0.6351041115519563 0.18899663640582656; -0.5167021357255352 -0.48795249031352683 1.3379050992756671 -0.3332504732366054; 0.33325047323660545 -1.3379050992756674 0.4879524903135269 0.5167021357255351; -0.1889966364058266 0.6351041115519563 -2.7879448905370876 2.3418374153909585])
     ```
 
     ```@meta

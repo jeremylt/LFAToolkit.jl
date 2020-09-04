@@ -52,12 +52,23 @@ Construct a Gauss-Legendre quadrature
 
 ```jldoctest
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
-println(quadraturepoints);
-println(quadratureweights);
+
+# Verify
+truepoints = [-sqrt(5 + 2*sqrt(10/7))/3, -sqrt(5 - 2*sqrt(10/7))/3, 0.0, sqrt(5 - 2*sqrt(10/7))/3, sqrt(5 + 2*sqrt(10/7))/3];
+trueweights = [(322-13*sqrt(70))/900, (322+13*sqrt(70))/900, 128/225, (322+13*sqrt(70))/900, (322-13*sqrt(70))/900];
+
+diff = truepoints - quadraturepoints;
+if abs(max(diff...)) > 1e-15
+    println("Incorrect quadrature points");
+end
+
+diff = trueweights - quadratureweights;
+if abs(abs(max(diff...))) > 1e-15
+    println("Incorrect quadrature weights");
+end
 
 # output
-[-0.906179845938664, -0.5384693101056831, 1.232595164407831e-32, 0.5384693101056831, 0.906179845938664]
-[0.2369268850561885, 0.47862867049936647, 0.5688888888888889, 0.47862867049936647, 0.2369268850561885]
+
 ```
 """
 function gaussquadrature(q::Int)
@@ -112,22 +123,40 @@ end
 Construct a Gauss-Lobatto quadrature
 
 ```jldoctest
+
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
-println(quadraturepoints);
+
+# Verify
+truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
+
+diff = truepoints - quadraturepoints;
+if abs(max(diff...)) > 1e-15
+    println("Incorrect quadrature points");
+end
 
 # output
-[-1.0, -0.6546536707079771, -1.530808498934193e-17, 0.6546536707079771, 1.0]
+
 ```
    
 ```jldoctest
 quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 
-println(quadraturepoints);
-print(quadratureweights);
+# Verify
+truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
+trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
+
+diff = truepoints - quadraturepoints;
+if abs(max(diff...)) > 1e-15
+    println("Incorrect quadrature points");
+end
+
+diff = trueweights - quadratureweights;
+if abs(abs(max(diff...))) > 1e-15
+    println("Incorrect quadrature weights");
+end
 
 # output
-[-1.0, -0.6546536707079771, -1.530808498934193e-17, 0.6546536707079771, 1.0]
-[0.1, 0.5444444444444443, 0.7111111111111111, 0.5444444444444443, 0.1]
+
 ```
 """
 function lobattoquadrature(q::Int, weights::Bool)
@@ -207,11 +236,24 @@ end
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 4, 1, 1);
-println(basis);
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+
+# Verify
+if basis.p1d != 4
+    println("Incorrect P1d");
+end
+if basis.q1d != 3
+    println("Incorrect Q1d");
+end
+if basis.dimension != 2
+    println("Incorrect dimension");
+end
+if basis.numbercomponents != 1
+    println("Incorrect number of components");
+end
 
 # output
-LFAToolkit.TensorBasis(4, 4, 1, 1, [-1.0, -0.4472135954999579, 0.4472135954999579, 1.0], [-0.8611363115940526, -0.3399810435848563, 0.3399810435848563, 0.8611363115940526], [0.34785484513745374, 0.6521451548625461, 0.6521451548625461, 0.34785484513745374], [0.6299431661034454 0.472558747113818 -0.14950343104607952 0.04700151782881607; -0.07069479527385582 0.972976186258263 0.13253992624542693 -0.03482131722983419; -0.03482131722983419 0.13253992624542696 0.9729761862582628 -0.07069479527385582; 0.04700151782881607 -0.14950343104607955 0.47255874711381796 0.6299431661034455], [-2.341837415390958 2.787944890537088 -0.6351041115519563 0.18899663640582656; -0.5167021357255352 -0.48795249031352683 1.3379050992756671 -0.3332504732366054; 0.33325047323660545 -1.3379050992756674 0.4879524903135269 0.5167021357255351; -0.1889966364058266 0.6351041115519563 -2.7879448905370876 2.3418374153909585])
+
 ```
 """
 function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercomponents::Int)
@@ -270,21 +312,41 @@ end
 Get full interpolation matrix for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 4, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
-println(interpolation);
+
+# Verify
+for i in 1:3
+    sum = 0.0
+    for j = 1:4
+        sum += interpolation[i, j];
+    end
+    if abs(sum - 1.0) > 1e-15
+        println("Incorrect interpolation matrix")
+    end
+end
 
 # output
-[0.6299431661034454 0.472558747113818 -0.14950343104607952 0.04700151782881607; -0.07069479527385582 0.972976186258263 0.13253992624542693 -0.03482131722983419; -0.03482131722983419 0.13253992624542696 0.9729761862582628 -0.07069479527385582; 0.04700151782881607 -0.14950343104607955 0.47255874711381796 0.6299431661034455]
+
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(2, 2, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
-println(interpolation);
+
+# Verify
+for i in 1:3^2
+    sum = 0.0
+    for j = 1:4^2
+        sum += interpolation[i, j];
+    end
+    if abs(sum - 1.0) > 1e-15
+        println("Incorrect interpolation matrix")
+    end
+end
 
 # output
-[0.6220084679281462 0.16666666666666669 0.16666666666666669 0.044658198738520456; 0.16666666666666669 0.6220084679281462 0.044658198738520456 0.16666666666666669; 0.16666666666666669 0.044658198738520456 0.6220084679281462 0.16666666666666669; 0.044658198738520456 0.16666666666666669 0.16666666666666669 0.6220084679281462]
+
 ```
 """
 function getinterpolation(basis::NonTensorBasis)
@@ -292,24 +354,16 @@ function getinterpolation(basis::NonTensorBasis)
 end
 
 function getinterpolation(basis::TensorBasis)
-    # 1D
     if basis.dimension == 1
+        # 1D
         return basis.interpolation1d
+    elseif basis.dimension == 2
+        # 2D
+        return kron(basis.interpolation1d, basis.interpolation1d)
+    elseif basis.dimension == 3
+        # 2D
+        return kron(basis.interpolation1d, basis.interpolation1d, basis.interpolation1d)
     end
-
-    # Higher dimension setup
-    numbernodes = basis.p1d^basis.dimension
-    numberqpoints = basis.q1d^basis.dimension
-    interpolation = ones(numberqpoints, numbernodes)
-
-    # nD
-    for d = 0:basis.dimension-1, node = 0:numbernodes-1, qpoint = 0:numberqpoints-1
-        p = floor(Int, node / basis.p1d^d) % basis.p1d
-        q = floor(Int, qpoint / basis.q1d^d) % basis.q1d
-        interpolation[qpoint+1, node+1] *= basis.interpolation1d[q+1, p+1]
-    end
-
-    return interpolation
 end
 
 """
@@ -318,27 +372,41 @@ end
 Get full gradient matrix for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 4, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 gradient = LFAToolkit.getgradient(basis);
-println(gradient);
+
+# Verify
+for i in 1:3
+    sum = 0.0
+    for j = 1:4
+        sum += gradient[i, j];
+    end
+    if abs(sum) > 1e-15
+        println("Incorrect gradent matrix")
+    end
+end
 
 # output
-[-2.341837415390958 2.787944890537088 -0.6351041115519563 0.18899663640582656; -0.5167021357255352 -0.48795249031352683 1.3379050992756671 -0.3332504732366054; 0.33325047323660545 -1.3379050992756674 0.4879524903135269 0.5167021357255351; -0.1889966364058266 0.6351041115519563 -2.7879448905370876 2.3418374153909585]
+
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(2, 2, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 gradient = LFAToolkit.getgradient(basis);
-println(gradient);
+
+# Verify
+for d in 1:2, i in 1:3^2
+    sum = 0.0
+    for j = 1:4^2
+        sum += gradient[d, i, j];
+    end
+    if abs(sum) > 1e-15
+        println("Incorrect gradient matrix")
+    end
+end
 
 # output
-[-0.39433756729740643 -0.10566243270259357 -0.39433756729740643 -0.10566243270259357; -0.39433756729740643 -0.39433756729740643 -0.10566243270259357 -0.10566243270259357]
 
-[0.10566243270259357 0.39433756729740643 0.10566243270259357 0.39433756729740643; -0.39433756729740643 -0.39433756729740643 -0.10566243270259357 -0.10566243270259357]
-
-[-0.39433756729740643 -0.10566243270259357 -0.39433756729740643 -0.10566243270259357; 0.10566243270259357 0.10566243270259357 0.39433756729740643 0.39433756729740643]
-
-[0.10566243270259357 0.39433756729740643 0.10566243270259357 0.39433756729740643; 0.10566243270259357 0.10566243270259357 0.39433756729740643 0.39433756729740643]
 ```
 """
 function getgradient(basis::NonTensorBasis)
@@ -346,32 +414,28 @@ function getgradient(basis::NonTensorBasis)
 end
 
 function getgradient(basis::TensorBasis)
-    # 1D
     if basis.dimension == 1
+        # 1D
         return basis.gradient1d
-    end
-
-    # Higher dimension setup
-    numbernodes = basis.p1d^basis.dimension
-    numberqpoints = basis.q1d^basis.dimension
-    gradient = ones(basis.dimension, numberqpoints, numbernodes)
-
-    # nD
-    for d = 0:basis.dimension-1,
-        i = 0:basis.dimension-1,
-        node = 0:numbernodes-1,
-        qpoint = 0:numberqpoints-1
-
-        p = floor(Int, node / basis.p1d^d) % basis.p1d
-        q = floor(Int, qpoint / basis.q1d^d) % basis.q1d
-        if d == i
-            gradient[d+1, qpoint+1, node+1] *= basis.gradient1d[q+1, p+1]
-        else
-            gradient[d+1, qpoint+1, node+1] *= basis.interpolation1d[q+1, p+1]
+    else
+        numbernodes = basis.p1d^basis.dimension
+        numberqpoints = basis.q1d^basis.dimension
+        gradient = ones(basis.dimension, numberqpoints, numbernodes)
+        if basis.dimension == 2
+            # 2D
+            gradient[1, :, :] = kron(basis.gradient1d, basis.interpolation1d)
+            gradient[2, :, :] = kron(basis.interpolation1d, basis.gradient1d)
+        elseif basis.dimension == 3
+            # 3D
+            gradient[1, :, :] =
+                kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
+            gradient[2, :, :] =
+                kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
+            gradient[3, :, :] =
+                kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
         end
+        return gradient
     end
-
-    return gradient
 end
 
 """
@@ -380,21 +444,36 @@ end
 Get full quadrature weights vector for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 4, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
-println(quadratureweights);
-    
+
+# Verify
+trueweights = [5/9, 8/9, 5/9];
+
+diff = trueweights - quadratureweights;
+if abs(abs(max(diff...))) > 1e-15
+    println("Incorrect quadrature weights");
+end
+
 # output
-[0.34785484513745374, 0.6521451548625461, 0.6521451548625461, 0.34785484513745374]
+
 ```
 
 ```jldoctest
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
-println(quadratureweights);
+
+# Verify
+trueweights1d = [5/9, 8/9, 5/9];
+trueweights = kron(trueweights1d, trueweights1d);
+
+diff = trueweights - quadratureweights;
+if abs(abs(max(diff...))) > 1e-15
+    println("Incorrect quadrature weights");
+end
     
 # output
-[0.3086419753086416, 0.49382716049382686, 0.3086419753086416, 0.49382716049382686, 0.7901234567901234, 0.49382716049382686, 0.3086419753086416, 0.49382716049382686, 0.3086419753086416]
+
 ```
 """
 function getquadratureweights(basis::NonTensorBasis)
@@ -402,22 +481,20 @@ function getquadratureweights(basis::NonTensorBasis)
 end
 
 function getquadratureweights(basis::TensorBasis)
-    # 1D
     if basis.dimension == 1
+        # 1D
         return basis.quadratureweights1d
+    elseif basis.dimension == 2
+        # 2D
+        return kron(basis.quadratureweights1d, basis.quadratureweights1d)
+    elseif basis.dimension == 3
+        # 2D
+        return kron(
+            basis.quadratureweights1d,
+            basis.quadratureweights1d,
+            basis.quadratureweights1d,
+        )
     end
-
-    # Higher dimension setup
-    numberqpoints = basis.q1d^basis.dimension
-    quadratureweights = ones(numberqpoints)
-
-    # nD
-    for d = 0:basis.dimension-1, qpoint = 0:numberqpoints-1
-        q = floor(Int, qpoint / basis.q1d^d) % basis.q1d
-        quadratureweights[qpoint+1] *= basis.quadratureweights1d[q+1]
-    end
-
-    return quadratureweights
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

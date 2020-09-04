@@ -348,6 +348,25 @@ end
 # output
 
 ```
+
+```jldoctest
+basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+interpolation = LFAToolkit.getinterpolation(basis);
+
+# Verify
+for i in 1:3^3
+    sum = 0.0
+    for j = 1:4^3
+        sum += interpolation[i, j];
+    end
+    if abs(sum - 1.0) > 1e-15
+        println("Incorrect interpolation matrix")
+    end
+end
+
+# output
+
+```
 """
 function getinterpolation(basis::NonTensorBasis)
     return basis.interpolation
@@ -401,6 +420,25 @@ for d in 1:2, i in 1:3^2
         sum += gradient[d, i, j];
     end
     if abs(sum) > 1e-15
+        println("Incorrect gradient matrix")
+    end
+end
+
+# output
+
+```
+
+```jldoctest
+basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+gradient = LFAToolkit.getgradient(basis);
+
+# Verify
+for d in 1:3, i in 1:3^3
+    sum = 0.0
+    for j = 1:4^3
+        sum += gradient[d, i, j];
+    end
+    if abs(sum) > 1e-14
         println("Incorrect gradient matrix")
     end
 end
@@ -466,6 +504,23 @@ quadratureweights = LFAToolkit.getquadratureweights(basis);
 # Verify
 trueweights1d = [5/9, 8/9, 5/9];
 trueweights = kron(trueweights1d, trueweights1d);
+
+diff = trueweights - quadratureweights;
+if abs(abs(max(diff...))) > 1e-15
+    println("Incorrect quadrature weights");
+end
+    
+# output
+
+```
+
+```jldoctest
+basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+quadratureweights = LFAToolkit.getquadratureweights(basis);
+
+# Verify
+trueweights1d = [5/9, 8/9, 5/9];
+trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
 
 diff = trueweights - quadratureweights;
 if abs(abs(max(diff...))) > 1e-15

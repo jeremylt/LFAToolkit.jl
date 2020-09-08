@@ -79,7 +79,7 @@ function gaussquadrature(q::Int)
         throw(DomanError(basis.dimension, "q must be greater than or equal to 2")) # COV_EXCL_LINE
     end
 
-    # build qrefid, qweight1d
+    # build qref1d, qweight1d
     for i = 0:floor(Int, q / 2)
         # guess
         xi = cos(pi * (2 * i + 1.0) / (2 * q))
@@ -179,7 +179,7 @@ function lobattoquadrature(q::Int, weights::Bool)
         quadratureweights[q] = wi
     end
 
-    # build qrefid, qweight1d
+    # build qref1d, qweight1d
     for i = 1:floor(Int, (q - 1) / 2)
         # guess
         xi = cos(pi * i / (q - 1.0))
@@ -306,7 +306,7 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Basis functions for constructing stensils
+# Basis functions for constructing stencils
 # ---------------------------------------------------------------------------------------------------------------------
 
 """

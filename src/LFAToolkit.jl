@@ -5,10 +5,10 @@
 module LFAToolkit
 
 # ---------------------------------------------------------------------------------------------------------------------
-# User avaliable types and methods
+# User available types and methods
 # ---------------------------------------------------------------------------------------------------------------------
 
-export EvaluationMode, FieldMode
+export EvaluationMode
 export Mesh1D, Mesh2D, Mesh3D
 export TensorH1LagrangeBasis
 export OperatorField

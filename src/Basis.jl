@@ -306,6 +306,62 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Return basis information about the bases
+# ---------------------------------------------------------------------------------------------------------------------
+
+"""
+getnumbernodes()
+
+Get the number of nodes for the basis
+
+```jldoctest
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+numbernodes = LFAToolkit.getnumbernodes(basis);
+
+# verify
+if numbernodes != 16
+    println("Incorrect number of nodes")
+end
+
+# output
+
+```
+"""
+function getnumbernodes(basis::NonTensorBasis)
+    return basis.p
+end
+
+function getnumbernodes(basis::TensorBasis)
+    return basis.p1d^basis.dimension
+end
+
+"""
+    getnumberquadraturepoints()
+
+Get the number of quadrature points for the basis
+
+```jldoctest
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
+    
+# verify
+if quadraturepoints != 9
+    println("Incorrect number of quadrature points")
+end
+    
+# output
+
+```
+"""
+function getnumberquadraturepoints(basis::NonTensorBasis)
+    return basis.q
+end
+
+function getnumberquadraturepoints(basis::TensorBasis)
+    return basis.q1d^basis.dimension
+end
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Basis functions for constructing stencils
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -418,10 +474,10 @@ basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 gradient = LFAToolkit.getgradient(basis);
 
 # verify
-for d in 1:2, i in 1:3^2
+for i in 1:2*3^2
     sum = 0.0
     for j = 1:4^2
-        sum += gradient[d, i, j];
+        sum += gradient[i, j];
     end
     if abs(sum) > 1e-15
         println("Incorrect gradient matrix")
@@ -437,10 +493,10 @@ basis = TensorH1LagrangeBasis(4, 3, 3, 1);
 gradient = LFAToolkit.getgradient(basis);
 
 # verify
-for d in 1:3, i in 1:3^3
+for i in 1:3*3^3
     sum = 0.0
     for j = 1:4^3
-        sum += gradient[d, i, j];
+        sum += gradient[i, j];
     end
     if abs(sum) > 1e-14
         println("Incorrect gradient matrix")
@@ -459,24 +515,19 @@ function getgradient(basis::TensorBasis)
     if basis.dimension == 1
         # 1D
         return basis.gradient1d
-    else
-        numbernodes = basis.p1d^basis.dimension
-        numberqpoints = basis.q1d^basis.dimension
-        gradient = ones(basis.dimension, numberqpoints, numbernodes)
-        if basis.dimension == 2
-            # 2D
-            gradient[1, :, :] = kron(basis.gradient1d, basis.interpolation1d)
-            gradient[2, :, :] = kron(basis.interpolation1d, basis.gradient1d)
-        elseif basis.dimension == 3
-            # 3D
-            gradient[1, :, :] =
-                kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
-            gradient[2, :, :] =
-                kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
-            gradient[3, :, :] =
-                kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
-        end
-        return gradient
+    elseif basis.dimension == 2
+        # 2D
+        return [
+            kron(basis.gradient1d, basis.interpolation1d)
+            kron(basis.interpolation1d, basis.gradient1d)
+        ]
+    elseif basis.dimension == 3
+        # 3D
+        return [
+            kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
+            kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
+            kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
+        ]
     end
     throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
 end

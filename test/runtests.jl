@@ -22,7 +22,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     ]
     outputs = [OperatorField(basis, EvaluationMode.interpolation)]
 
-    function massweakform(u::Float64, w::Float64)
+    function massweakform(u::Array{Float64,1}, w::Float64)
         v = u * w
         return [v]
     end

@@ -127,7 +127,6 @@ end
 Construct a Gauss-Lobatto quadrature
 
 ```jldoctest
-
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
 
 # verify

@@ -9,6 +9,7 @@ module LFAToolkit
 # ---------------------------------------------------------------------------------------------------------------------
 
 export EvaluationMode, FieldMode
+export Mesh1D, Mesh2D, Mesh3D
 export TensorH1LagrangeBasis
 export OperatorField
 export Operator, getstencil
@@ -18,6 +19,7 @@ export Operator, getstencil
 # ---------------------------------------------------------------------------------------------------------------------
 
 include("Enums.jl")
+include("Mesh.jl")
 include("Basis.jl")
 include("OperatorField.jl")
 include("Operator.jl")

@@ -34,7 +34,7 @@ struct TensorBasis <: Basis
         quadratureweights1d,
         interpolation1d,
         gradient1d,
-    ) = p1d <= 1 ? error("p1d must be at least 2") :
+    ) = p1d <= 0 ? error("p1d must be at least 1") :
         q1d <= 0 ? error("q1d must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
         numbercomponents <= 0 ? error("number of components must be at least 1") :
@@ -81,7 +81,7 @@ struct NonTensorBasis <: Basis
         quadratureweights,
         interpolation,
         gradient,
-    ) = p <= 1 ? error("p must be at least 2") :
+    ) = p <= 0 ? error("p must be at least 1") :
         q <= 0 ? error("q must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
         numbercomponents <= 0 ? error("number of components must be at least 1") :

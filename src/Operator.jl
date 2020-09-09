@@ -65,11 +65,8 @@ function getstencil(operator::Operator)
             if input.evaluationmode == EvaluationMode.interpolation
                 push!(weakforminputs, zeros(input.basis.numbercomponents))
                 numberquadratureinputs += input.basis.numbercomponents
-                if B == 0
-                    B = getinterpolation(input.basis)
-                else
-                    B = [B; getinterpolation(input.basis)]
-                end
+                B = B == 0 ? getinterpolation(input.basis) :
+                    [B; getinterpolation(input.basis)]
             elseif input.evaluationmode == EvaluationMode.gradient
                 push!(
                     weakforminputs,
@@ -77,15 +74,9 @@ function getstencil(operator::Operator)
                 )
                 numberquadratureinputs +=
                     input.basis.numbercomponents * input.basis.dimension
-                if B == 0
-                    B = getgradient(input.basis)
-                else
-                    B = [B; getgradient(input.basis)]
-                end
-            else
+                B = B == 0 ? getgradient(input.basis) : [B; getgradient(input.basis)]
+            elseif input.evaluationmode == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
-            end
-            if input.evaluationmode == EvaluationMode.quadratureweights
                 weightindex = findfirst(isequal(input), operator.inputs)
             end
         end
@@ -105,19 +96,14 @@ function getstencil(operator::Operator)
             end
             # ------ output mode
             if output.evaluationmode == EvaluationMode.interpolation
-                if Bt == 0
-                    Bt = getinterpolation(output.basis)
-                else
-                    Bt = [Bt; getinterpolation(output.basis)]
-                end
+                Bt = Bt == 0 ? getinterpolation(output.basis) :
+                    [Bt; getinterpolation(output.basis)]
             elseif output.evaluationmode == EvaluationMode.gradient
-                if Bt == 0
-                    Bt = getgradient(output.basis)
-                else
-                    Bt = [Bt; getgradient(output.basis)]
-                end
+                Bt = Bt == 0 ? getgradient(output.basis) : [Bt; getgradient(output.basis)]
+                # COV_EXCL_START
             elseif output.evaluationmode == EvaluationMode.quadratureweights
-                throw(ArgumentError("quadratureweights is not a valid ouput field evaluation mode")) # COV_EXCL_LINE
+                throw(ArgumentError("quadratureweights is not a valid ouput field evaluation mode"))
+                # COV_EXCL_STOP
             end
         end
         Bt = transpose(Bt)
@@ -172,10 +158,11 @@ function getstencil(operator::Operator)
             end
         end
 
-        # -- multiply B^T D B
+        # -- multiply A = B^T D B and store
         stencil = Bt * D * B
         stencildict[operator] = stencil
 
+        # -- return
         return stencil
     end
 end

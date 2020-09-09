@@ -114,10 +114,10 @@ function getstencil(operator::Operator)
         numbernodes = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
-        weightindex = 0
+        weightinputindex = 0
         quadratureweights = []
-        B = 0
-        Bt = 0
+        B = []
+        Bt = []
         # ---- inputs
         for input in operator.inputs
             # ------ number of nodes
@@ -142,7 +142,7 @@ function getstencil(operator::Operator)
             if input.evaluationmode == EvaluationMode.interpolation
                 push!(weakforminputs, zeros(input.basis.numbercomponents))
                 numberquadratureinputs += input.basis.numbercomponents
-                B = B == 0 ? getinterpolation(input.basis) :
+                B = B == [] ? getinterpolation(input.basis) :
                     [B; getinterpolation(input.basis)]
             elseif input.evaluationmode == EvaluationMode.gradient
                 push!(
@@ -151,14 +151,15 @@ function getstencil(operator::Operator)
                 )
                 numberquadratureinputs +=
                     input.basis.numbercomponents * input.basis.dimension
-                B = B == 0 ? getgradient(input.basis) : [B; getgradient(input.basis)]
+                B = B == [] ? getgradient(input.basis) : [B; getgradient(input.basis)]
             elseif input.evaluationmode == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
-                weightindex = findfirst(isequal(input), operator.inputs)
+                weightinputindex = findfirst(isequal(input), operator.inputs)
             end
         end
-        if weightindex != 0
-            quadratureweights = getquadratureweights(operator.inputs[weightindex].basis)
+        if weightinputindex != 0
+            quadratureweights =
+                getquadratureweights(operator.inputs[weightinputindex].basis)
         end
         # ---- outputs
         for output in operator.outputs
@@ -173,10 +174,10 @@ function getstencil(operator::Operator)
             end
             # ------ output mode
             if output.evaluationmode == EvaluationMode.interpolation
-                Bt = Bt == 0 ? getinterpolation(output.basis) :
+                Bt = Bt == [] ? getinterpolation(output.basis) :
                     [Bt; getinterpolation(output.basis)]
             elseif output.evaluationmode == EvaluationMode.gradient
-                Bt = Bt == 0 ? getgradient(output.basis) : [Bt; getgradient(output.basis)]
+                Bt = Bt == [] ? getgradient(output.basis) : [Bt; getgradient(output.basis)]
                 # COV_EXCL_START
             elseif output.evaluationmode == EvaluationMode.quadratureweights
                 throw(ArgumentError("quadratureweights is not a valid ouput field evaluation mode"))
@@ -192,8 +193,8 @@ function getstencil(operator::Operator)
         )
         for q = 1:numberquadraturepoints
             # ---- set quadrature weight
-            if weightindex != 0
-                weakforminputs[weightindex][1] = quadratureweights[q]
+            if weightinputindex != 0
+                weakforminputs[weightinputindex][1] = quadratureweights[q]
             end
             # ---- loop over inputs
             currentfieldin = 0

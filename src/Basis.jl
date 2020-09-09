@@ -24,6 +24,38 @@ struct TensorBasis <: Basis
     quadratureweights1d::Array{Float64,1}
     interpolation1d::Array{Float64,2}
     gradient1d::Array{Float64,2}
+    TensorBasis(
+        p1d,
+        q1d,
+        dimension,
+        numbercomponents,
+        nodes1d,
+        quadraturepoints1d,
+        quadratureweights1d,
+        interpolation1d,
+        gradient1d,
+    ) = p1d <= 1 ? error("p1d must be at least 2") :
+        q1d <= 0 ? error("q1d must be at least 1") :
+        dimension <= 0 ? error("dimension must be at least 1") :
+        numbercomponents <= 0 ? error("number of components must be at least 1") :
+        length(nodes1d) != p1d ? error("must include p1d nodes") :
+        length(quadraturepoints1d) != q1d ? error("must include q1d quadrature points") :
+        length(quadratureweights1d) != q1d ? error("must include q1d quadrature weights") :
+        size(interpolation1d) != (q1d, p1d) ?
+        error("interpolation matrix must have dimensions (q1d, p1d)") :
+        size(gradient1d) != (q1d, p1d) ?
+        error("gradient matrix must have dimensions (q1d, p1d)") :
+        new(
+        p1d,
+        q1d,
+        dimension,
+        numbercomponents,
+        nodes1d,
+        quadraturepoints1d,
+        quadratureweights1d,
+        interpolation1d,
+        gradient1d,
+    )
 end
 
 """
@@ -75,8 +107,8 @@ function gaussquadrature(q::Int)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
-    if q < 2
-        throw(DomanError(basis.dimension, "q must be greater than or equal to 2")) # COV_EXCL_LINE
+    if q < 1
+        throw(DomanError(basis.dimension, "q must be greater than or equal to 1")) # COV_EXCL_LINE
     end
 
     # build qref1d, qweight1d
@@ -260,6 +292,23 @@ end
 ```
 """
 function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercomponents::Int)
+    # check inputs
+    if p1d <= 2
+        throw(DomanError(p1d, "p1d must be greater than or equal to 2")) # COV_EXCL_LINE
+    end
+    if q1d <= 1
+        throw(DomanError(p1d, "q1d must be greater than or equal to 1")) # COV_EXCL_LINE
+    end
+    if dimension < 1 || dimension > 3
+        throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
+    end
+    if numbercomponents <= 0
+        throw(DomanError(
+            numbercomponents,
+            "the number of components must be greater than or equal to 1",
+        )) # COV_EXCL_LINE
+    end
+
     # get nodes, quadrature points, and weights
     nodes1d = lobattoquadrature(p1d, false)
     quadraturepoints1d, quadratureweights1d = gaussquadrature(q1d)

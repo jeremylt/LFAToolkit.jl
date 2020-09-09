@@ -71,6 +71,40 @@ struct NonTensorBasis <: Basis
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
+    NonTensorBasis(
+        p,
+        q,
+        dimension,
+        numbercomponents,
+        nodes,
+        quadraturepoints,
+        quadratureweights,
+        interpolation,
+        gradient,
+    ) = p <= 1 ? error("p must be at least 2") :
+        q <= 0 ? error("q must be at least 1") :
+        dimension <= 0 ? error("dimension must be at least 1") :
+        numbercomponents <= 0 ? error("number of components must be at least 1") :
+        size(nodes) != (p, dimension) ?
+        error("must include (p, dimension) nodal coordinates") :
+        length(quadraturepoints) != (q, dimension) ?
+        error("must include (q, dimension) quadrature points") :
+        length(quadratureweights) != q ? error("must include q quadrature weights") :
+        size(interpolation) != (q, p) ?
+        error("interpolation matrix must have dimensions (q, p)") :
+        size(gradient) != (q * dimension, p) ?
+        error("gradient matrix must have dimensions (q*dimension, p)") :
+        new(
+        p,
+        q,
+        dimension,
+        numbercomponents,
+        nodes,
+        quadraturepoints,
+        quadratureweights,
+        interpolation,
+        gradient,
+    )
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

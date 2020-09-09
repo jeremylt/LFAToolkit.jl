@@ -22,13 +22,14 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     ]
     outputs = [OperatorField(basis, EvaluationMode.interpolation)]
 
-    function massweakform(u::Array{Float64,1}, w::Float64)
-        v = u * w
+    function massweakform(u::Array{Float64,1}, w::Array{Float64})
+        v = u * w[1]
         return [v]
     end
 
     mass = Operator(massweakform, mesh, inputs, outputs)
 
+    stencil = getstencil(mass)
     stencil = getstencil(mass)
 
     # Diffusion operator
@@ -38,13 +39,14 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     ]
     outputs = [OperatorField(basis, EvaluationMode.gradient)]
 
-    function diffusionweakform(du::Array{Float64,1}, w::Float64)
-        dv = du * w
+    function diffusionweakform(du::Array{Float64,1}, w::Array{Float64})
+        dv = du * w[1]
         return [dv]
     end
 
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
+    stencil = getstencil(diffusion)
     stencil = getstencil(diffusion)
 
 end # testset

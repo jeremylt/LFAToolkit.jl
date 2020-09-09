@@ -395,11 +395,8 @@ interpolation = LFAToolkit.getinterpolation(basis);
 
 # verify
 for i in 1:3^2
-    sum = 0.0
-    for j = 1:4^2
-        sum += interpolation[i, j];
-    end
-    if abs(sum - 1.0) > 1e-15
+    total = sum(interpolation[i, :]);
+    if abs(total - 1.0) > 1e-15
         println("Incorrect interpolation matrix")
     end
 end
@@ -414,11 +411,8 @@ interpolation = LFAToolkit.getinterpolation(basis);
 
 # verify
 for i in 1:3^3
-    sum = 0.0
-    for j = 1:4^3
-        sum += interpolation[i, j];
-    end
-    if abs(sum - 1.0) > 1e-15
+    total = sum(interpolation[i, :]);
+    if abs(total - 1.0) > 1e-15
         println("Incorrect interpolation matrix")
     end
 end
@@ -475,11 +469,8 @@ gradient = LFAToolkit.getgradient(basis);
 
 # verify
 for i in 1:2*3^2
-    sum = 0.0
-    for j = 1:4^2
-        sum += gradient[i, j];
-    end
-    if abs(sum) > 1e-15
+    total = sum(gradient[i, :]);
+    if abs(total) > 1e-15
         println("Incorrect gradient matrix")
     end
 end
@@ -494,11 +485,8 @@ gradient = LFAToolkit.getgradient(basis);
 
 # verify
 for i in 1:3*3^3
-    sum = 0.0
-    for j = 1:4^3
-        sum += gradient[i, j];
-    end
-    if abs(sum) > 1e-14
+    total = sum(gradient[i, :]);
+    if abs(total) > 1e-14
         println("Incorrect gradient matrix")
     end
 end

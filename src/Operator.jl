@@ -22,6 +22,40 @@ stencildict = Dict{Operator,Array{Float64}}();
     getstencil()
 
 Compute or retrieve the stencil of operator for computing the symbol
+
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+basis = TensorH1LagrangeBasis(4, 4, 2, 1);
+
+function massweakform(u::Array{Float64,1}, w::Array{Float64})
+    v = u * w[1]
+    return [v]
+end
+
+# mass operator
+inputs = [
+    OperatorField(basis, EvaluationMode.interpolation),
+    OperatorField(basis, EvaluationMode.quadratureweights),
+];
+outputs = [OperatorField(basis, EvaluationMode.interpolation)];
+mass = Operator(massweakform, mesh, inputs, outputs);
+
+# stencil computation
+stencil = getstencil(mass);
+
+# verify
+u = ones(4*4);
+v = stencil * u;
+
+total = sum(v);
+if abs(total - 4.0) > 1e-14
+    println("Incorrect mass matrix");
+end
+
+# output
+
+```
 """
 function getstencil(operator::Operator)
     iscomputed = haskey(stencildict, operator)

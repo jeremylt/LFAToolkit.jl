@@ -92,7 +92,7 @@ u = ones(4*4);
 v = stencil * u;
     
 total = sum(v);
-if abs(total) > 1e-15
+if abs(total) > 1e-14
     println("Incorrect diffusion matrix");
 end
     

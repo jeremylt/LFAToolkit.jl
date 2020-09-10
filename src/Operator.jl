@@ -3,6 +3,13 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
+    Operator(
+        weakform,
+        mesh,
+        inputs,
+        outputs
+    )
+
 Finite element operator comprising of a weak form and bases
 """
 struct Operator
@@ -19,7 +26,7 @@ end
 stencildict = Dict{Operator,Array{Float64}}();
 
 """
-    getstencil()
+    getstencil(operator)
 
 Compute or retrieve the stencil of operator for computing the symbol
 

@@ -8,7 +8,9 @@ Rectangular mesh with independent scaling in each dimesion
 abstract type Mesh end
 
 """
-    Mesh1D()
+    Mesh1D(dx)
+
+One dimensional regular background mesh
 
 ```jldoctest
 mesh = Mesh1D(1.0);
@@ -28,7 +30,9 @@ struct Mesh1D <: Mesh
 end
 
 """
-    Mesh2D()
+    Mesh2D(dx, dy)
+
+Two dimensional regular background mesh
 
 ```jldoctest
 mesh = Mesh2D(1.0, 0.5);
@@ -53,7 +57,9 @@ struct Mesh2D <: Mesh
 end
 
 """
-    Mesh2D()
+    Mesh3D(dx, dy, dz)
+
+Three dimensional regular background mesh
 
 ```jldoctest
 mesh = Mesh3D(1.0, 0.5, 0.25);

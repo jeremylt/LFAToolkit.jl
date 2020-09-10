@@ -16,9 +16,9 @@ using SparseArrays
 
 export EvaluationMode
 export Mesh1D, Mesh2D, Mesh3D
-export TensorH1LagrangeBasis
+export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
 export OperatorField
-export Operator, getstencil
+export Operator
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Imports

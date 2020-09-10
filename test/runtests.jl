@@ -30,7 +30,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     mass = Operator(massweakform, mesh, inputs, outputs)
 
     # stencil computation
-    stencil = getstencil(mass)
+    stencil = LFAToolkit.getstencil(mass)
 
     # diffusion setup
     function diffusionweakform(du::Array{Float64,1}, w::Array{Float64,1})
@@ -47,7 +47,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
     # stencil computation
-    stencil = getstencil(diffusion)
+    stencil = LFAToolkit.getstencil(diffusion)
 
 end # testset
 

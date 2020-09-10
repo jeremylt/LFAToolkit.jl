@@ -18,6 +18,13 @@ makedocs(
         canonical = "https://jeremylt.github.io/LFAToolkit.jl/stable/",
         highlights = ["yaml"],
     ),
+    pages = [
+        "Introduction" => "index.md",
+        "Mathematical Background" => "background.md",
+        "Public API" => "public.md",
+        "Private API" => "private.md",
+        "References" => "references.md",
+    ],
     clean = false,
     sitename = "LFAToolkit.jl",
     authors = "Jeremy L Thompson",

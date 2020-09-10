@@ -42,7 +42,7 @@ outputs = [OperatorField(basis, EvaluationMode.interpolation)];
 mass = Operator(massweakform, mesh, inputs, outputs);
     
 # stencil computation
-stencil = getstencil(mass);
+stencil = LFAToolkit.getstencil(mass);
 
 # verify
 u = ones(4*4);
@@ -54,7 +54,7 @@ if abs(total - 4.0) > 1e-14
 end
 
 # test caching
-stencil = getstencil(mass)
+stencil = LFAToolkit.getstencil(mass)
 v = stencil * u;
     
 total = sum(v);
@@ -85,7 +85,7 @@ outputs = [OperatorField(basis, EvaluationMode.gradient)];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
     
 # stencil computation
-stencil = getstencil(diffusion);
+stencil = LFAToolkit.getstencil(diffusion);
     
 # verify
 u = ones(4*4);

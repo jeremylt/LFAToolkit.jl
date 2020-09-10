@@ -517,7 +517,7 @@ for dimension in 1:3
     gradient = LFAToolkit.getgradient(basis);
 
     # verify
-    for i in 1:3*3^dimension
+    for i in 1:dimension*3^dimension
         total = sum(gradient[i, :]);
         if abs(total) > 1e-14
             println("Incorrect gradient matrix")

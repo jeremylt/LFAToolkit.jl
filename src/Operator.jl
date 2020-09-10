@@ -30,6 +30,7 @@ stencildict = Dict{Operator,Array{Float64}}();
 
 Compute or retrieve the stencil of operator for computing the symbol
 
+Mass matrix example:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -73,6 +74,7 @@ end
     
 ```
 
+Diffusion matrix example:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);

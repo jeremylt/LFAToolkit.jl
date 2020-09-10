@@ -130,6 +130,7 @@ end
 Construct a Gauss-Legendre quadrature
 
 ```jldoctest
+# generate Gauss-Legendre points and weights
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
 # verify
@@ -218,6 +219,7 @@ end
 Construct a Gauss-Lobatto quadrature
 
 ```jldoctest
+# generate Gauss-Lobatto points
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
 
 # verify
@@ -228,15 +230,10 @@ if abs(max(diff...)) > 1e-15
     println("Incorrect quadrature points");
 end
 
-# output
-
-```
-   
-```jldoctest
+# generate Gauss-Lobatto points and weights
 quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 
 # verify
-truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
 diff = truepoints - quadraturepoints;
@@ -330,6 +327,7 @@ end
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
 ```jldoctest
+# generate H1 Lagrange tensor product basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
@@ -413,6 +411,7 @@ end
 Get the number of nodes for the basis
 
 ```jldoctest
+# get number of nodes for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 numbernodes = LFAToolkit.getnumbernodes(basis);
 
@@ -439,6 +438,7 @@ end
 Get the number of quadrature points for the basis
 
 ```jldoctest
+# get number of quadrature points for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
     
@@ -469,6 +469,7 @@ end
 Get full interpolation matrix for basis
 
 ```jldoctest
+# test for all supported dimensions
 for dimension in 1:3
     # get basis interpolation matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
@@ -511,6 +512,7 @@ end
 Get full gradient matrix for basis
 
 ```jldoctest
+# test for all supported dimensions
 for dimension in 1:3
     # get basis gradient matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
@@ -560,6 +562,7 @@ end
 Get full quadrature weights vector for basis
 
 ```jldoctest
+# test for all supported dimensions
 for dimension in 1:3
     # get basis quadrature weights
     basis = TensorH1LagrangeBasis(4, 3, dimension);

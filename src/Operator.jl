@@ -35,7 +35,7 @@ Compute or retrieve the stencil of operator for computing the symbol
 mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
-function massweakform(u::Array{Float64,1}, w::Array{Float64})
+function massweakform(u::Array{Float64}, w::Array{Float64})
     v = u * w[1]
     return [v]
 end
@@ -78,7 +78,7 @@ end
 mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
-function diffusionweakform(du::Array{Float64,1}, w::Array{Float64})
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     dv = du * w[1]
     return [dv]
 end

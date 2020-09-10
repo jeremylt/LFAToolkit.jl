@@ -26,7 +26,7 @@ Compute or retrieve the stencil of operator for computing the symbol
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2, 1);
+basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function massweakform(u::Array{Float64,1}, w::Array{Float64})
     v = u * w[1]
@@ -69,7 +69,7 @@ end
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2, 1);
+basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function diffusionweakform(du::Array{Float64,1}, w::Array{Float64})
     dv = du * w[1]
@@ -140,17 +140,17 @@ function getstencil(operator::Operator)
             end
             # ------ input mode
             if input.evaluationmode == EvaluationMode.interpolation
-                push!(weakforminputs, zeros(input.basis.numbercomponents))
-                numberquadratureinputs += input.basis.numbercomponents
+                push!(weakforminputs, zeros(1))
+                numberquadratureinputs += 1
                 B = B == [] ? getinterpolation(input.basis) :
                     [B; getinterpolation(input.basis)]
             elseif input.evaluationmode == EvaluationMode.gradient
                 push!(
                     weakforminputs,
-                    zeros(input.basis.numbercomponents * input.basis.dimension),
+                    zeros(input.basis.dimension),
                 )
                 numberquadratureinputs +=
-                    input.basis.numbercomponents * input.basis.dimension
+                    input.basis.dimension
                 B = B == [] ? getgradient(input.basis) : [B; getgradient(input.basis)]
             elseif input.evaluationmode == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
@@ -202,9 +202,9 @@ function getstencil(operator::Operator)
                 input = operator.inputs[i]
                 numberfieldsin = 0
                 if input.evaluationmode == EvaluationMode.interpolation
-                    numberfieldsin = input.basis.numbercomponents
+                    numberfieldsin = 1
                 elseif input.evaluationmode == EvaluationMode.gradient
-                    numberfieldsin = input.basis.numbercomponents * input.basis.dimension
+                    numberfieldsin = input.basis.dimension
                 end
                 # ------ fill sparse matrix
                 for j = 1:numberfieldsin
@@ -219,10 +219,9 @@ function getstencil(operator::Operator)
                         output = operator.outputs[i]
                         numberfieldsout = 0
                         if output.evaluationmode == EvaluationMode.interpolation
-                            numberfieldsout = output.basis.numbercomponents
+                            numberfieldsout = 1
                         elseif output.evaluationmode == EvaluationMode.gradient
-                            numberfieldsout =
-                                output.basis.numbercomponents * output.basis.dimension
+                            numberfieldsout = output.basis.dimension
                         end
                         for l = 1:numberfieldsout
                             D[

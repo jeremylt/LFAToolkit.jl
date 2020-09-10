@@ -18,7 +18,6 @@ struct TensorBasis <: Basis
     p1d::Int
     q1d::Int
     dimension::Int
-    numbercomponents::Int
     nodes1d::Array{Float64,1}
     quadraturepoints1d::Array{Float64,1}
     quadratureweights1d::Array{Float64,1}
@@ -28,7 +27,6 @@ struct TensorBasis <: Basis
         p1d,
         q1d,
         dimension,
-        numbercomponents,
         nodes1d,
         quadraturepoints1d,
         quadratureweights1d,
@@ -37,7 +35,6 @@ struct TensorBasis <: Basis
     ) = p1d <= 0 ? error("p1d must be at least 1") :
         q1d <= 0 ? error("q1d must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
-        numbercomponents <= 0 ? error("number of components must be at least 1") :
         length(nodes1d) != p1d ? error("must include p1d nodes") :
         length(quadraturepoints1d) != q1d ? error("must include q1d quadrature points") :
         length(quadratureweights1d) != q1d ? error("must include q1d quadrature weights") :
@@ -49,7 +46,6 @@ struct TensorBasis <: Basis
         p1d,
         q1d,
         dimension,
-        numbercomponents,
         nodes1d,
         quadraturepoints1d,
         quadratureweights1d,
@@ -65,7 +61,6 @@ struct NonTensorBasis <: Basis
     p::Int
     q::Int
     dimension::Int
-    numbercomponents::Int
     nodes::Array{Float64}
     quadraturepoints::Array{Float64}
     quadratureweights::Array{Float64,1}
@@ -75,7 +70,6 @@ struct NonTensorBasis <: Basis
         p,
         q,
         dimension,
-        numbercomponents,
         nodes,
         quadraturepoints,
         quadratureweights,
@@ -84,7 +78,6 @@ struct NonTensorBasis <: Basis
     ) = p <= 0 ? error("p must be at least 1") :
         q <= 0 ? error("q must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
-        numbercomponents <= 0 ? error("number of components must be at least 1") :
         size(nodes) != (p, dimension) ?
         error("must include (p, dimension) nodal coordinates") :
         length(quadraturepoints) != (q, dimension) ?
@@ -98,7 +91,6 @@ struct NonTensorBasis <: Basis
         p,
         q,
         dimension,
-        numbercomponents,
         nodes,
         quadraturepoints,
         quadratureweights,
@@ -305,7 +297,7 @@ end
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
 if basis.p1d != 4
@@ -317,15 +309,12 @@ end
 if basis.dimension != 2
     println("Incorrect dimension");
 end
-if basis.numbercomponents != 1
-    println("Incorrect number of components");
-end
 
 # output
 
 ```
 """
-function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercomponents::Int)
+function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int)
     # check inputs
     if p1d <= 2
         throw(DomanError(p1d, "p1d must be greater than or equal to 2")) # COV_EXCL_LINE
@@ -335,12 +324,6 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
     end
     if dimension < 1 || dimension > 3
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
-    end
-    if numbercomponents <= 0
-        throw(DomanError(
-            numbercomponents,
-            "the number of components must be greater than or equal to 1",
-        )) # COV_EXCL_LINE
     end
 
     # get nodes, quadrature points, and weights
@@ -379,7 +362,6 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int, numbercompone
         p1d,
         q1d,
         dimension,
-        numbercomponents,
         nodes1d,
         quadraturepoints1d,
         quadratureweights1d,
@@ -398,7 +380,7 @@ getnumbernodes()
 Get the number of nodes for the basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 numbernodes = LFAToolkit.getnumbernodes(basis);
 
 # verify
@@ -424,7 +406,7 @@ end
 Get the number of quadrature points for the basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
     
 # verify
@@ -454,7 +436,7 @@ end
 Get full interpolation matrix for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1);
 interpolation = LFAToolkit.getinterpolation(basis);
 
 # verify
@@ -473,7 +455,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 interpolation = LFAToolkit.getinterpolation(basis);
 
 # verify
@@ -489,7 +471,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+basis = TensorH1LagrangeBasis(4, 3, 3);
 interpolation = LFAToolkit.getinterpolation(basis);
 
 # verify
@@ -528,7 +510,7 @@ end
 Get full gradient matrix for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1);
 gradient = LFAToolkit.getgradient(basis);
 
 # verify
@@ -547,7 +529,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 gradient = LFAToolkit.getgradient(basis);
 
 # verify
@@ -563,7 +545,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+basis = TensorH1LagrangeBasis(4, 3, 3);
 gradient = LFAToolkit.getgradient(basis);
 
 # verify
@@ -609,7 +591,7 @@ end
 Get full quadrature weights vector for basis
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 1, 1);
+basis = TensorH1LagrangeBasis(4, 3, 1);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
 # verify
@@ -625,7 +607,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+basis = TensorH1LagrangeBasis(4, 3, 2);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
 # verify
@@ -642,7 +624,7 @@ end
 ```
 
 ```jldoctest
-basis = TensorH1LagrangeBasis(4, 3, 3, 1);
+basis = TensorH1LagrangeBasis(4, 3, 3);
 quadratureweights = LFAToolkit.getquadratureweights(basis);
 
 # verify

@@ -14,7 +14,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # setup
     mesh = Mesh2D(1.0, 1.0)
-    basis = TensorH1LagrangeBasis(4, 4, 2, 1)
+    basis = TensorH1LagrangeBasis(4, 4, 2)
 
     function massweakform(u::Array{Float64,1}, w::Array{Float64,1})
         v = u * w[1]

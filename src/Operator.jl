@@ -145,12 +145,8 @@ function getstencil(operator::Operator)
                 B = B == [] ? getinterpolation(input.basis) :
                     [B; getinterpolation(input.basis)]
             elseif input.evaluationmode == EvaluationMode.gradient
-                push!(
-                    weakforminputs,
-                    zeros(input.basis.dimension),
-                )
-                numberquadratureinputs +=
-                    input.basis.dimension
+                push!(weakforminputs, zeros(input.basis.dimension))
+                numberquadratureinputs += input.basis.dimension
                 B = B == [] ? getgradient(input.basis) : [B; getgradient(input.basis)]
             elseif input.evaluationmode == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))

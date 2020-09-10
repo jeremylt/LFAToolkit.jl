@@ -236,11 +236,6 @@ quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 # verify
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
-diff = truepoints - quadraturepoints;
-if abs(max(diff...)) > 1e-15
-    println("Incorrect quadrature points");
-end
-
 diff = trueweights - quadratureweights;
 if abs(abs(max(diff...))) > 1e-15
     println("Incorrect quadrature weights");

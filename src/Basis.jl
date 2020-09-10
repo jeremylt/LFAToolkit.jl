@@ -513,7 +513,7 @@ Get full gradient matrix for basis
 ```jldoctest
 for dimension in 1:3
     # get basis gradient matrix
-    basis = TensorH1LagrangeBasis(4, 3, 3);
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
     gradient = LFAToolkit.getgradient(basis);
 
     # verify

@@ -9,6 +9,14 @@ This analysis can be used to predict convergance rates and optimize parameters i
 
 This package provides a toolkit for analyzing the performance of preconditioners for arbitrary, user provided weak forms of partial differential equations.
 
+## Contents
+
 ```@contents
+Pages = [
+    "background.md",
+    "public.md",
+    "private.md",
+    "references.md"
+]
 ```
 

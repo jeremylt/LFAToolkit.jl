@@ -1,5 +1,7 @@
 # Public API
 
+This page documents the public API of the LFAToolkit.
+
 ## Mesh
 
 ```@docs

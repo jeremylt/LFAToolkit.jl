@@ -1,5 +1,7 @@
 # Private API
 
+This page documents the private API of the LFAToolkit.
+
 ## Mesh
 
 ```@docs

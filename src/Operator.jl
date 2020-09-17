@@ -17,6 +17,20 @@ struct Operator
     mesh::Mesh
     inputs::Array{OperatorField}
     outputs::Array{OperatorField}
+    Operator(weakform, mesh, inputs, outputs) = (
+        for input in inputs
+            if length(input.evaluationmodes) > 1 &&
+               EvaluationMode.quadratureweights in input.evaluationmodes
+                error("quadrature weights must be a separate input") # COV_EXCL_LINE
+            end
+        end;
+        for output in outputs
+            if EvaluationMode.quadratureweights in output.evaluationmodes
+                error("quadrature weights is not a valid output") # COV_EXCL_LINE
+            end
+        end;
+        new(weakform, mesh, inputs, outputs)
+    )
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -43,10 +57,10 @@ end
     
 # mass operator
 inputs = [
-    OperatorField(basis, EvaluationMode.interpolation),
-    OperatorField(basis, EvaluationMode.quadratureweights),
+    OperatorField(basis, [EvaluationMode.interpolation]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
 ];
-outputs = [OperatorField(basis, EvaluationMode.interpolation)];
+outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
     
 # stencil computation
@@ -87,10 +101,10 @@ end
     
 # diffusion operator
 inputs = [
-    OperatorField(basis, EvaluationMode.gradient),
-    OperatorField(basis, EvaluationMode.quadratureweights),
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
 ];
-outputs = [OperatorField(basis, EvaluationMode.gradient)];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
     
 # stencil computation
@@ -118,20 +132,18 @@ function getstencil(operator::Operator)
     else
         # compute, store, and return
         # -- collect info on operator
-        bases = []
         weakforminputs = []
         numbernodes = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
         weightinputindex = 0
         quadratureweights = []
-        B = []
-        Bt = []
+        Bblocks = []
+        Btblocks = []
         # ---- inputs
         for input in operator.inputs
             # ------ number of nodes
-            if !(input.basis in bases)
-                push!(bases, input.basis)
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 numbernodes += getnumbernodes(input.basis)
             end
             # ------ number of quadrature points
@@ -147,20 +159,38 @@ function getstencil(operator::Operator)
                     # COV_EXCL_STOP
                 end
             end
-            # ------ input mode
-            if input.evaluationmode == EvaluationMode.interpolation
-                push!(weakforminputs, zeros(1))
-                numberquadratureinputs += 1
-                B = B == [] ? getinterpolation(input.basis) :
-                    [B; getinterpolation(input.basis)]
-            elseif input.evaluationmode == EvaluationMode.gradient
-                push!(weakforminputs, zeros(input.basis.dimension))
-                numberquadratureinputs += input.basis.dimension
-                B = B == [] ? getgradient(input.basis) : [B; getgradient(input.basis)]
-            elseif input.evaluationmode == EvaluationMode.quadratureweights
+            # ------ input evaluation modes
+            if input.evaluationmodes[1] == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
                 weightinputindex = findfirst(isequal(input), operator.inputs)
+            else
+                numbermodes = 0
+                Bcurrent = []
+                for mode in input.evaluationmodes
+                    if mode == EvaluationMode.interpolation
+                        numbermodes += 1
+                        numberquadratureinputs += 1
+                        Bcurrent = Bcurrent == [] ? getinterpolation(input.basis) :
+                            [Bcurrent; getinterpolation(input.basis)]
+                    elseif mode == EvaluationMode.gradient
+                        numbermodes += input.basis.dimension
+                        numberquadratureinputs += input.basis.dimension
+                        Bcurrent = Bcurrent == [] ? getgradient(input.basis) :
+                            [Bcurrent; getgradient(input.basis)]
+                    end
+                end
+                push!(Bblocks, Bcurrent)
+                push!(weakforminputs, zeros(numbermodes))
             end
+        end
+        # ------ input basis matrix
+        B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+        currentrow = 1
+        currentcolumn = 1
+        for Bblock in Bblocks
+            B[currentrow:size(Bblock)[1], currentcolumn:size(Bblock)[2]] = Bblock
+            currentrow += size(Bblock)[1]
+            currentcolumn += size(Bblock)[2]
         end
         if weightinputindex != 0
             quadratureweights =
@@ -177,17 +207,29 @@ function getstencil(operator::Operator)
                 ))
                 # COV_EXCL_STOP
             end
-            # ------ output mode
-            if output.evaluationmode == EvaluationMode.interpolation
-                Bt = Bt == [] ? getinterpolation(output.basis) :
-                    [Bt; getinterpolation(output.basis)]
-            elseif output.evaluationmode == EvaluationMode.gradient
-                Bt = Bt == [] ? getgradient(output.basis) : [Bt; getgradient(output.basis)]
-                # COV_EXCL_START
-            elseif output.evaluationmode == EvaluationMode.quadratureweights
-                throw(ArgumentError("quadratureweights is not a valid ouput field evaluation mode"))
-                # COV_EXCL_STOP
+            # ------ output evaluation modes
+            numbermodes = 0
+            Btcurrent = []
+            for mode in output.evaluationmodes
+                if mode == EvaluationMode.interpolation
+                    Btcurrent = Btcurrent == [] ? getinterpolation(output.basis) :
+                        [Btcurrent; getinterpolation(output.basis)]
+                elseif mode == EvaluationMode.gradient
+                    Btcurrent = Btcurrent == [] ? getgradient(output.basis) :
+                        [Btcurrent; getgradient(output.basis)]
+                    # Note, quadrature weights checked in constructor
+                end
             end
+            push!(Btblocks, Btcurrent)
+        end
+        # ------ output basis matrix
+        Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+        currentrow = 1
+        currentcolumn = 1
+        for Btblock in Btblocks
+            Bt[currentrow:size(Btblock)[1], currentcolumn:size(Btblock)[2]] = Btblock
+            currentrow += size(Btblock)[1]
+            currentcolumn += size(Btblock)[2]
         end
         Bt = transpose(Bt)
 
@@ -205,14 +247,11 @@ function getstencil(operator::Operator)
             currentfieldin = 0
             for i = 1:length(operator.inputs)
                 input = operator.inputs[i]
-                numberfieldsin = 0
-                if input.evaluationmode == EvaluationMode.interpolation
-                    numberfieldsin = 1
-                elseif input.evaluationmode == EvaluationMode.gradient
-                    numberfieldsin = input.basis.dimension
+                if input.evaluationmodes[1] == EvaluationMode.quadratureweights
+                    break
                 end
                 # ------ fill sparse matrix
-                for j = 1:numberfieldsin
+                for j = 1:length(input.evaluationmodes)
                     # -------- run user weak form function
                     weakforminputs[i][j] = 1.0
                     outputs = operator.weakform(weakforminputs...)
@@ -221,14 +260,8 @@ function getstencil(operator::Operator)
                     # -------- store outputs
                     currentfieldout = 0
                     for k = 1:length(operator.outputs)
-                        output = operator.outputs[i]
-                        numberfieldsout = 0
-                        if output.evaluationmode == EvaluationMode.interpolation
-                            numberfieldsout = 1
-                        elseif output.evaluationmode == EvaluationMode.gradient
-                            numberfieldsout = output.basis.dimension
-                        end
-                        for l = 1:numberfieldsout
+                        output = operator.outputs[k]
+                        for l = 1:length(output.evaluationmodes)
                             D[
                                 currentfieldout*numberquadraturepoints+q,
                                 currentfieldin*numberquadraturepoints+q,

@@ -23,10 +23,10 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # mass operator
     inputs = [
-        OperatorField(basis, EvaluationMode.interpolation),
-        OperatorField(basis, EvaluationMode.quadratureweights),
+        OperatorField(basis, [EvaluationMode.interpolation]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
     ]
-    outputs = [OperatorField(basis, EvaluationMode.interpolation)]
+    outputs = [OperatorField(basis, [EvaluationMode.interpolation])]
     mass = Operator(massweakform, mesh, inputs, outputs)
 
     # stencil computation
@@ -40,10 +40,10 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # Diffusion operator
     inputs = [
-        OperatorField(basis, EvaluationMode.gradient),
-        OperatorField(basis, EvaluationMode.quadratureweights),
+        OperatorField(basis, [EvaluationMode.gradient]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
     ]
-    outputs = [OperatorField(basis, EvaluationMode.gradient)]
+    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
     # stencil computation

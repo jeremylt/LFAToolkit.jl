@@ -24,6 +24,19 @@ abstract type Basis end
     )
 
 Tensor product basis
+
+# Arguments:
+- `p1d`:                 number of nodes in 1 dimension
+- `q1d`:                 number of quadrature points in 1 dimension
+- `dimension`:           dimension of the basis
+- `nodes1d`:             coordinates of the nodes in 1 dimension
+- `quadraturepoints1d`:  coordinates of the quadrature points in 1 dimension
+- `quadratureweights1d`: quadrature weights in 1 dimension
+- `interpolation1d`:     interpolation matrix from nodes to quadrature points in 1 dimension
+- `gradient1d`:          gradient matrix from nodes to quadrature points in 1 dimension
+
+# Returns:
+- Tensor product basis object
 """
 struct TensorBasis <: Basis
     p1d::Int
@@ -77,6 +90,19 @@ end
         gradient
     )
 Non-tensor basis
+
+# Arguments:
+- `p`:                 number of nodes 
+- `q`:                 number of quadrature points
+- `dimension`:         dimension of the basis
+- `nodes`:             coordinates of the nodes
+- `quadraturepoints`:  coordinates of the quadrature points
+- `quadratureweights`: quadrature weights
+- `interpolation`:     interpolation matrix from nodes to quadrature points
+- `gradient`:          gradient matrix from nodes to quadrature points
+
+# Returns:
+- Non-tensor product basis object
 """
 struct NonTensorBasis <: Basis
     p::Int
@@ -129,6 +155,13 @@ end
 
 Construct a Gauss-Legendre quadrature
 
+# Arguments:
+- `q`: number of Gauss-Legendre points
+
+# Returns:
+- Gauss-Legendre quadrature points and weights
+
+# Example:
 ```jldoctest
 # generate Gauss-Legendre points and weights
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
@@ -218,6 +251,14 @@ end
 
 Construct a Gauss-Lobatto quadrature
 
+# Arguments:
+- `q`:       number of Gauss-Lobatto points
+- `weights`: boolean flag indicating if quadrature weights are desired
+
+# Returns:
+- Gauss-Lobatto quadrature points or points and weights
+
+# Example:
 ```jldoctest
 # generate Gauss-Lobatto points
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
@@ -321,6 +362,15 @@ end
 
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
+# Arguments:
+- `p1d`:       number of Gauss-Lobatto nodes
+- `q1d`:       number of Gauss-Legendre quadrature points
+- `dimension`: dimension of basis
+
+# Returns:
+- H1 Lagrange tensor product basis object
+
+# Example:
 ```jldoctest
 # generate H1 Lagrange tensor product basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
@@ -405,6 +455,13 @@ end
 
 Get the number of nodes for the basis
 
+# Arguments:
+- `basis`: basis to compute number of nodes
+
+# Returns:
+- Integer number of basis nodes
+
+# Example:
 ```jldoctest
 # get number of nodes for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
@@ -432,6 +489,13 @@ end
 
 Get the number of quadrature points for the basis
 
+# Arguments:
+- `basis`: basis to compute number of quadrature points
+
+# Returns:
+- Integer number of basis quadrature points
+
+# Example:
 ```jldoctest
 # get number of quadrature points for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
@@ -463,6 +527,13 @@ end
 
 Get full interpolation matrix for basis
 
+# Arguments:
+- `basis`: basis to compute interpolation matrix
+
+# Returns:
+- Basis interpolation matrix
+
+# Example:
 ```jldoctest
 # test for all supported dimensions
 for dimension in 1:3
@@ -506,6 +577,13 @@ end
 
 Get full gradient matrix for basis
 
+# Arguments:
+- `basis`: basis to compute gradient matrix
+
+# Returns:
+- Basis gradient matrix
+
+# Example:
 ```jldoctest
 # test for all supported dimensions
 for dimension in 1:3
@@ -556,6 +634,13 @@ end
 
 Get full quadrature weights vector for basis
 
+# Returns:
+- Basis quadrature weights vector
+
+# Arguments:
+- `basis`: basis to compute quadrature weights
+
+# Example:
 ```jldoctest
 # test for all supported dimensions
 for dimension in 1:3

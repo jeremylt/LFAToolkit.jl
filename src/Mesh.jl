@@ -12,6 +12,13 @@ abstract type Mesh end
 
 One dimensional regular background mesh
 
+# Arguments:
+- `dx`: deformation in x dimension
+
+# Returns:
+- One dimensional mesh object
+
+# Example:
 ```jldoctest
 mesh = Mesh1D(1.0);
 
@@ -34,6 +41,14 @@ end
 
 Two dimensional regular background mesh
 
+# Arguments:
+- `dx`: deformation in x dimension
+- `dy`: deformation in y dimension
+
+# Returns:
+- Two dimensional mesh object
+
+# Example:
 ```jldoctest
 mesh = Mesh2D(1.0, 0.5);
 
@@ -61,6 +76,15 @@ end
 
 Three dimensional regular background mesh
 
+# Arguments:
+- `dx`: deformation in x dimension
+- `dy`: deformation in y dimension
+- `dz`: deformation in z dimension
+
+# Returns:
+- Three dimensional mesh object
+
+# Example:
 ```jldoctest
 mesh = Mesh3D(1.0, 0.5, 0.25);
 

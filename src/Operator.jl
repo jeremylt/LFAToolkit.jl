@@ -11,6 +11,15 @@
     )
 
 Finite element operator comprising of a weak form and bases
+
+# Arguments:
+- `weakform`: user provided function that represents weak form at quadrature points
+- `mesh`:     mesh object with deformation in each dimension
+- `inputs`:   array of operator input fields
+- `outputs`:  array of operator output fields
+
+# Returns:
+- Finite element operator object
 """
 struct Operator
     weakform::Function
@@ -44,7 +53,13 @@ stencildict = Dict{Operator,Array{Float64}}();
 
 Compute or retrieve the stencil of operator for computing the symbol
 
-Mass matrix example:
+# Arguments:
+- `operator`: operator to compute element stencil
+
+# Returns:
+- Assembled element matrix
+
+# Mass matrix example:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -88,7 +103,7 @@ end
     
 ```
 
-Diffusion matrix example:
+# Diffusion matrix example:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);

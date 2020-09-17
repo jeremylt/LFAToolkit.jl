@@ -7,12 +7,12 @@ module EvaluationMode
 """
 Basis evaluation mode for operator inputs and outputs
 
-Interpolation - values interpolated to quadrature points
+# Modes:
+- `interpolation`:     values interpolated to quadrature points
+- `gradient`:          derivatives evaluated at quadrature points
+- `quadratureweights`: quadrature weights
 
-Gradient - derivatives evaluated at quadrature points
-
-Quadrature Weights - quadrature weights
-
+# Example:
 ```@jldoctest
 EvaluationMode.EvalMode
 

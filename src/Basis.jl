@@ -660,7 +660,7 @@ for dimension in 1:3
     end
 
     diff = trueweights - quadratureweights;
-    @assert abs(abs(max(diff...))) < 1e-15
+    @assert abs(max(diff...)) < 1e-15
 end
     
 # output

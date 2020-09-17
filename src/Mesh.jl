@@ -91,12 +91,12 @@ Three dimensional regular background mesh
 # Example:
 ```jldoctest
 # generate 3D mesh
-mesh = Mesh3D(1.0, 0.5, 0.25);
+mesh = Mesh3D(1.0, 0.3, 0.25);
 
 # verify
 @assert abs(mesh.dx - 1.0) < 1e-15
 @assert abs(mesh.dy - 0.5) < 1e-15
-@assert abs(mesh.dz - 0.25) < 1e-15
+@assert abs(mesh.dz - 0.3) < 1e-15
 
 # output
 

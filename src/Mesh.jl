@@ -22,8 +22,10 @@ One dimensional regular background mesh
 
 # Example:
 ```jldoctest
+# generate 1D mesh
 mesh = Mesh1D(1.0);
 
+# verify
 @assert abs(mesh.dx - 1.0) < 1e-15
 
 # output
@@ -52,8 +54,10 @@ Two dimensional regular background mesh
 
 # Example:
 ```jldoctest
+# generate 2D mesh
 mesh = Mesh2D(1.0, 0.5);
 
+# verify
 @assert abs(mesh.dx - 1.0) < 1e-15
 @assert abs(mesh.dy - 0.5) < 1e-15
 
@@ -86,8 +90,10 @@ Three dimensional regular background mesh
 
 # Example:
 ```jldoctest
+# generate 3D mesh
 mesh = Mesh3D(1.0, 0.5, 0.25);
 
+# verify
 @assert abs(mesh.dx - 1.0) < 1e-15
 @assert abs(mesh.dy - 0.5) < 1e-15
 @assert abs(mesh.dz - 0.25) < 1e-15

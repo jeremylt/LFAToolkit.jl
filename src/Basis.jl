@@ -191,14 +191,10 @@ trueweights = [
 ];
 
 diff = truepoints - quadraturepoints;
-if abs(max(diff...)) > 1e-15
-    println("Incorrect quadrature points");
-end
+@assert abs(max(diff...)) < 1e-15
 
 diff = trueweights - quadratureweights;
-if abs(abs(max(diff...))) > 1e-15
-    println("Incorrect quadrature weights");
-end
+@assert abs(abs(max(diff...))) < 1e-15
 
 # output
 
@@ -277,9 +273,7 @@ quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
 truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
 
 diff = truepoints - quadraturepoints;
-if abs(max(diff...)) > 1e-15
-    println("Incorrect quadrature points");
-end
+@assert abs(max(diff...)) < 1e-15
 
 # generate Gauss-Lobatto points and weights
 quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
@@ -288,9 +282,7 @@ quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
 diff = trueweights - quadratureweights;
-if abs(abs(max(diff...))) > 1e-15
-    println("Incorrect quadrature weights");
-end
+@assert abs(abs(max(diff...))) < 1e-15
 
 # output
 
@@ -388,15 +380,9 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
-if basis.p1d != 4
-    println("Incorrect P1d");
-end
-if basis.q1d != 3
-    println("Incorrect Q1d");
-end
-if basis.dimension != 2
-    println("Incorrect dimension");
-end
+@assert basis.p1d == 4
+@assert basis.q1d == 3
+@assert basis.dimension == 2
 
 # output
 
@@ -482,9 +468,7 @@ basis = TensorH1LagrangeBasis(4, 3, 2);
 numbernodes = LFAToolkit.getnumbernodes(basis);
 
 # verify
-if numbernodes != 4^2
-    println("Incorrect number of nodes")
-end
+@assert numbernodes == 4^2
 
 # output
 
@@ -518,9 +502,7 @@ basis = TensorH1LagrangeBasis(4, 3, 2);
 quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
     
 # verify
-if quadraturepoints != 3^2
-    println("Incorrect number of quadrature points")
-end
+@assert quadraturepoints == 3^2
     
 # output
 
@@ -562,9 +544,7 @@ for dimension in 1:3
     # verify
     for i in 1:3^dimension
         total = sum(interpolation[i, :]);
-        if abs(total - 1.0) > 1e-15
-            println("Incorrect interpolation matrix")
-        end
+        @assert abs(total - 1.0) < 1e-15
     end
 end
 
@@ -614,9 +594,7 @@ for dimension in 1:3
     # verify
     for i in 1:dimension*3^dimension
         total = sum(gradient[i, :]);
-        if abs(total) > 1e-14
-            println("Incorrect gradient matrix")
-        end
+        @assert abs(total) < 1e-14
     end
 end
 
@@ -682,9 +660,7 @@ for dimension in 1:3
     end
 
     diff = trueweights - quadratureweights;
-    if abs(abs(max(diff...))) > 1e-15
-        println("Incorrect quadrature weights");
-    end
+    @assert abs(abs(max(diff...))) < 1e-15
 end
     
 # output

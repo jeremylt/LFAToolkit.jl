@@ -90,18 +90,14 @@ u = ones(4*4);
 v = stencil * u;
     
 total = sum(v);
-if abs(total - 4.0) > 1e-14
-    println("Incorrect mass matrix");
-end
+@assert abs(total - 4.0) < 1e-14
 
 # test caching
 stencil = LFAToolkit.getstencil(mass)
 v = stencil * u;
     
 total = sum(v);
-if abs(total - 4.0) > 1e-14
-    println("Incorrect mass matrix");
-end
+@assert abs(total - 4.0) < 1e-14
     
 # output
     
@@ -134,9 +130,7 @@ u = ones(4*4);
 v = stencil * u;
     
 total = sum(v);
-if abs(total) > 1e-14
-    println("Incorrect diffusion matrix");
-end
+@assert abs(total) < 1e-14
     
 # output
     

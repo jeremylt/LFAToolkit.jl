@@ -24,9 +24,7 @@ One dimensional regular background mesh
 ```jldoctest
 mesh = Mesh1D(1.0);
 
-if (mesh.dx - 1.0) > 1e-15
-    println("Incorrect x scale")
-end
+@assert abs(mesh.dx - 1.0) < 1e-15
 
 # output
 
@@ -56,12 +54,8 @@ Two dimensional regular background mesh
 ```jldoctest
 mesh = Mesh2D(1.0, 0.5);
 
-if (mesh.dx - 1.0) > 1e-15
-    println("Incorrect x scale")
-end
-if (mesh.dy - 0.5) > 1e-15
-    println("Incorrect y scale")
-end
+@assert abs(mesh.dx - 1.0) < 1e-15
+@assert abs(mesh.dy - 0.5) < 1e-15
 
 # output
 
@@ -94,15 +88,9 @@ Three dimensional regular background mesh
 ```jldoctest
 mesh = Mesh3D(1.0, 0.5, 0.25);
 
-if (mesh.dx - 1.0) > 1e-15
-    println("Incorrect x scale")
-end
-if (mesh.dy - 0.5) > 1e-15
-    println("Incorrect y scale")
-end
-if (mesh.dz - 0.25) > 1e-15
-    printlt("Incorrect z scale")
-end
+@assert abs(mesh.dx - 1.0) < 1e-15
+@assert abs(mesh.dy - 0.5) < 1e-15
+@assert abs(mesh.dz - 0.25) < 1e-15
 
 # output
 

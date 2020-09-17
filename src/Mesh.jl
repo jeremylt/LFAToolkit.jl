@@ -8,7 +8,9 @@ Rectangular mesh with independent scaling in each dimesion
 abstract type Mesh end
 
 """
-    Mesh1D(dx)
+```julia
+Mesh1D(dx)
+```
 
 One dimensional regular background mesh
 
@@ -37,7 +39,9 @@ struct Mesh1D <: Mesh
 end
 
 """
-    Mesh2D(dx, dy)
+```julia
+Mesh2D(dx, dy)
+```
 
 Two dimensional regular background mesh
 
@@ -72,7 +76,9 @@ struct Mesh2D <: Mesh
 end
 
 """
-    Mesh3D(dx, dy, dz)
+```julia
+Mesh3D(dx, dy, dz)
+```
 
 Three dimensional regular background mesh
 

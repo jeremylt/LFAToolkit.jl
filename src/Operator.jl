@@ -3,12 +3,14 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    Operator(
-        weakform,
-        mesh,
-        inputs,
-        outputs
-    )
+```julia
+Operator(
+    weakform,
+    mesh,
+    inputs,
+    outputs
+)
+```
 
 Finite element operator comprising of a weak form and bases
 
@@ -49,7 +51,9 @@ end
 stencildict = Dict{Operator,Array{Float64}}();
 
 """
-    getstencil(operator)
+```julia
+getstencil(operator)
+```
 
 Compute or retrieve the stencil of operator for computing the symbol
 

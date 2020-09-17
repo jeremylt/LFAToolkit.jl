@@ -12,16 +12,18 @@ abstract type Basis end
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    TensorBasis(
-        p1d,
-        q1d,
-        dimension,
-        nodes1d,
-        quadraturepoints1d,
-        quadratureweights1d,
-        interpolation1d,
-        gradient1d
-    )
+```julia
+TensorBasis(
+    p1d,
+    q1d,
+    dimension,
+    nodes1d,
+    quadraturepoints1d,
+    quadratureweights1d,
+    interpolation1d,
+    gradient1d
+)
+```
 
 Tensor product basis
 
@@ -80,16 +82,18 @@ struct TensorBasis <: Basis
 end
 
 """
-    NotTensorBasis(
-        p,
-        q,
-        dimension,
-        nodes,
-        quadraturepoints,
-        quadratureweights,
-        interpolation,
-        gradient
-    )
+```julia
+NotTensorBasis(
+    p,
+    q,
+    dimension,
+    nodes,
+    quadraturepoints,
+    quadratureweights,
+    interpolation,
+    gradient
+)
+```
 Non-tensor basis
 
 # Arguments:
@@ -153,7 +157,9 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    gaussquadrature(q)
+```julia
+gaussquadrature(q)
+```
 
 Construct a Gauss-Legendre quadrature
 
@@ -249,7 +255,9 @@ function gaussquadrature(q::Int)
 end
 
 """
-    lobattoquadrature(q, weights)
+```julia
+lobattoquadrature(q, weights)
+```
 
 Construct a Gauss-Lobatto quadrature
 
@@ -360,7 +368,9 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    TensorH1LagrangeBasis(p1d, q1d, dimension)
+```julia
+TensorH1LagrangeBasis(p1d, q1d, dimension)
+```
 
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
@@ -453,7 +463,9 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    getnumbernodes(basis)
+```julia
+getnumbernodes(basis)
+```
 
 Get the number of nodes for the basis
 
@@ -487,7 +499,9 @@ function getnumbernodes(basis::TensorBasis)
 end
 
 """
-    getnumberquadraturepoints(basis)
+```julia
+getnumberquadraturepoints(basis)
+```
 
 Get the number of quadrature points for the basis
 
@@ -525,7 +539,9 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
-    getinterpolation(basis)
+```julia
+getinterpolation(basis)
+```
 
 Get full interpolation matrix for basis
 
@@ -575,7 +591,9 @@ function getinterpolation(basis::TensorBasis)
 end
 
 """
-    getgradient(basis)
+```julia
+getgradient(basis)
+```
 
 Get full gradient matrix for basis
 
@@ -632,7 +650,9 @@ function getgradient(basis::TensorBasis)
 end
 
 """
-    getquadratureweights(basis)
+```julia
+getquadratureweights(basis)
+```
 
 Get full quadrature weights vector for basis
 

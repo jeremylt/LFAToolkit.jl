@@ -194,7 +194,7 @@ diff = truepoints - quadraturepoints;
 @assert abs(max(diff...)) < 1e-15
 
 diff = trueweights - quadratureweights;
-@assert abs(abs(max(diff...))) < 1e-15
+@assert abs(max(diff...)) < 1e-15
 
 # output
 
@@ -282,7 +282,7 @@ quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
 diff = trueweights - quadratureweights;
-@assert abs(abs(max(diff...))) < 1e-15
+@assert abs(max(diff...)) < 1e-15
 
 # output
 

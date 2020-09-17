@@ -100,7 +100,7 @@ total = sum(v);
 @assert abs(total - 4.0) < 1e-14
     
 # output
-    
+
 ```
 
 # Diffusion matrix example:
@@ -133,7 +133,7 @@ total = sum(v);
 @assert abs(total) < 1e-14
     
 # output
-    
+
 ```
 """
 function getstencil(operator::Operator)

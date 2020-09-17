@@ -185,12 +185,14 @@ function getstencil(operator::Operator)
                     if mode == EvaluationMode.interpolation
                         numbermodes += 1
                         numberquadratureinputs += 1
-                        Bcurrent = Bcurrent == [] ? getinterpolation(input.basis) :
+                        Bcurrent =
+                            Bcurrent == [] ? getinterpolation(input.basis) :
                             [Bcurrent; getinterpolation(input.basis)]
                     elseif mode == EvaluationMode.gradient
                         numbermodes += input.basis.dimension
                         numberquadratureinputs += input.basis.dimension
-                        Bcurrent = Bcurrent == [] ? getgradient(input.basis) :
+                        Bcurrent =
+                            Bcurrent == [] ? getgradient(input.basis) :
                             [Bcurrent; getgradient(input.basis)]
                     end
                 end
@@ -227,10 +229,12 @@ function getstencil(operator::Operator)
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
-                    Btcurrent = Btcurrent == [] ? getinterpolation(output.basis) :
+                    Btcurrent =
+                        Btcurrent == [] ? getinterpolation(output.basis) :
                         [Btcurrent; getinterpolation(output.basis)]
                 elseif mode == EvaluationMode.gradient
-                    Btcurrent = Btcurrent == [] ? getgradient(output.basis) :
+                    Btcurrent =
+                        Btcurrent == [] ? getgradient(output.basis) :
                         [Btcurrent; getgradient(output.basis)]
                     # Note, quadrature weights checked in constructor
                 end

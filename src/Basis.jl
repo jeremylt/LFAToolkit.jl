@@ -56,7 +56,8 @@ struct TensorBasis <: Basis
         quadratureweights1d,
         interpolation1d,
         gradient1d,
-    ) = p1d <= 0 ? error("p1d must be at least 1") :
+    ) =
+        p1d <= 0 ? error("p1d must be at least 1") :
         q1d <= 0 ? error("q1d must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
         length(nodes1d) != p1d ? error("must include p1d nodes") :
@@ -67,15 +68,15 @@ struct TensorBasis <: Basis
         size(gradient1d) != (q1d, p1d) ?
         error("gradient matrix must have dimensions (q1d, p1d)") :
         new(
-        p1d,
-        q1d,
-        dimension,
-        nodes1d,
-        quadraturepoints1d,
-        quadratureweights1d,
-        interpolation1d,
-        gradient1d,
-    )
+            p1d,
+            q1d,
+            dimension,
+            nodes1d,
+            quadraturepoints1d,
+            quadratureweights1d,
+            interpolation1d,
+            gradient1d,
+        )
 end
 
 """
@@ -122,7 +123,8 @@ struct NonTensorBasis <: Basis
         quadratureweights,
         interpolation,
         gradient,
-    ) = p <= 0 ? error("p must be at least 1") :
+    ) =
+        p <= 0 ? error("p must be at least 1") :
         q <= 0 ? error("q must be at least 1") :
         dimension <= 0 ? error("dimension must be at least 1") :
         size(nodes) != (p, dimension) ?
@@ -135,15 +137,15 @@ struct NonTensorBasis <: Basis
         size(gradient) != (q * dimension, p) ?
         error("gradient matrix must have dimensions (q*dimension, p)") :
         new(
-        p,
-        q,
-        dimension,
-        nodes,
-        quadraturepoints,
-        quadratureweights,
-        interpolation,
-        gradient,
-    )
+            p,
+            q,
+            dimension,
+            nodes,
+            quadraturepoints,
+            quadratureweights,
+            interpolation,
+            gradient,
+        )
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

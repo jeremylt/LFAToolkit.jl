@@ -107,7 +107,8 @@ struct Mesh3D <: Mesh
     dx::Float64
     dy::Float64
     dz::Float64
-    Mesh3D(dx, dy, dz) = dx > 0 && dy > 0 && dz > 0 ? new(3, dx, dy, dz) :
+    Mesh3D(dx, dy, dz) =
+        dx > 0 && dy > 0 && dz > 0 ? new(3, dx, dy, dz) :
         error("Mesh scaling must be positive")
 end
 

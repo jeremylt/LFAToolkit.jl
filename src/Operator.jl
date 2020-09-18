@@ -22,6 +22,33 @@ Finite element operator comprising of a weak form and bases
 
 # Returns:
 - Finite element operator object
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+basis = TensorH1LagrangeBasis(4, 4, 2);
+    
+function massweakform(u::Array{Float64}, w::Array{Float64})
+    v = u * w[1]
+    return [v]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.interpolation]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
+mass = Operator(massweakform, mesh, inputs, outputs);
+
+# verify
+@assert mass.weakform == massweakform
+@assert mass.mesh == mesh
+    
+# output
+
+```
 """
 mutable struct Operator
     # never changed
@@ -92,8 +119,9 @@ outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
     
 # stencil computation
+# note: either syntax works
 stencil = LFAToolkit.getstencil(mass);
-stencil = mass.stencil; # either syntax works
+stencil = mass.stencil;
 
 # verify
 u = ones(4*4);
@@ -126,8 +154,9 @@ outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
     
 # stencil computation
+# note: either syntax works
 stencil = LFAToolkit.getstencil(diffusion);
-stencil = diffusion.stencil; # either syntax works
+stencil = diffusion.stencil;
     
 # verify
 u = ones(4*4);
@@ -157,14 +186,14 @@ function getstencil(operator::Operator)
         for input in operator.inputs
             # ------ number of nodes
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                numbernodes += getnumbernodes(input.basis)
+                numbernodes += input.basis.numbernodes
             end
 
             # ------ number of quadrature points
             if numberquadraturepoints == 0
-                numberquadraturepoints = getnumberquadraturepoints(input.basis)
+                numberquadraturepoints = input.basis.numberquadraturepoints
             else
-                if numberquadraturepoints != getnumberquadraturepoints(input.basis)
+                if numberquadraturepoints != input.basis.numberquadraturepoints
                     # COV_EXCL_START
                     throw(DomanError(
                         numberquadraturepoints,
@@ -186,14 +215,14 @@ function getstencil(operator::Operator)
                         numbermodes += 1
                         numberquadratureinputs += 1
                         Bcurrent =
-                            Bcurrent == [] ? getinterpolation(input.basis) :
-                            [Bcurrent; getinterpolation(input.basis)]
+                            Bcurrent == [] ? input.basis.interpolation :
+                            [Bcurrent; input.basis.interpolation]
                     elseif mode == EvaluationMode.gradient
                         numbermodes += input.basis.dimension
                         numberquadratureinputs += input.basis.dimension
                         Bcurrent =
-                            Bcurrent == [] ? getgradient(input.basis) :
-                            [Bcurrent; getgradient(input.basis)]
+                            Bcurrent == [] ? input.basis.gradient :
+                            [Bcurrent; input.basis.gradient]
                     end
                 end
                 push!(Bblocks, Bcurrent)
@@ -220,7 +249,7 @@ function getstencil(operator::Operator)
         # ---- outputs
         for output in operator.outputs
             # ------ number of quadrature points
-            if numberquadraturepoints != getnumberquadraturepoints(output.basis)
+            if numberquadraturepoints != output.basis.numberquadraturepoints
                 # COV_EXCL_START
                 throw(DomanError(
                     numberquadraturepoints,
@@ -235,12 +264,12 @@ function getstencil(operator::Operator)
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
                     Btcurrent =
-                        Btcurrent == [] ? getinterpolation(output.basis) :
-                        [Btcurrent; getinterpolation(output.basis)]
+                        Btcurrent == [] ? output.basis.interpolation :
+                        [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
                     Btcurrent =
-                        Btcurrent == [] ? getgradient(output.basis) :
-                        [Btcurrent; getgradient(output.basis)]
+                        Btcurrent == [] ? output.basis.gradient :
+                        [Btcurrent; output.basis.gradient]
                     # Note, quadrature weights checked in constructor
                 end
             end

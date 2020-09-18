@@ -14,8 +14,8 @@ abstract type Basis end
 """
 ```julia
 TensorBasis(
-    p1d,
-    q1d,
+    numbernodes1d,
+    numberquadraturepoints1d,
     dimension,
     nodes1d,
     quadraturepoints1d,
@@ -28,22 +28,22 @@ TensorBasis(
 Tensor product basis
 
 # Arguments:
-- `p1d`:                 number of nodes in 1 dimension
-- `q1d`:                 number of quadrature points in 1 dimension
-- `dimension`:           dimension of the basis
-- `nodes1d`:             coordinates of the nodes in 1 dimension
-- `quadraturepoints1d`:  coordinates of the quadrature points in 1 dimension
-- `quadratureweights1d`: quadrature weights in 1 dimension
-- `interpolation1d`:     interpolation matrix from nodes to quadrature points in 1 dimension
-- `gradient1d`:          gradient matrix from nodes to quadrature points in 1 dimension
+- `numbernodes1d`:            number of nodes in 1 dimension
+- `numberquadraturepoints1d`: number of quadrature points in 1 dimension
+- `dimension`:                dimension of the basis
+- `nodes1d`:                  coordinates of the nodes in 1 dimension
+- `quadraturepoints1d`:       coordinates of the quadrature points in 1 dimension
+- `quadratureweights1d`:      quadrature weights in 1 dimension
+- `interpolation1d`:          interpolation matrix from nodes to quadrature points in 1 dimension
+- `gradient1d`:               gradient matrix from nodes to quadrature points in 1 dimension
 
 # Returns:
 - Tensor product basis object
 """
 mutable struct TensorBasis <: Basis
     # never changed
-    p1d::Int
-    q1d::Int
+    numbernodes1d::Int
+    numberquadratuepoints1d::Int
     dimension::Int
     nodes1d::Array{Float64,1}
     quadraturepoints1d::Array{Float64,1}
@@ -60,8 +60,8 @@ mutable struct TensorBasis <: Basis
 
     # constructor
     TensorBasis(
-        p1d,
-        q1d,
+        numbernodes1d,
+        numberquadraturepoints1d,
         dimension,
         nodes1d,
         quadraturepoints1d,
@@ -70,35 +70,35 @@ mutable struct TensorBasis <: Basis
         gradient1d,
     ) = (
         # validity checking
-        if p1d <= 0
+        if numbernodes1d <= 0
             error("p1d must be at least 1") # COV_EXCL_LINE
         end;
-        if q1d <= 0
+        if numberquadraturepoints1d <= 0
             error("q1d must be at least 1") # COV_EXCL_LINE
         end;
         if dimension <= 0
             error("dimension must be at least 1") # COV_EXCL_LINE
         end;
-        if length(nodes1d) != p1d
-            error("must include p1d nodes") # COV_EXCL_LINE
+        if length(nodes1d) != numbernodes1d
+            error("must include numbernodes1d nodes") # COV_EXCL_LINE
         end;
-        if length(quadraturepoints1d) != q1d
-            error("must include q1d quadrature points") # COV_EXCL_LINE
+        if length(quadraturepoints1d) != numberquadraturepoints1d
+            error("must include numberquadraturepoints1d quadrature points") # COV_EXCL_LINE
         end;
-        if length(quadratureweights1d) != q1d
-            error("must include q1d quadrature weights") # COV_EXCL_LINE
+        if length(quadratureweights1d) != numberquadraturepoints1d
+            error("must include numberquadraturepoints1d quadrature weights") # COV_EXCL_LINE
         end;
-        if size(interpolation1d) != (q1d, p1d)
-            error("interpolation matrix must have dimensions (q1d, p1d)") # COV_EXCL_LINE
+        if size(interpolation1d) != (numberquadraturepoints1d, numbernodes1d)
+            error("interpolation matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)") # COV_EXCL_LINE
         end;
-        if size(gradient1d) != (q1d, p1d)
-            error("gradient matrix must have dimensions (q1d, p1d)") # COV_EXCL_LINE
+        if size(gradient1d) != (numberquadraturepoints1d, numbernodes1d)
+            error("gradient matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)") # COV_EXCL_LINE
         end;
 
         # constructor
         new(
-            p1d,
-            q1d,
+            numbernodes1d,
+            numberquadraturepoints1d,
             dimension,
             nodes1d,
             quadraturepoints1d,
@@ -112,8 +112,8 @@ end
 """
 ```julia
 NonTensorBasis(
-    p,
-    q,
+    numbernodes,
+    numberquadraturepoints,
     dimension,
     nodes,
     quadraturepoints,
@@ -125,33 +125,33 @@ NonTensorBasis(
 Non-tensor basis
 
 # Arguments:
-- `p`:                 number of nodes 
-- `q`:                 number of quadrature points
-- `dimension`:         dimension of the basis
-- `nodes`:             coordinates of the nodes
-- `quadraturepoints`:  coordinates of the quadrature points
-- `quadratureweights`: quadrature weights
-- `interpolation`:     interpolation matrix from nodes to quadrature points
-- `gradient`:          gradient matrix from nodes to quadrature points
+- `numbernodes`:            number of nodes 
+- `numberquadraturepoints`: number of quadrature points
+- `dimension`:              dimension of the basis
+- `nodes`:                  coordinates of the nodes
+- `quadraturepoints`:       coordinates of the quadrature points
+- `quadratureweights`:      quadrature weights
+- `interpolation`:          interpolation matrix from nodes to quadrature points
+- `gradient`:               gradient matrix from nodes to quadrature points
 
 # Returns:
 - Non-tensor product basis object
 """
 mutable struct NonTensorBasis <: Basis
     # never changed
-    p::Int
-    q::Int
+    numbernodes::Int
+    numberquadraturepoints::Int
     dimension::Int
     nodes::Array{Float64}
-    quadraturepoints::Array{Float64}
+    quadraturepoints::Array{Float64,1}
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
 
     # constructor
     NonTensorBasis(
-        p,
-        q,
+        numbernodes,
+        numberquadraturepoints,
         dimension,
         nodes,
         quadraturepoints,
@@ -160,35 +160,35 @@ mutable struct NonTensorBasis <: Basis
         gradient,
     ) = (
         # validity checking
-        if p <= 0
-            error("p must be at least 1") # COV_EXCL_LINE
+        if numbernodes <= 0
+            error("number of nodes must be at least 1") # COV_EXCL_LINE
         end;
-        if q <= 0
-            error("q must be at least 1") # COV_EXCL_LINE
+        if numberquadraturepoints <= 0
+            error("number of quadrature points must be at least 1") # COV_EXCL_LINE
         end;
         if dimension <= 0
             error("dimension must be at least 1") # COV_EXCL_LINE
         end;
-        if size(nodes) != (p, dimension)
-            error("must include (p, dimension) nodal coordinates") # COV_EXCL_LINE
+        if size(nodes) != (numbernodes, dimension)
+            error("must include (numbernodes, dimension) nodal coordinates") # COV_EXCL_LINE
         end;
-        if length(quadraturepoints) != (q, dimension)
-            error("must include (q, dimension) quadrature points") # COV_EXCL_LINE
+        if length(quadraturepoints) != (numberquadraturepoints, dimension)
+            error("must include (numberquadraturepoints, dimension) quadrature points") # COV_EXCL_LINE
         end;
-        if length(quadratureweights) != q
-            error("must include q quadrature weights") # COV_EXCL_LINE
+        if length(quadratureweights) != numberquadraturepoints
+            error("must include sufficient quadrature weights") # COV_EXCL_LINE
         end;
-        if size(interpolation) != (q, p)
-            error("interpolation matrix must have dimensions (q, p)") # COV_EXCL_LINE
+        if size(interpolation) != (numberquadraturepoints, numbernodes)
+            error("interpolation matrix must have dimensions (numberquadraturepoints, numbernodes)") # COV_EXCL_LINE
         end;
-        if size(gradient) != (q * dimension, p)
-            error("gradient matrix must have dimensions (q*dimension, p)") # COV_EXCL_LINE
+        if size(gradient) != (q * dimension, numbernodes)
+            error("gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)") # COV_EXCL_LINE
         end;
 
         # constructor
         new(
-            p,
-            q,
+            numbernodes,
+            numberquadraturepoints,
             dimension,
             nodes,
             quadraturepoints,
@@ -416,15 +416,19 @@ end
 
 """
 ```julia
-TensorH1LagrangeBasis(p1d, q1d, dimension)
+TensorH1LagrangeBasis(
+    numbernodes,
+    numberquadraturepoints1d,
+    dimension
+)
 ```
 
 Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
 # Arguments:
-- `p1d`:       number of Gauss-Lobatto nodes
-- `q1d`:       number of Gauss-Legendre quadrature points
-- `dimension`: dimension of basis
+- `numbernodes1d`:            number of Gauss-Lobatto nodes
+- `numberquadraturepoints1d`: number of Gauss-Legendre quadrature points
+- `dimension`:                dimension of basis
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -435,39 +439,46 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
-@assert basis.p1d == 4
-@assert basis.q1d == 3
+@assert basis.numbernodes1d == 4
+@assert basis.numberquadratuepoints1d == 3
 @assert basis.dimension == 2
 
 # output
 
 ```
 """
-function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int)
+function TensorH1LagrangeBasis(
+    numbernodes::Int,
+    numberquadratuepoints1d::Int,
+    dimension::Int,
+)
     # check inputs
-    if p1d <= 2
-        throw(DomanError(p1d, "p1d must be greater than or equal to 2")) # COV_EXCL_LINE
+    if numbernodes <= 2
+        throw(DomanError(numbernodes, "numbernodes must be greater than or equal to 2")) # COV_EXCL_LINE
     end
-    if q1d <= 1
-        throw(DomanError(p1d, "q1d must be greater than or equal to 1")) # COV_EXCL_LINE
+    if numberquadratuepoints1d <= 1
+        throw(DomanError(
+            numberquadratuepoints1d,
+            "numberquadratuepoints1d must be greater than or equal to 1",
+        )) # COV_EXCL_LINE
     end
     if dimension < 1 || dimension > 3
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
 
     # get nodes, quadrature points, and weights
-    nodes1d = lobattoquadrature(p1d, false)
-    quadraturepoints1d, quadratureweights1d = gaussquadrature(q1d)
+    nodes1d = lobattoquadrature(numbernodes, false)
+    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadratuepoints1d)
 
     # build interpolation, gradient matrices
     # Fornberg, 1998
-    interpolation1d = zeros(Float64, q1d, p1d)
-    gradient1d = zeros(Float64, q1d, p1d)
-    for i = 1:q1d
+    interpolation1d = zeros(Float64, numberquadratuepoints1d, numbernodes)
+    gradient1d = zeros(Float64, numberquadratuepoints1d, numbernodes)
+    for i = 1:numberquadratuepoints1d
         c1 = 1.0
         c3 = nodes1d[1] - quadraturepoints1d[i]
         interpolation1d[i, 1] = 1.0
-        for j = 2:p1d
+        for j = 2:numbernodes
             c2 = 1.0
             c4 = c3
             c3 = nodes1d[j] - quadraturepoints1d[i]
@@ -488,8 +499,8 @@ function TensorH1LagrangeBasis(p1d::Int, q1d::Int, dimension::Int)
 
     # use basic constructor
     return TensorBasis(
-        p1d,
-        q1d,
+        numbernodes,
+        numberquadratuepoints1d,
         dimension,
         nodes1d,
         quadraturepoints1d,
@@ -520,8 +531,10 @@ Get the number of nodes for the basis
 ```jldoctest
 # get number of nodes for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
+
+# note: either syntax works
 numbernodes = LFAToolkit.getnumbernodes(basis);
-numbernodes = basis.p; # either syntax works
+numbernodes = basis.numbernodes;
 
 # verify
 @assert numbernodes == 4^2
@@ -530,12 +543,8 @@ numbernodes = basis.p; # either syntax works
 
 ```
 """
-function getnumbernodes(basis::NonTensorBasis)
-    return basis.p
-end
-
 function getnumbernodes(basis::TensorBasis)
-    return basis.p1d^basis.dimension
+    return basis.numbernodes1d^basis.dimension
 end
 
 """
@@ -557,8 +566,10 @@ Get nodes for basis
 for dimension in 1:3
     # get basis quadrature weights
     basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
     nodes = LFAToolkit.getnodes(basis);
-    nodes = basis.nodes; # either syntax works
+    nodes = basis.nodes;
 
     # verify
     truenodes1d = [-1, -sqrt(1/5), sqrt(1/5), 1];
@@ -582,10 +593,6 @@ end
 
 ```
 """
-function getnodes(basis::NonTensorBasis)
-    return basis.nodes
-end
-
 function getnodes(basis::TensorBasis)
     # assembled if needed
     if !isdefined(basis, :nodes)
@@ -629,22 +636,20 @@ Get the number of quadrature points for the basis
 ```jldoctest
 # get number of quadrature points for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
-quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
-quadraturepoints = basis.q; # either syntax works
+
+# note: either syntax works
+numberquadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
+numberquadraturepoints = basis.numberquadraturepoints;
     
 # verify
-@assert quadraturepoints == 3^2
+@assert numberquadraturepoints == 3^2
     
 # output
 
 ```
 """
-function getnumberquadraturepoints(basis::NonTensorBasis)
-    return basis.q
-end
-
 function getnumberquadraturepoints(basis::TensorBasis)
-    return basis.q1d^basis.dimension
+    return basis.numberquadratuepoints1d^basis.dimension
 end
 
 """
@@ -666,8 +671,10 @@ Get quadrature points for basis
 for dimension in 1:3
     # get basis quadrature weights
     basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
     quadraturepoints = LFAToolkit.getquadraturepoints(basis);
-    quadraturepoints = basis.quadraturepoints; # either syntax works
+    quadraturepoints = basis.quadraturepoints;
 
     # verify
     truequadraturepoints1d = [-sqrt(3/5), 0, sqrt(3/5)];
@@ -695,10 +702,6 @@ end
 
 ```
 """
-function getquadraturepoints(basis::NonTensorBasis)
-    return basis.quadraturepoints
-end
-
 function getquadraturepoints(basis::TensorBasis)
     # assembled if needed
     if !isdefined(basis, :quadraturepoints)
@@ -748,8 +751,10 @@ Get full quadrature weights vector for basis
 for dimension in 1:3
     # get basis quadrature weights
     basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
     quadratureweights = LFAToolkit.getquadratureweights(basis);
-    quadratureweights = basis.quadratureweights; # either syntax works
+    quadratureweights = basis.quadratureweights;
 
     # verify
     trueweights1d = [5/9, 8/9, 5/9];
@@ -770,10 +775,6 @@ end
 
 ```
 """
-function getquadratureweights(basis::NonTensorBasis)
-    return basis.quadratureweights
-end
-
 function getquadratureweights(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :quadratureweights)
@@ -824,8 +825,10 @@ Get full interpolation matrix for basis
 for dimension in 1:3
     # get basis interpolation matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
     interpolation = LFAToolkit.getinterpolation(basis);
-    interpolation = basis.interpolation; # either syntax works
+    interpolation = basis.interpolation;
 
     # verify
     for i in 1:3^dimension
@@ -838,10 +841,6 @@ end
 
 ```
 """
-function getinterpolation(basis::NonTensorBasis)
-    return basis.interpolation
-end
-
 function getinterpolation(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :interpolation)
@@ -885,8 +884,10 @@ Get full gradient matrix for basis
 for dimension in 1:3
     # get basis gradient matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
     gradient = LFAToolkit.getgradient(basis);
-    gradient = basis.gradient; # either syntax works
+    gradient = basis.gradient;
 
     # verify
     for i in 1:dimension*3^dimension
@@ -899,10 +900,6 @@ end
 
 ```
 """
-function getgradient(basis::NonTensorBasis)
-    return basis.gradient
-end
-
 function getgradient(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :gradient)
@@ -938,9 +935,9 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 function Base.getproperty(basis::TensorBasis, f::Symbol)
-    if f == :p
+    if f == :numbernodes
         return getnumbernodes(basis)
-    elseif f == :q
+    elseif f == :numberquadraturepoints
         return getnumberquadraturepoints(basis)
     elseif f == :nodes
         return getnodes(basis)

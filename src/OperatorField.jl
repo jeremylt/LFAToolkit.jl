@@ -19,6 +19,33 @@ Finite Element operator input or output, with a basis and evaluation mode
 
 # Returns:
 - Finite element operator field object
+
+# Example:
+```jldoctest
+# basis
+basis = TensorH1LagrangeBasis(4, 3, 2);
+
+# quadrature weights field
+weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights]);
+
+# verify
+@assert weightsfield.basis == basis
+@assert weightsfield.evaluationmodes[1] == EvaluationMode.quadratureweights
+
+# input or output field
+inputfield = OperatorField(basis, [
+    EvaluationMode.interpolation,
+    EvaluationMode.gradient,
+]);
+
+# verify
+@assert inputfield.basis == basis
+@assert inputfield.evaluationmodes[1] == EvaluationMode.interpolation
+@assert inputfield.evaluationmodes[2] == EvaluationMode.gradient
+
+# output
+
+```
 """
 struct OperatorField
     basis::Basis

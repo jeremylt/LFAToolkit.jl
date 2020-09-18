@@ -30,7 +30,7 @@ mutable struct Operator
     inputs::Array{OperatorField}
     outputs::Array{OperatorField}
 
-    # may be changed
+    # empty until assembled
     stencil::Array{Float64,2}
 
     # constructor
@@ -93,16 +93,10 @@ mass = Operator(massweakform, mesh, inputs, outputs);
     
 # stencil computation
 stencil = LFAToolkit.getstencil(mass);
+stencil = mass.stencil; # either syntax works
 
 # verify
 u = ones(4*4);
-v = stencil * u;
-    
-total = sum(v);
-@assert abs(total - 4.0) < 1e-14
-
-# test caching
-stencil = LFAToolkit.getstencil(mass)
 v = stencil * u;
     
 total = sum(v);
@@ -133,6 +127,7 @@ diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
     
 # stencil computation
 stencil = LFAToolkit.getstencil(diffusion);
+stencil = diffusion.stencil; # either syntax works
     
 # verify
 u = ones(4*4);
@@ -146,13 +141,8 @@ total = sum(v);
 ```
 """
 function getstencil(operator::Operator)
-    isassembled = isdefined(operator, :stencil)
-
-    if isassembled
-        # retrieve and return
-        return operator.stencil
-    else
-        # compute, store, and return
+    # assemble if needed
+    if !isdefined(operator, :stencil)
         # -- collect info on operator
         weakforminputs = []
         numbernodes = 0
@@ -302,9 +292,21 @@ function getstencil(operator::Operator)
         # -- multiply A = B^T D B and store
         stencil = Bt * D * B
         operator.stencil = stencil
+    end
 
-        # -- return
-        return operator.stencil
+    # return
+    return getfield(operator, :stencil)
+end
+
+# ---------------------------------------------------------------------------------------------------------------------
+# get/set property
+# ---------------------------------------------------------------------------------------------------------------------
+
+function Base.getproperty(operator::Operator, f::Symbol)
+    if f == :stencil
+        return getstencil(operator)
+    else
+        return getfield(operator, f)
     end
 end
 

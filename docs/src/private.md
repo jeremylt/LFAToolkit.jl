@@ -17,9 +17,10 @@ LFAToolkit.lobattoquadrature
 LFAToolkit.getnumbernodes
 LFAToolkit.getnodes
 LFAToolkit.getnumberquadraturepoints
+LFAToolkit.getquadraturepoints
+LFAToolkit.getquadratureweights
 LFAToolkit.getinterpolation
 LFAToolkit.getgradient
-LFAToolkit.getquadratureweights
 ```
 
 ## Operator

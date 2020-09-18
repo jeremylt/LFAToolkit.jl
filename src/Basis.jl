@@ -41,7 +41,7 @@ Tensor product basis
 - Tensor product basis object
 """
 mutable struct TensorBasis <: Basis
-    # never changed
+    # data never changed
     numbernodes1d::Int
     numberquadratuepoints1d::Int
     dimension::Int
@@ -51,14 +51,14 @@ mutable struct TensorBasis <: Basis
     interpolation1d::Array{Float64,2}
     gradient1d::Array{Float64,2}
 
-    # empty until assembled
+    # data empty until assembled
     nodes::Array{Float64}
     quadraturepoints::Array{Float64}
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
 
-    # constructor
+    # inner constructor
     TensorBasis(
         numbernodes1d,
         numberquadraturepoints1d,
@@ -138,7 +138,7 @@ Non-tensor basis
 - Non-tensor product basis object
 """
 mutable struct NonTensorBasis <: Basis
-    # never changed
+    # data never changed
     numbernodes::Int
     numberquadraturepoints::Int
     dimension::Int
@@ -148,7 +148,7 @@ mutable struct NonTensorBasis <: Basis
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
 
-    # constructor
+    # inner constructor
     NonTensorBasis(
         numbernodes,
         numberquadraturepoints,

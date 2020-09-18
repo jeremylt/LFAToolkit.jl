@@ -26,6 +26,7 @@ One dimensional regular background mesh
 mesh = Mesh1D(1.0);
 
 # verify
+@assert mesh.dimension == 1
 @assert abs(mesh.dx - 1.0) < 1e-15
 
 # output
@@ -33,8 +34,11 @@ mesh = Mesh1D(1.0);
 ```
 """
 struct Mesh1D <: Mesh
+    # data
     dimension::Int
     dx::Float64
+
+    # inner constructor
     Mesh1D(dx) = dx > 0 ? new(1, dx) : error("Mesh scaling must be positive")
 end
 
@@ -58,6 +62,7 @@ Two dimensional regular background mesh
 mesh = Mesh2D(1.0, 0.5);
 
 # verify
+@assert mesh.dimension == 2
 @assert abs(mesh.dx - 1.0) < 1e-15
 @assert abs(mesh.dy - 0.5) < 1e-15
 
@@ -66,9 +71,12 @@ mesh = Mesh2D(1.0, 0.5);
 ```
 """
 struct Mesh2D <: Mesh
+    # data
     dimension::Int
     dx::Float64
     dy::Float64
+
+    # inner constructor
     Mesh2D(dx, dy) =
         dx > 0 && dy > 0 ? new(2, dx, dy) : error("Mesh scaling must be positive")
 end
@@ -94,6 +102,7 @@ Three dimensional regular background mesh
 mesh = Mesh3D(1.0, 0.5, 0.3);
 
 # verify
+@assert mesh.dimension == 3
 @assert abs(mesh.dx - 1.0) < 1e-15
 @assert abs(mesh.dy - 0.5) < 1e-15
 @assert abs(mesh.dz - 0.3) < 1e-15
@@ -103,10 +112,13 @@ mesh = Mesh3D(1.0, 0.5, 0.3);
 ``` 
 """
 struct Mesh3D <: Mesh
+    # data
     dimension::Int
     dx::Float64
     dy::Float64
     dz::Float64
+
+    # inner constructor
     Mesh3D(dx, dy, dz) =
         dx > 0 && dy > 0 && dz > 0 ? new(3, dx, dy, dz) :
         error("Mesh scaling must be positive")

@@ -51,35 +51,64 @@ mass = Operator(massweakform, mesh, inputs, outputs);
 ```
 """
 mutable struct Operator
-    # never changed
+    # data never changed
     weakform::Function
     mesh::Mesh
     inputs::Array{OperatorField}
     outputs::Array{OperatorField}
 
-    # empty until assembled
+    # data empty until assembled
     stencil::Array{Float64,2}
 
+    # inner constructor
+    Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
+    numberquadraturepoints = 0;
+
+    # check inputs valididy
+    if length(inputs) < 1
+        error("must have at least one input")
+    end;
+    for input in inputs
+        # dimension
+        if dimension == 0
+            dimension = input.basis.dimension
+        end
+        if input.basis.dimension != dimension
+            error("bases must have compatible dimensions") # COV_EXCL_LINE
+        end
+
+        # number of quadrature points
+        if numberquadraturepoints == 0
+            numberquadraturepoints = input.basis.numberquadraturepoints
+        end
+        if input.basis.numberquadraturepoints != numberquadraturepoints
+            error("bases must have compatible quadrature spaces")
+        end
+    end;
+
+    # check outputs valididy
+    if length(outputs) < 1
+        error("must have at least one output")
+    end;
+    for output in outputs
+        # evaluation modes
+        if EvaluationMode.quadratureweights in output.evaluationmodes
+            error("quadrature weights is not a valid output") # COV_EXCL_LINE
+        end
+
+        # dimension
+        if output.basis.dimension != dimension
+            error("bases must have compatible dimensions") # COV_EXCL_LINE
+        end
+
+        # number of quadrature points
+        if output.basis.numberquadraturepoints != numberquadraturepoints
+            error("bases must have compatible quadrature spaces")
+        end
+    end;
+
     # constructor
-    Operator(weakform, mesh, inputs, outputs) = (
-        # check inputs vaidity
-        for input in inputs
-            if length(input.evaluationmodes) > 1 &&
-               EvaluationMode.quadratureweights in input.evaluationmodes
-                error("quadrature weights must be a separate input") # COV_EXCL_LINE
-            end
-        end;
-
-        # check outputs valididy
-        for output in outputs
-            if EvaluationMode.quadratureweights in output.evaluationmodes
-                error("quadrature weights is not a valid output") # COV_EXCL_LINE
-            end
-        end;
-
-        # constructor
-        new(weakform, mesh, inputs, outputs)
-    )
+    new(weakform, mesh, inputs, outputs))
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -192,15 +221,6 @@ function getstencil(operator::Operator)
             # ------ number of quadrature points
             if numberquadraturepoints == 0
                 numberquadraturepoints = input.basis.numberquadraturepoints
-            else
-                if numberquadraturepoints != input.basis.numberquadraturepoints
-                    # COV_EXCL_START
-                    throw(DomanError(
-                        numberquadraturepoints,
-                        "All bases much have matching quadrature spaces",
-                    ))
-                    # COV_EXCL_STOP
-                end
             end
 
             # ------ input evaluation modes
@@ -248,16 +268,6 @@ function getstencil(operator::Operator)
 
         # ---- outputs
         for output in operator.outputs
-            # ------ number of quadrature points
-            if numberquadraturepoints != output.basis.numberquadraturepoints
-                # COV_EXCL_START
-                throw(DomanError(
-                    numberquadraturepoints,
-                    "All bases much have matching quadrature spaces",
-                ))
-                # COV_EXCL_STOP
-            end
-
             # ------ output evaluation modes
             numbermodes = 0
             Btcurrent = []

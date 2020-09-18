@@ -48,8 +48,21 @@ inputfield = OperatorField(basis, [
 ```
 """
 struct OperatorField
+    # data
     basis::Basis
     evaluationmodes::Array{EvaluationMode.EvalMode}
+
+    # constructor
+    OperatorField(basis, evaluationmodes) = (
+        # validity checking
+        if length(evaluationmodes) > 1 &&
+           EvaluationMode.quadratureweights in evaluationmodes
+            error("quadrature weights must be a separate operator field") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(basis, evaluationmodes)
+    )
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

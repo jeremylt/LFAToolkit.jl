@@ -201,7 +201,7 @@ total = sum(v);
 function getstencil(operator::Operator)
     # assemble if needed
     if !isdefined(operator, :stencil)
-        # -- collect info on operator
+        # collect info on operator
         weakforminputs = []
         numbernodes = 0
         numberquadraturepoints = 0
@@ -211,19 +211,19 @@ function getstencil(operator::Operator)
         Bblocks = []
         Btblocks = []
 
-        # ---- inputs
+        # inputs
         for input in operator.inputs
-            # ------ number of nodes
+            # number of nodes
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 numbernodes += input.basis.numbernodes
             end
 
-            # ------ number of quadrature points
+            # number of quadrature points
             if numberquadraturepoints == 0
                 numberquadraturepoints = input.basis.numberquadraturepoints
             end
 
-            # ------ input evaluation modes
+            # input evaluation modes
             if input.evaluationmodes[1] == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
                 weightinputindex = findfirst(isequal(input), operator.inputs)
@@ -250,7 +250,7 @@ function getstencil(operator::Operator)
             end
         end
 
-        # ------ input basis matrix
+        # input basis matrix
         B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
         currentrow = 1
         currentcolumn = 1
@@ -260,15 +260,15 @@ function getstencil(operator::Operator)
             currentcolumn += size(Bblock)[2]
         end
 
-        # ------ quadrature weight input index
+        # quadrature weight input index
         if weightinputindex != 0
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
         end
 
-        # ---- outputs
+        # outputs
         for output in operator.outputs
-            # ------ output evaluation modes
+            # output evaluation modes
             numbermodes = 0
             Btcurrent = []
             for mode in output.evaluationmodes
@@ -280,13 +280,13 @@ function getstencil(operator::Operator)
                     Btcurrent =
                         Btcurrent == [] ? output.basis.gradient :
                         [Btcurrent; output.basis.gradient]
-                    # Note, quadrature weights checked in constructor
+                    # note: quadrature weights checked in constructor
                 end
             end
             push!(Btblocks, Btcurrent)
         end
 
-        # ------ output basis matrix
+        # output basis matrix
         Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
         currentrow = 1
         currentcolumn = 1
@@ -297,18 +297,18 @@ function getstencil(operator::Operator)
         end
         Bt = transpose(Bt)
 
-        # -- QFunction matrix
+        # QFunction matrix
         D = spzeros(
             numberquadratureinputs * numberquadraturepoints,
             numberquadratureinputs * numberquadraturepoints,
         )
         for q = 1:numberquadraturepoints
-            # ---- set quadrature weight
+            # set quadrature weight
             if weightinputindex != 0
                 weakforminputs[weightinputindex][1] = quadratureweights[q]
             end
 
-            # ---- loop over inputs
+            # loop over inputs
             currentfieldin = 0
             for i = 1:length(operator.inputs)
                 input = operator.inputs[i]
@@ -316,14 +316,14 @@ function getstencil(operator::Operator)
                     break
                 end
 
-                # ------ fill sparse matrix
+                # fill sparse matrix
                 for j = 1:length(input.evaluationmodes)
-                    # -------- run user weak form function
+                    # run user weak form function
                     weakforminputs[i][j] = 1.0
                     outputs = operator.weakform(weakforminputs...)
                     weakforminputs[i][j] = 0.0
 
-                    # -------- store outputs
+                    # store outputs
                     currentfieldout = 0
                     for k = 1:length(operator.outputs)
                         output = operator.outputs[k]
@@ -339,7 +339,7 @@ function getstencil(operator::Operator)
             end
         end
 
-        # -- multiply A = B^T D B and store
+        # multiply A = B^T D B and store
         stencil = Bt * D * B
         operator.stencil = stencil
     end

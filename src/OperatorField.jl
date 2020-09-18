@@ -52,7 +52,7 @@ struct OperatorField
     basis::Basis
     evaluationmodes::Array{EvaluationMode.EvalMode}
 
-    # constructor
+    # inner constructor
     OperatorField(basis, evaluationmodes) = (
         # validity checking
         if length(evaluationmodes) > 1 &&

@@ -776,7 +776,7 @@ end
 
 function getquadratureweights(basis::TensorBasis)
     # assemble if needed
-    if !(isdefined(basis, :quadratureweights))
+    if !isdefined(basis, :quadratureweights)
         quadratureweights = []
         if basis.dimension == 1
             # 1D
@@ -844,7 +844,7 @@ end
 
 function getinterpolation(basis::TensorBasis)
     # assemble if needed
-    if !(isdefined(basis, :interpolation))
+    if !isdefined(basis, :interpolation)
         interpolation = []
         if basis.dimension == 1
             # 1D
@@ -905,7 +905,7 @@ end
 
 function getgradient(basis::TensorBasis)
     # assemble if needed
-    if !(isdefined(basis, :gradient))
+    if !isdefined(basis, :gradient)
         gradient = []
         if basis.dimension == 1
             # 1D

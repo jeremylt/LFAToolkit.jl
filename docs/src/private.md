@@ -15,6 +15,7 @@ LFAToolkit.Basis
 LFAToolkit.gaussquadrature
 LFAToolkit.lobattoquadrature
 LFAToolkit.getnumbernodes
+LFAToolkit.getnodes
 LFAToolkit.getnumberquadraturepoints
 LFAToolkit.getinterpolation
 LFAToolkit.getgradient

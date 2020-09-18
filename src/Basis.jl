@@ -511,6 +511,7 @@ Get the number of nodes for the basis
 # get number of nodes for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 numbernodes = LFAToolkit.getnumbernodes(basis);
+numbernodes = basis.p; # either syntax works
 
 # verify
 @assert numbernodes == 4^2
@@ -619,6 +620,7 @@ Get the number of quadrature points for the basis
 # get number of quadrature points for basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 quadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
+quadraturepoints = basis.q; # either syntax works
     
 # verify
 @assert quadraturepoints == 3^2
@@ -737,6 +739,7 @@ for dimension in 1:3
     # get basis quadrature weights
     basis = TensorH1LagrangeBasis(4, 3, dimension);
     quadratureweights = LFAToolkit.getquadratureweights(basis);
+    quadratureweights = basis.quadratureweights; # either syntax works
 
     # verify
     trueweights1d = [5/9, 8/9, 5/9];
@@ -812,6 +815,7 @@ for dimension in 1:3
     # get basis interpolation matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
     interpolation = LFAToolkit.getinterpolation(basis);
+    interpolation = basis.interpolation; # either syntax works
 
     # verify
     for i in 1:3^dimension
@@ -872,6 +876,7 @@ for dimension in 1:3
     # get basis gradient matrix
     basis = TensorH1LagrangeBasis(4, 3, dimension);
     gradient = LFAToolkit.getgradient(basis);
+    gradient = basis.gradient; # either syntax works
 
     # verify
     for i in 1:dimension*3^dimension

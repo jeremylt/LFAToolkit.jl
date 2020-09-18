@@ -94,6 +94,7 @@ mutable struct TensorBasis <: Basis
         if size(gradient1d) != (q1d, p1d)
             error("gradient matrix must have dimensions (q1d, p1d)") # COV_EXCL_LINE
         end;
+
         # constructor
         new(
             p1d,
@@ -183,6 +184,7 @@ mutable struct NonTensorBasis <: Basis
         if size(gradient) != (q * dimension, p)
             error("gradient matrix must have dimensions (q*dimension, p)") # COV_EXCL_LINE
         end;
+
         # constructor
         new(
             p,
@@ -257,6 +259,7 @@ function gaussquadrature(q::Int)
     for i = 0:floor(Int, q / 2)
         # guess
         xi = cos(pi * (2 * i + 1.0) / (2 * q))
+
         # Pn(xi)
         p0 = 1.0
         p1 = xi
@@ -266,9 +269,11 @@ function gaussquadrature(q::Int)
             p0 = p1
             p1 = p2
         end
+
         # first Newton step
         dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
         xi = xi - p2 / dp2
+
         # Newton to convergence
         itr = 0
         while itr < 100 && abs(p2) > 1e-15
@@ -283,6 +288,7 @@ function gaussquadrature(q::Int)
             xi = xi - p2 / dp2
             itr += 1
         end
+
         # save xi, wi
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi
@@ -354,6 +360,7 @@ function lobattoquadrature(q::Int, weights::Bool)
     for i = 1:floor(Int, (q - 1) / 2)
         # guess
         xi = cos(pi * i / (q - 1.0))
+
         # Pn(xi)
         p0 = 1.0
         p1 = xi
@@ -363,10 +370,12 @@ function lobattoquadrature(q::Int, weights::Bool)
             p0 = p1
             p1 = p2
         end
+
         # first Newton step
         dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
         d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
         xi = xi - dp2 / d2p2
+
         # Newton to convergence
         itr = 0
         while itr < 100 && abs(dp2) > 1e-15
@@ -382,6 +391,7 @@ function lobattoquadrature(q::Int, weights::Bool)
             xi = xi - dp2 / d2p2
             itr += 1
         end
+
         # save xi, wi
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi

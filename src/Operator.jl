@@ -152,12 +152,14 @@ function getstencil(operator::Operator)
         quadratureweights = []
         Bblocks = []
         Btblocks = []
+
         # ---- inputs
         for input in operator.inputs
             # ------ number of nodes
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 numbernodes += getnumbernodes(input.basis)
             end
+
             # ------ number of quadrature points
             if numberquadraturepoints == 0
                 numberquadraturepoints = getnumberquadraturepoints(input.basis)
@@ -171,6 +173,7 @@ function getstencil(operator::Operator)
                     # COV_EXCL_STOP
                 end
             end
+
             # ------ input evaluation modes
             if input.evaluationmodes[1] == EvaluationMode.quadratureweights
                 push!(weakforminputs, zeros(1))
@@ -197,6 +200,7 @@ function getstencil(operator::Operator)
                 push!(weakforminputs, zeros(numbermodes))
             end
         end
+
         # ------ input basis matrix
         B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
         currentrow = 1
@@ -206,10 +210,13 @@ function getstencil(operator::Operator)
             currentrow += size(Bblock)[1]
             currentcolumn += size(Bblock)[2]
         end
+
+        # ------ quadrature weight input index
         if weightinputindex != 0
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
         end
+
         # ---- outputs
         for output in operator.outputs
             # ------ number of quadrature points
@@ -221,6 +228,7 @@ function getstencil(operator::Operator)
                 ))
                 # COV_EXCL_STOP
             end
+
             # ------ output evaluation modes
             numbermodes = 0
             Btcurrent = []
@@ -238,6 +246,7 @@ function getstencil(operator::Operator)
             end
             push!(Btblocks, Btcurrent)
         end
+
         # ------ output basis matrix
         Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
         currentrow = 1
@@ -259,6 +268,7 @@ function getstencil(operator::Operator)
             if weightinputindex != 0
                 weakforminputs[weightinputindex][1] = quadratureweights[q]
             end
+
             # ---- loop over inputs
             currentfieldin = 0
             for i = 1:length(operator.inputs)
@@ -266,6 +276,7 @@ function getstencil(operator::Operator)
                 if input.evaluationmodes[1] == EvaluationMode.quadratureweights
                     break
                 end
+
                 # ------ fill sparse matrix
                 for j = 1:length(input.evaluationmodes)
                     # -------- run user weak form function

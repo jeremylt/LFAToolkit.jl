@@ -457,10 +457,12 @@ function TensorH1LagrangeBasis(
         throw(DomanError(numbernodes, "numbernodes must be greater than or equal to 2")) # COV_EXCL_LINE
     end
     if numberquadratuepoints1d <= 1
+        # COV_EXCL_START
         throw(DomanError(
             numberquadratuepoints1d,
             "numberquadratuepoints1d must be greater than or equal to 1",
-        )) # COV_EXCL_LINE
+        ))
+        # COV_EXCL_STOP
     end
     if dimension < 1 || dimension > 3
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE

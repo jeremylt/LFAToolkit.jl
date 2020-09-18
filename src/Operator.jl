@@ -66,7 +66,7 @@ mutable struct Operator
 
     # check inputs valididy
     if length(inputs) < 1
-        error("must have at least one input")
+        error("must have at least one input") # COV_EXCL_LINE
     end;
     for input in inputs
         # dimension
@@ -82,13 +82,13 @@ mutable struct Operator
             numberquadraturepoints = input.basis.numberquadraturepoints
         end
         if input.basis.numberquadraturepoints != numberquadraturepoints
-            error("bases must have compatible quadrature spaces")
+            error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
         end
     end;
 
     # check outputs valididy
     if length(outputs) < 1
-        error("must have at least one output")
+        error("must have at least one output") # COV_EXCL_LINE
     end;
     for output in outputs
         # evaluation modes
@@ -103,7 +103,7 @@ mutable struct Operator
 
         # number of quadrature points
         if output.basis.numberquadraturepoints != numberquadraturepoints
-            error("bases must have compatible quadrature spaces")
+            error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
         end
     end;
 

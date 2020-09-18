@@ -39,7 +39,15 @@ struct Mesh1D <: Mesh
     dx::Float64
 
     # inner constructor
-    Mesh1D(dx) = dx > 0 ? new(1, dx) : error("Mesh scaling must be positive")
+    Mesh1D(dx) = (
+        # validity checking
+        if dx < 1e-14
+            error("Mesh scaling must be positive") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(1, dx)
+    )
 end
 
 """
@@ -77,8 +85,15 @@ struct Mesh2D <: Mesh
     dy::Float64
 
     # inner constructor
-    Mesh2D(dx, dy) =
-        dx > 0 && dy > 0 ? new(2, dx, dy) : error("Mesh scaling must be positive")
+    Mesh2D(dx, dy) = (
+        # validity checking
+        if dx < 1e-14 || dy < 1e-14
+            error("Mesh scaling must be positive") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(2, dx, dy)
+    )
 end
 
 """
@@ -119,9 +134,15 @@ struct Mesh3D <: Mesh
     dz::Float64
 
     # inner constructor
-    Mesh3D(dx, dy, dz) =
-        dx > 0 && dy > 0 && dz > 0 ? new(3, dx, dy, dz) :
-        error("Mesh scaling must be positive")
+    Mesh3D(dx, dy, dz) = (
+        # validity checking
+        if dx < 1e-14 || dy < 1e-14 || dz < 1e-14
+            error("Mesh scaling must be positive") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(3, dx, dy, dz)
+    )
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

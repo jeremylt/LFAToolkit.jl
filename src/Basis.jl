@@ -40,7 +40,8 @@ Tensor product basis
 # Returns:
 - Tensor product basis object
 """
-struct TensorBasis <: Basis
+mutable struct TensorBasis <: Basis
+    # never changed
     p1d::Int
     q1d::Int
     dimension::Int
@@ -49,6 +50,14 @@ struct TensorBasis <: Basis
     quadratureweights1d::Array{Float64,1}
     interpolation1d::Array{Float64,2}
     gradient1d::Array{Float64,2}
+
+    # may be changed
+    nodes::Array{Float64}
+    quadratureweights::Array{Float64,1}
+    interpolation::Array{Float64,2}
+    gradient::Array{Float64,2}
+
+    # constructor
     TensorBasis(
         p1d,
         q1d,
@@ -83,7 +92,7 @@ end
 
 """
 ```julia
-NotTensorBasis(
+NonTensorBasis(
     p,
     q,
     dimension,
@@ -109,7 +118,8 @@ Non-tensor basis
 # Returns:
 - Non-tensor product basis object
 """
-struct NonTensorBasis <: Basis
+mutable struct NonTensorBasis <: Basis
+    # never changed
     p::Int
     q::Int
     dimension::Int
@@ -118,6 +128,8 @@ struct NonTensorBasis <: Basis
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
+
+    # constructor
     NonTensorBasis(
         p,
         q,
@@ -450,6 +462,149 @@ end
 
 """
 ```julia
+getnodes(basis)
+```
+
+Get nodes for basis
+
+# Returns:
+- Basis nodes array
+
+# Arguments:
+- `basis`: basis to compute nodes
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get basis quadrature weights
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
+    nodes = LFAToolkit.getnodes(basis);
+
+    # verify
+    truenodes1d = [-1, -sqrt(1/5), sqrt(1/5), 1];
+    truenodes = [];
+    if dimension == 1
+        truenodes = truenodes1d;
+    elseif dimension == 2
+        truenodes = transpose(hcat([[[x, y] for x in basis.nodes1d, y in basis.nodes1d]...]...));
+    elseif dimension == 3
+        truenodes = transpose(hcat([[
+            [x, y, z] for x in basis.nodes1d, y in basis.nodes1d, z in basis.nodes1d
+        ]...]...));
+    end
+
+    diff = truenodes - nodes;
+    @assert abs(max(max(diff...)...)) < 1e-15
+end
+    
+# output
+
+```
+"""
+function getnodes(basis::NonTensorBasis)
+    return basis.nodes
+end
+
+function getnodes(basis::TensorBasis)
+    # assembled if needed
+    if !isdefined(basis, :nodes)
+        nodes = []
+        if basis.dimension == 1
+            # 1D
+            nodes = basis.nodes1d
+        elseif basis.dimension == 2
+            # 2D
+            nodes =
+                transpose(hcat([[[x, y] for x in basis.nodes1d, y in basis.nodes1d]...]...))
+        elseif basis.dimension == 3
+            # 3D
+            nodes = transpose(hcat([[
+                [x, y, z] for x in basis.nodes1d, y in basis.nodes1d, z in basis.nodes1d
+            ]...]...))
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        basis.nodes = nodes
+    end
+
+    # return
+    return basis.nodes
+end
+
+"""
+```julia
+getquadratureweights(basis)
+```
+
+Get full quadrature weights vector for basis
+
+# Returns:
+- Basis quadrature weights vector
+
+# Arguments:
+- `basis`: basis to compute quadrature weights
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get basis quadrature weights
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
+    quadratureweights = LFAToolkit.getquadratureweights(basis);
+
+    # verify
+    trueweights1d = [5/9, 8/9, 5/9];
+    trueweights = [];
+    if dimension == 1
+        trueweights = trueweights1d;
+    elseif dimension == 2
+        trueweights = kron(trueweights1d, trueweights1d);
+    elseif dimension == 3
+        trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
+    end
+
+    diff = trueweights - quadratureweights;
+    @assert abs(max(diff...)) < 1e-15
+end
+    
+# output
+
+```
+"""
+function getquadratureweights(basis::NonTensorBasis)
+    return basis.quadratureweights
+end
+
+function getquadratureweights(basis::TensorBasis)
+    # assemble if needed
+    if !(isdefined(basis, :quadratureweights))
+        quadratureweights = []
+        if basis.dimension == 1
+            # 1D
+            quadratureweights = basis.quadratureweights1d
+        elseif basis.dimension == 2
+            # 2D
+            quadratureweights = kron(basis.quadratureweights1d, basis.quadratureweights1d)
+        elseif basis.dimension == 3
+            # 3D
+            quadratureweights = kron(
+                basis.quadratureweights1d,
+                basis.quadratureweights1d,
+                basis.quadratureweights1d,
+            )
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        basis.quadratureweights = quadratureweights
+    end
+
+    # return
+    return basis.quadratureweights
+end
+
+"""
+```julia
 getnumbernodes(basis)
 ```
 
@@ -557,17 +712,27 @@ function getinterpolation(basis::NonTensorBasis)
 end
 
 function getinterpolation(basis::TensorBasis)
-    if basis.dimension == 1
-        # 1D
-        return basis.interpolation1d
-    elseif basis.dimension == 2
-        # 2D
-        return kron(basis.interpolation1d, basis.interpolation1d)
-    elseif basis.dimension == 3
-        # 3D
-        return kron(basis.interpolation1d, basis.interpolation1d, basis.interpolation1d)
+    # assemble if needed
+    if !(isdefined(basis, :interpolation))
+        interpolation = []
+        if basis.dimension == 1
+            # 1D
+            interpolation = basis.interpolation1d
+        elseif basis.dimension == 2
+            # 2D
+            interpolation = kron(basis.interpolation1d, basis.interpolation1d)
+        elseif basis.dimension == 3
+            # 3D
+            interpolation =
+                kron(basis.interpolation1d, basis.interpolation1d, basis.interpolation1d)
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        basis.interpolation = interpolation
     end
-    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+
+    # return
+    return basis.interpolation
 end
 
 """
@@ -607,86 +772,33 @@ function getgradient(basis::NonTensorBasis)
 end
 
 function getgradient(basis::TensorBasis)
-    if basis.dimension == 1
-        # 1D
-        return basis.gradient1d
-    elseif basis.dimension == 2
-        # 2D
-        return [
-            kron(basis.gradient1d, basis.interpolation1d)
-            kron(basis.interpolation1d, basis.gradient1d)
-        ]
-    elseif basis.dimension == 3
-        # 3D
-        return [
-            kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
-            kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
-            kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
-        ]
-    end
-    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
-end
-
-"""
-```julia
-getquadratureweights(basis)
-```
-
-Get full quadrature weights vector for basis
-
-# Returns:
-- Basis quadrature weights vector
-
-# Arguments:
-- `basis`: basis to compute quadrature weights
-
-# Example:
-```jldoctest
-# test for all supported dimensions
-for dimension in 1:3
-    # get basis quadrature weights
-    basis = TensorH1LagrangeBasis(4, 3, dimension);
-    quadratureweights = LFAToolkit.getquadratureweights(basis);
-
-    # verify
-    trueweights1d = [5/9, 8/9, 5/9];
-    trueweights = [];
-    if dimension == 1
-        trueweights = trueweights1d;
-    elseif dimension == 2
-        trueweights = kron(trueweights1d, trueweights1d);
-    elseif dimension == 3
-        trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
+    # assemble if needed
+    if !(isdefined(basis, :gradient))
+        gradient = []
+        if basis.dimension == 1
+            # 1D
+            gradient = basis.gradient1d
+        elseif basis.dimension == 2
+            # 2D
+            gradient = [
+                kron(basis.gradient1d, basis.interpolation1d)
+                kron(basis.interpolation1d, basis.gradient1d)
+            ]
+        elseif basis.dimension == 3
+            # 3D
+            gradient = [
+                kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
+                kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
+                kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
+            ]
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        basis.gradient = gradient
     end
 
-    diff = trueweights - quadratureweights;
-    @assert abs(max(diff...)) < 1e-15
-end
-    
-# output
-
-```
-"""
-function getquadratureweights(basis::NonTensorBasis)
-    return basis.quadratureweights
-end
-
-function getquadratureweights(basis::TensorBasis)
-    if basis.dimension == 1
-        # 1D
-        return basis.quadratureweights1d
-    elseif basis.dimension == 2
-        # 2D
-        return kron(basis.quadratureweights1d, basis.quadratureweights1d)
-    elseif basis.dimension == 3
-        # 3D
-        return kron(
-            basis.quadratureweights1d,
-            basis.quadratureweights1d,
-            basis.quadratureweights1d,
-        )
-    end
-    throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+    # return
+    return basis.gradient
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

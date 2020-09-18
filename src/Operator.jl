@@ -23,23 +23,34 @@ Finite element operator comprising of a weak form and bases
 # Returns:
 - Finite element operator object
 """
-struct Operator
+mutable struct Operator
+    # never changed
     weakform::Function
     mesh::Mesh
     inputs::Array{OperatorField}
     outputs::Array{OperatorField}
+
+    # may be changed
+    stencil::Array{Float64,2}
+
+    # constructor
     Operator(weakform, mesh, inputs, outputs) = (
+        # check inputs vaidity
         for input in inputs
             if length(input.evaluationmodes) > 1 &&
                EvaluationMode.quadratureweights in input.evaluationmodes
                 error("quadrature weights must be a separate input") # COV_EXCL_LINE
             end
         end;
+
+        # check outputs valididy
         for output in outputs
             if EvaluationMode.quadratureweights in output.evaluationmodes
                 error("quadrature weights is not a valid output") # COV_EXCL_LINE
             end
         end;
+
+        # constructor
         new(weakform, mesh, inputs, outputs)
     )
 end
@@ -47,8 +58,6 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 # Data for computing symbols
 # ---------------------------------------------------------------------------------------------------------------------
-
-stencildict = Dict{Operator,Array{Float64}}();
 
 """
 ```julia
@@ -137,11 +146,11 @@ total = sum(v);
 ```
 """
 function getstencil(operator::Operator)
-    iscomputed = haskey(stencildict, operator)
+    isassembled = isdefined(operator, :stencil)
 
-    if iscomputed
+    if isassembled
         # retrieve and return
-        return stencildict[operator]
+        return operator.stencil
     else
         # compute, store, and return
         # -- collect info on operator
@@ -292,10 +301,10 @@ function getstencil(operator::Operator)
 
         # -- multiply A = B^T D B and store
         stencil = Bt * D * B
-        stencildict[operator] = stencil
+        operator.stencil = stencil
 
         # -- return
-        return stencil
+        return operator.stencil
     end
 end
 

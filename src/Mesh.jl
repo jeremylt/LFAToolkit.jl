@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# Rectangular meshes
+# rectangular meshes
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -27,7 +27,7 @@ mesh = Mesh1D(1.0);
 
 # verify
 @assert mesh.dimension == 1
-@assert abs(mesh.dx - 1.0) < 1e-15
+@assert mesh.dx ≈ 1.0
 
 # output
 
@@ -71,8 +71,8 @@ mesh = Mesh2D(1.0, 0.5);
 
 # verify
 @assert mesh.dimension == 2
-@assert abs(mesh.dx - 1.0) < 1e-15
-@assert abs(mesh.dy - 0.5) < 1e-15
+@assert mesh.dx ≈ 1.0
+@assert mesh.dy ≈ 0.5
 
 # output
 
@@ -118,9 +118,9 @@ mesh = Mesh3D(1.0, 0.5, 0.3);
 
 # verify
 @assert mesh.dimension == 3
-@assert abs(mesh.dx - 1.0) < 1e-15
-@assert abs(mesh.dy - 0.5) < 1e-15
-@assert abs(mesh.dz - 0.3) < 1e-15
+@assert mesh.dx ≈ 1.0
+@assert mesh.dy ≈ 0.5
+@assert mesh.dz ≈ 0.3
 
 # output
 

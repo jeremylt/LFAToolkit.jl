@@ -4,12 +4,12 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 @testset "LFAToolkit" begin
 
     # ---------------------------------------------------------------------------------------------------------------------
-    # Documentation
+    # documentation tests
     # ---------------------------------------------------------------------------------------------------------------------
     doctest(LFAToolkit; manual = false)
 
     # ---------------------------------------------------------------------------------------------------------------------
-    # Full example
+    # mass matrix example
     # ---------------------------------------------------------------------------------------------------------------------
 
     # setup
@@ -31,6 +31,10 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # stencil computation
     stencil = LFAToolkit.getstencil(mass)
+
+    # ---------------------------------------------------------------------------------------------------------------------
+    # diffusion operator example
+    # ---------------------------------------------------------------------------------------------------------------------
 
     # diffusion setup
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})

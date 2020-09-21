@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# Finite element bases
+# finite element bases
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -8,7 +8,7 @@ Finite element basis for function spaces and test spaces
 abstract type Basis end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Basic basis types
+# basis types
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -72,13 +72,13 @@ mutable struct TensorBasis <: Basis
         gradient1d,
     ) = (
         # validity checking
-        if numbernodes1d <= 0
+        if numbernodes1d < 1
             error("p1d must be at least 1") # COV_EXCL_LINE
         end;
-        if numberquadraturepoints1d <= 0
+        if numberquadraturepoints1d < 1
             error("q1d must be at least 1") # COV_EXCL_LINE
         end;
-        if dimension <= 0
+        if dimension < 1
             error("dimension must be at least 1") # COV_EXCL_LINE
         end;
         if length(nodes1d) != numbernodes1d
@@ -164,13 +164,13 @@ mutable struct NonTensorBasis <: Basis
         gradient,
     ) = (
         # validity checking
-        if numbernodes <= 0
+        if numbernodes < 1
             error("number of nodes must be at least 1") # COV_EXCL_LINE
         end;
-        if numberquadraturepoints <= 0
+        if numberquadraturepoints < 1
             error("number of quadrature points must be at least 1") # COV_EXCL_LINE
         end;
-        if dimension <= 0
+        if dimension < 1
             error("dimension must be at least 1") # COV_EXCL_LINE
         end;
         if size(nodes) != (numbernodes, dimension)
@@ -209,7 +209,7 @@ mutable struct NonTensorBasis <: Basis
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Utility functions for generating polynomial bases
+# utility functions for generating polynomial bases
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -232,25 +232,22 @@ quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
 # verify
 truepoints = [
-    -sqrt(5 + 2*sqrt(10/7))/3,
-    -sqrt(5 - 2*sqrt(10/7))/3,
+    -√(5 + 2*√(10/7))/3,
+    -√(5 - 2*√(10/7))/3,
     0.0,
-    sqrt(5 - 2*sqrt(10/7))/3,
-    sqrt(5 + 2*sqrt(10/7))/3
+    √(5 - 2*√(10/7))/3,
+    √(5 + 2*√(10/7))/3
 ];
+@assert truepoints ≈ quadraturepoints
+
 trueweights = [
-    (322-13*sqrt(70))/900,
-    (322+13*sqrt(70))/900,
+    (322-13*√(70))/900,
+    (322+13*√(70))/900,
     128/225,
-    (322+13*sqrt(70))/900,
-    (322-13*sqrt(70))/900
+    (322+13*√(70))/900,
+    (322-13*√(70))/900
 ];
-
-diff = truepoints - quadraturepoints;
-@assert abs(max(diff...)) < 1e-15
-
-diff = trueweights - quadratureweights;
-@assert abs(max(diff...)) < 1e-15
+@assert trueweights ≈ quadratureweights
 
 # output
 
@@ -330,19 +327,15 @@ Construct a Gauss-Lobatto quadrature
 quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
 
 # verify
-truepoints = [-1.0, -sqrt(3/7), 0.0, sqrt(3/7), 1.0];
-
-diff = truepoints - quadraturepoints;
-@assert abs(max(diff...)) < 1e-15
+truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
+@assert truepoints ≈ quadraturepoints
 
 # generate Gauss-Lobatto points and weights
 quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
 
 # verify
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
-
-diff = trueweights - quadratureweights;
-@assert abs(max(diff...)) < 1e-15
+@assert trueweights ≈ quadratureweights
 
 # output
 
@@ -420,7 +413,7 @@ function lobattoquadrature(q::Int, weights::Bool)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# User utility constructors
+# user utility constructors
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -522,7 +515,7 @@ function TensorH1LagrangeBasis(
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Return basis information about the bases
+# basis properties
 # ---------------------------------------------------------------------------------------------------------------------
 
 """
@@ -583,7 +576,7 @@ for dimension in 1:3
     nodes = basis.nodes;
 
     # verify
-    truenodes1d = [-1, -sqrt(1/5), sqrt(1/5), 1];
+    truenodes1d = [-1, -√(1/5), √(1/5), 1];
     truenodes = [];
     if dimension == 1
         truenodes = truenodes1d;
@@ -596,8 +589,7 @@ for dimension in 1:3
         ]...]...));
     end
 
-    diff = truenodes - nodes;
-    @assert abs(max(max(diff...)...)) < 1e-15
+    @assert truenodes ≈ nodes
 end
     
 # output
@@ -688,7 +680,7 @@ for dimension in 1:3
     quadraturepoints = basis.quadraturepoints;
 
     # verify
-    truequadraturepoints1d = [-sqrt(3/5), 0, sqrt(3/5)];
+    truequadraturepoints1d = [-√(3/5), 0, √(3/5)];
     truequadraturepoints = [];
     if dimension == 1
         truequadraturepoints = truequadraturepoints1d;
@@ -705,8 +697,7 @@ for dimension in 1:3
         ]...]...));
     end
 
-    diff = truequadraturepoints - quadraturepoints;
-    @assert abs(max(max(diff...)...)) < 1e-15
+    @assert truequadraturepoints ≈ quadraturepoints
 end
     
 # output
@@ -778,8 +769,7 @@ for dimension in 1:3
         trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
     end
 
-    diff = trueweights - quadratureweights;
-    @assert abs(max(diff...)) < 1e-15
+    @assert trueweights ≈ quadratureweights
 end
     
 # output
@@ -813,10 +803,6 @@ function getquadratureweights(basis::TensorBasis)
     return getfield(basis, :quadratureweights)
 end
 
-# ---------------------------------------------------------------------------------------------------------------------
-# Basis functions for constructing stencils
-# ---------------------------------------------------------------------------------------------------------------------
-
 """
 ```julia
 getinterpolation(basis)
@@ -844,7 +830,7 @@ for dimension in 1:3
     # verify
     for i in 1:3^dimension
         total = sum(interpolation[i, :]);
-        @assert abs(total - 1.0) < 1e-15
+        @assert total ≈ 1.0
     end
 end
 
@@ -1025,8 +1011,7 @@ for dimension in 1:3
         ]...];
     end
 
-    diff = truemodemap - modemap;
-    @assert abs(max(diff...)) < 1e-15
+    @assert truemodemap == modemap
 end
 
 # output

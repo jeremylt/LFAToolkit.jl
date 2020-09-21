@@ -448,15 +448,15 @@ basis = TensorH1LagrangeBasis(4, 3, 2);
 ```
 """
 function TensorH1LagrangeBasis(
-    numbernodes::Int,
+    numbernodes1d::Int,
     numberquadratuepoints1d::Int,
     dimension::Int,
 )
     # check inputs
-    if numbernodes <= 2
-        throw(DomanError(numbernodes, "numbernodes must be greater than or equal to 2")) # COV_EXCL_LINE
+    if numbernodes1d < 2
+        throw(DomanError(numbernodes1d, "numbernodes1d must be greater than or equal to 2")) # COV_EXCL_LINE
     end
-    if numberquadratuepoints1d <= 1
+    if numberquadratuepoints1d < 1
         # COV_EXCL_START
         throw(DomanError(
             numberquadratuepoints1d,
@@ -469,18 +469,18 @@ function TensorH1LagrangeBasis(
     end
 
     # get nodes, quadrature points, and weights
-    nodes1d = lobattoquadrature(numbernodes, false)
+    nodes1d = lobattoquadrature(numbernodes1d, false)
     quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadratuepoints1d)
 
     # build interpolation, gradient matrices
     # Fornberg, 1998
-    interpolation1d = zeros(Float64, numberquadratuepoints1d, numbernodes)
-    gradient1d = zeros(Float64, numberquadratuepoints1d, numbernodes)
+    interpolation1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
+    gradient1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
     for i = 1:numberquadratuepoints1d
         c1 = 1.0
         c3 = nodes1d[1] - quadraturepoints1d[i]
         interpolation1d[i, 1] = 1.0
-        for j = 2:numbernodes
+        for j = 2:numbernodes1d
             c2 = 1.0
             c4 = c3
             c3 = nodes1d[j] - quadraturepoints1d[i]
@@ -501,7 +501,7 @@ function TensorH1LagrangeBasis(
 
     # use basic constructor
     return TensorBasis(
-        numbernodes,
+        numbernodes1d,
         numberquadratuepoints1d,
         dimension,
         nodes1d,

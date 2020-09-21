@@ -241,11 +241,11 @@ truepoints = [
 @assert truepoints ≈ quadraturepoints
 
 trueweights = [
-    (322-13*√(70))/900,
-    (322+13*√(70))/900,
+    (322-13*√70)/900,
+    (322+13*√70)/900,
     128/225,
-    (322+13*√(70))/900,
-    (322-13*√(70))/900
+    (322+13*√70)/900,
+    (322-13*√70)/900
 ];
 @assert trueweights ≈ quadratureweights
 

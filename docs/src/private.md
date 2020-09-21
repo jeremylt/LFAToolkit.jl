@@ -21,6 +21,8 @@ LFAToolkit.getquadraturepoints
 LFAToolkit.getquadratureweights
 LFAToolkit.getinterpolation
 LFAToolkit.getgradient
+LFAToolkit.getnumbermodes
+LFAToolkit.getmodemap
 ```
 
 ## Operator

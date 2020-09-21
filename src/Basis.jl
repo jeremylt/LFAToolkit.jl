@@ -57,6 +57,8 @@ mutable struct TensorBasis <: Basis
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
+    numbermodes::Int
+    modemap::Array{Int,1}
 
     # inner constructor
     TensorBasis(
@@ -147,6 +149,8 @@ mutable struct NonTensorBasis <: Basis
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
+    numbermodes::Int
+    modemap::Array{Int,1}
 
     # inner constructor
     NonTensorBasis(
@@ -184,6 +188,9 @@ mutable struct NonTensorBasis <: Basis
         if size(gradient) != (q * dimension, numbernodes)
             error("gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)") # COV_EXCL_LINE
         end;
+        if length(modemap) != numbernodes
+            error("must map the modes for each basis node")
+        end;
 
         # constructor
         new(
@@ -195,6 +202,8 @@ mutable struct NonTensorBasis <: Basis
             quadratureweights,
             interpolation,
             gradient,
+            max(modemap...),
+            modemap,
         )
     )
 end
@@ -932,6 +941,131 @@ function getgradient(basis::TensorBasis)
     return getfield(basis, :gradient)
 end
 
+"""
+```julia
+getnumbermodes(basis)
+```
+
+Get number of modes for basis
+
+# Arguments:
+- `basis`: basis to compute number of modes
+
+# Returns:
+- Number of modes for basis
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get number of basis modes
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
+    numbermodes = LFAToolkit.getnumbermodes(basis);
+    numbermodes = basis.numbermodes;
+
+    # verify
+    @assert numbermodes == 3^dimension
+end
+
+# output
+
+```
+"""
+function getnumbermodes(basis::TensorBasis)
+    # assemble if needed
+    if !isdefined(basis, :modemap)
+        basis.numbermodes = max(basis.modemap...)
+    end
+
+    # return
+    return getfield(basis, :numbermodes)
+end
+
+"""
+```julia
+getmodemap(basis)
+```
+
+Get mode mapping vector for basis
+
+# Arguments:
+- `basis`: basis to compute mode map vector
+
+# Returns:
+- Basis mode map vector
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # note: either syntax works
+    modemap = LFAToolkit.getmodemap(basis);
+    modemap = basis.modemap;
+
+    # verify
+    truemodemap1d = [1, 2, 3, 1];
+    truemodemap = [];
+    if dimension == 1
+        truemodemap = truemodemap1d;
+    elseif dimension == 2
+        truemodemap = [[
+            i + (j - 1)*3 for i in truemodemap1d, j in truemodemap1d
+        ]...];
+    elseif dimension == 3
+        truemodemap = [[
+            i +
+            (j - 1)*3 +
+            (k - 1)*3^2
+            for i in truemodemap1d, j in truemodemap1d, k in truemodemap1d
+        ]...];
+    end
+
+    diff = truemodemap - modemap;
+    @assert abs(max(diff...)) < 1e-15
+end
+
+# output
+
+```
+"""
+function getmodemap(basis::TensorBasis)
+    # assemble if needed
+    if !isdefined(basis, :modemap)
+        modemap1d = [1:basis.numbernodes1d;]
+        modemap1d[end] = 1
+        modemap = []
+        if basis.dimension == 1
+            # 1D
+            modemap = modemap1d
+        elseif basis.dimension == 2
+            # 2D
+            modemap = [[
+                i + (j - 1) * (basis.numbernodes1d - 1) for i in modemap1d, j in modemap1d
+            ]...]
+        elseif basis.dimension == 3
+            # 3D
+            modemap = [[
+                i +
+                (j - 1) * (basis.numbernodes1d - 1) +
+                (k - 1) * (basis.numbernodes1d - 1)^2
+                for i in modemap1d, j in modemap1d, k in modemap1d
+            ]...]
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        basis.modemap = modemap
+        basis.numbermodes = max(modemap...)
+    end
+
+    # return
+    return getfield(basis, :modemap)
+end
+
 # ---------------------------------------------------------------------------------------------------------------------
 # get/set property
 # ---------------------------------------------------------------------------------------------------------------------
@@ -951,6 +1085,10 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getinterpolation(basis)
     elseif f == :gradient
         return getgradient(basis)
+    elseif f == :numbermodes
+        return getnumbermodes(basis)
+    elseif f == :modemap
+        return getmodemap(basis)
     else
         return getfield(basis, f)
     end

@@ -189,7 +189,7 @@ mutable struct NonTensorBasis <: Basis
             error("gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)") # COV_EXCL_LINE
         end;
         if length(modemap) != numbernodes
-            error("must map the modes for each basis node")
+            error("must map the modes for each basis node") # COV_EXCL_LINE
         end;
 
         # constructor

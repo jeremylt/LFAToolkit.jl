@@ -59,6 +59,9 @@ mutable struct Operator
 
     # data empty until assembled
     elementmatrix::Array{Float64,2}
+    rowmodemapmatrix::Array{Float64,2}
+    columnmodemapmatrix::Array{Float64,2}
+    modecoordinates::Array{Float64,2}
 
     # inner constructor
     Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
@@ -348,6 +351,155 @@ function getelementmatrix(operator::Operator)
     return getfield(operator, :elementmatrix)
 end
 
+"""
+```julia
+getrowmodemapmatrix()
+```
+
+Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix
+
+# Returns:
+- Matrix mapping rows of element matrix to symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(4, 4, 1);
+    
+function massweakform(u::Array{Float64}, w::Array{Float64})
+    v = u * w[1]
+    return [v]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.interpolation]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
+mass = Operator(massweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+modemapmatrix = LFAToolkit.getrowmodemapmatrix(mass);
+modemapmatrix = mass.rowmodemapmatrix;
+
+# verify
+@assert modemapmatrix ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
+    
+# output
+
+```
+"""
+function getrowmodemapmatrix(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :rowmodemapmatrix)
+        # count modes
+        numbermodes = 0
+        for output in operator.outputs
+            if output.evaluationmodes[1] != EvaluationMode.quadratureweights
+                numbermodes += output.basis.numbermodes
+            end
+        end
+
+        # fill matrix
+        numbercolumns = size(operator.elementmatrix)[2]
+        rowmodemapmatrix = spzeros(numbermodes, numbercolumns)
+        currentnode = 0
+        currentmode = 0
+        for output in operator.outputs
+            if output.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:output.basis.numbernodes
+                    rowmodemapmatrix[output.basis.modemap[i]+currentmode, i+currentnode] = 1
+                end
+                currentnode += output.basis.numbernodes
+                currentmode += output.basis.numbermodes
+            end
+        end
+
+        # store
+        operator.rowmodemapmatrix = rowmodemapmatrix
+    end
+
+    # return
+    return getfield(operator, :rowmodemapmatrix)
+end
+
+"""
+```julia
+getcolumnmodemapmatrix()
+```
+
+Compute or retrieve the matrix mapping the columns of the element matrix to the symbol matrix
+
+# Returns:
+- Matrix mapping columns of element matrix to symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(4, 4, 1);
+    
+function massweakform(u::Array{Float64}, w::Array{Float64})
+    v = u * w[1]
+    return [v]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.interpolation]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
+mass = Operator(massweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+modemapmatrix = LFAToolkit.getcolumnmodemapmatrix(mass);
+modemapmatrix = mass.columnmodemapmatrix;
+
+# verify
+@assert modemapmatrix ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
+    
+# output
+
+```
+"""
+function getcolumnmodemapmatrix(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :columnmodemapmatrix)
+        # count modes
+        numbermodes = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                numbermodes += input.basis.numbermodes
+            end
+        end
+
+        # fill matrix
+        numberrows = size(operator.elementmatrix)[2]
+        columnmodemapmatrix = spzeros(numberrows, numbermodes)
+        currentnode = 0
+        currentmode = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:input.basis.numbernodes
+                    columnmodemapmatrix[i+currentnode, input.basis.modemap[i]+currentmode] =
+                        1
+                end
+                currentnode += input.basis.numbernodes
+                currentmode += input.basis.numbermodes
+            end
+        end
+
+        # store
+        operator.columnmodemapmatrix = columnmodemapmatrix
+    end
+
+    # return
+    return getfield(operator, :columnmodemapmatrix)
+end
+
 # ---------------------------------------------------------------------------------------------------------------------
 # get/set property
 # ---------------------------------------------------------------------------------------------------------------------
@@ -355,6 +507,10 @@ end
 function Base.getproperty(operator::Operator, f::Symbol)
     if f == :elementmatrix
         return getelementmatrix(operator)
+    elseif f == :rowodemapmatrix
+        return getrowmodemapmatrix(operator)
+    elseif f == :columnmodemapmatrix
+        return getcolumnmodemapmatrix(operator)
     else
         return getfield(operator, f)
     end

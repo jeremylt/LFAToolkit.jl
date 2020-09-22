@@ -28,5 +28,5 @@ LFAToolkit.getmodemap
 ## Operator
 
 ```@docs
-LFAToolkit.getstencil
+LFAToolkit.getelementmatrix
 ```

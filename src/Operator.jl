@@ -58,7 +58,7 @@ mutable struct Operator
     outputs::Array{OperatorField}
 
     # data empty until assembled
-    stencil::Array{Float64,2}
+    elementmatrix::Array{Float64,2}
 
     # inner constructor
     Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
@@ -117,13 +117,13 @@ end
 
 """
 ```julia
-getstencil(operator)
+getelementmatrix(operator)
 ```
 
-Compute or retrieve the stencil of operator for computing the symbol
+Compute or retrieve the element matrix of operator for computing the symbol
 
 # Arguments:
-- `operator`: operator to compute element stencil
+- `operator`: operator to compute element element matrix
 
 # Returns:
 - Assembled element matrix
@@ -147,14 +147,14 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
     
-# stencil computation
+# element matrix computation
 # note: either syntax works
-stencil = LFAToolkit.getstencil(mass);
-stencil = mass.stencil;
+elementmatrix = LFAToolkit.getelementmatrix(mass);
+elementmatrix = mass.elementmatrix;
 
 # verify
 u = ones(4*4);
-v = stencil * u;
+v = elementmatrix * u;
     
 total = sum(v);
 @assert total ≈ 4.0
@@ -182,14 +182,14 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
     
-# stencil computation
+# element matrix computation
 # note: either syntax works
-stencil = LFAToolkit.getstencil(diffusion);
-stencil = diffusion.stencil;
+elementmatrix = LFAToolkit.getelementmatrix(diffusion);
+elementmatrix = diffusion.elementmatrix;
     
 # verify
 u = ones(4*4);
-v = stencil * u;
+v = elementmatrix * u;
     
 total = sum(v);
 @assert abs(total) < 1e-14
@@ -198,9 +198,9 @@ total = sum(v);
 
 ```
 """
-function getstencil(operator::Operator)
+function getelementmatrix(operator::Operator)
     # assemble if needed
-    if !isdefined(operator, :stencil)
+    if !isdefined(operator, :elementmatrix)
         # collect info on operator
         weakforminputs = []
         numbernodes = 0
@@ -340,12 +340,12 @@ function getstencil(operator::Operator)
         end
 
         # multiply A = B^T D B and store
-        stencil = Bt * D * B
-        operator.stencil = stencil
+        elementmatrix = Bt * D * B
+        operator.elementmatrix = elementmatrix
     end
 
     # return
-    return getfield(operator, :stencil)
+    return getfield(operator, :elementmatrix)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -353,8 +353,8 @@ end
 # ---------------------------------------------------------------------------------------------------------------------
 
 function Base.getproperty(operator::Operator, f::Symbol)
-    if f == :stencil
-        return getstencil(operator)
+    if f == :elementmatrix
+        return getelementmatrix(operator)
     else
         return getfield(operator, f)
     end

@@ -29,8 +29,8 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     outputs = [OperatorField(basis, [EvaluationMode.interpolation])]
     mass = Operator(massweakform, mesh, inputs, outputs)
 
-    # stencil computation
-    stencil = LFAToolkit.getstencil(mass)
+    # element matrix computation
+    elementmatrix = mass.elementmatrix
 
     # ---------------------------------------------------------------------------------------------------------------------
     # diffusion operator example
@@ -50,8 +50,8 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     outputs = [OperatorField(basis, [EvaluationMode.gradient])]
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
-    # stencil computation
-    stencil = LFAToolkit.getstencil(diffusion)
+    # element matrix computation
+    elementmatrix = diffusion.elementmatrix
 
 end # testset
 

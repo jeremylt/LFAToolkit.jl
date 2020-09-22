@@ -61,7 +61,7 @@ mutable struct Operator
     elementmatrix::Array{Float64,2}
     rowmodemap::Array{Float64,2}
     columnmodemap::Array{Float64,2}
-    modecoordinates::Array{Float64,2}
+    nodecoordinatedifferences::Array{Float64}
 
     # inner constructor
     Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
@@ -499,6 +499,82 @@ function getcolumnmodemap(operator::Operator)
     return getfield(operator, :columnmodemap)
 end
 
+"""
+```julia
+getnodecoordinatedifferences()
+```
+
+Compute or retrieve the array of differences in coordinates between nodes
+
+# Returns:
+- Array of differences in coordinates between nodes
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(4, 4, 1);
+    
+function massweakform(u::Array{Float64}, w::Array{Float64})
+    v = u * w[1]
+    return [v]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.interpolation]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
+mass = Operator(massweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+nodedifferences = LFAToolkit.getnodecoordinatedifferences(mass);
+nodedifferences = mass.nodecoordinatedifferences;
+
+# verify
+truenodes = LFAToolkit.lobattoquadrature(4, false);
+truenodedifferences = [
+    (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
+];
+@assert nodedifferences ≈ truenodedifferences
+ 
+# output
+
+```
+"""
+function getnodecoordinatedifferences(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :nodecoordinatedifferences)
+        # setup for computation
+        inputcoordinates = []
+        outputcoordinates = []
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                inputcoordinates = inputcoordinates == [] ? input.basis.nodes : [inputcoordinates; input.basis.nodes]
+            end
+        end
+        for output in operator.outputs
+            outputcoordinates = outputcoordinates == [] ? output.basis.nodes : [outputcoordinates; output.basis.nodes]
+        end
+        dimension = operator.inputs[1].basis.dimension
+        lengths = [max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for d in 1:dimension]
+
+        # fill matrix
+        numberrows, numbercolumns = size(operator.elementmatrix)
+        nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
+        for i in 1:numberrows, j in 1:numbercolumns, k in 1:dimension
+            nodecoordinatedifferences[i, j, k] = (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
+        end
+
+        # store
+        operator.nodecoordinatedifferences = nodecoordinatedifferences
+    end
+
+    # return
+    return getfield(operator, :nodecoordinatedifferences)
+end
+
 # ---------------------------------------------------------------------------------------------------------------------
 # get/set property
 # ---------------------------------------------------------------------------------------------------------------------
@@ -510,6 +586,8 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getrowmodemap(operator)
     elseif f == :columnmodemap
         return getcolumnmodemap(operator)
+    elseif f == :nodecoordinatedifferences
+        return getnodecoordinatedifferences(operator)
     else
         return getfield(operator, f)
     end

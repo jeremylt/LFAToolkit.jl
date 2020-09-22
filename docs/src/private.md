@@ -31,4 +31,5 @@ LFAToolkit.getmodemap
 LFAToolkit.getelementmatrix
 LFAToolkit.getrowmodemap
 LFAToolkit.getcolumnmodemap
+LFAToolkit.getnodecoordinatedifferences
 ```

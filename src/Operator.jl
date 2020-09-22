@@ -59,8 +59,8 @@ mutable struct Operator
 
     # data empty until assembled
     elementmatrix::Array{Float64,2}
-    rowmodemapmatrix::Array{Float64,2}
-    columnmodemapmatrix::Array{Float64,2}
+    rowmodemap::Array{Float64,2}
+    columnmodemap::Array{Float64,2}
     modecoordinates::Array{Float64,2}
 
     # inner constructor
@@ -353,7 +353,7 @@ end
 
 """
 ```julia
-getrowmodemapmatrix()
+getrowmodemap()
 ```
 
 Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix
@@ -381,19 +381,19 @@ outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
 
 # note: either syntax works
-modemapmatrix = LFAToolkit.getrowmodemapmatrix(mass);
-modemapmatrix = mass.rowmodemapmatrix;
+modemap = LFAToolkit.getrowmodemap(mass);
+modemap = mass.rowmodemap;
 
 # verify
-@assert modemapmatrix ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
+@assert modemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
     
 # output
 
 ```
 """
-function getrowmodemapmatrix(operator::Operator)
+function getrowmodemap(operator::Operator)
     # assemble if needed
-    if !isdefined(operator, :rowmodemapmatrix)
+    if !isdefined(operator, :rowmodemap)
         # count modes
         numbermodes = 0
         for output in operator.outputs
@@ -404,13 +404,13 @@ function getrowmodemapmatrix(operator::Operator)
 
         # fill matrix
         numbercolumns = size(operator.elementmatrix)[2]
-        rowmodemapmatrix = spzeros(numbermodes, numbercolumns)
+        rowmodemap = spzeros(numbermodes, numbercolumns)
         currentnode = 0
         currentmode = 0
         for output in operator.outputs
             if output.evaluationmodes[1] != EvaluationMode.quadratureweights
                 for i = 1:output.basis.numbernodes
-                    rowmodemapmatrix[output.basis.modemap[i]+currentmode, i+currentnode] = 1
+                    rowmodemap[output.basis.modemap[i]+currentmode, i+currentnode] = 1
                 end
                 currentnode += output.basis.numbernodes
                 currentmode += output.basis.numbermodes
@@ -418,16 +418,16 @@ function getrowmodemapmatrix(operator::Operator)
         end
 
         # store
-        operator.rowmodemapmatrix = rowmodemapmatrix
+        operator.rowmodemap = rowmodemap
     end
 
     # return
-    return getfield(operator, :rowmodemapmatrix)
+    return getfield(operator, :rowmodemap)
 end
 
 """
 ```julia
-getcolumnmodemapmatrix()
+getcolumnmodemap()
 ```
 
 Compute or retrieve the matrix mapping the columns of the element matrix to the symbol matrix
@@ -455,19 +455,19 @@ outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
 
 # note: either syntax works
-modemapmatrix = LFAToolkit.getcolumnmodemapmatrix(mass);
-modemapmatrix = mass.columnmodemapmatrix;
+modemap = LFAToolkit.getcolumnmodemap(mass);
+modemap = mass.columnmodemap;
 
 # verify
-@assert modemapmatrix ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
+@assert modemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
     
 # output
 
 ```
 """
-function getcolumnmodemapmatrix(operator::Operator)
+function getcolumnmodemap(operator::Operator)
     # assemble if needed
-    if !isdefined(operator, :columnmodemapmatrix)
+    if !isdefined(operator, :columnmodemap)
         # count modes
         numbermodes = 0
         for input in operator.inputs
@@ -478,14 +478,13 @@ function getcolumnmodemapmatrix(operator::Operator)
 
         # fill matrix
         numberrows = size(operator.elementmatrix)[2]
-        columnmodemapmatrix = spzeros(numberrows, numbermodes)
+        columnmodemap = spzeros(numberrows, numbermodes)
         currentnode = 0
         currentmode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 for i = 1:input.basis.numbernodes
-                    columnmodemapmatrix[i+currentnode, input.basis.modemap[i]+currentmode] =
-                        1
+                    columnmodemap[i+currentnode, input.basis.modemap[i]+currentmode] = 1
                 end
                 currentnode += input.basis.numbernodes
                 currentmode += input.basis.numbermodes
@@ -493,11 +492,11 @@ function getcolumnmodemapmatrix(operator::Operator)
         end
 
         # store
-        operator.columnmodemapmatrix = columnmodemapmatrix
+        operator.columnmodemap = columnmodemap
     end
 
     # return
-    return getfield(operator, :columnmodemapmatrix)
+    return getfield(operator, :columnmodemap)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -507,10 +506,10 @@ end
 function Base.getproperty(operator::Operator, f::Symbol)
     if f == :elementmatrix
         return getelementmatrix(operator)
-    elseif f == :rowodemapmatrix
-        return getrowmodemapmatrix(operator)
-    elseif f == :columnmodemapmatrix
-        return getcolumnmodemapmatrix(operator)
+    elseif f == :rowmodemap
+        return getrowmodemap(operator)
+    elseif f == :columnmodemap
+        return getcolumnmodemap(operator)
     else
         return getfield(operator, f)
     end

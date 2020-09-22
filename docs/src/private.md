@@ -29,6 +29,6 @@ LFAToolkit.getmodemap
 
 ```@docs
 LFAToolkit.getelementmatrix
-LFAToolkit.getrowmodemapmatrix
-LFAToolkit.getcolumnmodemapmatrix
+LFAToolkit.getrowmodemap
+LFAToolkit.getcolumnmodemap
 ```

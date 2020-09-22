@@ -551,20 +551,28 @@ function getnodecoordinatedifferences(operator::Operator)
         outputcoordinates = []
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                inputcoordinates = inputcoordinates == [] ? input.basis.nodes : [inputcoordinates; input.basis.nodes]
+                inputcoordinates =
+                    inputcoordinates == [] ? input.basis.nodes :
+                    [inputcoordinates; input.basis.nodes]
             end
         end
         for output in operator.outputs
-            outputcoordinates = outputcoordinates == [] ? output.basis.nodes : [outputcoordinates; output.basis.nodes]
+            outputcoordinates =
+                outputcoordinates == [] ? output.basis.nodes :
+                [outputcoordinates; output.basis.nodes]
         end
         dimension = operator.inputs[1].basis.dimension
-        lengths = [max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for d in 1:dimension]
+        lengths = [
+            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...)
+            for d = 1:dimension
+        ]
 
         # fill matrix
         numberrows, numbercolumns = size(operator.elementmatrix)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
-        for i in 1:numberrows, j in 1:numbercolumns, k in 1:dimension
-            nodecoordinatedifferences[i, j, k] = (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
+        for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
+            nodecoordinatedifferences[i, j, k] =
+                (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
         end
 
         # store

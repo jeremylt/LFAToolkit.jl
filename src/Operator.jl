@@ -602,3 +602,101 @@ function Base.getproperty(operator::Operator, f::Symbol)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
+# compute symbol matrix
+# ---------------------------------------------------------------------------------------------------------------------
+
+function symbolmatrix(operator::Operator, thetax::Float64)
+    # validity check
+    dimension = operator.inputs[1].basis.dimension
+    if dimension != 1
+        throw(ArgumentError("Must provide as many values of theta as the mesh has dimensions")) # COV_EXCL_LINE
+    end
+
+    # setup
+    rowmodemap = operator.rowmodemap
+    numberrows = size(rowmodemap)[1]
+    columnmodemap = operator.columnmodemap
+    numbercolumns = size(columnmodemap)[2]
+    elementmatrix = operator.getelementmatrix
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+
+    # compute
+    for i = 1:numberrows, j = 1:numbercolumns
+        symbolmatrixnodes[i, j] =
+            elementmatrix[i, j] * ℯ^(𝑖 * thetax * nodecoordinatedifferences[i, j, 1])
+    end
+    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
+
+    # return
+    return symbolmatrixmodes
+end
+
+function symbolmatrix(operator::Operator, thetax::Float64, thetay::Float64)
+    # validity check
+    dimension = operator.inputs[1].basis.dimension
+    if dimension != 1
+        throw(ArgumentError("Must provide as many values of theta as the mesh has dimensions")) # COV_EXCL_LINE
+    end
+
+    # setup
+    rowmodemap = operator.rowmodemap
+    numberrows = size(rowmodemap)[1]
+    columnmodemap = operator.columnmodemap
+    numbercolumns = size(columnmodemap)[2]
+    elementmatrix = operator.getelementmatrix
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+
+    # compute
+    for i = 1:numberrows, j = 1:numbercolumns
+        symbolmatrixnodes[i, j] =
+            elementmatrix[i, j] *
+            ℯ^(
+                𝑖 * (
+                    thetax * nodecoordinatedifferences[i, j, 1] +
+                    thetay * nodecoordinatedifferences[i, j, 2]
+                )
+            )
+    end
+    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
+
+    # return
+    return symbolmatrixmodes
+end
+
+function symbolmatrix(operator::Operator, thetax::Float64, thetay::Float64, thetaz::Float64)
+    # validity check
+    dimension = operator.inputs[1].basis.dimension
+    if dimension != 1
+        throw(ArgumentError("Must provide as many values of theta as the mesh has dimensions")) # COV_EXCL_LINE
+    end
+
+    # setup
+    rowmodemap = operator.rowmodemap
+    numberrows = size(rowmodemap)[1]
+    columnmodemap = operator.columnmodemap
+    numbercolumns = size(columnmodemap)[2]
+    elementmatrix = operator.getelementmatrix
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+
+    # compute
+    for i = 1:numberrows, j = 1:numbercolumns
+        symbolmatrixnodes[i, j] =
+            elementmatrix[i, j] *
+            ℯ^(
+                𝑖 * (
+                    thetax * nodecoordinatedifferences[i, j, 1] +
+                    thetay * nodecoordinatedifferences[i, j, 2] +
+                    thetaz * nodecoordinatedifferences[i, j, 3]
+                )
+            )
+    end
+    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
+
+    # return
+    return symbolmatrixmodes
+end
+
+# ---------------------------------------------------------------------------------------------------------------------

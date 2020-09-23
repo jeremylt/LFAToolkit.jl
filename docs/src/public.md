@@ -34,4 +34,5 @@ OperatorField
 
 ```@docs
 Operator
+computesymbolmatrix
 ```

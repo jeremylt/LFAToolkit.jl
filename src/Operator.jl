@@ -672,6 +672,47 @@ function computesymbolmatrix(operator::Operator, θ_x::Number)
     return real(symbolmatrixmodes)
 end
 
+"""
+```julia
+computesymbolmatrix()
+```
+
+Compute or retrieve the symbol matrix for an operator
+
+# Returns:
+- Symbol matrix for the operator
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+basis = TensorH1LagrangeBasis(3, 4, 2);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+A = computesymbolmatrix(diffusion, π, π);
+
+# verify
+using LinearAlgebra;
+eigenvalues = eigvals(A);
+@assert eigenvalues ≈ [4/3; 16/9; 64/30; 256/90]
+ 
+# output
+
+```
+"""
 function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
@@ -685,7 +726,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number)
     elementmatrix = operator.elementmatrix
     numberrows, numbercolumns = size(elementmatrix)
     nodecoordinatedifferences = operator.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
     for i = 1:numberrows, j = 1:numbercolumns

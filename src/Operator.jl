@@ -605,7 +605,48 @@ end
 # compute symbol matrix
 # ---------------------------------------------------------------------------------------------------------------------
 
-function computesymbolmatrix(operator::Operator, θ_x::Float64)
+"""
+```julia
+computesymbolmatrix()
+```
+
+Compute or retrieve the symbol matrix for an operator
+
+# Returns:
+- Symbol matrix for the operator
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+A = computesymbolmatrix(diffusion, π);
+
+# verify
+using LinearAlgebra;
+eigenvalues = eigvals(A);
+@assert eigenvalues ≈ [2; 8/3]
+ 
+# output
+
+```
+"""
+function computesymbolmatrix(operator::Operator, θ_x::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 1
@@ -614,25 +655,24 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64)
 
     # setup
     rowmodemap = operator.rowmodemap
-    numberrows = size(rowmodemap)[1]
     columnmodemap = operator.columnmodemap
-    numbercolumns = size(columnmodemap)[2]
-    elementmatrix = operator.getelementmatrix
+    elementmatrix = operator.elementmatrix
+    numberrows, numbercolumns = size(elementmatrix)
     nodecoordinatedifferences = operator.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
     for i = 1:numberrows, j = 1:numbercolumns
         symbolmatrixnodes[i, j] =
-            elementmatrix[i, j] * ℯ^(𝑖 * θ_x * nodecoordinatedifferences[i, j, 1])
+            elementmatrix[i, j] * ℯ^(im * θ_x * nodecoordinatedifferences[i, j, 1])
     end
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return symbolmatrixmodes
+    return real(symbolmatrixmodes)
 end
 
-function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64)
+function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 2
@@ -641,10 +681,9 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64)
 
     # setup
     rowmodemap = operator.rowmodemap
-    numberrows = size(rowmodemap)[1]
     columnmodemap = operator.columnmodemap
-    numbercolumns = size(columnmodemap)[2]
-    elementmatrix = operator.getelementmatrix
+    elementmatrix = operator.elementmatrix
+    numberrows, numbercolumns = size(elementmatrix)
     nodecoordinatedifferences = operator.nodecoordinatedifferences
     symbolmatrixnodes = zeros(numberrows, numbercolumns)
 
@@ -653,7 +692,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64)
         symbolmatrixnodes[i, j] =
             elementmatrix[i, j] *
             ℯ^(
-                𝑖 * (
+                im * (
                     θ_x * nodecoordinatedifferences[i, j, 1] +
                     θ_y * nodecoordinatedifferences[i, j, 2]
                 )
@@ -662,10 +701,10 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64)
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return symbolmatrixmodes
+    return real(symbolmatrixmodes)
 end
 
-function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64, θ_z::Float64)
+function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 3
@@ -674,10 +713,9 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64, �
 
     # setup
     rowmodemap = operator.rowmodemap
-    numberrows = size(rowmodemap)[1]
     columnmodemap = operator.columnmodemap
-    numbercolumns = size(columnmodemap)[2]
-    elementmatrix = operator.getelementmatrix
+    elementmatrix = operator.elementmatrix
+    numberrows, numbercolumns = size(elementmatrix)
     nodecoordinatedifferences = operator.nodecoordinatedifferences
     symbolmatrixnodes = zeros(numberrows, numbercolumns)
 
@@ -686,7 +724,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64, �
         symbolmatrixnodes[i, j] =
             elementmatrix[i, j] *
             ℯ^(
-                𝑖 * (
+                im * (
                     θ_x * nodecoordinatedifferences[i, j, 1] +
                     θ_y * nodecoordinatedifferences[i, j, 2] +
                     θ_z * nodecoordinatedifferences[i, j, 3]
@@ -696,7 +734,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Float64, θ_y::Float64, �
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return symbolmatrixmodes
+    return real(symbolmatrixmodes)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

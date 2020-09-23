@@ -18,7 +18,7 @@ export EvaluationMode
 export Mesh1D, Mesh2D, Mesh3D
 export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
 export OperatorField
-export Operator
+export Operator, computesymbolmatrix
 
 # ---------------------------------------------------------------------------------------------------------------------
 # imports

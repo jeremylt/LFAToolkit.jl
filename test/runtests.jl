@@ -29,8 +29,8 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     outputs = [OperatorField(basis, [EvaluationMode.interpolation])]
     mass = Operator(massweakform, mesh, inputs, outputs)
 
-    # element matrix computation
-    elementmatrix = mass.elementmatrix
+    # compute operator symbols
+    A = computesymbols(mass, π, π)
 
     # ---------------------------------------------------------------------------------------------------------------------
     # diffusion operator example
@@ -42,7 +42,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
         return [dv]
     end
 
-    # Diffusion operator
+    # diffusion operator
     inputs = [
         OperatorField(basis, [EvaluationMode.gradient]),
         OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -50,8 +50,8 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     outputs = [OperatorField(basis, [EvaluationMode.gradient])]
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
-    # element matrix computation
-    elementmatrix = diffusion.elementmatrix
+    # compute operator symbols
+    A = computesymbols(diffusion, π, π)
 
 end # testset
 

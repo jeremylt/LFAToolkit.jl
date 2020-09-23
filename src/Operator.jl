@@ -607,7 +607,7 @@ end
 
 """
 ```julia
-computesymbolmatrix()
+computesymbols()
 ```
 
 Compute or retrieve the symbol matrix for an operator
@@ -635,7 +635,7 @@ outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
 # note: either syntax works
-A = computesymbolmatrix(diffusion, π);
+A = computesymbols(diffusion, π);
 
 # verify
 using LinearAlgebra;
@@ -646,7 +646,7 @@ eigenvalues = eigvals(A);
 
 ```
 """
-function computesymbolmatrix(operator::Operator, θ_x::Number)
+function computesymbols(operator::Operator, θ_x::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 1
@@ -669,12 +669,12 @@ function computesymbolmatrix(operator::Operator, θ_x::Number)
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return real(symbolmatrixmodes)
+    return symbolmatrixmodes
 end
 
 """
 ```julia
-computesymbolmatrix()
+computesymbols()
 ```
 
 Compute or retrieve the symbol matrix for an operator
@@ -702,7 +702,7 @@ outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
 # note: either syntax works
-A = computesymbolmatrix(diffusion, π, π);
+A = computesymbols(diffusion, π, π);
 
 # verify
 using LinearAlgebra;
@@ -713,7 +713,7 @@ eigenvalues = eigvals(A);
 
 ```
 """
-function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number)
+function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 2
@@ -742,10 +742,10 @@ function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number)
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return real(symbolmatrixmodes)
+    return symbolmatrixmodes
 end
 
-function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
+function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
     # validity check
     dimension = operator.inputs[1].basis.dimension
     if dimension != 3
@@ -775,7 +775,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number, θ_
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
-    return real(symbolmatrixmodes)
+    return symbolmatrixmodes
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

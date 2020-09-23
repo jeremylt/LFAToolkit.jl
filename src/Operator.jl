@@ -758,7 +758,7 @@ function computesymbolmatrix(operator::Operator, θ_x::Number, θ_y::Number, θ_
     elementmatrix = operator.elementmatrix
     numberrows, numbercolumns = size(elementmatrix)
     nodecoordinatedifferences = operator.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(numberrows, numbercolumns)
+    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
     for i = 1:numberrows, j = 1:numbercolumns

@@ -77,7 +77,6 @@ tensor product basis:
     dimension: 2
   evaluation mode:
     interpolation
-
 ```
 """
 mutable struct Operator

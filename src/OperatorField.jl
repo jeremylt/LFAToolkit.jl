@@ -81,6 +81,7 @@ struct OperatorField
     )
 end
 
+# printing
 function Base.show(io::IO, field::OperatorField)
     print(io, "operator field:\n", field.basis)
     if length(field.evaluationmodes) == 1

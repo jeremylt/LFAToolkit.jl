@@ -52,6 +52,7 @@ struct Mesh1D <: Mesh
     )
 end
 
+# printing
 Base.show(io::IO, mesh::Mesh1D) = print(
     io,
     "1D mesh:
@@ -108,6 +109,7 @@ struct Mesh2D <: Mesh
     )
 end
 
+# printing
 Base.show(io::IO, mesh::Mesh2D) = print(
     io,
     "2D mesh:
@@ -170,6 +172,7 @@ struct Mesh3D <: Mesh
     )
 end
 
+# printing
 Base.show(io::IO, mesh::Mesh3D) = print(
     io,
     "3D mesh:

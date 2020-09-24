@@ -143,6 +143,7 @@ mutable struct Operator
     new(weakform, mesh, inputs, outputs))
 end
 
+# printing
 function Base.show(io::IO, operator::Operator)
     print(io, "finite element operator:\n", operator.mesh)
 

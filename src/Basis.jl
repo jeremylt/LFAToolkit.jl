@@ -111,6 +111,7 @@ mutable struct TensorBasis <: Basis
     )
 end
 
+# printing
 Base.show(io::IO, basis::TensorBasis) = print(
     io,
     "tensor product basis:
@@ -219,6 +220,7 @@ mutable struct NonTensorBasis <: Basis
     )
 end
 
+# printing
 Base.show(io::IO, basis::NonTensorBasis) = print(
     io,
     "non-tensor product basis:

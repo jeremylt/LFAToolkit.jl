@@ -214,7 +214,7 @@ u = ones(4*4);
 v = elementmatrix * u;
     
 total = sum(v);
-@assert total ≈ 4.0
+@assert total ≈ 1.0
     
 # output
 
@@ -318,9 +318,13 @@ function getelementmatrix(operator::Operator)
         end
 
         # quadrature weight input index
+        weightscale = 1
         if weightinputindex != 0
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
+            weightscale =
+                1.0 /
+                (operator.inputs[weightinputindex].basis.volume * operator.mesh.volume)
         end
 
         # outputs
@@ -359,18 +363,18 @@ function getelementmatrix(operator::Operator)
             numberquadratureinputs * numberquadraturepoints,
             numberquadratureinputs * numberquadraturepoints,
         )
-        for q = 1:numberquadraturepoints
-            # set quadrature weight
-            if weightinputindex != 0
-                weakforminputs[weightinputindex][1] = quadratureweights[q]
+        # loop over inputs
+        currentfieldin = 0
+        for i = 1:length(operator.inputs)
+            input = operator.inputs[i]
+            if input.evaluationmodes[1] == EvaluationMode.quadratureweights
+                break
             end
 
-            # loop over inputs
-            currentfieldin = 0
-            for i = 1:length(operator.inputs)
-                input = operator.inputs[i]
-                if input.evaluationmodes[1] == EvaluationMode.quadratureweights
-                    break
+            for q = 1:numberquadraturepoints
+                # set quadrature weight
+                if weightinputindex != 0
+                    weakforminputs[weightinputindex][1] = quadratureweights[q] * weightscale
                 end
 
                 # fill sparse matrix
@@ -694,7 +698,7 @@ A = computesymbols(diffusion, π);
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert eigenvalues ≈ [2; 8/3]
+@assert eigenvalues ≈ [1; 4/3]
  
 # output
 
@@ -761,7 +765,7 @@ A = computesymbols(diffusion, π, π);
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert eigenvalues ≈ [4/3; 16/9; 64/30; 256/90]
+@assert eigenvalues ≈ [1/3; 4/9; 16/30; 64/90]
  
 # output
 

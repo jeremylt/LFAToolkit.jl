@@ -39,6 +39,7 @@ struct Mesh1D <: Mesh
     # data
     dimension::Int
     dx::Float64
+    volume::Float64
 
     # inner constructor
     Mesh1D(dx) = (
@@ -48,7 +49,7 @@ struct Mesh1D <: Mesh
         end;
 
         # constructor
-        new(1, dx)
+        new(1, dx, dx)
     )
 end
 
@@ -96,6 +97,7 @@ struct Mesh2D <: Mesh
     dimension::Int
     dx::Float64
     dy::Float64
+    volume::Float64
 
     # inner constructor
     Mesh2D(dx, dy) = (
@@ -105,7 +107,7 @@ struct Mesh2D <: Mesh
         end;
 
         # constructor
-        new(2, dx, dy)
+        new(2, dx, dy, dx * dy)
     )
 end
 
@@ -159,6 +161,7 @@ struct Mesh3D <: Mesh
     dx::Float64
     dy::Float64
     dz::Float64
+    volume::Float64
 
     # inner constructor
     Mesh3D(dx, dy, dz) = (
@@ -168,7 +171,7 @@ struct Mesh3D <: Mesh
         end;
 
         # constructor
-        new(3, dx, dy, dz)
+        new(3, dx, dy, dz, dx * dy * dz)
     )
 end
 

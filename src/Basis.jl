@@ -50,6 +50,7 @@ mutable struct TensorBasis <: Basis
     quadratureweights1d::Array{Float64,1}
     interpolation1d::Array{Float64,2}
     gradient1d::Array{Float64,2}
+    volume::Float64
 
     # data empty until assembled
     nodes::Array{Float64}
@@ -107,6 +108,7 @@ mutable struct TensorBasis <: Basis
             quadratureweights1d,
             interpolation1d,
             gradient1d,
+            (max(nodes1d...) - min(nodes1d...))^dimension,
         )
     )
 end
@@ -161,6 +163,7 @@ mutable struct NonTensorBasis <: Basis
     quadratureweights::Array{Float64,1}
     interpolation::Array{Float64,2}
     gradient::Array{Float64,2}
+    volume::Float64
     numbermodes::Int
     modemap::Array{Int,1}
 
@@ -204,6 +207,12 @@ mutable struct NonTensorBasis <: Basis
             error("must map the modes for each basis node") # COV_EXCL_LINE
         end;
 
+        # compute volume
+        volume = 1;
+        for d = 1:dimension
+            volume *= (max(nodes[:, d]...) - min(nodes[:, d]...))
+        end;
+
         # constructor
         new(
             numbernodes,
@@ -214,6 +223,7 @@ mutable struct NonTensorBasis <: Basis
             quadratureweights,
             interpolation,
             gradient,
+            volume,
             max(modemap...),
             modemap,
         )

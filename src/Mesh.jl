@@ -31,7 +31,7 @@ println(mesh)
 @assert mesh.dx ≈ 1.0
 
 # output
-1D mesh:
+1d mesh:
     dx: 1.0
 ```
 """
@@ -56,7 +56,7 @@ end
 # printing
 Base.show(io::IO, mesh::Mesh1D) = print(
     io,
-    "1D mesh:
+    "1d mesh:
     dx: ",
     mesh.dx,
 )
@@ -87,7 +87,7 @@ println(mesh)
 @assert mesh.dy ≈ 0.5
 
 # output
-2D mesh:
+2d mesh:
     dx: 1.0
     dy: 0.5
 ```
@@ -114,7 +114,7 @@ end
 # printing
 Base.show(io::IO, mesh::Mesh2D) = print(
     io,
-    "2D mesh:
+    "2d mesh:
     dx: ",
     mesh.dx,
     "\n    dy: ",
@@ -149,7 +149,7 @@ println(mesh)
 @assert mesh.dz ≈ 0.3
 
 # output
-3D mesh:
+3d mesh:
     dx: 1.0
     dy: 0.5
     dz: 0.3
@@ -178,7 +178,7 @@ end
 # printing
 Base.show(io::IO, mesh::Mesh3D) = print(
     io,
-    "3D mesh:
+    "3d mesh:
     dx: ",
     mesh.dx,
     "\n    dy: ",

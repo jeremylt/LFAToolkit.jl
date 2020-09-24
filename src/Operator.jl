@@ -323,8 +323,8 @@ function getelementmatrix(operator::Operator)
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
             weightscale =
-                1.0 /
-                (operator.inputs[weightinputindex].basis.volume * operator.mesh.volume)
+                operator.mesh.volume /
+                operator.inputs[weightinputindex].basis.volume
         end
 
         # outputs

@@ -43,10 +43,40 @@ outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
 mass = Operator(massweakform, mesh, inputs, outputs);
 
 # verify
+println(mass)
 @assert mass.weakform == massweakform
 @assert mass.mesh == mesh
-    
+
 # output
+finite element operator:
+2D mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    interpolation
 
 ```
 """
@@ -112,6 +142,30 @@ mutable struct Operator
 
     # constructor
     new(weakform, mesh, inputs, outputs))
+end
+
+function Base.show(io::IO, operator::Operator)
+    print(io, "finite element operator:\n", operator.mesh)
+
+    # inputs
+    if length(operator.inputs) == 1
+        print("\n\n1 input:")
+    else
+        print("\n\n", length(operator.inputs), " inputs:")
+    end
+    for i = 1:length(operator.inputs)
+        print("\n", operator.inputs[i])
+    end
+
+    # outputs
+    if length(operator.outputs) == 1
+        print("\n\n1 output:")
+    else
+        print("\n\n", length(operator.outputs), " outputs:")
+    end
+    for i = 1:length(operator.outputs)
+        print("\n", operator.outputs[i])
+    end
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -29,6 +29,7 @@ basis = TensorH1LagrangeBasis(4, 3, 2);
 weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights]);
 
 # verify
+println(weightsfield)
 @assert weightsfield.basis == basis
 @assert weightsfield.evaluationmodes[1] == EvaluationMode.quadratureweights
 
@@ -39,12 +40,27 @@ inputfield = OperatorField(basis, [
 ]);
 
 # verify
+println(inputfield)
 @assert inputfield.basis == basis
 @assert inputfield.evaluationmodes[1] == EvaluationMode.interpolation
 @assert inputfield.evaluationmodes[2] == EvaluationMode.gradient
 
 # output
-
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    dimension: 2
+  evaluation modes:
+    interpolation
+    gradient
 ```
 """
 struct OperatorField
@@ -63,6 +79,18 @@ struct OperatorField
         # constructor
         new(basis, evaluationmodes)
     )
+end
+
+function Base.show(io::IO, field::OperatorField)
+    print(io, "operator field:\n", field.basis)
+    if length(field.evaluationmodes) == 1
+        print("\n  evaluation mode:")
+    else
+        print("\n  evaluation modes:")
+    end
+    for mode in field.evaluationmodes
+        print("\n    ", mode)
+    end
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

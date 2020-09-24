@@ -111,6 +111,17 @@ mutable struct TensorBasis <: Basis
     )
 end
 
+Base.show(io::IO, basis::TensorBasis) = print(
+    io,
+    "tensor product basis:
+    numbernodes1d: ",
+    basis.numbernodes1d,
+    "\n    numberquadraturepoints1d: ",
+    basis.numberquadratuepoints1d,
+    "\n    dimension: ",
+    basis.dimension,
+)
+
 """
 ```julia
 NonTensorBasis(
@@ -207,6 +218,17 @@ mutable struct NonTensorBasis <: Basis
         )
     )
 end
+
+Base.show(io::IO, basis::NonTensorBasis) = print(
+    io,
+    "non-tensor product basis:
+    numbernodes: ",
+    basis.numbernodes,
+    "\n    numberquadraturepoints1d: ",
+    basis.numberquadratuepoints,
+    "\n    dimension: ",
+    basis.dimension,
+)
 
 # ---------------------------------------------------------------------------------------------------------------------
 # utility functions for generating polynomial bases
@@ -441,12 +463,16 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
+println(basis)
 @assert basis.numbernodes1d == 4
 @assert basis.numberquadratuepoints1d == 3
 @assert basis.dimension == 2
 
 # output
-
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    dimension: 2
 ```
 """
 function TensorH1LagrangeBasis(

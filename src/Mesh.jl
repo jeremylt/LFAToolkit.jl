@@ -26,11 +26,13 @@ One dimensional regular background mesh
 mesh = Mesh1D(1.0);
 
 # verify
+println(mesh)
 @assert mesh.dimension == 1
 @assert mesh.dx ≈ 1.0
 
 # output
-
+1D mesh:
+    dx: 1.0
 ```
 """
 struct Mesh1D <: Mesh
@@ -49,6 +51,13 @@ struct Mesh1D <: Mesh
         new(1, dx)
     )
 end
+
+Base.show(io::IO, mesh::Mesh1D) = print(
+    io,
+    "1D mesh:
+    dx: ",
+    mesh.dx,
+)
 
 """
 ```julia
@@ -70,12 +79,15 @@ Two dimensional regular background mesh
 mesh = Mesh2D(1.0, 0.5);
 
 # verify
+println(mesh)
 @assert mesh.dimension == 2
 @assert mesh.dx ≈ 1.0
 @assert mesh.dy ≈ 0.5
 
 # output
-
+2D mesh:
+    dx: 1.0
+    dy: 0.5
 ```
 """
 struct Mesh2D <: Mesh
@@ -95,6 +107,15 @@ struct Mesh2D <: Mesh
         new(2, dx, dy)
     )
 end
+
+Base.show(io::IO, mesh::Mesh2D) = print(
+    io,
+    "2D mesh:
+    dx: ",
+    mesh.dx,
+    "\n    dy: ",
+    mesh.dy,
+)
 
 """
 ```julia
@@ -117,13 +138,17 @@ Three dimensional regular background mesh
 mesh = Mesh3D(1.0, 0.5, 0.3);
 
 # verify
+println(mesh)
 @assert mesh.dimension == 3
 @assert mesh.dx ≈ 1.0
 @assert mesh.dy ≈ 0.5
 @assert mesh.dz ≈ 0.3
 
 # output
-
+3D mesh:
+    dx: 1.0
+    dy: 0.5
+    dz: 0.3
 ``` 
 """
 struct Mesh3D <: Mesh
@@ -144,5 +169,16 @@ struct Mesh3D <: Mesh
         new(3, dx, dy, dz)
     )
 end
+
+Base.show(io::IO, mesh::Mesh3D) = print(
+    io,
+    "3D mesh:
+    dx: ",
+    mesh.dx,
+    "\n    dy: ",
+    mesh.dy,
+    "\n    dz: ",
+    mesh.dz,
+)
 
 # ---------------------------------------------------------------------------------------------------------------------

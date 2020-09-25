@@ -36,3 +36,9 @@ OperatorField
 Operator
 computesymbols
 ```
+
+## Preconditioners
+
+```@docs
+Jacobi
+```

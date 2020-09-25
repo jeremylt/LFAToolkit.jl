@@ -82,12 +82,12 @@ function Base.show(io::IO, field::OperatorField)
 
     # evaluation modes
     if length(field.evaluationmodes) == 1
-        print("\n  evaluation mode:")
+        print(io, "\n  evaluation mode:")
     else
-        print("\n  evaluation modes:")
+        print(io, "\n  evaluation modes:")
     end
     for mode in field.evaluationmodes
-        print("\n    ", mode)
+        print(io, "\n    ", mode)
     end
 end
 

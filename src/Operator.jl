@@ -147,22 +147,22 @@ function Base.show(io::IO, operator::Operator)
 
     # inputs
     if length(operator.inputs) == 1
-        print("\n\n1 input:") # COV_EXCL_LINE
+        print(io, "\n\n1 input:") # COV_EXCL_LINE
     else
-        print("\n\n", length(operator.inputs), " inputs:")
+        print(io, "\n\n", length(operator.inputs), " inputs:")
     end
     for i = 1:length(operator.inputs)
-        print("\n", operator.inputs[i])
+        print(io, "\n", operator.inputs[i])
     end
 
     # outputs
     if length(operator.outputs) == 1
-        print("\n\n1 output:")
+        print(io, "\n\n1 output:")
     else
         print("\n\n", length(operator.outputs), " outputs:") # COV_EXCL_LINE
     end
     for i = 1:length(operator.outputs)
-        print("\n", operator.outputs[i])
+        print(io, "\n", operator.outputs[i])
     end
 end
 

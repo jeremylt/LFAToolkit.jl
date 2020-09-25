@@ -19,6 +19,7 @@ export Mesh1D, Mesh2D, Mesh3D
 export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
 export OperatorField
 export Operator, computesymbols
+export Jacobi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # imports
@@ -29,6 +30,7 @@ include("Mesh.jl")
 include("Basis.jl")
 include("OperatorField.jl")
 include("Operator.jl")
+include("PC_Jacobi.jl")
 
 end # module
 

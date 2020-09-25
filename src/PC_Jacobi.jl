@@ -265,12 +265,10 @@ function computesymbols(preconditioner::Jacobi, ω::Number, θ::Array)
 end
 
 function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number)
-    # return
     return computesymbols(preconditioner, ω, [θ_x])
 end
 
 function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number, θ_y::Number)
-    # return
     return computesymbols(preconditioner, ω, [θ_x, θ_y])
 end
 
@@ -281,7 +279,6 @@ function computesymbols(
     θ_y::Number,
     θ_z::Number,
 )
-    # return
     return computesymbols(preconditioner, ω, [θ_x, θ_y, θ_z])
 end
 

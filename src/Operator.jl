@@ -49,7 +49,7 @@ println(mass)
 
 # output
 finite element operator:
-2D mesh:
+2d mesh:
     dx: 1.0
     dy: 1.0
 
@@ -323,8 +323,7 @@ function getelementmatrix(operator::Operator)
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
             weightscale =
-                operator.mesh.volume /
-                operator.inputs[weightinputindex].basis.volume
+                operator.mesh.volume / operator.inputs[weightinputindex].basis.volume
         end
 
         # outputs

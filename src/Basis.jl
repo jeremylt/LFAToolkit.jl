@@ -236,7 +236,7 @@ Base.show(io::IO, basis::NonTensorBasis) = print(
     "non-tensor product basis:
     numbernodes: ",
     basis.numbernodes,
-    "\n    numberquadraturepoints1d: ",
+    "\n    numberquadraturepoints: ",
     basis.numberquadratuepoints,
     "\n    dimension: ",
     basis.dimension,

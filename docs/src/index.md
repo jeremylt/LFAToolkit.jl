@@ -18,5 +18,6 @@ Pages = [
     "private.md",
     "references.md"
 ]
+Depth = 1
 ```
 

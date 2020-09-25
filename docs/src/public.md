@@ -1,47 +1,16 @@
 # Public API
 
-This page documents the public API of the LFAToolkit.
+This section documents the public API of the LFAToolkit.
 
-## Mesh
+## Contents
 
-```@docs
-Mesh1D
-Mesh2D
-Mesh3D
-```
-
-## Basis
-
-```@docs
-TensorBasis
-NonTensorBasis
-TensorH1LagrangeBasis
-```
-
-## Basis Evaluation Mode
-
-```@docs
-EvaluationMode.EvalMode
-```
-
-## Operator Field
-
-```@docs
-OperatorField
-```
-
-## Operator
-
-```@docs
-Operator
-computesymbols(::Operator, ::Array)
-```
-
-## Preconditioners
-
-### Jacobi
-
-```@docs
-Jacobi
-computesymbols(::Jacobi, ::Array)
+```@contents
+Pages = [
+    "public/mesh.md",
+    "public/basis.md",
+    "public/evaluationmode.md",
+    "public/operatorfield.md",
+    "public/operator.md",
+    "public/pc_jacobi.md",
+]
 ```

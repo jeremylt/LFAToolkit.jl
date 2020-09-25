@@ -1,44 +1,14 @@
 # Private API
 
-This page documents the private API of the LFAToolkit.
+This section documents the private API of the LFAToolkit.
 
-## Mesh
+## Contents
 
-```@docs
-LFAToolkit.Mesh
-```
-
-## Basis
-
-```@docs
-LFAToolkit.Basis
-LFAToolkit.gaussquadrature
-LFAToolkit.lobattoquadrature
-LFAToolkit.getnumbernodes
-LFAToolkit.getnodes
-LFAToolkit.getnumberquadraturepoints
-LFAToolkit.getquadraturepoints
-LFAToolkit.getquadratureweights
-LFAToolkit.getinterpolation
-LFAToolkit.getgradient
-LFAToolkit.getnumbermodes
-LFAToolkit.getmodemap
-LFAToolkit.getdiagonal
-```
-
-## Operator
-
-```@docs
-LFAToolkit.getelementmatrix
-LFAToolkit.getrowmodemap
-LFAToolkit.getcolumnmodemap
-LFAToolkit.getnodecoordinatedifferences
-```
-
-## Preconditioners
-
-### Jacobi
-
-```@docs
-LFAToolkit.getoperatordiagonalinverse
+```@contents
+Pages = [
+    "private/mesh.md",
+    "private/basis.md",
+    "private/operator.md",
+    "private/pc_jacobi.md",
+]
 ```

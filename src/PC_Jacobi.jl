@@ -176,10 +176,17 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, θ_x, ...)
+computesymbols(preconditioner, ω, θ_x, ...)
 ```
 
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
+
+# Arguments:
+- `preconditioner`: Jacobi preconditioner to compute symbol matrix for
+- `ω`:              Smoothing weighting factor
+- `θ_x`:            Fourier mode frequency in x direction
+- `θ_y`:            Fourier mode frequency in y direction (2D and 3D)
+- `θ_z`:            Fourier mode frequency in z direction (3D)
 
 # Returns:
 - Symbol matrix for the Jacobi preconditioned operator
@@ -207,12 +214,12 @@ diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 jacobi = Jacobi(diffusion);
 
 # note: either syntax works
-A = computesymbols(jacobi, π);
+A = computesymbols(jacobi, 1.0, π);
 
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert max(real(eigenvalues)...) ≈ 1.0
+@assert real(eigenvalues) ≈ [0, 1/7]
  
 # output
 
@@ -240,36 +247,42 @@ diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 jacobi = Jacobi(diffusion)
 
 # compute symbols
-A = computesymbols(jacobi, π, π);
+A = computesymbols(jacobi, 1.0, π, π);
 
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert max(real(eigenvalues)...) ≈ 5/4
+@assert real(eigenvalues) ≈ [-1/4, -1/14, 0, 1/7]
  
 # output
 
 ```
 """
-function computesymbols(preconditioner::Jacobi, θ::Array)
+function computesymbols(preconditioner::Jacobi, ω::Number, θ::Array)
     # return
-    return preconditioner.operatordiagonalinverse *
-           computesymbols(preconditioner.operator, θ)
+    B = preconditioner.operatordiagonalinverse * computesymbols(preconditioner.operator, θ)
+    return I - ω * B
 end
 
-function computesymbols(preconditioner::Jacobi, θ_x::Number)
+function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number)
     # return
-    return computesymbols(preconditioner, [θ_x])
+    return computesymbols(preconditioner, ω, [θ_x])
 end
 
-function computesymbols(preconditioner::Jacobi, θ_x::Number, θ_y::Number)
+function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number, θ_y::Number)
     # return
-    return computesymbols(preconditioner, [θ_x, θ_y])
+    return computesymbols(preconditioner, ω, [θ_x, θ_y])
 end
 
-function computesymbols(preconditioner::Jacobi, θ_x::Number, θ_y::Number, θ_z::Number)
+function computesymbols(
+    preconditioner::Jacobi,
+    ω::Number,
+    θ_x::Number,
+    θ_y::Number,
+    θ_z::Number,
+)
     # return
-    return computesymbols(preconditioner, [θ_x, θ_y, θ_z])
+    return computesymbols(preconditioner, ω, [θ_x, θ_y, θ_z])
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

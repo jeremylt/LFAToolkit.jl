@@ -739,7 +739,13 @@ end
 computesymbols(operator, θ_x, ...)
 ```
 
-Compute or retrieve the symbol matrix for an operator
+Compute the symbol matrix for an operator
+
+# Arguments:
+- `operator`: Finite element operator to compute symbol matrix for
+- `θ_x`:      Fourier mode frequency in x direction
+- `θ_y`:      Fourier mode frequency in y direction (2D and 3D)
+- `θ_z`:      Fourier mode frequency in z direction (3D)
 
 # Returns:
 - Symbol matrix for the operator

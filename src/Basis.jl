@@ -114,6 +114,7 @@ mutable struct TensorBasis <: Basis
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, basis::TensorBasis) = print(
     io,
     "tensor product basis:
@@ -124,6 +125,7 @@ Base.show(io::IO, basis::TensorBasis) = print(
     "\n    dimension: ",
     basis.dimension,
 )
+# COV_EXCL_STOP
 
 """
 ```julia
@@ -231,6 +233,7 @@ mutable struct NonTensorBasis <: Basis
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, basis::NonTensorBasis) = print(
     io,
     "non-tensor product basis:
@@ -241,6 +244,7 @@ Base.show(io::IO, basis::NonTensorBasis) = print(
     "\n    dimension: ",
     basis.dimension,
 )
+# COV_EXCL_STOP
 
 # ---------------------------------------------------------------------------------------------------------------------
 # utility functions for generating polynomial bases

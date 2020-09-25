@@ -143,12 +143,13 @@ mutable struct Operator
 end
 
 # printing
+# COV_EXCL_START
 function Base.show(io::IO, operator::Operator)
     print(io, "finite element operator:\n", operator.mesh)
 
     # inputs
     if length(operator.inputs) == 1
-        print(io, "\n\n1 input:") # COV_EXCL_LINE
+        print(io, "\n\n1 input:")
     else
         print(io, "\n\n", length(operator.inputs), " inputs:")
     end
@@ -160,12 +161,13 @@ function Base.show(io::IO, operator::Operator)
     if length(operator.outputs) == 1
         print(io, "\n\n1 output:")
     else
-        print("\n\n", length(operator.outputs), " outputs:") # COV_EXCL_LINE
+        print("\n\n", length(operator.outputs), " outputs:")
     end
     for i = 1:length(operator.outputs)
         print(io, "\n", operator.outputs[i])
     end
 end
+# COV_EXCL_STOP
 
 # ---------------------------------------------------------------------------------------------------------------------
 # data for computing symbols

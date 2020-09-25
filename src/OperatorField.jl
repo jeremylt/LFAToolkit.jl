@@ -77,6 +77,7 @@ struct OperatorField
 end
 
 # printing
+# COV_EXCL_START
 function Base.show(io::IO, field::OperatorField)
     print(io, "operator field:\n", field.basis)
 
@@ -90,5 +91,6 @@ function Base.show(io::IO, field::OperatorField)
         print(io, "\n    ", mode)
     end
 end
+# COV_EXCL_STOP
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -86,7 +86,9 @@ mutable struct Jacobi
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, preconditioner::Jacobi) = print(io, "jacobi preconditioner")
+# COV_EXCL_STOP
 
 # ---------------------------------------------------------------------------------------------------------------------
 # data for computing symbols

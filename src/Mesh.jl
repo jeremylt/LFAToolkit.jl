@@ -52,12 +52,14 @@ struct Mesh1D <: Mesh
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, mesh::Mesh1D) = print(
     io,
     "1d mesh:
     dx: ",
     mesh.dx,
 )
+# COV_EXCL_STOP
 
 """
 ```julia
@@ -107,6 +109,7 @@ struct Mesh2D <: Mesh
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, mesh::Mesh2D) = print(
     io,
     "2d mesh:
@@ -115,6 +118,7 @@ Base.show(io::IO, mesh::Mesh2D) = print(
     "\n    dy: ",
     mesh.dy,
 )
+# COV_EXCL_STOP
 
 """
 ```julia
@@ -167,6 +171,7 @@ struct Mesh3D <: Mesh
 end
 
 # printing
+# COV_EXCL_START
 Base.show(io::IO, mesh::Mesh3D) = print(
     io,
     "3d mesh:
@@ -177,5 +182,6 @@ Base.show(io::IO, mesh::Mesh3D) = print(
     "\n    dz: ",
     mesh.dz,
 )
+# COV_EXCL_STOP
 
 # ---------------------------------------------------------------------------------------------------------------------

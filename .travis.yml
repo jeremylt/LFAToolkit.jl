@@ -51,8 +51,10 @@ jobs:
       os: linux
       dist: focal
       script:
-        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
-                                               Pkg.build();
-                                               Pkg.instantiate()'
+        - if [[ "$TRAVIS_JOB_NAME" == "julia 1.5" ]]; then
+              julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+                                                   Pkg.build();
+                                                   Pkg.instantiate()'
+          fi
         - julia --project=docs/ docs/make.jl
       after_success: skip

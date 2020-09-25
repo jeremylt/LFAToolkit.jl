@@ -34,3 +34,10 @@ LFAToolkit.getrowmodemap
 LFAToolkit.getcolumnmodemap
 LFAToolkit.getnodecoordinatedifferences
 ```
+
+## Preconditioners
+
+### Jacobi
+```@docs
+LFAToolkit.getoperatordiagonalinverse
+```

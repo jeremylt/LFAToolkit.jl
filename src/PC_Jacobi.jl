@@ -92,6 +92,49 @@ Base.show(io::IO, preconditioner::Jacobi) = print(io, "jacobi preconditioner")
 # data for computing symbols
 # ---------------------------------------------------------------------------------------------------------------------
 
+"""
+```julia
+getoperatordiagonalinverse(preconditioner)
+```
+
+Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi preconditioner
+
+# Returns:
+- Symbol matrix diagonal inverse for the operator
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# preconditioner
+jacobi = Jacobi(diffusion)
+
+# note: either syntax works
+diagonalinverse = LFAToolkit.getoperatordiagonalinverse(jacobi);
+diagonalinverse = jacobi.operatordiagonalinverse;
+
+# verify
+@assert diagonalinverse ≈ [6/7 0; 0 3/4]
+ 
+# output
+
+```
+"""
 function getoperatordiagonalinverse(preconditioner::Jacobi)
     # assemble if needed
     if !isdefined(preconditioner, :operatordiagonalinverse)
@@ -133,7 +176,7 @@ end
 
 """
 ```julia
-computesymbols()
+computesymbols(preconditioner, θ_x, ...)
 ```
 
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator

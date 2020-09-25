@@ -472,7 +472,7 @@ end
 
 """
 ```julia
-getrowmodemap()
+getrowmodemap(operator)
 ```
 
 Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix
@@ -546,7 +546,7 @@ end
 
 """
 ```julia
-getcolumnmodemap()
+getcolumnmodemap(operator)
 ```
 
 Compute or retrieve the matrix mapping the columns of the element matrix to the symbol matrix
@@ -620,7 +620,7 @@ end
 
 """
 ```julia
-getnodecoordinatedifferences()
+getnodecoordinatedifferences(operator)
 ```
 
 Compute or retrieve the array of differences in coordinates between nodes
@@ -736,7 +736,7 @@ end
 
 """
 ```julia
-computesymbols()
+computesymbols(operator, θ_x, ...)
 ```
 
 Compute or retrieve the symbol matrix for an operator

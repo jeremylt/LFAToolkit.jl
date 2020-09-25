@@ -45,21 +45,21 @@ mutable struct TensorBasis <: Basis
     numbernodes1d::Int
     numberquadratuepoints1d::Int
     dimension::Int
-    nodes1d::Array{Float64,1}
-    quadraturepoints1d::Array{Float64,1}
-    quadratureweights1d::Array{Float64,1}
-    interpolation1d::Array{Float64,2}
-    gradient1d::Array{Float64,2}
+    nodes1d::AbstractArray{Float64,1}
+    quadraturepoints1d::AbstractArray{Float64,1}
+    quadratureweights1d::AbstractArray{Float64,1}
+    interpolation1d::AbstractArray{Float64,2}
+    gradient1d::AbstractArray{Float64,2}
     volume::Float64
 
     # data empty until assembled
-    nodes::Array{Float64}
-    quadraturepoints::Array{Float64}
-    quadratureweights::Array{Float64,1}
-    interpolation::Array{Float64,2}
-    gradient::Array{Float64,2}
+    nodes::AbstractArray{Float64}
+    quadraturepoints::AbstractArray{Float64}
+    quadratureweights::AbstractArray{Float64,1}
+    interpolation::AbstractArray{Float64,2}
+    gradient::AbstractArray{Float64,2}
     numbermodes::Int
-    modemap::Array{Int,1}
+    modemap::AbstractArray{Int,1}
 
     # inner constructor
     TensorBasis(
@@ -476,9 +476,6 @@ basis = TensorH1LagrangeBasis(4, 3, 2);
 
 # verify
 println(basis)
-@assert basis.numbernodes1d == 4
-@assert basis.numberquadratuepoints1d == 3
-@assert basis.dimension == 2
 
 # output
 tensor product basis:
@@ -1114,6 +1111,40 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getmodemap(basis)
     else
         return getfield(basis, f)
+    end
+end
+
+function Base.setproperty!(basis::TensorBasis, f::Symbol, value)
+    if f == :numbernodes1d ||
+       f == :numberquadratuepoints1d ||
+       f == :dimension ||
+       f == :nodes1d ||
+       f == :quadraturepoints1d ||
+       f == :quadratureweights1d ||
+       f == :interpolation1d ||
+       f == :gradient1d ||
+       f == :volume
+        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    else
+        return setfield!(basis, f, value)
+    end
+end
+
+function Base.setproperty!(basis::NonTensorBasis, f::Symbol, value)
+    if f == :numbernodes ||
+       f == :numberquadratuepoints ||
+       f == :dimension ||
+       f == :nodes ||
+       f == :quadraturepoints ||
+       f == :quadratureweights ||
+       f == :interpolation ||
+       f == :gradient ||
+       f == :volume ||
+       f == :numbermodes ||
+       f == :modemap
+        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    else
+        return setfield!(basis, f, value)
     end
 end
 

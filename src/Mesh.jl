@@ -27,8 +27,6 @@ mesh = Mesh1D(1.0);
 
 # verify
 println(mesh)
-@assert mesh.dimension == 1
-@assert mesh.dx ≈ 1.0
 
 # output
 1d mesh:
@@ -82,9 +80,6 @@ mesh = Mesh2D(1.0, 0.5);
 
 # verify
 println(mesh)
-@assert mesh.dimension == 2
-@assert mesh.dx ≈ 1.0
-@assert mesh.dy ≈ 0.5
 
 # output
 2d mesh:
@@ -143,10 +138,6 @@ mesh = Mesh3D(1.0, 0.5, 0.3);
 
 # verify
 println(mesh)
-@assert mesh.dimension == 3
-@assert mesh.dx ≈ 1.0
-@assert mesh.dy ≈ 0.5
-@assert mesh.dz ≈ 0.3
 
 # output
 3d mesh:

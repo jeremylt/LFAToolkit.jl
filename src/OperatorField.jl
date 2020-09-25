@@ -30,8 +30,6 @@ weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights]);
 
 # verify
 println(weightsfield)
-@assert weightsfield.basis == basis
-@assert weightsfield.evaluationmodes[1] == EvaluationMode.quadratureweights
 
 # input or output field
 inputfield = OperatorField(basis, [
@@ -41,9 +39,6 @@ inputfield = OperatorField(basis, [
 
 # verify
 println(inputfield)
-@assert inputfield.basis == basis
-@assert inputfield.evaluationmodes[1] == EvaluationMode.interpolation
-@assert inputfield.evaluationmodes[2] == EvaluationMode.gradient
 
 # output
 operator field:

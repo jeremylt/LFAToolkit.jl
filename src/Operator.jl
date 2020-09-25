@@ -44,8 +44,6 @@ mass = Operator(massweakform, mesh, inputs, outputs);
 
 # verify
 println(mass)
-@assert mass.weakform == massweakform
-@assert mass.mesh == mesh
 
 # output
 finite element operator:
@@ -87,10 +85,10 @@ mutable struct Operator
     outputs::Array{OperatorField}
 
     # data empty until assembled
-    elementmatrix::Array{Float64,2}
-    rowmodemap::Array{Float64,2}
-    columnmodemap::Array{Float64,2}
-    nodecoordinatedifferences::Array{Float64}
+    elementmatrix::AbstractArray{Float64,2}
+    rowmodemap::AbstractArray{Float64,2}
+    columnmodemap::AbstractArray{Float64,2}
+    nodecoordinatedifferences::AbstractArray{Float64}
 
     # inner constructor
     Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
@@ -833,6 +831,18 @@ function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Nu
 
     # return
     return symbolmatrixmodes
+end
+
+# ---------------------------------------------------------------------------------------------------------------------
+# get/set property
+# ---------------------------------------------------------------------------------------------------------------------
+
+function Base.setproperty!(operator::Operator, f::Symbol, value)
+    if f == :weakform || f == :mesh || f == :inputs || f == :outputs
+        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    else
+        return setfield!(operator, f, value)
+    end
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

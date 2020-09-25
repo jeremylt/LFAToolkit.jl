@@ -307,17 +307,22 @@ function getelementmatrix(operator::Operator)
         end
 
         # input basis matrix
-        B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
-        currentrow = 1
-        currentcolumn = 1
-        for Bblock in Bblocks
-            B[currentrow:size(Bblock)[1], currentcolumn:size(Bblock)[2]] = Bblock
-            currentrow += size(Bblock)[1]
-            currentcolumn += size(Bblock)[2]
+        B = []
+        if length(Bblocks) == 1
+            B = Bblocks[1]
+        else
+            B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+            currentrow = 1
+            currentcolumn = 1
+            for Bblock in Bblocks
+                B[currentrow:size(Bblock)[1], currentcolumn:size(Bblock)[2]] = Bblock
+                currentrow += size(Bblock)[1]
+                currentcolumn += size(Bblock)[2]
+            end
         end
 
         # quadrature weight input index
-        weightscale = 1
+        weightscale = 1.0
         if weightinputindex != 0
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
@@ -346,13 +351,18 @@ function getelementmatrix(operator::Operator)
         end
 
         # output basis matrix
-        Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
-        currentrow = 1
-        currentcolumn = 1
-        for Btblock in Btblocks
-            Bt[currentrow:size(Btblock)[1], currentcolumn:size(Btblock)[2]] = Btblock
-            currentrow += size(Btblock)[1]
-            currentcolumn += size(Btblock)[2]
+        Bt = []
+        if length(Btblocks) == 1
+            Bt = Btblocks[1]
+        else
+            Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+            currentrow = 1
+            currentcolumn = 1
+            for Btblock in Btblocks
+                Bt[currentrow:size(Btblock)[1], currentcolumn:size(Btblock)[2]] = Btblock
+                currentrow += size(Btblock)[1]
+                currentcolumn += size(Btblock)[2]
+            end
         end
         Bt = transpose(Bt)
 
@@ -366,9 +376,10 @@ function getelementmatrix(operator::Operator)
         for i = 1:length(operator.inputs)
             input = operator.inputs[i]
             if input.evaluationmodes[1] == EvaluationMode.quadratureweights
-                break
+                continue
             end
 
+            # loop over quadrature points
             for q = 1:numberquadraturepoints
                 # set quadrature weight
                 if weightinputindex != 0

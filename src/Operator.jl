@@ -670,7 +670,7 @@ Compute or retrieve the symbol matrix for an operator
 # Returns:
 - Symbol matrix for the operator
 
-# Example:
+# 1D Example:
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
@@ -700,44 +700,7 @@ eigenvalues = eigvals(A);
 # output
 
 ```
-"""
-function computesymbols(operator::Operator, θ_x::Number)
-    # validity check
-    dimension = operator.inputs[1].basis.dimension
-    if dimension != 1
-        throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
-    end
-
-    # setup
-    rowmodemap = operator.rowmodemap
-    columnmodemap = operator.columnmodemap
-    elementmatrix = operator.elementmatrix
-    numberrows, numbercolumns = size(elementmatrix)
-    nodecoordinatedifferences = operator.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
-
-    # compute
-    for i = 1:numberrows, j = 1:numbercolumns
-        symbolmatrixnodes[i, j] =
-            elementmatrix[i, j] * ℯ^(im * θ_x * nodecoordinatedifferences[i, j, 1])
-    end
-    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
-
-    # return
-    return symbolmatrixmodes
-end
-
-"""
-```julia
-computesymbols()
-```
-
-Compute or retrieve the symbol matrix for an operator
-
-# Returns:
-- Symbol matrix for the operator
-
-# Example:
+# 2D Example:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -768,10 +731,10 @@ eigenvalues = eigvals(A);
 
 ```
 """
-function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
+function computesymbols(operator::Operator, θ::Array)
     # validity check
     dimension = operator.inputs[1].basis.dimension
-    if dimension != 2
+    if length(θ) != dimension
         throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
     end
 
@@ -784,15 +747,34 @@ function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
     symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
-    for i = 1:numberrows, j = 1:numbercolumns
-        symbolmatrixnodes[i, j] =
-            elementmatrix[i, j] *
-            ℯ^(
-                im * (
-                    θ_x * nodecoordinatedifferences[i, j, 1] +
-                    θ_y * nodecoordinatedifferences[i, j, 2]
+    if dimension == 1
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                elementmatrix[i, j] * ℯ^(im * θ[1] * nodecoordinatedifferences[i, j, 1])
+        end
+    elseif dimension == 2
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                elementmatrix[i, j] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[i, j, 1] +
+                        θ[2] * nodecoordinatedifferences[i, j, 2]
+                    )
                 )
-            )
+        end
+    elseif dimension == 3
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                elementmatrix[i, j] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[i, j, 1] +
+                        θ[2] * nodecoordinatedifferences[i, j, 2] +
+                        θ[3] * nodecoordinatedifferences[i, j, 3]
+                    )
+                )
+        end
     end
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
@@ -800,37 +782,16 @@ function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
     return symbolmatrixmodes
 end
 
+function computesymbols(operator::Operator, θ_x::Number)
+    return computesymbols(operator, [θ_x])
+end
+
+function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
+    return computesymbols(operator, [θ_x, θ_y])
+end
+
 function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
-    # validity check
-    dimension = operator.inputs[1].basis.dimension
-    if dimension != 3
-        throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
-    end
-
-    # setup
-    rowmodemap = operator.rowmodemap
-    columnmodemap = operator.columnmodemap
-    elementmatrix = operator.elementmatrix
-    numberrows, numbercolumns = size(elementmatrix)
-    nodecoordinatedifferences = operator.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
-
-    # compute
-    for i = 1:numberrows, j = 1:numbercolumns
-        symbolmatrixnodes[i, j] =
-            elementmatrix[i, j] *
-            ℯ^(
-                im * (
-                    θ_x * nodecoordinatedifferences[i, j, 1] +
-                    θ_y * nodecoordinatedifferences[i, j, 2] +
-                    θ_z * nodecoordinatedifferences[i, j, 3]
-                )
-            )
-    end
-    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
-
-    # return
-    return symbolmatrixmodes
+    return computesymbols(operator, [θ_x, θ_y, θ_z])
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -138,9 +138,8 @@ diagonalinverse = jacobi.operatordiagonalinverse;
 function getoperatordiagonalinverse(preconditioner::Jacobi)
     # assemble if needed
     if !isdefined(preconditioner, :operatordiagonalinverse)
-        # retrieve and invert
-        diagonal = preconditioner.operator.diagonal
-        diagonalinverse = [abs(val) > 1e-15 ? 1.0 / val : 0.0 for val in diagonal]
+        # retrieve diagonal and invert
+        diagonalinverse = preconditioner.operator.diagonal^-1
 
         # store
         preconditioner.operatordiagonalinverse = diagonalinverse

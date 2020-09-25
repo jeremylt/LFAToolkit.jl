@@ -85,11 +85,8 @@ mutable struct Jacobi
     Jacobi(operator) = new(operator)
 end
 
-
 # printing
-function Base.show(io::IO, preconditioner::Jacobi)
-    print(io, "jacobi preconditioner")
-end
+Base.show(io::IO, preconditioner::Jacobi) = print(io, "jacobi preconditioner")
 
 # ---------------------------------------------------------------------------------------------------------------------
 # data for computing symbols

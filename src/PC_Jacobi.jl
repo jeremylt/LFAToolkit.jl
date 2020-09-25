@@ -78,10 +78,10 @@ mutable struct Jacobi
     # data never changed
     operator::Operator
 
-    # data may change
-    operatordiagonal::AbstractArray{Float64}
+    # data empty until assembled
+    operatordiagonalinverse::AbstractArray{Float64}
 
-    # constructor
+    # inner constructor
     Jacobi(operator) = new(operator)
 end
 
@@ -92,8 +92,35 @@ function Base.show(io::IO, preconditioner::Jacobi)
 end
 
 # ---------------------------------------------------------------------------------------------------------------------
+# data for computing symbols
+# ---------------------------------------------------------------------------------------------------------------------
+
+function getoperatordiagonalinverse(preconditioner::Jacobi)
+    # assemble if needed
+    if !isdefined(preconditioner, :operatordiagonalinverse)
+        # retrieve and invert
+        diagonal = preconditioner.operator.diagonal
+        diagonalinverse = [abs(val) > 1e-15 ? 1.0 / val : 0.0 for val in diagonal]
+
+        # store
+        preconditioner.operatordiagonalinverse = diagonalinverse
+    end
+
+    # return
+    return getfield(preconditioner, :operatordiagonalinverse)
+end
+
+# ---------------------------------------------------------------------------------------------------------------------
 # get/set property
 # ---------------------------------------------------------------------------------------------------------------------
+
+function Base.getproperty(preconditioner::Jacobi, f::Symbol)
+    if f == :operatordiagonalinverse
+        return getoperatordiagonalinverse(preconditioner)
+    else
+        return getfield(preconditioner, f)
+    end
+end
 
 function Base.setproperty!(preconditioner::Jacobi, f::Symbol, value)
     if f == :operator
@@ -101,6 +128,108 @@ function Base.setproperty!(preconditioner::Jacobi, f::Symbol, value)
     else
         return setfield!(preconditioner, f, value)
     end
+end
+
+# ---------------------------------------------------------------------------------------------------------------------
+# compute symbols
+# ---------------------------------------------------------------------------------------------------------------------
+
+"""
+```julia
+computesymbols()
+```
+
+Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
+
+# Returns:
+- Symbol matrix for the Jacobi preconditioned operator
+
+# 1D Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# preconditioner
+jacobi = Jacobi(diffusion);
+
+# note: either syntax works
+A = computesymbols(jacobi, π);
+
+# verify
+using LinearAlgebra;
+eigenvalues = eigvals(A);
+@assert max(real(eigenvalues)...) ≈ 1.0
+ 
+# output
+
+```
+# 2D Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+basis = TensorH1LagrangeBasis(3, 4, 2);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# preconditioner
+jacobi = Jacobi(diffusion)
+
+# compute symbols
+A = computesymbols(jacobi, π, π);
+
+# verify
+using LinearAlgebra;
+eigenvalues = eigvals(A);
+@assert max(real(eigenvalues)...) ≈ 5/4
+ 
+# output
+
+```
+"""
+function computesymbols(preconditioner::Jacobi, θ::Array)
+    # return
+    return preconditioner.operatordiagonalinverse *
+           computesymbols(preconditioner.operator, θ)
+end
+
+function computesymbols(preconditioner::Jacobi, θ_x::Number)
+    # return
+    return computesymbols(preconditioner, [θ_x])
+end
+
+function computesymbols(preconditioner::Jacobi, θ_x::Number, θ_y::Number)
+    # return
+    return computesymbols(preconditioner, [θ_x, θ_y])
+end
+
+function computesymbols(preconditioner::Jacobi, θ_x::Number, θ_y::Number, θ_z::Number)
+    # return
+    return computesymbols(preconditioner, [θ_x, θ_y, θ_z])
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

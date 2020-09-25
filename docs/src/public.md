@@ -34,11 +34,12 @@ OperatorField
 
 ```@docs
 Operator
-computesymbols
+computesymbols(::Operator, ::Array)
 ```
 
 ## Preconditioners
 
 ```@docs
 Jacobi
+computesymbols(::Jacobi, ::Array)
 ```

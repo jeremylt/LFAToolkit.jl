@@ -23,6 +23,7 @@ LFAToolkit.getinterpolation
 LFAToolkit.getgradient
 LFAToolkit.getnumbermodes
 LFAToolkit.getmodemap
+LFAToolkit.getdiagonal
 ```
 
 ## Operator

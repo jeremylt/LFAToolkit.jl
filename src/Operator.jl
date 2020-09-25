@@ -86,6 +86,7 @@ mutable struct Operator
 
     # data empty until assembled
     elementmatrix::AbstractArray{Float64,2}
+    diagonal::AbstractArray{Float64}
     rowmodemap::AbstractArray{Float64,2}
     columnmodemap::AbstractArray{Float64,2}
     nodecoordinatedifferences::AbstractArray{Float64}
@@ -408,6 +409,69 @@ end
 
 """
 ```julia
+getdiagonal(operator)
+```
+
+Compute or retrieve the symbol matrix diagonal for an operator
+
+# Returns:
+- Symbol matrix diagonal for the operator
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# note: either syntax works
+diagonal = LFAToolkit.getdiagonal(diffusion);
+diagonal = diffusion.diagonal;
+
+# verify
+@assert diagonal ≈ [7/6 0; 0 4/3]
+ 
+# output
+
+```
+"""
+function getdiagonal(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :diagonal)
+        # setup
+        rowmodemap = operator.rowmodemap
+        columnmodemap = operator.columnmodemap
+        elementmatrix = operator.elementmatrix
+        numberrows, numbercolumns = size(elementmatrix)
+        nodecoordinatedifferences = operator.nodecoordinatedifferences
+        diagonalnodes = zeros(Float64, numberrows, numbercolumns)
+
+        # compute
+        diagonalnodes = Diagonal(elementmatrix)
+        diagonalmodes = Diagonal(rowmodemap * diagonalnodes * columnmodemap)
+
+        # store
+        operator.diagonal = diagonalmodes
+    end
+
+    # return
+    return getfield(operator, :diagonal)
+end
+
+"""
+```julia
 getrowmodemap()
 ```
 
@@ -645,6 +709,8 @@ end
 function Base.getproperty(operator::Operator, f::Symbol)
     if f == :elementmatrix
         return getelementmatrix(operator)
+    elseif f == :diagonal
+        return getdiagonal(operator)
     elseif f == :rowmodemap
         return getrowmodemap(operator)
     elseif f == :columnmodemap
@@ -653,6 +719,14 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getnodecoordinatedifferences(operator)
     else
         return getfield(operator, f)
+    end
+end
+
+function Base.setproperty!(operator::Operator, f::Symbol, value)
+    if f == :weakform || f == :mesh || f == :inputs || f == :outputs
+        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    else
+        return setfield!(operator, f, value)
     end
 end
 
@@ -689,7 +763,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# note: either syntax works
+# compute symbols
 A = computesymbols(diffusion, π);
 
 # verify
@@ -719,7 +793,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# note: either syntax works
+# compute symbols
 A = computesymbols(diffusion, π, π);
 
 # verify
@@ -792,18 +866,6 @@ end
 
 function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
     return computesymbols(operator, [θ_x, θ_y, θ_z])
-end
-
-# ---------------------------------------------------------------------------------------------------------------------
-# get/set property
-# ---------------------------------------------------------------------------------------------------------------------
-
-function Base.setproperty!(operator::Operator, f::Symbol, value)
-    if f == :weakform || f == :mesh || f == :inputs || f == :outputs
-        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
-    else
-        return setfield!(operator, f, value)
-    end
 end
 
 # ---------------------------------------------------------------------------------------------------------------------

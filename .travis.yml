@@ -12,9 +12,10 @@ notifications:
 #  - julia --project -e 'using Pkg; Pkg.build(); Pkg.test(; coverage=true)';
 
 after_success:
-  - julia -e 'using Pkg; Pkg.add("Coverage");
-                         using Coverage;
-                         Codecov.submit(Codecov.process_folder())'
+  - if [[ "$TRAVIS_JOB_NAME" == "julia 1.5" ]]; then
+        julia -e 'using Pkg; Pkg.add("Coverage");
+                  using Coverage; Codecov.submit(Codecov.process_folder())'
+    fi
 
 jobs:
   allow_failures:
@@ -51,10 +52,8 @@ jobs:
       os: linux
       dist: focal
       script:
-        - if [[ "$TRAVIS_JOB_NAME" == "julia 1.5" ]]; then
-              julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
-                                                   Pkg.build();
-                                                   Pkg.instantiate()'
-          fi
+          julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+                                               Pkg.build();
+                                               Pkg.instantiate()'
         - julia --project=docs/ docs/make.jl
       after_success: skip

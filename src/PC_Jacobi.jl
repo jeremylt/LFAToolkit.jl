@@ -219,7 +219,7 @@ A = computesymbols(jacobi, 1.0, π);
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert real(eigenvalues) ≈ [0, 1/7]
+@assert real(eigenvalues) ≈ [0; 1/7]
  
 # output
 
@@ -252,7 +252,7 @@ A = computesymbols(jacobi, 1.0, π, π);
 # verify
 using LinearAlgebra;
 eigenvalues = eigvals(A);
-@assert real(eigenvalues) ≈ [-1/4, -1/14, 0, 1/7]
+@assert real(eigenvalues) ≈ [-1/4; -1/14; 0; 1/7]
  
 # output
 

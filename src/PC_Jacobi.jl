@@ -213,7 +213,7 @@ diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # preconditioner
 jacobi = Jacobi(diffusion);
 
-# note: either syntax works
+# compute symbols
 A = computesymbols(jacobi, 1.0, π);
 
 # verify

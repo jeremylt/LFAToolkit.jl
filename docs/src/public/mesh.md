@@ -1,4 +1,4 @@
-## Mesh
+## Rectangular Mesh
 
 ```@docs
 Mesh1D

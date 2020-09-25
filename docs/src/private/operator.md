@@ -1,4 +1,4 @@
-## Operator
+## Finite Element Operator
 
 ```@docs
 LFAToolkit.getelementmatrix

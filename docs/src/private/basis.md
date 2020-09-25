@@ -1,4 +1,4 @@
-## Basis
+## Finite Element Basis
 
 ```@docs
 LFAToolkit.Basis

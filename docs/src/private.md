@@ -38,6 +38,7 @@ LFAToolkit.getnodecoordinatedifferences
 ## Preconditioners
 
 ### Jacobi
+
 ```@docs
 LFAToolkit.getoperatordiagonalinverse
 ```

@@ -39,6 +39,8 @@ computesymbols(::Operator, ::Array)
 
 ## Preconditioners
 
+### Jacobi
+
 ```@docs
 Jacobi
 computesymbols(::Jacobi, ::Array)

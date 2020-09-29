@@ -826,8 +826,8 @@ eigenvalues = eigvals(A);
 """
 function computesymbols(operator::Operator, θ::Array)
     # validity check
-    dimension = operator.inputs[1].basis.dimension
-    if length(θ) != dimension
+    dimension = length(θ)
+    if dimension != operator.inputs[1].basis.dimension
         throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
     end
 

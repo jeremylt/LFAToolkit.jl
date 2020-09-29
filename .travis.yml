@@ -52,7 +52,7 @@ jobs:
       os: linux
       dist: focal
       script:
-          julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
                                                Pkg.build();
                                                Pkg.instantiate()'
         - julia --project=docs/ docs/make.jl

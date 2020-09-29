@@ -261,7 +261,9 @@ eigenvalues = eigvals(A);
 """
 function computesymbols(preconditioner::Jacobi, ω::Number, θ::Array)
     # return
-    S_A = preconditioner.operatordiagonalinverse * computesymbols(preconditioner.operator, θ...)
+    S_A =
+        preconditioner.operatordiagonalinverse *
+        computesymbols(preconditioner.operator, θ...)
     return I - ω * S_A
 end
 

@@ -17,11 +17,6 @@ after_success:
                   using Coverage; Codecov.submit(Codecov.process_folder())';
     fi
 
-jobs:
-  allow_failures:
-    - julia: 1.0
-    - julia: nightly
-
   include:
 # Testing
     - name: "jula 1.0"

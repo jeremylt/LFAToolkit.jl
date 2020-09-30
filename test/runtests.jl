@@ -1,3 +1,6 @@
+# ------------------------------------------------------------------------------
+# test suite
+# ------------------------------------------------------------------------------
 using Test, Documenter, LFAToolkit
 DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = true)
 
@@ -34,8 +37,11 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # compute operator symbols
     A = computesymbols(mass, π, π)
-    @test min(real(eigvals(A))...) ≈ 0.008379422444571976
-    @test max(real(eigvals(A))...) ≈ 0.17361111111111088
+
+    # verify
+    eigenvalues = real(eigvals(A))
+    @test min(eigenvalues...) ≈ 0.008379422444571976
+    @test max(eigenvalues...) ≈ 0.17361111111111088
 
     # --------------------------------------------------------------------------
     # diffusion operator example
@@ -57,9 +63,11 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # compute operator symbols
     A = computesymbols(diffusion, π, π)
-    eigenvalues = eigvals(A)
-    @test min(real(eigvals(A))...) ≈ 0.06071182289051259
-    @test max(real(eigvals(A))...) ≈ 1.9632361844115431
+
+    # verify
+    eigenvalues = real(eigvals(A))
+    @test min(eigenvalues...) ≈ 0.06071182289051259
+    @test max(eigenvalues...) ≈ 1.9632361844115431
 
     # --------------------------------------------------------------------------
     # jacobi smoother example
@@ -70,9 +78,11 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # compute operator symbols
     A = computesymbols(jacobi, 1.0, π, π)
-    eigenvalues = eigvals(A)
-    @test min(real(eigvals(A))...) ≈ -1.5989685969312784
-    @test max(real(eigvals(A))...) ≈ 0.8446129151683509
+    
+    # verify
+    eigenvalues = real(eigvals(A))
+    @test min(eigenvalues...) ≈ -1.5989685969312784
+    @test max(eigenvalues...) ≈ 0.8446129151683509
 
 end # testset
 

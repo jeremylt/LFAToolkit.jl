@@ -1,3 +1,6 @@
+# ------------------------------------------------------------------------------
+# documentation
+# ------------------------------------------------------------------------------
 using Documenter, DocumenterTools, LFAToolkit
 DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = true)
 
@@ -10,6 +13,9 @@ if haskey(ENV, "DOCSARGS")
     end
 end
 
+# ------------------------------------------------------------------------------
+# make
+# ------------------------------------------------------------------------------
 makedocs(
     modules = [LFAToolkit],
     format = Documenter.HTML(
@@ -45,8 +51,13 @@ makedocs(
     linkcheck = !("skiplinks" in ARGS),
 )
 
+# ------------------------------------------------------------------------------
+# deploy
+# ------------------------------------------------------------------------------
 deploydocs(
     repo = "github.com/jeremylt/LFAToolkit.jl.git",
     target = "build",
     push_preview = true,
 )
+
+# ------------------------------------------------------------------------------

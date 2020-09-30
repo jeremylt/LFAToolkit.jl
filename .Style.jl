@@ -1,3 +1,6 @@
+# ------------------------------------------------------------------------------
+# formatter
+# ------------------------------------------------------------------------------
 using Pkg
 Pkg.add(["JuliaFormatter", "CSTParser", "Tokenize"])
 using JuliaFormatter, CSTParser, Tokenize

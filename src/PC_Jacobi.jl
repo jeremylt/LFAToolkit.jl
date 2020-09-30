@@ -230,12 +230,12 @@ for dimension in 1:3
 
     # verify
     using LinearAlgebra;
-    eigenvalues = eigvals(A);
-    @assert max(real(eigenvalues)...) ≈ 1/7
+    eigenvalues = real(eigvals(A));
+    @assert max(eigenvalues...) ≈ 1/7
     if dimension == 2
-        @assert min(real(eigenvalues)...) ≈ -1/4
+        @assert min(eigenvalues...) ≈ -1/4
     elseif dimension == 3
-        @assert min(real(eigenvalues)...) ≈ -9/16
+        @assert min(eigenvalues...) ≈ -9/16
     end
 end
 

@@ -788,9 +788,9 @@ for dimension in 1:3
     A = computesymbols(diffusion, π*ones(dimension)...);
 
     # verify
-    eigenvalues = eigvals(A);
-    @assert min(real(eigenvalues)...) ≈ (1/3)^(dimension - 1)
-    @assert max(real(eigenvalues)...) ≈ (4/3)*(16/30)^(dimension - 1)
+    eigenvalues = real(eigvals(A));
+    @assert min(eigenvalues...) ≈ (1/3)^(dimension - 1)
+    @assert max(eigenvalues...) ≈ (4/3)*(16/30)^(dimension - 1)
 end
 
 # output

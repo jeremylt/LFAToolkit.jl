@@ -34,7 +34,6 @@ jobs:
       os: linux
       dist: focal
       script:
-        - julia --project -e 'using Pkg; Pkg.add("JuliaFormatter")'
         - julia .Style.jl && git diff --exit-code src test examples
       after_success: skip
 

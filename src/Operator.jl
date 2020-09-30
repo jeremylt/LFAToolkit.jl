@@ -1,6 +1,6 @@
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # finite element operators
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -15,7 +15,8 @@ Operator(
 Finite element operator comprising of a weak form and bases
 
 # Arguments:
-- `weakform`: user provided function that represents weak form at quadrature points
+- `weakform`: user provided function that represents weak form at
+                  quadrature points
 - `mesh`:     mesh object with deformation in each dimension
 - `inputs`:   array of operator input fields
 - `outputs`:  array of operator output fields
@@ -30,7 +31,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -169,9 +170,9 @@ function Base.show(io::IO, operator::Operator)
 end
 # COV_EXCL_STOP
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # data for computing symbols
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -193,7 +194,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -212,7 +213,7 @@ elementmatrix = mass.elementmatrix;
 
 # verify
 u = ones(4*4);
-v = elementmatrix * u;
+v = elementmatrix*u;
     
 total = sum(v);
 @assert total ≈ 1.0
@@ -228,7 +229,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
+    dv = du*w[1]
     return [dv]
 end
     
@@ -247,7 +248,7 @@ elementmatrix = diffusion.elementmatrix;
     
 # verify
 u = ones(4*4);
-v = elementmatrix * u;
+v = elementmatrix*u;
     
 total = sum(v);
 @assert abs(total) < 1e-14
@@ -309,7 +310,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # input basis matrix
-        B = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+        B = spzeros(numberquadratureinputs*numberquadraturepoints, numbernodes)
         currentrow = 1
         currentcolumn = 1
         for Bblock in Bblocks
@@ -324,7 +325,7 @@ function getelementmatrix(operator::Operator)
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
             weightscale =
-                operator.mesh.volume / operator.inputs[weightinputindex].basis.volume
+                operator.mesh.volume/operator.inputs[weightinputindex].basis.volume
         end
 
         # outputs
@@ -348,7 +349,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # output basis matrix
-        Bt = spzeros(numberquadratureinputs * numberquadraturepoints, numbernodes)
+        Bt = spzeros(numberquadratureinputs*numberquadraturepoints, numbernodes)
         currentrow = 1
         currentcolumn = 1
         for Btblock in Btblocks
@@ -360,8 +361,8 @@ function getelementmatrix(operator::Operator)
 
         # QFunction matrix
         D = spzeros(
-            numberquadratureinputs * numberquadraturepoints,
-            numberquadratureinputs * numberquadraturepoints,
+            numberquadratureinputs*numberquadraturepoints,
+            numberquadratureinputs*numberquadraturepoints,
         )
         # loop over inputs
         currentfieldin = 0
@@ -375,7 +376,7 @@ function getelementmatrix(operator::Operator)
             for q = 1:numberquadraturepoints
                 # set quadrature weight
                 if weightinputindex != 0
-                    weakforminputs[weightinputindex][1] = quadratureweights[q] * weightscale
+                    weakforminputs[weightinputindex][1] = quadratureweights[q]*weightscale
                 end
 
                 # fill sparse matrix
@@ -402,7 +403,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # multiply A = B^T D B and store
-        elementmatrix = Bt * D * B
+        elementmatrix = Bt*D*B
         operator.elementmatrix = elementmatrix
     end
 
@@ -427,7 +428,7 @@ mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(3, 4, 1);
     
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
+    dv = du*w[1]
     return [dv]
 end
     
@@ -463,7 +464,7 @@ function getdiagonal(operator::Operator)
 
         # compute
         diagonalnodes = Diagonal(elementmatrix)
-        diagonalmodes = Diagonal(rowmodemap * diagonalnodes * columnmodemap)
+        diagonalmodes = Diagonal(rowmodemap*diagonalnodes*columnmodemap)
 
         # store
         operator.diagonal = diagonalmodes
@@ -490,7 +491,7 @@ mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -552,7 +553,8 @@ end
 getcolumnmodemap(operator)
 ```
 
-Compute or retrieve the matrix mapping the columns of the element matrix to the symbol matrix
+Compute or retrieve the matrix mapping the columns of the element matrix to the
+  symbol matrix
 
 # Returns:
 - Matrix mapping columns of element matrix to symbol matrix
@@ -564,7 +566,7 @@ mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -638,7 +640,7 @@ mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -694,7 +696,7 @@ function getnodecoordinatedifferences(operator::Operator)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
-                (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
+                (inputcoordinates[j, k] - outputcoordinates[i, k])/lengths[k]
         end
 
         # store
@@ -705,9 +707,9 @@ function getnodecoordinatedifferences(operator::Operator)
     return getfield(operator, :nodecoordinatedifferences)
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # get/set property
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function Base.getproperty(operator::Operator, f::Symbol)
     if f == :elementmatrix
@@ -733,9 +735,9 @@ function Base.setproperty!(operator::Operator, f::Symbol, value)
     end
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # compute symbol matrix
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -770,7 +772,7 @@ for dimension in 1:3
     basis = TensorH1LagrangeBasis(3, 4, dimension);
     
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du * w[1]
+        dv = du*w[1]
         return [dv]
     end
     
@@ -814,33 +816,37 @@ function computesymbols(operator::Operator, θ::Array)
     if dimension == 1
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[i, j] * ℯ^(im * θ[1] * nodecoordinatedifferences[i, j, 1])
+                elementmatrix[i, j]*ℯ^(im*θ[1]*nodecoordinatedifferences[i, j, 1])
         end
     elseif dimension == 2
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        θ[2] * nodecoordinatedifferences[i, j, 2]
+                elementmatrix[
+                    i,
+                    j,
+                ]*ℯ^(
+                    im*(
+                        θ[1]*nodecoordinatedifferences[i, j, 1] +
+                        θ[2]*nodecoordinatedifferences[i, j, 2]
                     )
                 )
         end
     elseif dimension == 3
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        θ[2] * nodecoordinatedifferences[i, j, 2] +
-                        θ[3] * nodecoordinatedifferences[i, j, 3]
+                elementmatrix[
+                    i,
+                    j,
+                ]*ℯ^(
+                    im*(
+                        θ[1]*nodecoordinatedifferences[i, j, 1] +
+                        θ[2]*nodecoordinatedifferences[i, j, 2] +
+                        θ[3]*nodecoordinatedifferences[i, j, 3]
                     )
                 )
         end
     end
-    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
+    symbolmatrixmodes = rowmodemap*symbolmatrixnodes*columnmodemap
 
     # return
     return symbolmatrixmodes
@@ -858,4 +864,4 @@ function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Nu
     return computesymbols(operator, [θ_x, θ_y, θ_z])
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------

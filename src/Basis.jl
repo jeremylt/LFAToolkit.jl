@@ -1,15 +1,15 @@
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # finite element bases
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 Finite element basis for function spaces and test spaces
 """
 abstract type Basis end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # basis types
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -32,10 +32,13 @@ Tensor product basis
 - `numberquadraturepoints1d`: number of quadrature points in 1 dimension
 - `dimension`:                dimension of the basis
 - `nodes1d`:                  coordinates of the nodes in 1 dimension
-- `quadraturepoints1d`:       coordinates of the quadrature points in 1 dimension
+- `quadraturepoints1d`:       coordinates of the quadrature points in 1
+                                  dimension
 - `quadratureweights1d`:      quadrature weights in 1 dimension
-- `interpolation1d`:          interpolation matrix from nodes to quadrature points in 1 dimension
-- `gradient1d`:               gradient matrix from nodes to quadrature points in 1 dimension
+- `interpolation1d`:          interpolation matrix from nodes to quadrature
+                                  points in 1 dimension
+- `gradient1d`:               gradient matrix from nodes to quadrature points in
+                                  1 dimension
 
 # Returns:
 - Tensor product basis object
@@ -202,7 +205,7 @@ mutable struct NonTensorBasis <: Basis
         if size(interpolation) != (numberquadraturepoints, numbernodes)
             error("interpolation matrix must have dimensions (numberquadraturepoints, numbernodes)") # COV_EXCL_LINE
         end;
-        if size(gradient) != (q * dimension, numbernodes)
+        if size(gradient) != (q*dimension, numbernodes)
             error("gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)") # COV_EXCL_LINE
         end;
         if length(modemap) != numbernodes
@@ -246,9 +249,9 @@ Base.show(io::IO, basis::NonTensorBasis) = print(
 )
 # COV_EXCL_STOP
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # utility functions for generating polynomial bases
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -300,23 +303,23 @@ function gaussquadrature(q::Int)
     end
 
     # build qref1d, qweight1d
-    for i = 0:floor(Int, q / 2)
+    for i = 0:floor(Int, q/2)
         # guess
-        xi = cos(pi * (2 * i + 1.0) / (2 * q))
+        xi = cos(pi*(2*i + 1.0)/(2*q))
 
         # Pn(xi)
         p0 = 1.0
         p1 = xi
         p2 = 0.0
         for j = 2:q
-            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
+            p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
             p0 = p1
             p1 = p2
         end
 
         # first Newton step
-        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-        xi = xi - p2 / dp2
+        dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
+        xi = xi - p2/dp2
 
         # Newton to convergence
         itr = 0
@@ -324,19 +327,19 @@ function gaussquadrature(q::Int)
             p0 = 1.0
             p1 = xi
             for j = 2:q
-                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
+                p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
                 p0 = p1
                 p1 = p2
             end
-            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-            xi = xi - p2 / dp2
+            dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
+            xi = xi - p2/dp2
             itr += 1
         end
 
         # save xi, wi
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi
-        wi = 2.0 / ((1.0 - xi * xi) * dp2 * dp2)
+        wi = 2.0/((1.0 - xi*xi)*dp2*dp2)
         quadratureweights[i+1] = wi
         quadratureweights[q-i] = wi
     end
@@ -391,30 +394,30 @@ function lobattoquadrature(q::Int, weights::Bool)
     quadraturepoints[1] = -1.0
     quadraturepoints[q] = 1.0
     if weights
-        wi = 2.0 / (q * (q - 1.0))
+        wi = 2.0/(q*(q - 1.0))
         quadratureweights[1] = wi
         quadratureweights[q] = wi
     end
 
     # build qref1d, qweight1d
-    for i = 1:floor(Int, (q - 1) / 2)
+    for i = 1:floor(Int, (q - 1)/2)
         # guess
-        xi = cos(pi * i / (q - 1.0))
+        xi = cos(pi*i/(q - 1.0))
 
         # Pn(xi)
         p0 = 1.0
         p1 = xi
         p2 = 0.0
         for j = 2:q-1
-            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
+            p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
             p0 = p1
             p1 = p2
         end
 
         # first Newton step
-        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-        d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
-        xi = xi - dp2 / d2p2
+        dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
+        d2p2 = (2*xi*dp2 - q*(q - 1.0)*p2)/(1.0 - xi*xi)
+        xi = xi - dp2/d2p2
 
         # Newton to convergence
         itr = 0
@@ -422,13 +425,13 @@ function lobattoquadrature(q::Int, weights::Bool)
             p0 = 1.0
             p1 = xi
             for j = 2:q-1
-                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
+                p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
                 p0 = p1
                 p1 = p2
             end
-            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-            d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
-            xi = xi - dp2 / d2p2
+            dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
+            d2p2 = (2*xi*dp2 - q*(q - 1.0)*p2)/(1.0 - xi*xi)
+            xi = xi - dp2/d2p2
             itr += 1
         end
 
@@ -436,7 +439,7 @@ function lobattoquadrature(q::Int, weights::Bool)
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi
         if weights
-            wi = 2.0 / (q * (q - 1.0) * p2 * p2)
+            wi = 2.0/(q*(q - 1.0)*p2*p2)
             quadratureweights[i+1] = wi
             quadratureweights[q-i] = wi
         end
@@ -450,9 +453,9 @@ function lobattoquadrature(q::Int, weights::Bool)
     end
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # user utility constructors
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -529,12 +532,11 @@ function TensorH1LagrangeBasis(
                 dx = nodes1d[j] - nodes1d[k]
                 c2 *= dx
                 if k == j - 1
-                    gradient1d[i, j] =
-                        c1 * (interpolation1d[i, k] - c4 * gradient1d[i, k]) / c2
-                    interpolation1d[i, j] = -c1 * c4 * interpolation1d[i, k] / c2
+                    gradient1d[i, j] = c1*(interpolation1d[i, k] - c4*gradient1d[i, k])/c2
+                    interpolation1d[i, j] = -c1*c4*interpolation1d[i, k]/c2
                 end
-                gradient1d[i, k] = (c3 * gradient1d[i, k] - interpolation1d[i, k]) / dx
-                interpolation1d[i, k] = c3 * interpolation1d[i, k] / dx
+                gradient1d[i, k] = (c3*gradient1d[i, k] - interpolation1d[i, k])/dx
+                interpolation1d[i, k] = c3*interpolation1d[i, k]/dx
             end
             c1 = c2
         end
@@ -553,9 +555,9 @@ function TensorH1LagrangeBasis(
     )
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # basis properties
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -1069,14 +1071,12 @@ function getmodemap(basis::TensorBasis)
         elseif basis.dimension == 2
             # 2D
             modemap = [[
-                i + (j - 1) * (basis.numbernodes1d - 1) for i in modemap1d, j in modemap1d
+                i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d, j in modemap1d
             ]...]
         elseif basis.dimension == 3
             # 3D
             modemap = [[
-                i +
-                (j - 1) * (basis.numbernodes1d - 1) +
-                (k - 1) * (basis.numbernodes1d - 1)^2
+                i + (j - 1)*(basis.numbernodes1d - 1) + (k - 1)*(basis.numbernodes1d - 1)^2
                 for i in modemap1d, j in modemap1d, k in modemap1d
             ]...]
         else
@@ -1090,9 +1090,9 @@ function getmodemap(basis::TensorBasis)
     return getfield(basis, :modemap)
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # get/set property
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function Base.getproperty(basis::TensorBasis, f::Symbol)
     if f == :numbernodes
@@ -1152,4 +1152,4 @@ function Base.setproperty!(basis::NonTensorBasis, f::Symbol, value)
     end
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------

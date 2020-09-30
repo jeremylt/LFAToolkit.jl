@@ -1,6 +1,6 @@
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Jacobi preconditioner
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -22,7 +22,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -90,16 +90,17 @@ end
 Base.show(io::IO, preconditioner::Jacobi) = print(io, "jacobi preconditioner")
 # COV_EXCL_STOP
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # data for computing symbols
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
 getoperatordiagonalinverse(preconditioner)
 ```
 
-Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi preconditioner
+Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
+    preconditioner
 
 # Returns:
 - Symbol matrix diagonal inverse for the operator
@@ -111,7 +112,7 @@ mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(3, 4, 1);
     
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
+    dv = du*w[1]
     return [dv]
 end
     
@@ -151,9 +152,9 @@ function getoperatordiagonalinverse(preconditioner::Jacobi)
     return getfield(preconditioner, :operatordiagonalinverse)
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # get/set property
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function Base.getproperty(preconditioner::Jacobi, f::Symbol)
     if f == :operatordiagonalinverse
@@ -171,9 +172,9 @@ function Base.setproperty!(preconditioner::Jacobi, f::Symbol, value)
     end
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # compute symbols
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 """
 ```julia
@@ -209,7 +210,7 @@ for dimension in 1:3
     basis = TensorH1LagrangeBasis(3, 4, dimension);
     
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du * w[1]
+        dv = du*w[1]
         return [dv]
     end
     
@@ -245,9 +246,8 @@ end
 function computesymbols(preconditioner::Jacobi, ω::Number, θ::Array)
     # return
     S_A =
-        preconditioner.operatordiagonalinverse *
-        computesymbols(preconditioner.operator, θ...)
-    return I - ω * S_A
+        preconditioner.operatordiagonalinverse*computesymbols(preconditioner.operator, θ...)
+    return I - ω*S_A
 end
 
 function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number)
@@ -268,4 +268,4 @@ function computesymbols(
     return computesymbols(preconditioner, ω, [θ_x, θ_y, θ_z])
 end
 
-# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------

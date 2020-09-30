@@ -35,10 +35,7 @@ jobs:
       dist: focal
       script:
         - julia --project -e 'using Pkg; Pkg.add("JuliaFormatter")'
-        - julia --project -e 'using JuliaFormatter; format(["src", "test", "docs"])'
-        - git diff --exit-code src/
-        - git diff --exit-code test/
-        - git diff --exit-code docs/
+        - julia .Style.jl && git diff --exit-code src test examples
       after_success: skip
 
 # Documentation

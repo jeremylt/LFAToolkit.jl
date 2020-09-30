@@ -10,7 +10,10 @@ end
 
 # ------------------------------------------------------------------------------
 # custom style rule
-# same as DefaultStyle, but no space in between operators with precedence
+#
+# From CeedStyle for libCEED.jl
+#
+# Same as DefaultStyle, but no space in between operators with precedence
 #     CSTParser.TimesOp
 # ------------------------------------------------------------------------------
 struct CeedStyle <: AbstractStyle end

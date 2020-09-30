@@ -34,7 +34,7 @@ jobs:
       os: linux
       dist: focal
       script:
-        - julia .Style.jl && git diff --exit-code src test examples
+        - julia .Style.jl && git diff --exit-code src test docs
       after_success: skip
 
 # Documentation

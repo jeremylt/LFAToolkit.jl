@@ -825,6 +825,37 @@ eigenvalues = eigvals(A);
 # output
 
 ```
+# 3D Example:
+```jldoctest
+# setup
+mesh = Mesh3D(1.0, 1.0, 1.0);
+basis = TensorH1LagrangeBasis(3, 4, 3);
+    
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+    
+# mass operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# compute symbols
+A = computesymbols(diffusion, π, π, π);
+
+# verify
+using LinearAlgebra;
+eigenvalues = eigvals(A);
+@assert min(real(eigenvalues)...) ≈ 1/9
+@assert max(real(eigenvalues)...) ≈ 1024/2700
+ 
+# output
+
+```
 """
 function computesymbols(operator::Operator, θ::Array)
     # validity check

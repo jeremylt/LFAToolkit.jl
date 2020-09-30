@@ -192,104 +192,52 @@ Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 # Returns:
 - Symbol matrix for the Jacobi preconditioned operator
 
-# 1D Example:
+# Example:
 ```jldoctest
-# setup
-mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1);
+using LinearAlgebra
+
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    basis = TensorH1LagrangeBasis(3, 4, dimension);
     
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
+    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+        dv = du * w[1]
+        return [dv]
+    end
+    
+    # mass operator
+    inputs = [
+        OperatorField(basis, [EvaluationMode.gradient]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
+    ];
+    outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+    diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+    # preconditioner
+    jacobi = Jacobi(diffusion)
+
+    # compute symbols
+    A = computesymbols(jacobi, 1.0, π*ones(dimension)...);
+
+    # verify
+    using LinearAlgebra;
+    eigenvalues = eigvals(A);
+    @assert max(real(eigenvalues)...) ≈ 1/7
+    if dimension == 2
+        @assert min(real(eigenvalues)...) ≈ -1/4
+    elseif dimension == 3
+        @assert min(real(eigenvalues)...) ≈ -9/16
+    end
 end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# preconditioner
-jacobi = Jacobi(diffusion);
-
-# compute symbols
-A = computesymbols(jacobi, 1.0, π);
-
-# verify
-using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert max(real(eigenvalues)...) ≈ 1/7
- 
-# output
-
-```
-# 2D Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 2);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-
-# preconditioner
-jacobi = Jacobi(diffusion)
-
-# compute symbols
-A = computesymbols(jacobi, 1.0, π, π);
-
-# verify
-using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert min(real(eigenvalues)...) ≈ -1/4
-@assert max(real(eigenvalues)...) ≈ 1/7
- 
-# output
-
-```
-# 3D Example:
-```jldoctest
-# setup
-mesh = Mesh3D(1.0, 1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 3);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-
-# preconditioner
-jacobi = Jacobi(diffusion)
-
-# compute symbols
-A = computesymbols(jacobi, 1.0, π, π, π);
-
-# verify
-using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert min(real(eigenvalues)...) ≈ -9/16
-@assert max(real(eigenvalues)...) ≈ 1/7
- 
 # output
 
 ```

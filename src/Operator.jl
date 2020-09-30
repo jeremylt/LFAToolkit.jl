@@ -763,96 +763,44 @@ Compute the symbol matrix for an operator
 # Returns:
 - Symbol matrix for the operator
 
-# 1D Example:
+# Example:
 ```jldoctest
-# setup
-mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-
-# compute symbols
-A = computesymbols(diffusion, π);
-
-# verify
 using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert min(real(eigenvalues)...) ≈ 1
-@assert max(real(eigenvalues)...) ≈ 4/3
- 
-# output
 
-```
-# 2D Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 2);
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    basis = TensorH1LagrangeBasis(3, 4, dimension);
     
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
+    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+        dv = du * w[1]
+        return [dv]
+    end
+    
+    # mass operator
+    inputs = [
+        OperatorField(basis, [EvaluationMode.gradient]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
+    ];
+     outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+    diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+    # compute symbols
+    A = computesymbols(diffusion, π*ones(dimension)...);
+
+    # verify
+    eigenvalues = eigvals(A);
+    @assert min(real(eigenvalues)...) ≈ (1/3)^(dimension - 1)
+    @assert max(real(eigenvalues)...) ≈ (4/3)*(16/30)^(dimension - 1)
 end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# compute symbols
-A = computesymbols(diffusion, π, π);
-
-# verify
-using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert min(real(eigenvalues)...) ≈ 1/3
-@assert max(real(eigenvalues)...) ≈ 64/90
- 
-# output
-
-```
-# 3D Example:
-```jldoctest
-# setup
-mesh = Mesh3D(1.0, 1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 3);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-
-# compute symbols
-A = computesymbols(diffusion, π, π, π);
-
-# verify
-using LinearAlgebra;
-eigenvalues = eigvals(A);
-@assert min(real(eigenvalues)...) ≈ 1/9
-@assert max(real(eigenvalues)...) ≈ 1024/2700
- 
 # output
 
 ```

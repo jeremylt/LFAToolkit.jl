@@ -78,7 +78,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # compute operator symbols
     A = computesymbols(jacobi, 1.0, π, π)
-    
+
     # verify
     eigenvalues = real(eigvals(A))
     @test min(eigenvalues...) ≈ -1.5989685969312784

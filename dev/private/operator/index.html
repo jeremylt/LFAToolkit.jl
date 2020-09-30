@@ -4,7 +4,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -23,7 +23,7 @@ elementmatrix = mass.elementmatrix;
 
 # verify
 u = ones(4*4);
-v = elementmatrix * u;
+v = elementmatrix*u;
     
 total = sum(v);
 @assert total ≈ 1.0
@@ -34,7 +34,7 @@ mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
     
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
+    dv = du*w[1]
     return [dv]
 end
     
@@ -53,18 +53,18 @@ elementmatrix = diffusion.elementmatrix;
     
 # verify
 u = ones(4*4);
-v = elementmatrix * u;
+v = elementmatrix*u;
     
 total = sum(v);
 @assert abs(total) &lt; 1e-14
     
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/713096cfe6eedb8935ae7bf298a842b8cd7a2f3d/src/Operator.jl#L176-L258">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getrowmodemap" href="#LFAToolkit.getrowmodemap"><code>LFAToolkit.getrowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getrowmodemap(operator)</code></pre><p>Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of element matrix to symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5fcb5b0926844dd18ba390811437b7731eda8b47/src/Operator.jl#L177-L259">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getrowmodemap" href="#LFAToolkit.getrowmodemap"><code>LFAToolkit.getrowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getrowmodemap(operator)</code></pre><p>Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of element matrix to symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
 mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -84,12 +84,12 @@ modemap = mass.rowmodemap;
 @assert modemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
     
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/713096cfe6eedb8935ae7bf298a842b8cd7a2f3d/src/Operator.jl#L476-L515">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getcolumnmodemap" href="#LFAToolkit.getcolumnmodemap"><code>LFAToolkit.getcolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getcolumnmodemap(operator)</code></pre><p>Compute or retrieve the matrix mapping the columns of the element matrix to the symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of element matrix to symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5fcb5b0926844dd18ba390811437b7731eda8b47/src/Operator.jl#L477-L516">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getcolumnmodemap" href="#LFAToolkit.getcolumnmodemap"><code>LFAToolkit.getcolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getcolumnmodemap(operator)</code></pre><p>Compute or retrieve the matrix mapping the columns of the element matrix to the   symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of element matrix to symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
 mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -109,12 +109,12 @@ modemap = mass.columnmodemap;
 @assert modemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
     
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/713096cfe6eedb8935ae7bf298a842b8cd7a2f3d/src/Operator.jl#L550-L589">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnodecoordinatedifferences" href="#LFAToolkit.getnodecoordinatedifferences"><code>LFAToolkit.getnodecoordinatedifferences</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnodecoordinatedifferences(operator)</code></pre><p>Compute or retrieve the array of differences in coordinates between nodes</p><p><strong>Returns:</strong></p><ul><li>Array of differences in coordinates between nodes</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5fcb5b0926844dd18ba390811437b7731eda8b47/src/Operator.jl#L551-L591">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnodecoordinatedifferences" href="#LFAToolkit.getnodecoordinatedifferences"><code>LFAToolkit.getnodecoordinatedifferences</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnodecoordinatedifferences(operator)</code></pre><p>Compute or retrieve the array of differences in coordinates between nodes</p><p><strong>Returns:</strong></p><ul><li>Array of differences in coordinates between nodes</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
 mesh = Mesh1D(1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1);
     
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u * w[1]
+    v = u*w[1]
     return [v]
 end
     
@@ -138,4 +138,4 @@ truenodedifferences = [
 @assert nodedifferences ≈ truenodedifferences
  
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/713096cfe6eedb8935ae7bf298a842b8cd7a2f3d/src/Operator.jl#L624-L667">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../basis/">« Finite Element Basis</a><a class="docs-footer-nextpage" href="../pc_jacobi/">Preconditioner: Jacobi »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 30 September 2020 19:13">Wednesday 30 September 2020</span>. Using Julia version 1.5.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5fcb5b0926844dd18ba390811437b7731eda8b47/src/Operator.jl#L626-L669">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../basis/">« Finite Element Basis</a><a class="docs-footer-nextpage" href="../pc_jacobi/">Preconditioner: Jacobi »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 30 September 2020 22:10">Wednesday 30 September 2020</span>. Using Julia version 1.5.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

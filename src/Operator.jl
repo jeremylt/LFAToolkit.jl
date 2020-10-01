@@ -144,7 +144,7 @@ mutable struct Operator
         if (dimension == 1 && typeof(mesh) != Mesh1D) ||
            (dimension == 2 && typeof(mesh) != Mesh2D) ||
            (dimension == 3 && typeof(mesh) != Mesh3D)
-            error("mesh dimension must match bases dimension")
+            error("mesh dimension must match bases dimension") # COV_EXCL_LINE
         end;
 
         # constructor

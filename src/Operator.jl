@@ -93,54 +93,63 @@ mutable struct Operator
     nodecoordinatedifferences::AbstractArray{Float64}
 
     # inner constructor
-    Operator(weakform, mesh, inputs, outputs) = (dimension = 0;
-    numberquadraturepoints = 0;
+    Operator(weakform, mesh, inputs, outputs) = (
+        dimension = 0;
+        numberquadraturepoints = 0;
 
-    # check inputs valididy
-    if length(inputs) < 1
-        error("must have at least one input") # COV_EXCL_LINE
-    end;
-    for input in inputs
-        # dimension
-        if dimension == 0
-            dimension = input.basis.dimension
-        end
-        if input.basis.dimension != dimension
-            error("bases must have compatible dimensions") # COV_EXCL_LINE
-        end
+        # check inputs valididy
+        if length(inputs) < 1
+            error("must have at least one input") # COV_EXCL_LINE
+        end;
+        for input in inputs
+            # dimension
+            if dimension == 0
+                dimension = input.basis.dimension
+            end
+            if input.basis.dimension != dimension
+                error("bases must have compatible dimensions") # COV_EXCL_LINE
+            end
 
-        # number of quadrature points
-        if numberquadraturepoints == 0
-            numberquadraturepoints = input.basis.numberquadraturepoints
-        end
-        if input.basis.numberquadraturepoints != numberquadraturepoints
-            error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
-        end
-    end;
+            # number of quadrature points
+            if numberquadraturepoints == 0
+                numberquadraturepoints = input.basis.numberquadraturepoints
+            end
+            if input.basis.numberquadraturepoints != numberquadraturepoints
+                error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
+            end
+        end;
 
-    # check outputs valididy
-    if length(outputs) < 1
-        error("must have at least one output") # COV_EXCL_LINE
-    end;
-    for output in outputs
-        # evaluation modes
-        if EvaluationMode.quadratureweights in output.evaluationmodes
-            error("quadrature weights is not a valid output") # COV_EXCL_LINE
-        end
+        # check outputs valididy
+        if length(outputs) < 1
+            error("must have at least one output") # COV_EXCL_LINE
+        end;
+        for output in outputs
+            # evaluation modes
+            if EvaluationMode.quadratureweights in output.evaluationmodes
+                error("quadrature weights is not a valid output") # COV_EXCL_LINE
+            end
 
-        # dimension
-        if output.basis.dimension != dimension
-            error("bases must have compatible dimensions") # COV_EXCL_LINE
-        end
+            # dimension
+            if output.basis.dimension != dimension
+                error("bases must have compatible dimensions") # COV_EXCL_LINE
+            end
 
-        # number of quadrature points
-        if output.basis.numberquadraturepoints != numberquadraturepoints
-            error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
-        end
-    end;
+            # number of quadrature points
+            if output.basis.numberquadraturepoints != numberquadraturepoints
+                error("bases must have compatible quadrature spaces") # COV_EXCL_LINE
+            end
+        end;
 
-    # constructor
-    new(weakform, mesh, inputs, outputs))
+        # check mesh valididy
+        if (dimension == 1 && typeof(mesh) != Mesh1D) ||
+           (dimension == 2 && typeof(mesh) != Mesh2D) ||
+           (dimension == 3 && typeof(mesh) != Mesh3D)
+            error("mesh dimension must match bases dimension")
+        end;
+
+        # constructor
+        new(weakform, mesh, inputs, outputs)
+    )
 end
 
 # printing

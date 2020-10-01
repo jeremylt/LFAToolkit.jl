@@ -1219,6 +1219,14 @@ end
 ```
 """
 function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
+    # check compatibility
+    dimension = basis.dimension
+    if (dimension == 1 && typeof(mesh) != Mesh1D) ||
+       (dimension == 2 && typeof(mesh) != Mesh2D) ||
+       (dimension == 3 && typeof(mesh) != Mesh3D)
+        error("mesh dimension must match basis dimension") # COV_EXCL_LINE
+    end
+
     # get gradient
     gradient = basis.gradient
 
@@ -1226,10 +1234,10 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
     lengthreference = (max(basis.nodes1d...) - min(basis.nodes1d...))
 
     # adjust for mesh
-    if basis.dimension == 1
+    if dimension == 1
         # 1D
         return gradient*lengthreference/mesh.dx
-    elseif basis.dimension == 2
+    elseif dimension == 2
         # 2D
         scalex = lengthreference/mesh.dx
         scaley = lengthreference/mesh.dy
@@ -1238,7 +1246,7 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
             gradient[1:numberquadraturepoints, :]*scalex
             gradient[numberquadraturepoints+1:end, :]*scaley
         ]
-    elseif basis.dimension == 3
+    elseif dimension == 3
         # 3D
         scalex = lengthreference/mesh.dx
         scaley = lengthreference/mesh.dy
@@ -1250,6 +1258,10 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
             gradient[2*numberquadraturepoints+1:end, :]*scalez
         ]
     end
+end
+
+function getdXdxgradient(basis::NonTensorBasis, mesh::Mesh)
+    error("unimplemented")
 end
 
 # ------------------------------------------------------------------------------

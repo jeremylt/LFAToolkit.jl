@@ -308,9 +308,8 @@ function getelementmatrix(operator::Operator)
                     elseif mode == EvaluationMode.gradient
                         numbermodes += input.basis.dimension
                         numberquadratureinputs += input.basis.dimension
-                        Bcurrent =
-                            Bcurrent == [] ? input.basis.gradient :
-                            [Bcurrent; input.basis.gradient]
+                        gradient = getdXdxgradient(input.basis, operator.mesh)
+                        Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
                     end
                 end
                 push!(Bblocks, Bcurrent)
@@ -348,9 +347,8 @@ function getelementmatrix(operator::Operator)
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    Btcurrent =
-                        Btcurrent == [] ? output.basis.gradient :
-                        [Btcurrent; output.basis.gradient]
+                    gradient = getdXdxgradient(output.basis, operator.mesh)
+                    Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor
                 end
             end
@@ -454,7 +452,7 @@ diagonal = LFAToolkit.getdiagonal(diffusion);
 diagonal = diffusion.diagonal;
 
 # verify
-@assert diagonal ≈ [7/6 0; 0 4/3]
+@assert diagonal ≈ [14/3 0; 0 16/3]
  
 # output
 
@@ -798,8 +796,8 @@ for dimension in 1:3
 
     # verify
     eigenvalues = real(eigvals(A));
-    @assert min(eigenvalues...) ≈ (1/3)^(dimension - 1)
-    @assert max(eigenvalues...) ≈ (4/3)*(16/30)^(dimension - 1)
+    @assert min(eigenvalues...) ≈ 4*(1/3)^(dimension - 1)
+    @assert max(eigenvalues...) ≈ (16/3)*(16/30)^(dimension - 1)
 end
 
 # output

@@ -66,8 +66,8 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # verify
     eigenvalues = real(eigvals(A))
-    @test min(eigenvalues...) ≈ 0.06071182289051259
-    @test max(eigenvalues...) ≈ 1.9632361844115431
+    @test min(eigenvalues...) ≈ 0.24284729156204987
+    @test max(eigenvalues...) ≈ 7.852944737646179
 
     # --------------------------------------------------------------------------
     # jacobi smoother example

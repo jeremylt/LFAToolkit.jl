@@ -1120,7 +1120,7 @@ end
 
 function Base.setproperty!(basis::TensorBasis, f::Symbol, value)
     if f == :numbernodes1d ||
-       f == :numberquadratuepoints1d ||
+       f == :numberquadraturepoints1d ||
        f == :dimension ||
        f == :nodes1d ||
        f == :quadraturepoints1d ||
@@ -1136,7 +1136,7 @@ end
 
 function Base.setproperty!(basis::NonTensorBasis, f::Symbol, value)
     if f == :numbernodes ||
-       f == :numberquadratuepoints ||
+       f == :numberquadraturepoints ||
        f == :dimension ||
        f == :nodes ||
        f == :quadraturepoints ||
@@ -1149,6 +1149,106 @@ function Base.setproperty!(basis::NonTensorBasis, f::Symbol, value)
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     else
         return setfield!(basis, f, value)
+    end
+end
+
+# ------------------------------------------------------------------------------
+# gradient on stretched mesh
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+getdXdxgradient(basis, mesh)
+```
+
+Get gradient adjusted for mesh stretching
+
+# Arguments:
+- `basis`: basis to compute gradient
+- `mesh`:  mesh to compute gradient
+
+# Returns:
+- gradient matrix multiplied by change of coordinates adjoint
+
+# Example:
+```jldoctest
+for dimension in 1:3
+    # mesh
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(2.0)
+    elseif dimension == 2
+        mesh = Mesh2D(2.0, 3.0)
+    elseif dimension == 3
+        mesh = Mesh3D(2.0, 3.0, 4.0)
+    end
+
+    # basis
+    basis = TensorH1LagrangeBasis(4, 3, dimension);
+
+    # get gradient on mesh
+    gradient = LFAToolkit.getdXdxgradient(basis, mesh);
+
+    # verify
+    nodes = basis.nodes;
+    linearfunction = [];
+    truegradient = [];
+    if dimension == 1
+        linearfunction = nodes/2;
+        truegradient = [1/2*ones(basis.numberquadraturepoints)...]
+    elseif dimension == 2
+        linearfunction = (nodes[:, 1] + nodes[:, 2])/2;
+        truegradient = [
+            1/2*ones(basis.numberquadraturepoints)...
+            1/3*ones(basis.numberquadraturepoints)...
+        ]
+    elseif dimension == 3
+        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3])/2;
+        truegradient = [
+            1/2*ones(basis.numberquadraturepoints)...
+            1/3*ones(basis.numberquadraturepoints)...
+            1/4*ones(basis.numberquadraturepoints)...
+        ]
+    end
+
+    @assert gradient*linearfunction ≈ truegradient
+end
+
+# output
+
+```
+"""
+function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
+    # get gradient
+    gradient = basis.gradient
+
+    # length of reference element
+    lengthreference = (max(basis.nodes1d...) - min(basis.nodes1d...))
+
+    # adjust for mesh
+    if basis.dimension == 1
+        # 1D
+        return gradient*lengthreference/mesh.dx
+    elseif basis.dimension == 2
+        # 2D
+        scalex = lengthreference/mesh.dx
+        scaley = lengthreference/mesh.dy
+        numberquadraturepoints = basis.numberquadraturepoints
+        return [
+            gradient[1:numberquadraturepoints, :]*scalex
+            gradient[numberquadraturepoints+1:end, :]*scaley
+        ]
+    elseif basis.dimension == 3
+        # 3D
+        scalex = lengthreference/mesh.dx
+        scaley = lengthreference/mesh.dy
+        scalez = lengthreference/mesh.dz
+        numberquadraturepoints = basis.numberquadraturepoints
+        return [
+            gradient[1:numberquadraturepoints, :]*scalex
+            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :]*scaley
+            gradient[2*numberquadraturepoints+1:end, :]*scalez
+        ]
     end
 end
 

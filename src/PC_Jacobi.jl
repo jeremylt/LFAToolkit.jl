@@ -132,7 +132,7 @@ diagonalinverse = LFAToolkit.getoperatordiagonalinverse(jacobi);
 diagonalinverse = jacobi.operatordiagonalinverse;
 
 # verify
-@assert diagonalinverse ≈ [6/7 0; 0 3/4]
+@assert diagonalinverse ≈ [3/14 0; 0 3/16]
  
 # output
 

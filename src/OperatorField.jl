@@ -61,7 +61,7 @@ tensor product basis:
 """
 struct OperatorField
     # data
-    basis::Basis
+    basis::AbstractBasis
     evaluationmodes::Array{EvaluationMode.EvalMode}
 
     # inner constructor

@@ -5,7 +5,7 @@
 """
 Finite element basis for function spaces and test spaces
 """
-abstract type Basis end
+abstract type AbstractBasis end
 
 # ------------------------------------------------------------------------------
 # basis types
@@ -43,7 +43,7 @@ Tensor product basis
 # Returns:
 - Tensor product basis object
 """
-mutable struct TensorBasis <: Basis
+mutable struct TensorBasis <: AbstractBasis
     # data never changed
     numbernodes1d::Int
     numberquadratuepoints1d::Int
@@ -158,7 +158,7 @@ Non-tensor basis
 # Returns:
 - Non-tensor product basis object
 """
-mutable struct NonTensorBasis <: Basis
+mutable struct NonTensorBasis <: AbstractBasis
     # data never changed
     numbernodes::Int
     numberquadraturepoints::Int

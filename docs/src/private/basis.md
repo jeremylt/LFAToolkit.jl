@@ -1,7 +1,7 @@
 ## Finite Element Basis
 
 ```@docs
-LFAToolkit.Basis
+LFAToolkit.AbstractBasis
 LFAToolkit.gaussquadrature
 LFAToolkit.lobattoquadrature
 LFAToolkit.getnumbernodes

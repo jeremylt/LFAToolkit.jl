@@ -27,13 +27,20 @@ The bilinear formulation for the diffusion operator associated with this weak fo
 a \left( u, v \right) = \int_{\Omega} \nabla u \cdot \nabla v.
 ```
 
-Selecting a finite element basis, we can discretize the operator and produce a Toeplitz operator ``A`` which can be diagonalized by the Fourier modes ``\varphi \left(\mathbf{\theta}, \mathbf{x} \right) = e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}``. Assuming a H1 Lagrange basis of polynomial order ``p``, the assembled element matrix is of the form
+Selecting a finite element basis, we can discretize the operator and produce a Toeplitz operator ``A`` . Assuming a H1 Lagrange basis of polynomial order ``p``, the assembled element matrix is of the form
 
 ```math
 A_e = [a_{i, j}]
 ```
 
 where ``i, j \in \lbrace 0, 1, 2, \dots, p \rbrace``.
+This operator can be diagonalized by the Fourier functions ``\varphi \left(\mathbf{\theta}, \mathbf{x} \right) = e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}``.
+
+Thus, we have the symbol matrix
+
+```math
+\tilde{A} \left( \mathbf{\theta} \right) = 
+```
 
 The Fourier modes can thus be represented as
 

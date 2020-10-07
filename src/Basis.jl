@@ -453,6 +453,101 @@ function lobattoquadrature(q::Int, weights::Bool)
     end
 end
 
+"""
+```julia
+buildinterpolationandgradient(
+    nodes,
+    quadraturepoints,
+)
+```
+
+Build one dimensional interpolation and gradient matrices, from Fornberg 1998
+
+# Arguments:
+- `nodes`:            1d basis nodes
+- `quadraturepoints`: 1d basis quadrature points
+
+# Returns:
+- One dimensional interpolation and gradient matrices
+
+# Example:
+```jldoctest
+# get nodes, quadrature points, and weights
+numbernodes = 3;
+numberquadraturepoints = 4;
+nodes = LFAToolkit.lobattoquadrature(numbernodes, false);
+quadraturepoints, quadratureweights1d = LFAToolkit.gaussquadrature(numberquadraturepoints);
+
+# build interpolation, gradient matrices
+interpolation, gradient = LFAToolkit.buildinterpolationandgradient(nodes, quadraturepoints);
+
+# verify
+for i in 1:numberquadraturepoints
+    total = sum(interpolation[i, :]);
+    @assert total ≈ 1.0
+
+    total = sum(gradient[i, :]);
+    @assert abs(total) < 1e-14
+end
+
+# output
+
+```
+"""
+function buildinterpolationandgradient(
+    nodes1d::AbstractArray{Float64},
+    quadraturepoints1d::AbstractArray{Float64},
+)
+    # check inputs
+    numbernodes1d = length(nodes1d)
+    numberquadratuepoints1d = length(quadraturepoints1d)
+    if numbernodes1d < 2
+        # COV_EXCL_START
+        throw(DomanError(
+            numbernodes1d,
+            "length of nodes1d must be greater than or equal to 2",
+        ))
+        # COV_EXCL_STOP
+    end
+    if numbernodes1d < 2
+        # COV_EXCL_START
+        throw(DomanError(
+            numbernodes1d,
+            "length of quadraturepoints1d must be greater than or equal to 2",
+        ))
+        # COV_EXCL_STOP
+    end
+
+    # build interpolation, gradient matrices
+    # Fornberg, 1998
+    interpolation1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
+    gradient1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
+    for i = 1:numberquadratuepoints1d
+        c1 = 1.0
+        c3 = nodes1d[1] - quadraturepoints1d[i]
+        interpolation1d[i, 1] = 1.0
+        for j = 2:numbernodes1d
+            c2 = 1.0
+            c4 = c3
+            c3 = nodes1d[j] - quadraturepoints1d[i]
+            for k = 1:j-1
+                dx = nodes1d[j] - nodes1d[k]
+                c2 *= dx
+                if k == j - 1
+                    gradient1d[i, j] = c1*(interpolation1d[i, k] - c4*gradient1d[i, k])/c2
+                    interpolation1d[i, j] = -c1*c4*interpolation1d[i, k]/c2
+                end
+                gradient1d[i, k] = (c3*gradient1d[i, k] - interpolation1d[i, k])/dx
+                interpolation1d[i, k] = c3*interpolation1d[i, k]/dx
+            end
+            c1 = c2
+        end
+    end
+
+    # return
+    return interpolation1d, gradient1d
+end
+
 # ------------------------------------------------------------------------------
 # user utility constructors
 # ------------------------------------------------------------------------------
@@ -460,9 +555,9 @@ end
 """
 ```julia
 TensorH1LagrangeBasis(
-    numbernodes,
+    numbernodes1d,
     numberquadraturepoints1d,
-    dimension
+    dimension,
 )
 ```
 
@@ -493,18 +588,18 @@ tensor product basis:
 """
 function TensorH1LagrangeBasis(
     numbernodes1d::Int,
-    numberquadratuepoints1d::Int,
+    numberquadraturepoints1d::Int,
     dimension::Int,
 )
     # check inputs
     if numbernodes1d < 2
         throw(DomanError(numbernodes1d, "numbernodes1d must be greater than or equal to 2")) # COV_EXCL_LINE
     end
-    if numberquadratuepoints1d < 1
+    if numberquadraturepoints1d < 1
         # COV_EXCL_START
         throw(DomanError(
-            numberquadratuepoints1d,
-            "numberquadratuepoints1d must be greater than or equal to 1",
+            numberquadraturepoints1d,
+            "numberquadraturepoints1d must be greater than or equal to 1",
         ))
         # COV_EXCL_STOP
     end
@@ -514,38 +609,90 @@ function TensorH1LagrangeBasis(
 
     # get nodes, quadrature points, and weights
     nodes1d = lobattoquadrature(numbernodes1d, false)
-    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadratuepoints1d)
+    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
 
     # build interpolation, gradient matrices
-    # Fornberg, 1998
-    interpolation1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
-    gradient1d = zeros(Float64, numberquadratuepoints1d, numbernodes1d)
-    for i = 1:numberquadratuepoints1d
-        c1 = 1.0
-        c3 = nodes1d[1] - quadraturepoints1d[i]
-        interpolation1d[i, 1] = 1.0
-        for j = 2:numbernodes1d
-            c2 = 1.0
-            c4 = c3
-            c3 = nodes1d[j] - quadraturepoints1d[i]
-            for k = 1:j-1
-                dx = nodes1d[j] - nodes1d[k]
-                c2 *= dx
-                if k == j - 1
-                    gradient1d[i, j] = c1*(interpolation1d[i, k] - c4*gradient1d[i, k])/c2
-                    interpolation1d[i, j] = -c1*c4*interpolation1d[i, k]/c2
-                end
-                gradient1d[i, k] = (c3*gradient1d[i, k] - interpolation1d[i, k])/dx
-                interpolation1d[i, k] = c3*interpolation1d[i, k]/dx
-            end
-            c1 = c2
-        end
-    end
+    interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
 
     # use basic constructor
     return TensorBasis(
         numbernodes1d,
-        numberquadratuepoints1d,
+        numberquadraturepoints1d,
+        dimension,
+        nodes1d,
+        quadraturepoints1d,
+        quadratureweights1d,
+        interpolation1d,
+        gradient1d,
+    )
+end
+
+"""
+```julia
+TensorH1UniformBasis(
+    numbernodes1d,
+    numberquadraturepoints1d,
+    dimension,
+)
+```
+
+Tensor product basis on uniformly points with Gauss-Legendre quadrature
+
+# Arguments:
+- `numbernodes1d`:            number of uniformly spaced nodes
+- `numberquadraturepoints1d`: number of Gauss-Legendre quadrature points
+- `dimension`:                dimension of basis
+
+# Returns:
+- H1 uniformly spaced tensor product basis object
+
+# Example:
+```jldoctest
+# generate H1 uniformly spaced tensor product basis
+basis = TensorH1UniformBasis(4, 3, 2);
+
+# verify
+println(basis)
+
+# output
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    dimension: 2
+```
+"""
+function TensorH1UniformBasis(
+    numbernodes1d::Int,
+    numberquadraturepoints1d::Int,
+    dimension::Int,
+)
+    # check inputs
+    if numbernodes1d < 2
+        throw(DomanError(numbernodes1d, "numbernodes1d must be greater than or equal to 2")) # COV_EXCL_LINE
+    end
+    if numberquadraturepoints1d < 1
+        # COV_EXCL_START
+        throw(DomanError(
+            numberquadraturepoints1d,
+            "numberquadraturepoints1d must be greater than or equal to 1",
+        ))
+        # COV_EXCL_STOP
+    end
+    if dimension < 1 || dimension > 3
+        throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
+    end
+
+    # get nodes, quadrature points, and weights
+    nodes1d = [-1.0:(2.0/(numbernodes1d-1)):1.0...]
+    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
+
+    # build interpolation, gradient matrices
+    interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
+
+    # use basic constructor
+    return TensorBasis(
+        numbernodes1d,
+        numberquadraturepoints1d,
         dimension,
         nodes1d,
         quadraturepoints1d,

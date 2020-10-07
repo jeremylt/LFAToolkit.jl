@@ -17,7 +17,7 @@ using LinearAlgebra
 
 export EvaluationMode
 export Mesh1D, Mesh2D, Mesh3D
-export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis
+export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
 export OperatorField
 export Operator, computesymbols
 export Jacobi

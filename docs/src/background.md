@@ -10,8 +10,43 @@ By way of example, we will explore Local Fourier Analysis for iterative solvers 
 
 ## Local Fourier Modes
 
-In traditional Fourier Analysis, we consider the eigenfunctions and corresponding eigenvalues of the diffusion operator, ``\nabla^2 u``, ``\varphi^{l, m} \left( \mathbf{x} \right) = e^{\left( l \pi x_1 \right)} e^{\left( m \pi x_2 \right)}`` and ``\lambda^{l, m} = l^2 + m^2``, for ``l, m \in \mathcal{Z}``.
-In contrast, Local Fourier Analysis considers the local properties of the descretized system via its eigenfunction and eigenvalues.
+Local Fourier Analysis considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
+We will describe the simple one dimensional scalar case and extend it to an arbitrary dimension, degree, and component finite element problem.
+
+First consider a scalar Toeplitz operator ``L_h`` on a one dimensional infinite uniform grid ``G_h``.
+This operator is given by
+
+```math
+L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right)
+
+L_h w_h \left( x \right) = \sum_{\kappa \in V} s_\kappa w_h \left( x + \kappa h \right)
+```
+
+where ``V \subset \mathcal{Z}`` is a finite index set, ``s_\kappa \in \mathcal{R}`` are constant coefficients, and ``w_h \left( x \right)`` is a ``l^2`` function on ``G_h``.
+
+As ``L_h`` is Toeplitz, it can be diagonalized by the standard Fourier modes ``\varphi \left( \theta, x \right) = e^{\imath \theta x / h}``.
+
+If for all grid functions ``\varphi \left( \theta, x \right)`` we have
+
+```math
+S_h \varphi \left( \theta, x \right) = \tilde{L}_h \left( \theta \right) \varphi \left( \theta, x \right)
+```
+
+then ``\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa e^{\imath \theta \kappa}`` is the **symbol** of ``L_h``.
+
+We can extend this to a ``p \times p`` linear system of operators representing a scalar problem on a ``p`` order finite element
+
+```math
+L_h = \begin{bmatrix}
+    L_h^{1, 1}  &  \cdots  &  L_h^{1, p}  \\
+    \vdots      &  \vdots  &  \vdots      \\
+    L_h^{p, 1}  &  \cdots  &  L_h^{p, p}
+\end{bmatrix}
+```
+
+where ``L_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
+
+...
 
 The Poisson problem has the weak formulation
 

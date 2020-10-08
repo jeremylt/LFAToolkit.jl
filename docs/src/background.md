@@ -46,8 +46,7 @@ L_h = \begin{bmatrix}
 
 where ``L_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
-...
-
+Consider the specific case of the Topeliz operator representing the scalar diffusion opperator.
 The Poisson problem has the weak formulation
 
 ```math
@@ -62,40 +61,42 @@ The bilinear formulation for the diffusion operator associated with this weak fo
 a \left( u, v \right) = \int_{\Omega} \nabla u \cdot \nabla v.
 ```
 
-Selecting a finite element basis, we can discretize the operator and produce a Toeplitz operator ``A`` . Assuming a H1 Lagrange basis of polynomial order ``p``, the assembled element matrix is of the form
+Selecting a finite element basis, we can discretize the operator and produce a Toeplitz operator ``A`` .
+Assuming a H1 Lagrange basis of polynomial order ``p`` and using the algebraic representation of PDE operators discussed in [2], the assembled element matrix is of the form
 
 ```math
-A_e = [a_{i, j}]
+A_e = B^T J^T D J B
 ```
 
-where ``i, j \in \lbrace 0, 1, 2, \dots, p \rbrace``.
-This operator can be diagonalized by the Fourier functions ``\varphi \left(\mathbf{\theta}, \mathbf{x} \right) = e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}``.
-
-Thus, we have the symbol matrix
+where ``B`` represents computing the derivaties of the basis funtions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
+With a nodal basis, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
-\tilde{A} \left( \mathbf{\theta} \right) = 
+L_h = R^T \left( A_e \odot \begin{bmatrix}
+    e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
+    \vdots                                           && \vdots && \vdots                                                 \\
+    e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
+\end{bmatrix} \right) R
 ```
 
-The Fourier modes can thus be represented as
+where ``\odot`` represents pointwise multiplication of the elements and
 
 ```math
-S \left( \mathbf{\theta}, \mathbf{x} ) = [a_{i, j} e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}].
+R = \begin{bmatrix}
+    1       && 0      && \cdots && 0      && 1       \\
+    0       && 1      && \cdots && 0      && 0       \\
+    \vdots  && \vdots && \vdots && \vdots && \vdots  \\
+    0       && 0      && \cdots && 1      && 0
+\end{bmatrix}
 ```
 
-However, notice that ``a_{i, j} e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}`` and ``a_{k, l} e^{\imath \mathbf{\theta} \cdot \mathbf{x} / h}`` are equivalent when ``i = k \left( mod p \right)`` and ``j = l \left( mod p \right)``.
+maps the equivalent basis nodes to the same Fourier mode.
 
-Do I want to include an explanation as to why this is the Fourier basis?
-I will need to put that somewhere eventually.
-
-Really this sentence is a note to users. I'm not sure where to put it, but it should be included.
-Perhaps in a yet to be formed code example section?
-
-This Local Fourier Analysis toolkit uses the algebraic representation of PDE operators discussed in [2].
+This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
 ## Jacobi Smoother
 
-M is not based on theta here, but S = I - M^-1 A is
+S = I - M^-1 A
 
 ## Multigrid
 

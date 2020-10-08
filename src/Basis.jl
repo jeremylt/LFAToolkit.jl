@@ -558,6 +558,7 @@ TensorH1LagrangeBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     dimension,
+    collocatedquadrature,
 )
 ```
 
@@ -590,6 +591,7 @@ function TensorH1LagrangeBasis(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     dimension::Int,
+    collocatedquadrature::Bool = false,
 )
     # check inputs
     if numbernodes1d < 2
@@ -606,10 +608,20 @@ function TensorH1LagrangeBasis(
     if dimension < 1 || dimension > 3
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
+    if collocatedquadrature && numbernodes1d != numberquadraturepoints1d
+        throw(Error("numbernodes1d and numberquadraturepoints1d must agree for collocated quadrature")) # COV_EXCL_LINE
+    end
 
     # get nodes, quadrature points, and weights
     nodes1d = lobattoquadrature(numbernodes1d, false)
-    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
+    quadraturepoints1d = []
+    quadratureweights1d = []
+    if collocatedquadrature
+        quadraturepoints1d, quadratureweights1d =
+            lobattoquadrature(numberquadraturepoints1d, true)
+    else
+        quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
+    end
 
     # build interpolation, gradient matrices
     interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)

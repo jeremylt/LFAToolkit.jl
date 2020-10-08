@@ -575,7 +575,11 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 # Example:
 ```jldoctest
 # generate H1 Lagrange tensor product basis
-basis = TensorH1LagrangeBasis(4, 3, 2);
+basis = TensorH1LagrangeBasis(4, 4, 2);
+
+# generate basis with collocated quadrature
+collocatedquadrature = true;
+basis = TensorH1LagrangeBasis(4, 4, 2, collocatedquadrature);
 
 # verify
 println(basis)
@@ -583,7 +587,7 @@ println(basis)
 # output
 tensor product basis:
     numbernodes1d: 4
-    numberquadraturepoints1d: 3
+    numberquadraturepoints1d: 4
     dimension: 2
 ```
 """
@@ -609,7 +613,12 @@ function TensorH1LagrangeBasis(
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
     if collocatedquadrature && numbernodes1d != numberquadraturepoints1d
-        throw(Error("numbernodes1d and numberquadraturepoints1d must agree for collocated quadrature")) # COV_EXCL_LINE
+        # CODE_EXCL_START
+        throw(DomainError(
+            numbernodes1d,
+            "numbernodes1d and numberquadraturepoints1d must agree for collocated quadrature",
+        ))
+        # COV_EXCL_STOP
     end
 
     # get nodes, quadrature points, and weights

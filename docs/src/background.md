@@ -1,8 +1,8 @@
 # Mathematical Background
 
-Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques more broadly with finite element discretizations.
+Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
 
-By way of example, we will explore Local Fourier Analysis for iterative solvers and mutli-grid methods for the two dimensional Poisson problem, given by the PDE
+By way of example, we will explore Local Fourier Analysis for multi-level and mutli-grid methods for the two dimensional Poisson problem, given by the PDE
 
 ```math
 - \nabla^2 u = f.
@@ -68,7 +68,7 @@ Assuming a H1 Lagrange basis of polynomial order ``p`` and using the algebraic r
 A_e = B^T J^T D J B
 ```
 
-where ``B`` represents computing the derivaties of the basis funtions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
+where ``B`` represents computing the derivatives of the basis functions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
 With a nodal basis, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
@@ -94,14 +94,40 @@ maps the equivalent basis nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
-## Jacobi Smoother
+## Error Relaxation Techniques
 
-S = I - M^-1 A
+Multi-grid techniques require error relaxation techniques.
+The error propagation operator for a relaxation technique is given by
 
-## Multigrid
+```math
+S = I - M^{-1} A.
+```
+
+In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A \right)``.
+
+The symbol of the error propagation operator is given by
+
+```math
+S_h \left( \omega, \theta \right) = I - M_h^{-1} L_h \left( \theta \right)
+```
+
+where ``\omega`` is a relaxation parameter.
+
+Specifically, for Jacobi we have
+
+```math
+S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} L_h \left( \theta \right)
+```
+
+where ``\omega`` is the weighting factor and ``M_h^{-1}`` is given by ``M_h^{-1} \ diag \left( L_h \right)``.
+
+The spectral radius of the symbol of the error propegation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given paramenter value.
+In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+
+## p-Type Multigrid
 
 Here, P and R are based on theta as well. Will want to describe with any smoother dropped into the multigrid (as in the code).
 
-## Custom Smoothers
+## User Defined Smoothers
 
 Example of user defined smoother. User provides element matrix and code maps to symbols.

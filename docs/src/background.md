@@ -203,4 +203,4 @@ where ``P_f`` and ``R_f`` are given above, ``S_h`` is given by the smoothing ope
 
 ## User Defined Smoothers
 
-Example of user defined smoother. User provides element matrix and code maps to symbols.
+ToDo: Example of user defined smoother. User provides element matrix and code maps to symbols.

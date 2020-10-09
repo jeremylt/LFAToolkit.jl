@@ -2,7 +2,7 @@
 
 Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
 
-By way of example, we will explore Local Fourier Analysis for multi-level and mutli-grid methods for the two dimensional Poisson problem, given by the PDE
+By way of example, we will explore Local Fourier Analysis for multilevel and mutligrid methods for the two dimensional Poisson problem, given by the PDE
 
 ```math
 - \nabla^2 u = f.
@@ -29,7 +29,7 @@ As ``L_h`` is Toeplitz, it can be diagonalized by the standard Fourier modes ``\
 If for all grid functions ``\varphi \left( \theta, x \right)`` we have
 
 ```math
-S_h \varphi \left( \theta, x \right) = \tilde{L}_h \left( \theta \right) \varphi \left( \theta, x \right)
+L_h \varphi \left( \theta, x \right) = \tilde{L}_h \left( \theta \right) \varphi \left( \theta, x \right)
 ```
 
 then ``\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa e^{\imath \theta \kappa}`` is the **symbol** of ``L_h``.
@@ -37,10 +37,10 @@ then ``\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa e^{\imat
 We can extend this to a ``p \times p`` linear system of operators representing a scalar problem on a ``p`` order finite element
 
 ```math
-L_h = \begin{bmatrix}
-    L_h^{1, 1}  &  \cdots  &  L_h^{1, p}  \\
-    \vdots      &  \vdots  &  \vdots      \\
-    L_h^{p, 1}  &  \cdots  &  L_h^{p, p}
+\tilde{L}_h = \begin{bmatrix}
+    \tilde{L}_h^{1, 1}  &  \cdots  &  \tilde{L}_h^{1, p} \\
+    \vdots              &  \vdots  &  \vdots             \\
+    \tilde{L}_h^{p, 1}  &  \cdots  &  \tilde{L)_h^{p, p} \\
 \end{bmatrix}
 ```
 
@@ -78,7 +78,7 @@ This analysis will also be equivalent to periodic boundary conditions.
 With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
-L_h = Q^T \left( A_e \odot \begin{bmatrix}
+\tilde{A}_h = Q^T \left( A_e \odot \begin{bmatrix}
     e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
     \vdots                                           && \vdots && \vdots                                                 \\
     e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
@@ -92,7 +92,7 @@ Q = \begin{bmatrix}
     1       && 0      && \cdots && 0      && 1       \\
     0       && 1      && \cdots && 0      && 0       \\
     \vdots  && \vdots && \vdots && \vdots && \vdots  \\
-    0       && 0      && \cdots && 1      && 0
+    0       && 0      && \cdots && 1      && 0       \\
 \end{bmatrix}
 ```
 
@@ -102,7 +102,7 @@ This same computation of the symbol matrix extends to more complex PDE with mult
 
 ## Multigrid
 
-Multi-grid follows the following algorithm:
+Multigrid follows the following algorithm:
 
 1. pre-smooth   : ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
@@ -116,7 +116,7 @@ Multi-grid follows the following algorithm:
 
 where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R`` represents the grid restriction operator, ``P`` represents the grid prolongation operator.
 
-To explore the convergence of multi-grid techniques, we need to analyze the symbol of the multi-grid error propagation operator
+To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator
 
 ```math
 E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \right) S_h \left( p, \theta \right).
@@ -125,17 +125,17 @@ E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \r
 The symbol of the coarse grid error propagation operator is given by
 
 ```math
-E_c \left( \theta \right) = I - P_f \left( \theta \right) L_c^{-1} \left( \theta \right) R_f \left( \theta \right) L_f \left( \theta \right).
+E_c \left( \theta \right) = I - P_f \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) R_f \left( \theta \right) \tilde{A}_f \left( \theta \right).
 ```
 
 The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
-In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+In a multigrid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
-We build the symbol of the multi-grid error propagation operator in parts.
+We build the symbol of the multigrid error propagation operator in parts.
 
 ### Smoothing Operator
 
-Multi-grid techniques require error relaxation techniques.
+Multigrid techniques require error relaxation techniques.
 The error propagation operator for a relaxation technique is given by
 
 ```math
@@ -147,7 +147,7 @@ In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A 
 The symbol of the error propagation operator is given by
 
 ```math
-S_h \left( \omega, \theta \right) = I - M_h^{-1} L_h \left( \theta \right)
+S_h \left( \omega, \theta \right) = I - M_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is a relaxation parameter.
@@ -155,7 +155,7 @@ where ``\omega`` is a relaxation parameter.
 Specifically, for Jacobi we have
 
 ```math
-S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} L_h \left( \theta \right)
+S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is the weighting factor and ``M_h`` is given by
@@ -171,24 +171,35 @@ M_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
 If multiple pre or post-smoothing passes are used, we have
 
 ```math
-S_h \left( \omega, \nu, \theta \right) = \left( I - M_h^{-1} L_h \left( \theta \right) \right)^{\nu}
+S_h \left( \omega, \nu, \theta \right) = \left( I - \omega M_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
 ```
 
-where ``\nu`` is the number of pre or post-smoothing passes.
+where ``\nu`` is the number of smoothing passes.
 
 ### Grid Transfer Operators
 
+We consider grid transfer operators for p-type multigrid.
+Prolongation from  the lower order coarse grid to the high order fine grid is given by 
 
+```math
+P_e = B_{c to f}
+```
+
+where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis.
+
+Restriction from the fine grid to the coarse grid is given by the transpose, ``R_e = P_e^T``.
+
+ToDo: Write up conversion to symbol matrix
 
 ### Multigrid Error Propagation Operator
 
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-E \left( p, \theta \right) = S_f \left( p, \theta \right) \left( I - P_f \left( \theta \right) L_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) L_f \left( \theta \right) \right) S_f \left( p , \theta \right)
+E \left( p, \theta \right) = S_f \left( p, \theta \right) \left[ I - P_f \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] S_f \left( p , \theta \right)
 ```
 
-where ``P_f`` and ``R_f`` are given above, ``S_h`` is given by the smoothing operator, and ``L_c`` and ``L_f`` are derived from the PDE being analyzed.
+where ``P_f`` and ``R_f`` are given above, ``S_h`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.
 
 ## User Defined Smoothers
 

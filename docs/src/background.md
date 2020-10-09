@@ -72,17 +72,17 @@ where ``B`` represents computing the derivatives of the basis functions at the q
 With a nodal basis, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
-L_h = R^T \left( A_e \odot \begin{bmatrix}
+L_h = Q^T \left( A_e \odot \begin{bmatrix}
     e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
     \vdots                                           && \vdots && \vdots                                                 \\
     e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
-\end{bmatrix} \right) R
+\end{bmatrix} \right) Q
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements and
 
 ```math
-R = \begin{bmatrix}
+Q = \begin{bmatrix}
     1       && 0      && \cdots && 0      && 1       \\
     0       && 1      && \cdots && 0      && 0       \\
     \vdots  && \vdots && \vdots && \vdots && \vdots  \\
@@ -94,7 +94,27 @@ maps the equivalent basis nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
-## Error Relaxation Techniques
+## p-Type Multigrid
+
+Multi-grid follows the following algorithm:
+
+1. pre-smooth: ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
+
+2. restrict: ``r_c := R \left( b - A u_i \right)``
+
+3. coarse solve: ``A_c e_c := r_c``
+
+4. prolongate: ``U_i := u_i + P e_c``
+
+5. post-smooth: ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
+
+To explore the convergence of multi-grid technicques, we need to analyze the error propegation.
+The spectral radius of the symbol of the error propegation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given paramenter value.
+In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+
+We build the symbol of the error propegation operator in parts.
+
+### Error Relaxation Techniques
 
 Multi-grid techniques require error relaxation techniques.
 The error propagation operator for a relaxation technique is given by
@@ -121,12 +141,17 @@ S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} L_h \left( \theta \right
 
 where ``\omega`` is the weighting factor and ``M_h^{-1}`` is given by ``M_h^{-1} \ diag \left( L_h \right)``.
 
-The spectral radius of the symbol of the error propegation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given paramenter value.
-In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+### Grid Transfer Operators
 
-## p-Type Multigrid
 
-Here, P and R are based on theta as well. Will want to describe with any smoother dropped into the multigrid (as in the code).
+
+### Multigrid Operator
+
+Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
+
+```math
+E \left( p, \theta \right) = S_f \left( p, \theta \right) \left( I - P_f \left( \theta \right) L_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) L_f \left( \theta \right) \right) S_f \left( p , \theta \right).
+```
 
 ## User Defined Smoothers
 

@@ -104,15 +104,15 @@ Multi-grid follows the following algorithm:
 
 3. coarse solve: ``A_c e_c := r_c``
 
-4. prolongate: ``U_i := u_i + P e_c``
+4. prolongate: ``u_i := u_i + P e_c``
 
 5. post-smooth: ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
-To explore the convergence of multi-grid technicques, we need to analyze the error propegation.
-The spectral radius of the symbol of the error propegation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given paramenter value.
+To explore the convergence of multi-grid techniques, we need to analyze the error propagation.
+The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
 In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
-We build the symbol of the error propegation operator in parts.
+We build the symbol of the error propagation operator in parts.
 
 ### Error Relaxation Techniques
 

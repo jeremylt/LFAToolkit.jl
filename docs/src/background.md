@@ -38,9 +38,9 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 
 ```math
 \tilde{L}_h = \begin{bmatrix}
-    \tilde{L}_h^{1, 1}  &  \cdots  &  \tilde{L}_h^{1, p} \\
-    \vdots              &  \vdots  &  \vdots             \\
-    \tilde{L}_h^{p, 1}  &  \cdots  &  \tilde{L)_h^{p, p} \\
+    \tilde{L}_h^{1, 1}  &&  \cdots  &&  \tilde{L}_h^{1, p} \\
+    \vdots              &&  \vdots  &&  \vdots             \\
+    \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L)_h^{p, p} \\
 \end{bmatrix}
 ```
 
@@ -79,9 +79,9 @@ With a nodal basis of order ``p``, the nodes on the boundary of the element are 
 
 ```math
 \tilde{A}_h = Q^T \left( A_e \odot \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
-    \vdots                                           && \vdots && \vdots                                                 \\
-    e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
+    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
+    \vdots                                            &&  \vdots  &&  \vdots                                                  \\
+    e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
 \end{bmatrix} \right) Q
 ```
 
@@ -89,10 +89,10 @@ where ``\odot`` represents pointwise multiplication of the elements and
 
 ```math
 Q = \begin{bmatrix}
-    1       && 0      && \cdots && 0      && 1       \\
-    0       && 1      && \cdots && 0      && 0       \\
-    \vdots  && \vdots && \vdots && \vdots && \vdots  \\
-    0       && 0      && \cdots && 1      && 0       \\
+    1       &&  0       &&  \cdots  &&  0       &&  1       \\
+    0       &&  1       &&  \cdots  &&  0       &&  0       \\
+    \vdots  &&  \vdots  &&  \vdots  &&  \vdots  &&  \vdots  \\
+    0       &&  0       &&  \cdots  &&  1       &&  0       \\
 \end{bmatrix}
 ```
 
@@ -162,9 +162,9 @@ where ``\omega`` is the weighting factor and ``M_h`` is given by
 
 ```math
 M_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
-    \vdots                                           && \vdots && \vdots                                                 \\
-    e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
+    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
+    \vdots                                            &&  \vdots  &&  \vdots                                                  \\
+    e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
 \end{bmatrix} \right) Q.
 ```
 

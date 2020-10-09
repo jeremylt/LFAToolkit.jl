@@ -40,8 +40,10 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # verify
     eigenvalues = real(eigvals(A))
-    @test min(eigenvalues...) ≈ 0.008379422444571976
-    @test max(eigenvalues...) ≈ 0.17361111111111088
+    @testset "mass example" begin
+        @test min(eigenvalues...) ≈ 0.008379422444571976
+        @test max(eigenvalues...) ≈ 0.17361111111111088
+    end
 
     # --------------------------------------------------------------------------
     # diffusion operator example
@@ -66,14 +68,16 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # verify
     eigenvalues = real(eigvals(A))
-    @test min(eigenvalues...) ≈ 0.24284729156204987
-    @test max(eigenvalues...) ≈ 7.852944737646179
+    @testset "diffusion example" begin
+        @test min(eigenvalues...) ≈ 0.24284729156204987
+        @test max(eigenvalues...) ≈ 7.852944737646179
+    end
 
     # --------------------------------------------------------------------------
-    # jacobi smoother example
+    # Jacobi smoother example
     # --------------------------------------------------------------------------
 
-    # jacobi smoother
+    # Jacobi smoother
     jacobi = Jacobi(diffusion)
 
     # compute operator symbols
@@ -81,8 +85,10 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 
     # verify
     eigenvalues = real(eigvals(A))
-    @test min(eigenvalues...) ≈ -1.5989685969312784
-    @test max(eigenvalues...) ≈ 0.8446129151683509
+    @testset "Jacobi example" begin
+        @test min(eigenvalues...) ≈ -1.5989685969312784
+        @test max(eigenvalues...) ≈ 0.8446129151683509
+    end
 
 end # testset
 

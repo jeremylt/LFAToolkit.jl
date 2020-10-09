@@ -40,11 +40,11 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 \tilde{L}_h = \begin{bmatrix}
     \tilde{L}_h^{1, 1}  &&  \cdots  &&  \tilde{L}_h^{1, p} \\
     \vdots              &&  \vdots  &&  \vdots             \\
-    \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L)_h^{p, p} \\
+    \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L}_h^{p, p} \\
 \end{bmatrix}
 ```
 
-where ``L_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
+where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
 Consider the specific case of the Topeliz operator representing the scalar diffusion operator.
 The Poisson problem has the weak formulation

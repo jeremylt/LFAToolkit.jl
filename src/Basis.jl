@@ -613,7 +613,7 @@ function TensorH1LagrangeBasis(
         throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
     if collocatedquadrature && numbernodes1d != numberquadraturepoints1d
-        # CODE_EXCL_START
+        # COV_EXCL_START
         throw(DomainError(
             numbernodes1d,
             "numbernodes1d and numberquadraturepoints1d must agree for collocated quadrature",

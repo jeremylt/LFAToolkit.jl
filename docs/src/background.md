@@ -65,6 +65,9 @@ Using the algebraic representation of PDE operators discussed in [2], the assemb
 
 ```math
 A = P^T A_e P
+```
+
+```math
 A_e = B^T J^T D J B
 ```
 
@@ -97,7 +100,7 @@ maps the equivalent basis nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
-## p-Type Multigrid
+## Multigrid
 
 Multi-grid follows the following algorithm:
 
@@ -113,13 +116,13 @@ Multi-grid follows the following algorithm:
 
 where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R`` represents the grid restriction operator, ``P`` represents the grid prolongation operator.
 
-To explore the convergence of multi-grid techniques, we need to analyze the multi-grid error propagation operator
+To explore the convergence of multi-grid techniques, we need to analyze the symbol of the multi-grid error propagation operator
 
 ```math
 E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \right) S_h \left( p, \theta \right).
 ```
 
-The coarse grid error propagation operator is given by
+The symbol of the coarse grid error propagation operator is given by
 
 ```math
 E_c \left( \theta \right) = I - P_f \left( \theta \right) L_c^{-1} \left( \theta \right) R_f \left( \theta \right) L_f \left( \theta \right).
@@ -155,13 +158,23 @@ Specifically, for Jacobi we have
 S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} L_h \left( \theta \right)
 ```
 
-where ``\omega`` is the weighting factor and ``M_h^{-1}`` is given by ``M_h^{-1} \ diag \left( L_h \right)``.
+where ``\omega`` is the weighting factor and ``M_h`` is given by
+
+```math
+M_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
+    e^{\imath \left( x_0 - x_0 \right) \theta}       && \cdots && e^{\imath \left( x_0 - x_{p + 1} \right) \theta}       \\
+    \vdots                                           && \vdots && \vdots                                                 \\
+    e^{\imath \left( x_{p + 1} - x_0 \right) \theta} && \cdots && e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta} \\
+\end{bmatrix} \right) Q.
+```
 
 If multiple pre or post-smoothing passes are used, we have
 
 ```math
-S_h \left( \omega, \nu, \theta \right) = \left( I - M_h^{-1} L_h \left( \theta \right) \right)^{\nu}.
+S_h \left( \omega, \nu, \theta \right) = \left( I - M_h^{-1} L_h \left( \theta \right) \right)^{\nu}
 ```
+
+where ``\nu`` is the number of pre or post-smoothing passes.
 
 ### Grid Transfer Operators
 

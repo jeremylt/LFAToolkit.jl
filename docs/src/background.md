@@ -46,7 +46,7 @@ L_h = \begin{bmatrix}
 
 where ``L_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
-Consider the specific case of the Topeliz operator representing the scalar diffusion opperator.
+Consider the specific case of the Topeliz operator representing the scalar diffusion operator.
 The Poisson problem has the weak formulation
 
 ```math
@@ -55,21 +55,24 @@ The Poisson problem has the weak formulation
 
 for some suitable ``V \subseteq H_0^1 \left( \Omega \right)``.
 
-The bilinear formulation for the diffusion operator associated with this weak form is given by
+Selecting a finite element basis, we can discretize the weak form and produce
 
 ```math
-a \left( u, v \right) = \int_{\Omega} \nabla u \cdot \nabla v.
+A u = b
 ```
 
-Selecting a finite element basis, we can discretize the operator and produce a Toeplitz operator ``A`` .
-Assuming a H1 Lagrange basis of polynomial order ``p`` and using the algebraic representation of PDE operators discussed in [2], the assembled element matrix is of the form
+Using the algebraic representation of PDE operators discussed in [2], the assembled matrix is of the form
 
 ```math
+A = P^T A_e P
 A_e = B^T J^T D J B
 ```
 
-where ``B`` represents computing the derivatives of the basis functions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
-With a nodal basis, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
+where ``P`` represents the element assembly operator, ``B`` represents computing the derivatives of the basis functions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
+As we are on the infinite grid, ``G_h``, boundary conditions have been omitted.
+This analysis will also be equivalent to periodic boundary conditions.
+
+With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
 L_h = Q^T \left( A_e \odot \begin{bmatrix}
@@ -98,23 +101,36 @@ This same computation of the symbol matrix extends to more complex PDE with mult
 
 Multi-grid follows the following algorithm:
 
-1. pre-smooth: ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
+1. pre-smooth   : ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
-2. restrict: ``r_c := R \left( b - A u_i \right)``
+2. restrict     : ``r_c := R_f \left( b - A u_i \right)``
 
-3. coarse solve: ``A_c e_c := r_c``
+3. coarse solve : ``A_c e_c := r_c``
 
-4. prolongate: ``u_i := u_i + P e_c``
+4. prolongate   : ``u_i := u_i + P_f e_c``
 
-5. post-smooth: ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
+5. post-smooth  : ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
-To explore the convergence of multi-grid techniques, we need to analyze the error propagation.
+where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R`` represents the grid restriction operator, ``P`` represents the grid prolongation operator.
+
+To explore the convergence of multi-grid techniques, we need to analyze the multi-grid error propagation operator
+
+```math
+E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \right) S_h \left( p, \theta \right).
+```
+
+The coarse grid error propagation operator is given by
+
+```math
+E_c \left( \theta \right) = I - P_f \left( \theta \right) L_c^{-1} \left( \theta \right) R_f \left( \theta \right) L_f \left( \theta \right).
+```
+
 The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
 In a multi-grid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
-We build the symbol of the error propagation operator in parts.
+We build the symbol of the multi-grid error propagation operator in parts.
 
-### Error Relaxation Techniques
+### Smoothing Operator
 
 Multi-grid techniques require error relaxation techniques.
 The error propagation operator for a relaxation technique is given by
@@ -141,17 +157,25 @@ S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} L_h \left( \theta \right
 
 where ``\omega`` is the weighting factor and ``M_h^{-1}`` is given by ``M_h^{-1} \ diag \left( L_h \right)``.
 
+If multiple pre or post-smoothing passes are used, we have
+
+```math
+S_h \left( \omega, \nu, \theta \right) = \left( I - M_h^{-1} L_h \left( \theta \right) \right)^{\nu}.
+```
+
 ### Grid Transfer Operators
 
 
 
-### Multigrid Operator
+### Multigrid Error Propagation Operator
 
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-E \left( p, \theta \right) = S_f \left( p, \theta \right) \left( I - P_f \left( \theta \right) L_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) L_f \left( \theta \right) \right) S_f \left( p , \theta \right).
+E \left( p, \theta \right) = S_f \left( p, \theta \right) \left( I - P_f \left( \theta \right) L_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) L_f \left( \theta \right) \right) S_f \left( p , \theta \right)
 ```
+
+where ``P_f`` and ``R_f`` are given above, ``S_h`` is given by the smoothing operator, and ``L_c`` and ``L_f`` are derived from the PDE being analyzed.
 
 ## User Defined Smoothers
 

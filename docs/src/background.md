@@ -106,15 +106,15 @@ Multigrid follows the following algorithm:
 
 1. pre-smooth   : ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
-2. restrict     : ``r_c := R_f \left( b - A u_i \right)``
+2. restrict     : ``r_c := R_{ftoc} \left( b - A u_i \right)``
 
 3. coarse solve : ``A_c e_c := r_c``
 
-4. prolongate   : ``u_i := u_i + P_f e_c``
+4. prolongate   : ``u_i := u_i + P_{ctof} e_c``
 
 5. post-smooth  : ``u_i := u_i + M^{-1} \left( b - A u_i \right)``
 
-where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R`` represents the grid restriction operator, ``P`` represents the grid prolongation operator.
+where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ftoc}`` represents the grid restriction operator, ``P_{ctof}`` represents the grid prolongation operator.
 
 To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator
 
@@ -125,7 +125,7 @@ E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \r
 The symbol of the coarse grid error propagation operator is given by
 
 ```math
-E_c \left( \theta \right) = I - P_f \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) R_f \left( \theta \right) \tilde{A}_f \left( \theta \right).
+E_c \left( \theta \right) = I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right).
 ```
 
 The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
@@ -179,27 +179,37 @@ where ``\nu`` is the number of smoothing passes.
 ### Grid Transfer Operators
 
 We consider grid transfer operators for p-type multigrid.
-Prolongation from  the lower order coarse grid to the high order fine grid is given by 
+Prolongation from the lower order coarse grid to the high order fine grid is given by 
 
 ```math
-P_e = B_{c to f}
+P_{ctof} = P_{fine}^T D_{scale} B_{c to f} P_{coarse}
 ```
 
-where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis.
+where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis, ``P_{fine}`` is the fine grid element assembly operator, ``P_{coarse}`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling for node multiplicity across elements.
 
-Restriction from the fine grid to the coarse grid is given by the transpose, ``R_e = P_e^T``.
+Restriction from the fine grid to the coarse grid is given by the transpose, ``R_{ftoc} = P{ctof}^T``.
 
-ToDo: Write up conversion to symbol matrix
+Thus, the symbol of ``P_{ctof}`` is given by
+
+```math
+\tilde{P}_{ctof} = diag \left( Q_f \right)^T \left( B_{ctof} \odot \begin{bmatrix}
+    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}          &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
+    \vdots                                                        &&  \vdots  &&  \vdots                                                            \\
+    e^{\imath \left( x_{p_f + 1, f} - x_{0, c} \right) \theta}    &&  \cdots  &&  e^{\imath \left( x_{p_f + 1, f} - x_{p_c + 1, c} \right) \theta}  \\
+\end{bmatrix} \right) diag \left( Q_c \right)
+```
+
+and ``\tilde{R}_{ftoc}`` is given by the transpose.
 
 ### Multigrid Error Propagation Operator
 
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-E \left( p, \theta \right) = S_f \left( p, \theta \right) \left[ I - P_f \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) R_f \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] S_f \left( p , \theta \right)
+E \left( p, \theta \right) = S_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] S_f \left( p , \theta \right)
 ```
 
-where ``P_f`` and ``R_f`` are given above, ``S_h`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.
+where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``S_h`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.
 
 ## User Defined Smoothers
 

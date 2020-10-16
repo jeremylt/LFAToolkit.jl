@@ -176,6 +176,8 @@ S_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \til
 
 where ``\nu`` is the number of smoothing passes.
 
+User defined smoothers are supported, where the user provides ``M^{-1}`` or a function derive it based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``S_h`` are automatically generated.
+
 ### Grid Transfer Operators
 
 We consider grid transfer operators for p-type multigrid.
@@ -210,7 +212,3 @@ E \left( p, \theta \right) = S_f \left( p, \theta \right) \left[ I - \tilde{P}_{
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``S_h`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.
-
-## User Defined Smoothers
-
-ToDo: Example of user defined smoother. User provides element matrix and code maps to symbols.

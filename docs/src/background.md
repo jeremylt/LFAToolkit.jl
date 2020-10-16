@@ -189,7 +189,7 @@ P_{ctof} = P_{fine}^T D_{scale} B_{c to f} P_{coarse}
 
 where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis, ``P_{f}`` is the fine grid element assembly operator, ``P_{c}`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling for node multiplicity across elements.
 
-Restriction from the fine grid to the coarse grid is given by the transpose, ``R_{ftoc} = P{ctof}^T``.
+Restriction from the fine grid to the coarse grid is given by the transpose, ``R_{ftoc} = P_{ctof}^T``.
 
 Thus, the symbol of ``P_{ctof}`` is given by
 

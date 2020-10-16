@@ -147,7 +147,7 @@ In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A 
 The symbol of the error propagation operator is given by
 
 ```math
-S_h \left( \omega, \theta \right) = I - M_h^{-1} \tilde{A}_h \left( \theta \right)
+S_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is a relaxation parameter.
@@ -155,13 +155,13 @@ where ``\omega`` is a relaxation parameter.
 Specifically, for Jacobi we have
 
 ```math
-S_h \left( \omega, \theta \right) = I - \omega M_h^{-1} \tilde{A}_h \left( \theta \right)
+S_h \left( \omega, \theta \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
-where ``\omega`` is the weighting factor and ``M_h`` is given by
+where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 
 ```math
-M_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
+\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
     e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
     \vdots                                            &&  \vdots  &&  \vdots                                                  \\
     e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
@@ -171,7 +171,7 @@ M_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
 If multiple pre or post-smoothing passes are used, we have
 
 ```math
-S_h \left( \omega, \nu, \theta \right) = \left( I - \omega M_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
+S_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
 ```
 
 where ``\nu`` is the number of smoothing passes.

@@ -11,7 +11,7 @@ script:
   - julia --project -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit"; coverage=true)';
 
 after_success:
-  - if [[ "$TRAVIS_JOB_NAME" == "julia 1.5" ]]; then
+  - if [[ "$TRAVIS_JOB_NAME" == "julia release" ]]; then
         julia -e 'using Pkg; Pkg.add("Coverage");
                   using Coverage; Codecov.submit(Codecov.process_folder())';
     fi
@@ -22,7 +22,7 @@ jobs:
     - name: "jula 1.0"
       julia: 1.0
 
-    - name: "julia latest release"
+    - name: "julia release"
       julia: 1
 
     - name: "julia nightly"

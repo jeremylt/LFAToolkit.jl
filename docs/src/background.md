@@ -69,10 +69,10 @@ A = P^T A_e P
 ```
 
 ```math
-A_e = B^T J^T D J B
+A_e = B^T D B
 ```
 
-where ``P`` represents the element assembly operator, ``B`` represents computing the derivatives of the basis functions at the quadrature points, ``J`` represents the change of variables from the grid ``G_h`` to the reference space for the element, and ``D`` represents a pointwise application of the bilinear form with quadrature weights.
+where ``P`` represents the element assembly operator, ``B`` represents computing the derivatives of the basis functions at the quadrature points, and ``D`` represents a pointwise application of the bilinear form with quadrature weights, to include a change of coordinates to the reference space.
 As we are on the infinite grid, ``G_h``, boundary conditions have been omitted.
 This analysis will also be equivalent to periodic boundary conditions.
 

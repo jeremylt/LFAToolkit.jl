@@ -74,7 +74,7 @@ tensor product basis:
     interpolation
 ```
 """
-mutable struct Jacobi
+mutable struct Jacobi <: AbstractPreconditioner
     # data never changed
     operator::Operator
 

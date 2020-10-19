@@ -9,6 +9,7 @@ Pages = [
     "private/mesh.md",
     "private/basis.md",
     "private/operator.md",
+    "private/pc_base.md",
     "private/pc_jacobi.md",
 ]
 ```

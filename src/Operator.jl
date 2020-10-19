@@ -90,6 +90,8 @@ mutable struct Operator
     diagonal::AbstractArray{Float64}
     rowmodemap::AbstractArray{Float64,2}
     columnmodemap::AbstractArray{Float64,2}
+    inputcoordinates::AbstractArray{Float64}
+    outputcoordinates::AbstractArray{Float64}
     nodecoordinatedifferences::AbstractArray{Float64}
 
     # inner constructor
@@ -707,6 +709,8 @@ function getnodecoordinatedifferences(operator::Operator)
         end
 
         # store
+        operator.inputcoordinates = inputcoordinates
+        operator.outputcoordinates = outputcoordinates
         operator.nodecoordinatedifferences = nodecoordinatedifferences
     end
 
@@ -727,6 +731,12 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getrowmodemap(operator)
     elseif f == :columnmodemap
         return getcolumnmodemap(operator)
+    elseif f == :inputcoordinates
+        _ = getnodecoordinatedifferences(operator)
+        return getfield(operator, inputcoordinates)
+    elseif f == :outputcoordinates
+        _ = getnodecoordinatedifferences(operator)
+        return getfield(operator, outputcoordinates)
     elseif f == :nodecoordinatedifferences
         return getnodecoordinatedifferences(operator)
     else

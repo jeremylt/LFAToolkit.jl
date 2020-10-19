@@ -21,6 +21,7 @@ export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
 export OperatorField
 export Operator, computesymbols
 export Jacobi
+export PMultigrid
 
 # ------------------------------------------------------------------------------
 # imports
@@ -31,7 +32,9 @@ include("Mesh.jl")
 include("Basis.jl")
 include("OperatorField.jl")
 include("Operator.jl")
+include("PC_Base.jl")
 include("PC_Jacobi.jl")
+include("PC_PMultigrid.jl")
 
 end # module
 

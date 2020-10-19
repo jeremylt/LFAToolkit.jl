@@ -22,10 +22,10 @@ P-Multigrid preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finebasis = TensorH1LagrangeBasis(4, 4, 2);
-coarsebasis = TensorH1LagrangeBasis(2, 4, 2);
-collocatedquadrature = true;
-ctofbasis = TensorH1LagrangeBasis(2, 4, 2, collocatedquadrature);
+finebasis = TensorH1LagrangeBasis(5, 5, 2);
+coarsebasis = TensorH1LagrangeBasis(3, 5, 2);
+lagrangequadrature = true;
+ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature);
  
 # diffusion setup
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
@@ -69,15 +69,15 @@ finite element operator:
 2 inputs:
 operator field:
 tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
+    numbernodes1d: 5
+    numberquadraturepoints1d: 5
     dimension: 2
   evaluation mode:
     gradient
 operator field:
 tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
+    numbernodes1d: 5
+    numberquadraturepoints1d: 5
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -85,8 +85,8 @@ tensor product basis:
 1 output:
 operator field:
 tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
+    numbernodes1d: 5
+    numberquadraturepoints1d: 5
     dimension: 2
   evaluation mode:
     gradient
@@ -147,7 +147,7 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
 
         # fill matrix
         numberrows = size(outputcoordinates)[1]
-        numbercolumns = size(inputcoordinates)[2]
+        numbercolumns = size(inputcoordinates)[1]
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
@@ -164,6 +164,7 @@ end
 
 function computesymbolspplongation(multigrid::PMultigrid, θ::Array)
     # setup
+    dimension = multigrid.prolongationbasis.dimension
     rowmodemap = multigrid.fineoperator.rowmodemap
     columnmodemap = multigrid.coarseoperator.columnmodemap
     prolongationmatrix = multigrid.prolongationbasis.interpolation
@@ -238,25 +239,111 @@ end
 # compute symbols
 # ------------------------------------------------------------------------------
 
+
+
+"""
+```julia
+computesymbols(multigrid, p, θ)
+```
+
+Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
+
+# Arguments:
+- `multigrid`: PMultigrid preconditioner to compute symbol matrix for
+- `p`:         Smoothing paramater array
+- `θ`:              Fourier mode frequency array (one frequency per dimension)
+
+# Returns:
+- Symbol matrix for the p-multigrid preconditioned operator
+
+# Example:
+```jldoctest
+using LinearAlgebra
+
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    finebasis = TensorH1LagrangeBasis(5, 5, dimension);
+    coarsebasis = TensorH1LagrangeBasis(3, 5, dimension);
+    lagrangequadrature = true;
+    ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature);
+    
+    
+    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+        dv = du*w[1]
+        return [dv]
+    end
+    
+    # diffusion operator, fine grid
+    fineinputs = [
+        OperatorField(finebasis, [EvaluationMode.gradient]),
+        OperatorField(finebasis, [EvaluationMode.quadratureweights]),
+    ];
+    fineoutputs = [OperatorField(finebasis, [EvaluationMode.gradient])];
+    finediffusion = Operator(diffusionweakform, mesh, fineinputs, fineoutputs);
+    
+    # diffusion operator, coarse grid
+    coarseinputs = [
+        OperatorField(coarsebasis, [EvaluationMode.gradient]),
+        OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
+    ];
+    coarseoutputs = [OperatorField(coarsebasis, [EvaluationMode.gradient])];
+    coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs);
+
+    # smoother
+    jacobi = Jacobi(finediffusion);
+
+    # preconditioner
+    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis);
+
+    # compute symbols
+    A = computesymbols(multigrid, [1.0], π*ones(dimension));
+
+    # verify
+    using LinearAlgebra;
+    eigenvalues = real(eigvals(A));
+    if dimension == 1
+       @assert min(eigenvalues...) ≈ -3.8926063079259547
+       @assert max(eigenvalues...) ≈ 0.6907788855328606
+    elseif dimension == 2
+       @assert min(eigenvalues...) ≈ -10.288241183013032
+       @assert max(eigenvalues...) ≈ 1.0506250000000024
+    elseif dimension == 3
+       @assert min(eigenvalues...) ≈ -26.217946739720766
+       @assert max(eigenvalues...) ≈ 1.6336035156250066
+    end
+end
+
+# output
+
+```
+"""
 function computesymbols(multigrid::PMultigrid, p::Array, θ::Array)
-    # compute components
+    # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
-    P_ctof = computesymbolspprolongation(multigrid, θ)
-    R_ftoc = P^T
+    P_ctof = computesymbolspplongation(multigrid, θ)
+    R_ftoc = transpose(P_ctof)
 
     A_f = computesymbols(multigrid.fineoperator, θ)
     A_c = []
     if isa(multigrid.coarseoperator, Operator)
-        computesymbols(multigrid.coarseoperator, θ)
+        A_c = computesymbols(multigrid.coarseoperator, θ)
     elseif isa(multigrid.coarseoperator, PMultigrid)
-        computesymbols(multigrid.coarseoperator, p, θ)
+        A_c = computesymbols(multigrid.coarseoperator, p, θ)
     else
         Throw(error("coarse operator not supported")) # COV_EXCL_LINE
     end
 
     # return
-    return S_f*(I - P_ctof*A_C^-1*R_ftoc*A_f)*S_f
+    return S_f*(I - P_ctof*A_c^-1*R_ftoc*A_f)*S_f
 end
 
 # ------------------------------------------------------------------------------

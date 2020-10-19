@@ -178,17 +178,15 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ_x, ...)
+computesymbols(preconditioner, ω, θ)
 ```
 
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
 - `preconditioner`: Jacobi preconditioner to compute symbol matrix for
-- `ω`:              Smoothing weighting factor
-- `θ_x`:            Fourier mode frequency in x direction
-- `θ_y`:            Fourier mode frequency in y direction (2D and 3D)
-- `θ_z`:            Fourier mode frequency in z direction (3D)
+- `ω`:              Smoothing weighting factor array
+- `θ`:              Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the Jacobi preconditioned operator
@@ -214,7 +212,7 @@ for dimension in 1:3
         return [dv]
     end
     
-    # mass operator
+    # diffusion operator
     inputs = [
         OperatorField(basis, [EvaluationMode.gradient]),
         OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -223,7 +221,7 @@ for dimension in 1:3
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
     # preconditioner
-    jacobi = Jacobi(diffusion)
+    jacobi = Jacobi(diffusion);
 
     # compute symbols
     A = computesymbols(jacobi, [1.0], π*ones(dimension));

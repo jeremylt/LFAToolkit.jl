@@ -2,4 +2,5 @@
 
 ```@docs
 PMultigrid
+computesymbols(::PMultigrid, ::Array, ::Array)
 ```

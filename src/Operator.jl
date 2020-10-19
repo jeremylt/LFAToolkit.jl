@@ -680,20 +680,8 @@ function getnodecoordinatedifferences(operator::Operator)
     # assemble if needed
     if !isdefined(operator, :nodecoordinatedifferences)
         # setup for computation
-        inputcoordinates = []
-        outputcoordinates = []
-        for input in operator.inputs
-            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                inputcoordinates =
-                    inputcoordinates == [] ? input.basis.nodes :
-                    [inputcoordinates; input.basis.nodes]
-            end
-        end
-        for output in operator.outputs
-            outputcoordinates =
-                outputcoordinates == [] ? output.basis.nodes :
-                [outputcoordinates; output.basis.nodes]
-        end
+        inputcoordinates = operator.inputcoordinates
+        outputcoordinates = operator.outputcoordinates
         dimension = operator.inputs[1].basis.dimension
         lengths = [
             max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...)
@@ -709,13 +697,51 @@ function getnodecoordinatedifferences(operator::Operator)
         end
 
         # store
-        operator.inputcoordinates = inputcoordinates
-        operator.outputcoordinates = outputcoordinates
         operator.nodecoordinatedifferences = nodecoordinatedifferences
     end
 
     # return
     return getfield(operator, :nodecoordinatedifferences)
+end
+
+function getinputcoordinates(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :inputcoordinates)
+        # setup for computation
+        inputcoordinates = []
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                inputcoordinates =
+                    inputcoordinates == [] ? input.basis.nodes :
+                    [inputcoordinates; input.basis.nodes]
+            end
+        end
+
+        # store
+        operator.inputcoordinates = inputcoordinates
+    end
+
+    # return
+    return getfield(operator, :inputcoordinates)
+end
+
+function getoutputcoordinates(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :outputcoordinates)
+        # setup for computation
+        outputcoordinates = []
+        for output in operator.outputs
+            outputcoordinates =
+                outputcoordinates == [] ? output.basis.nodes :
+                [outputcoordinates; output.basis.nodes]
+        end
+
+        # store
+        operator.outputcoordinates = outputcoordinates
+    end
+
+    # return
+    return getfield(operator, :outputcoordinates)
 end
 
 # ------------------------------------------------------------------------------
@@ -732,11 +758,9 @@ function Base.getproperty(operator::Operator, f::Symbol)
     elseif f == :columnmodemap
         return getcolumnmodemap(operator)
     elseif f == :inputcoordinates
-        _ = getnodecoordinatedifferences(operator)
-        return getfield(operator, inputcoordinates)
+        return getinputcoordinates(operator)
     elseif f == :outputcoordinates
-        _ = getnodecoordinatedifferences(operator)
-        return getfield(operator, outputcoordinates)
+        return getoutputcoordinates(operator)
     elseif f == :nodecoordinatedifferences
         return getnodecoordinatedifferences(operator)
     else
@@ -758,16 +782,14 @@ end
 
 """
 ```julia
-computesymbols(operator, θ_x, ...)
+computesymbols(operator, θ)
 ```
 
 Compute the symbol matrix for an operator
 
 # Arguments:
 - `operator`: Finite element operator to compute symbol matrix for
-- `θ_x`:      Fourier mode frequency in x direction
-- `θ_y`:      Fourier mode frequency in y direction (2D and 3D)
-- `θ_z`:      Fourier mode frequency in z direction (3D)
+- `θ`:              Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the operator

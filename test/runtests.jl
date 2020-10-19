@@ -90,6 +90,34 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
         @test max(eigenvalues...) ≈ 0.8446129151683509
     end
 
+    # --------------------------------------------------------------------------
+    # P-multigrid example
+    # --------------------------------------------------------------------------
+
+    # setup
+    coarsebasis = TensorH1LagrangeBasis(2, 4, 2)
+    lagrangequadrature = true
+    ctofbasis = TensorH1LagrangeBasis(2, 4, 2, lagrangequadrature)
+    coarseinputs = [
+        OperatorField(coarsebasis, [EvaluationMode.gradient]),
+        OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
+    ]
+    coarseoutputs = [OperatorField(coarsebasis, [EvaluationMode.gradient])]
+    coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs)
+
+    # p-multigrid preconditioner
+    multigrid = PMultigrid(diffusion, coarsediffusion, jacobi, ctofbasis)
+
+    # compute operator symbols
+    A = computesymbols(multigrid, [1.0], [π, π])
+
+    # verify
+    eigenvalues = real(eigvals(A))
+    @testset "p-multigrid example" begin
+        @test min(eigenvalues...) ≈ -15.673827693874575
+        @test max(eigenvalues...) ≈ 2.5567005739723823
+    end
+
 end # testset
 
 # ------------------------------------------------------------------------------

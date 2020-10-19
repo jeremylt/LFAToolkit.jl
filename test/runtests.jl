@@ -109,7 +109,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     multigrid = PMultigrid(diffusion, coarsediffusion, jacobi, ctofbasis)
 
     # compute operator symbols
-    A = computesymbols(multigrid, [1.0], [π, π])
+    A = computesymbols(multigrid, [1.0], [1, 1], [π, π])
 
     # verify
     eigenvalues = real(eigvals(A))

@@ -243,7 +243,7 @@ end
 
 """
 ```julia
-computesymbols(multigrid, p, θ)
+computesymbols(multigrid, p, v, θ)
 ```
 
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
@@ -251,7 +251,8 @@ Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 # Arguments:
 - `multigrid`: PMultigrid preconditioner to compute symbol matrix for
 - `p`:         Smoothing paramater array
-- `θ`:              Fourier mode frequency array (one frequency per dimension)
+- `v`:         Number of pre and post smooths
+- `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the p-multigrid preconditioned operator
@@ -304,7 +305,7 @@ for dimension in 1:3
     multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis);
 
     # compute symbols
-    A = computesymbols(multigrid, [1.0], π*ones(dimension));
+    A = computesymbols(multigrid, [1.0], [1, 1], π*ones(dimension));
 
     # verify
     using LinearAlgebra;
@@ -325,7 +326,12 @@ end
 
 ```
 """
-function computesymbols(multigrid::PMultigrid, p::Array, θ::Array)
+function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Array)
+    # validate number of parameters
+    if length(v) != 2
+        Throw(error("must specify number of pre and post smooths")) # COV_EXCL_LINE
+    end
+
     # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
@@ -337,13 +343,13 @@ function computesymbols(multigrid::PMultigrid, p::Array, θ::Array)
     if isa(multigrid.coarseoperator, Operator)
         A_c = computesymbols(multigrid.coarseoperator, θ)
     elseif isa(multigrid.coarseoperator, PMultigrid)
-        A_c = computesymbols(multigrid.coarseoperator, p, θ)
+        A_c = computesymbols(multigrid.coarseoperator, p, v, θ)
     else
         Throw(error("coarse operator not supported")) # COV_EXCL_LINE
     end
 
     # return
-    return S_f*(I - P_ctof*A_c^-1*R_ftoc*A_f)*S_f
+    return S_f^v[2]*(I - P_ctof*A_c^-1*R_ftoc*A_f)*S_f^v[1]
 end
 
 # ------------------------------------------------------------------------------

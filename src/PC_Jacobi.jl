@@ -242,6 +242,11 @@ end
 ```
 """
 function computesymbols(preconditioner::Jacobi, ω::Array, θ::Array)
+    # validate number of parameters
+    if length(ω) != 1
+        Throw(error("only one parameter for Jacobi smoothing")) # COV_EXCL_LINE
+    end
+
     # return
     S_A = preconditioner.operatordiagonalinverse*computesymbols(preconditioner.operator, θ)
     return I - ω[1]*S_A

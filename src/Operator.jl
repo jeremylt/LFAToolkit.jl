@@ -802,7 +802,7 @@ for dimension in 1:3
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
     # compute symbols
-    A = computesymbols(diffusion, π*ones(dimension)...);
+    A = computesymbols(diffusion, π*ones(dimension));
 
     # verify
     eigenvalues = real(eigvals(A));
@@ -867,18 +867,6 @@ function computesymbols(operator::Operator, θ::Array)
 
     # return
     return symbolmatrixmodes
-end
-
-function computesymbols(operator::Operator, θ_x::Number)
-    return computesymbols(operator, [θ_x])
-end
-
-function computesymbols(operator::Operator, θ_x::Number, θ_y::Number)
-    return computesymbols(operator, [θ_x, θ_y])
-end
-
-function computesymbols(operator::Operator, θ_x::Number, θ_y::Number, θ_z::Number)
-    return computesymbols(operator, [θ_x, θ_y, θ_z])
 end
 
 # ------------------------------------------------------------------------------

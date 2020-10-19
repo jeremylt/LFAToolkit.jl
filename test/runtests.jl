@@ -36,7 +36,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     mass = Operator(massweakform, mesh, inputs, outputs)
 
     # compute operator symbols
-    A = computesymbols(mass, π, π)
+    A = computesymbols(mass, [π, π])
 
     # verify
     eigenvalues = real(eigvals(A))
@@ -64,7 +64,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
     # compute operator symbols
-    A = computesymbols(diffusion, π, π)
+    A = computesymbols(diffusion, [π, π])
 
     # verify
     eigenvalues = real(eigvals(A))
@@ -81,7 +81,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
     jacobi = Jacobi(diffusion)
 
     # compute operator symbols
-    A = computesymbols(jacobi, 1.0, π, π)
+    A = computesymbols(jacobi, [1.0], [π, π])
 
     # verify
     eigenvalues = real(eigvals(A))

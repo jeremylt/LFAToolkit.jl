@@ -2,5 +2,5 @@
 
 ```@docs
 Jacobi
-computesymbols(::Jacobi, ::Number, ::Array)
+computesymbols(::Jacobi, ::Array, ::Array)
 ```

@@ -240,7 +240,7 @@ end
 
 function computesymbols(multigrid::PMultigrid, p::Array, θ::Array)
     # compute components
-    S_f = computesymbols(multigrid.smoother, p..., θ)
+    S_f = computesymbols(multigrid.smoother, p, θ)
 
     P_ctof = computesymbolspprolongation(multigrid, θ)
     R_ftoc = P^T
@@ -257,28 +257,6 @@ function computesymbols(multigrid::PMultigrid, p::Array, θ::Array)
 
     # return
     return S_f*(I - P_ctof*A_C^-1*R_ftoc*A_f)*S_f
-end
-
-function computesymbols(multigrid::PMultigrid, p::Number, θ::Array)
-    return computesymbols(multigrid, [p], θ)
-end
-
-function computesymbols(multigrid::PMultigrid, p::Number, θ_x::Number)
-    return computesymbols(multigrid, [p], [θ_x])
-end
-
-function computesymbols(multigrid::PMultigrid, p::Number, θ_x::Number, θ_y::Number)
-    return computesymbols(multigrid, [p], [θ_x, θ_y])
-end
-
-function computesymbols(
-    multigrid::PMultigrid,
-    p::Number,
-    θ_x::Number,
-    θ_y::Number,
-    θ_z::Number,
-)
-    return computesymbols(multigrid, [p], [θ_x, θ_y, θ_z])
 end
 
 # ------------------------------------------------------------------------------

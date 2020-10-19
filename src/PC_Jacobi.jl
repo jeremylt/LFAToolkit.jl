@@ -226,7 +226,7 @@ for dimension in 1:3
     jacobi = Jacobi(diffusion)
 
     # compute symbols
-    A = computesymbols(jacobi, 1.0, π*ones(dimension)...);
+    A = computesymbols(jacobi, [1.0], π*ones(dimension));
 
     # verify
     using LinearAlgebra;
@@ -243,29 +243,10 @@ end
 
 ```
 """
-function computesymbols(preconditioner::Jacobi, ω::Number, θ::Array)
+function computesymbols(preconditioner::Jacobi, ω::Array, θ::Array)
     # return
-    S_A =
-        preconditioner.operatordiagonalinverse*computesymbols(preconditioner.operator, θ...)
-    return I - ω*S_A
-end
-
-function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number)
-    return computesymbols(preconditioner, ω, [θ_x])
-end
-
-function computesymbols(preconditioner::Jacobi, ω::Number, θ_x::Number, θ_y::Number)
-    return computesymbols(preconditioner, ω, [θ_x, θ_y])
-end
-
-function computesymbols(
-    preconditioner::Jacobi,
-    ω::Number,
-    θ_x::Number,
-    θ_y::Number,
-    θ_z::Number,
-)
-    return computesymbols(preconditioner, ω, [θ_x, θ_y, θ_z])
+    S_A = preconditioner.operatordiagonalinverse*computesymbols(preconditioner.operator, θ)
+    return I - ω[1]*S_A
 end
 
 # ------------------------------------------------------------------------------

@@ -37,7 +37,8 @@ then ``\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa e^{\imat
 We can extend this to a ``p \times p`` linear system of operators representing a scalar problem on a ``p`` order finite element
 
 ```math
-\tilde{L}_h = \begin{bmatrix}
+\tilde{L}_h =
+\begin{bmatrix}
     \tilde{L}_h^{1, 1}  &&  \cdots  &&  \tilde{L}_h^{1, p} \\
     \vdots              &&  \vdots  &&  \vdots             \\
     \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L}_h^{p, p} \\
@@ -78,17 +79,20 @@ This analysis will also be equivalent to periodic boundary conditions.
 With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
 
 ```math
-\tilde{A}_h = Q^T \left( A_e \odot \begin{bmatrix}
+\tilde{A}_h = Q^T \left( A_e \odot
+\begin{bmatrix}
     e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
     \vdots                                            &&  \vdots  &&  \vdots                                                  \\
     e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
-\end{bmatrix} \right) Q
+\end{bmatrix}
+\right) Q
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements and
 
 ```math
-Q = \begin{bmatrix}
+Q =
+\begin{bmatrix}
     1       &&  0       &&  \cdots  &&  0       &&  1       \\
     0       &&  1       &&  \cdots  &&  0       &&  0       \\
     \vdots  &&  \vdots  &&  \vdots  &&  \vdots  &&  \vdots  \\
@@ -161,11 +165,13 @@ S_h \left( \omega, \theta \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \lef
 where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 
 ```math
-\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot \begin{bmatrix}
+\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot
+\begin{bmatrix}
     e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
     \vdots                                            &&  \vdots  &&  \vdots                                                  \\
     e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
-\end{bmatrix} \right) Q.
+\end{bmatrix}
+\right) Q.
 ```
 
 If multiple pre or post-smoothing passes are used, we have
@@ -194,11 +200,13 @@ Restriction from the fine grid to the coarse grid is given by the transpose, ``R
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = diag \left( Q_f \right)^T \left( B_{ctof} \odot \begin{bmatrix}
-    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}          &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
-    \vdots                                                        &&  \vdots  &&  \vdots                                                            \\
-    e^{\imath \left( x_{p_f + 1, f} - x_{0, c} \right) \theta}    &&  \cdots  &&  e^{\imath \left( x_{p_f + 1, f} - x_{p_c + 1, c} \right) \theta}  \\
-\end{bmatrix} \right) diag \left( Q_c \right)
+\tilde{P}_{ctof} \left( \theta \right) = diag \left( Q_f \right)^T \left( B_{ctof} \odot
+\begin{bmatrix}
+    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
+    \vdots                                                      &&  \vdots  &&  \vdots                                                            \\
+    e^{\imath \left( x_{p_f + 1, f} - x_{0, c} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_f + 1, f} - x_{p_c + 1, c} \right) \theta}  \\
+\end{bmatrix}
+\right) diag \left( Q_c \right)
 ```
 
 and ``\tilde{R}_{ftoc}`` is given by the transpose.

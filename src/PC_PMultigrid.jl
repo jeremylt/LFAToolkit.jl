@@ -118,7 +118,7 @@ mutable struct PMultigrid <: AbstractPreconditioner
 
         # check agreement in number of fields
         if length(prolongationbases) != length(fineoperator.outputs) ||
-            length(prolongationbases) != length(coarseoperator.outputs)
+           length(prolongationbases) != length(coarseoperator.outputs)
             error("operators and prolongation bases must have same number of fields")
         end;
 
@@ -210,12 +210,13 @@ function getprolongationmatrix(multigrid::PMultigrid)
             # prolongation matrices
             push!(Pblocks, basis.interpolation)
         end
-        
+
         prolongationmatrix = spzeros(numberfinenodes, numbercoarsenodes)
         currentrow = 1
         currentcolumn = 1
         for Pblock in Pblocks
-            prolongationmatrix[currentrow:size(Pblock)[1], currentcolumn:size(Pblock)[2]] = Pblock
+            prolongationmatrix[currentrow:size(Pblock)[1], currentcolumn:size(Pblock)[2]] =
+                Pblock
             currentrow += size(Pblock)[1]
             currentcolumn += size(Pblock)[2]
         end

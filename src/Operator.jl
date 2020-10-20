@@ -634,6 +634,66 @@ end
 
 """
 ```julia
+getinputcoordinates(operator)
+```
+
+Compute or retrieve the array of input coordinates
+
+# Returns:
+- Array of input coordinates
+"""
+function getinputcoordinates(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :inputcoordinates)
+        # setup for computation
+        inputcoordinates = []
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                inputcoordinates =
+                    inputcoordinates == [] ? input.basis.nodes :
+                    [inputcoordinates; input.basis.nodes]
+            end
+        end
+
+        # store
+        operator.inputcoordinates = inputcoordinates
+    end
+
+    # return
+    return getfield(operator, :inputcoordinates)
+end
+
+"""
+```julia
+getoutputcoordinates(operator)
+```
+
+Compute or retrieve the array of output coordinates
+
+# Returns:
+- Array of output coordinates
+"""
+function getoutputcoordinates(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :outputcoordinates)
+        # setup for computation
+        outputcoordinates = []
+        for output in operator.outputs
+            outputcoordinates =
+                outputcoordinates == [] ? output.basis.nodes :
+                [outputcoordinates; output.basis.nodes]
+        end
+
+        # store
+        operator.outputcoordinates = outputcoordinates
+    end
+
+    # return
+    return getfield(operator, :outputcoordinates)
+end
+
+"""
+```julia
 getnodecoordinatedifferences(operator)
 ```
 
@@ -702,46 +762,6 @@ function getnodecoordinatedifferences(operator::Operator)
 
     # return
     return getfield(operator, :nodecoordinatedifferences)
-end
-
-function getinputcoordinates(operator::Operator)
-    # assemble if needed
-    if !isdefined(operator, :inputcoordinates)
-        # setup for computation
-        inputcoordinates = []
-        for input in operator.inputs
-            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                inputcoordinates =
-                    inputcoordinates == [] ? input.basis.nodes :
-                    [inputcoordinates; input.basis.nodes]
-            end
-        end
-
-        # store
-        operator.inputcoordinates = inputcoordinates
-    end
-
-    # return
-    return getfield(operator, :inputcoordinates)
-end
-
-function getoutputcoordinates(operator::Operator)
-    # assemble if needed
-    if !isdefined(operator, :outputcoordinates)
-        # setup for computation
-        outputcoordinates = []
-        for output in operator.outputs
-            outputcoordinates =
-                outputcoordinates == [] ? output.basis.nodes :
-                [outputcoordinates; output.basis.nodes]
-        end
-
-        # store
-        operator.outputcoordinates = outputcoordinates
-    end
-
-    # return
-    return getfield(operator, :outputcoordinates)
 end
 
 # ------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ jobs:
 
     - name: "style"
       script:
-        - julia .Style.jl && git diff --exit-code src test docs
+        - julia .Style.jl && git diff --exit-code src test examples docs
       after_success: skip
 
 # Documentation

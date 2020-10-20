@@ -6,7 +6,7 @@ This is an example of a simple p-multigrid preconditioner.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../test/ex4_pmultigrid.jl", String))
+$(read("../../../examples/ex4_pmultigrid.jl", String))
 ```
 """)
 ````

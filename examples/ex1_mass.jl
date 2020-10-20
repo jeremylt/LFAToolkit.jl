@@ -22,9 +22,7 @@ mass = Operator(massweakform, mesh, inputs, outputs)
 # compute operator symbols
 A = computesymbols(mass, [π, π])
 
-# verify
+# symbols eigenvalues
 eigenvalues = real(eigvals(A))
-@test min(eigenvalues...) ≈ 0.008379422444571976
-@test max(eigenvalues...) ≈ 0.17361111111111088
 
 # ------------------------------------------------------------------------------

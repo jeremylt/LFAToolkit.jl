@@ -6,7 +6,7 @@ This is an example of a simple Jacobi smoother.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../test/ex3_jacobi.jl", String))
+$(read("../../../examples/ex3_jacobi.jl", String))
 ```
 """)
 ````

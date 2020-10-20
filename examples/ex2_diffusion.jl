@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Jacobi smoother example
+# diffusion operator example
 # ------------------------------------------------------------------------------
 
 # setup
@@ -19,15 +19,10 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
-# Jacobi smoother
-jacobi = Jacobi(diffusion)
-
 # compute operator symbols
-A = computesymbols(jacobi, [1.0], [π, π])
+A = computesymbols(diffusion, [π, π])
 
-# verify
+# symbols eigenvalues
 eigenvalues = real(eigvals(A))
-@test min(eigenvalues...) ≈ -1.5989685969312784
-@test max(eigenvalues...) ≈ 0.8446129151683509
 
 # ------------------------------------------------------------------------------

@@ -39,9 +39,7 @@ multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis)
 # compute operator symbols
 A = computesymbols(multigrid, [1.0], [1, 1], [π, π])
 
-# verify
+# symbols eigenvalues
 eigenvalues = real(eigvals(A))
-@test min(eigenvalues...) ≈ -15.673827693874575
-@test max(eigenvalues...) ≈ 2.5567005739723823
 
 # ------------------------------------------------------------------------------

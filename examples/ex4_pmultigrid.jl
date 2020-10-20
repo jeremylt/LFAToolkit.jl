@@ -38,8 +38,6 @@ multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis)
 
 # compute operator symbols
 A = computesymbols(multigrid, [1.0], [1, 1], [π, π])
-
-# symbols eigenvalues
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

@@ -21,8 +21,6 @@ mass = Operator(massweakform, mesh, inputs, outputs)
 
 # compute operator symbols
 A = computesymbols(mass, [π, π])
-
-# symbols eigenvalues
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

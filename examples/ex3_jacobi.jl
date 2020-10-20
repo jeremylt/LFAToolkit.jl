@@ -24,8 +24,6 @@ jacobi = Jacobi(diffusion)
 
 # compute operator symbols
 A = computesymbols(jacobi, [1.0], [π, π])
-
-# symbols eigenvalues
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

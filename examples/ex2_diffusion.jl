@@ -21,8 +21,6 @@ diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
 
 # compute operator symbols
 A = computesymbols(diffusion, [π, π])
-
-# symbols eigenvalues
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 # documentation tests
 # ------------------------------------------------------------------------------
 
-@testset "documentation tests      " begin
+@testset "  documentation tests     " begin
     doctest(LFAToolkit; manual = false)
 end
 
@@ -17,7 +17,7 @@ end
 # mass matrix example
 # ------------------------------------------------------------------------------
 
-@testset "ex1 - mass example       " begin
+@testset "  ex1: mass example       " begin
     include("../examples/ex1_mass.jl")
 
     @test min(eigenvalues...) ≈ 0.008379422444571976
@@ -28,7 +28,7 @@ end
 # diffusion operator example
 # ------------------------------------------------------------------------------
 
-@testset "ex2 - diffusion example  " begin
+@testset "  ex2: diffusion example  " begin
     include("../examples/ex2_diffusion.jl")
 
     @test min(eigenvalues...) ≈ 0.24284729156204987
@@ -39,7 +39,7 @@ end
 # Jacobi smoother example
 # ------------------------------------------------------------------------------
 
-@testset "ex3 - Jacobi example     " begin
+@testset "  ex3: Jacobi example     " begin
     include("../examples/ex3_jacobi.jl")
 
     @test min(eigenvalues...) ≈ -1.5989685969312784
@@ -50,7 +50,7 @@ end
 # p-multigrid example
 # ------------------------------------------------------------------------------
 
-@testset "ex4 - p-multigrid example" begin
+@testset "  ex4: p-multigrid example" begin
     include("../examples/ex4_pmultigrid.jl")
 
     @test min(eigenvalues...) ≈ -15.673827693874575

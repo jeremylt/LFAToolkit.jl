@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # documentation
 # ------------------------------------------------------------------------------
-using Documenter, DocumenterTools, LFAToolkit
+using Documenter, DocumenterTools, Markdown, LFAToolkit
 DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = true)
 
 # The DOCSARGS environment variable can be used to pass additional arguments to make.jl.

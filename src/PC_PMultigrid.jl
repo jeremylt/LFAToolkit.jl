@@ -119,7 +119,7 @@ mutable struct PMultigrid <: AbstractPreconditioner
         # check agreement in number of fields
         if length(prolongationbases) != length(fineoperator.outputs) ||
            length(prolongationbases) != length(coarseoperator.outputs)
-            error("operators and prolongation bases must have same number of fields")
+            error("operators and prolongation bases must have same number of fields") # COV_EXCL_LINE
         end;
 
         # check dimensions

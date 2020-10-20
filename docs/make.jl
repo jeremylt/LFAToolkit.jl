@@ -35,6 +35,7 @@ makedocs(
             "Operator Field" => "public/operatorfield.md",
             "Finite Element Operator" => "public/operator.md",
             "Preconditioner: Jacobi" => "public/pc_jacobi.md",
+            "Preconditioner: P-Multigrid" => "public/pc_pmultigrid.md",
         ],
         "Private API" => [
             "Overview" => "private.md",
@@ -42,6 +43,7 @@ makedocs(
             "Finite Element Basis" => "private/basis.md",
             "Finite Element Operator" => "private/operator.md",
             "Preconditioner: Jacobi" => "private/pc_jacobi.md",
+            "Preconditioner: P-Multigrid" => "private/pc_pmultigrid.md",
         ],
         "References" => "references.md",
     ],

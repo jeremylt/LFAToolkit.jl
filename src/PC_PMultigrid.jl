@@ -134,6 +134,16 @@ Base.show(io::IO, preconditioner::PMultigrid) = print(io, "p-multigrid precondit
 # data for computing symbols
 # ------------------------------------------------------------------------------
 
+"""
+```julia
+getnodecoordinateddifferences(multigrid)
+```
+
+Compute or retrieve the array of differences in coordinates between nodes
+
+# Returns:
+- Array of differences in coordinates between nodes
+"""
 function getnodecoordinatedifferences(multigrid::PMultigrid)
     # assemble if needed
     if !isdefined(multigrid, :nodecoordinatedifferences)
@@ -163,7 +173,21 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
     return getfield(multigrid, :nodecoordinatedifferences)
 end
 
-function computesymbolspplongation(multigrid::PMultigrid, θ::Array)
+"""
+```julia
+computesymbolspprolongation(multigrid, θ)
+```
+
+Compute the symbol matrix for a p-multigrid prolongation operator
+
+# Arguments:
+- `multigrid`: P-multigrid operator to compute prolongation symbol matrix for
+- `θ`:         Fourier mode frequency array (one frequency per dimension)
+
+# Returns:
+- Symbol matrix for the p-multigrid prolongation operator
+"""
+function computesymbolspprolongation(multigrid::PMultigrid, θ::Array)
     # setup
     dimension = multigrid.prolongationbasis.dimension
     rowmodemap = multigrid.fineoperator.rowmodemap
@@ -243,8 +267,6 @@ end
 # ------------------------------------------------------------------------------
 # compute symbols
 # ------------------------------------------------------------------------------
-
-
 
 """
 ```julia
@@ -340,7 +362,7 @@ function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Arra
     # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
-    P_ctof = computesymbolspplongation(multigrid, θ)
+    P_ctof = computesymbolspprolongation(multigrid, θ)
     R_ftoc = transpose(P_ctof)
 
     A_f = computesymbols(multigrid.fineoperator, θ)

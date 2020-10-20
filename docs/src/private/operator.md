@@ -4,5 +4,5 @@
 LFAToolkit.getelementmatrix
 LFAToolkit.getrowmodemap
 LFAToolkit.getcolumnmodemap
-LFAToolkit.getnodecoordinatedifferences
+LFAToolkit.getnodecoordinatedifferences(::Operator)
 ```

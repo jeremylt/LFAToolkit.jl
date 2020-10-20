@@ -34,7 +34,7 @@ coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs)
 jacobi = Jacobi(finediffusion)
 
 # p-multigrid preconditioner
-multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis)
+multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
 
 # compute operator symbols
 A = computesymbols(multigrid, [1.0], [1, 1], [π, π])

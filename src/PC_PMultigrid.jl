@@ -14,7 +14,7 @@ P-Multigrid preconditioner for finite element operators
 - `coarseoperator`:    coarse grid representation of finite element operator to
                            precondition
 - `smoother`:          error relaxation operator, such as Jacobi
-- `prolongationbasis`: element prolongation matrix from coarse to fine grid
+- `prolongationbases`: element prolongation bases from coarse to fine grid
 
 # Returns:
 - P-multigrid preconditioner object
@@ -54,7 +54,7 @@ coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs)
 jacobi = Jacobi(finediffusion);
 
 # preconditioner
-multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis);
+multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
 
 # verify
 println(multigrid)
@@ -98,13 +98,14 @@ mutable struct PMultigrid <: AbstractPreconditioner
     fineoperator::Operator
     coarseoperator::Any
     smoother::AbstractPreconditioner
-    prolongationbasis::AbstractBasis
+    prolongationbases::Array{AbstractBasis}
 
     # data empty until assembled
+    prolongationmatrix::AbstractArray{Float64}
     nodecoordinatedifferences::AbstractArray{Float64}
 
     # inner constructor
-    PMultigrid(fineoperator, coarseoperator, smoother, prolongationbasis) = (
+    PMultigrid(fineoperator, coarseoperator, smoother, prolongationbases) = (
         # check smoother for fine grid
         if fineoperator != smoother.operator
             error("smoother must be for fine grid operator") # COV_EXCL_LINE
@@ -115,13 +116,21 @@ mutable struct PMultigrid <: AbstractPreconditioner
             error("coarse operator must be an operator or multigrid") # COV_EXCL_LINE
         end;
 
+        # check agreement in number of fields
+        if length(prolongationbases) != length(fineoperator.outputs) ||
+            length(prolongationbases) != length(coarseoperator.outputs)
+            error("operators and prolongation bases must have same number of fields")
+        end;
+
         # check dimensions
-        if fineoperator.inputs[1].basis.dimension != prolongationbasis.dimension
-            error("fine grid and prolongation space dimensions must agree") #COV_EXCL_LINE
+        for basis in prolongationbases
+            if fineoperator.inputs[1].basis.dimension != basis.dimension
+                error("fine grid and prolongation space dimensions must agree") #COV_EXCL_LINE
+            end
         end;
 
         # constructor
-        new(fineoperator, coarseoperator, smoother, prolongationbasis)
+        new(fineoperator, coarseoperator, smoother, prolongationbases)
     )
 end
 
@@ -148,7 +157,7 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
     # assemble if needed
     if !isdefined(multigrid, :nodecoordinatedifferences)
         # setup for computation
-        dimension = multigrid.prolongationbasis.dimension
+        dimension = multigrid.prolongationbases[1].dimension
         inputcoordinates = multigrid.coarseoperator.inputcoordinates
         outputcoordinates = multigrid.fineoperator.outputcoordinates
         lengths = [
@@ -173,6 +182,52 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
     return getfield(multigrid, :nodecoordinatedifferences)
 end
 
+
+"""
+```julia
+getprolongationmatrix(multigrid)
+```
+
+Compute or retrieve the prolongation matrix
+
+# Returns:
+- Matrix prolonging from coarse grid to fine grid
+"""
+function getprolongationmatrix(multigrid::PMultigrid)
+    # assemble if needed
+    if !isdefined(multigrid, :prolongationmatrix)
+        # setup
+        numberfinenodes = 0
+        numbercoarsenodes = 0
+        Pblocks = []
+
+        # field prolongation matrices
+        for basis in multigrid.prolongationbases
+            # number of nodes
+            numberfinenodes += basis.numberquadraturepoints
+            numbercoarsenodes += basis.numbernodes
+
+            # prolongation matrices
+            push!(Pblocks, basis.interpolation)
+        end
+        
+        prolongationmatrix = spzeros(numberfinenodes, numbercoarsenodes)
+        currentrow = 1
+        currentcolumn = 1
+        for Pblock in Pblocks
+            prolongationmatrix[currentrow:size(Pblock)[1], currentcolumn:size(Pblock)[2]] = Pblock
+            currentrow += size(Pblock)[1]
+            currentcolumn += size(Pblock)[2]
+        end
+
+        # store
+        multigrid.prolongationmatrix = prolongationmatrix
+    end
+
+    # return
+    return getfield(multigrid, :prolongationmatrix)
+end
+
 """
 ```julia
 computesymbolspprolongation(multigrid, θ)
@@ -189,10 +244,10 @@ Compute the symbol matrix for a p-multigrid prolongation operator
 """
 function computesymbolspprolongation(multigrid::PMultigrid, θ::Array)
     # setup
-    dimension = multigrid.prolongationbasis.dimension
+    dimension = multigrid.prolongationbases[1].dimension
     rowmodemap = multigrid.fineoperator.rowmodemap
     columnmodemap = multigrid.coarseoperator.columnmodemap
-    prolongationmatrix = multigrid.prolongationbasis.interpolation
+    prolongationmatrix = multigrid.prolongationmatrix
     numberrows, numbercolumns = size(prolongationmatrix)
     nodecoordinatedifferences = multigrid.nodecoordinatedifferences
     symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
@@ -242,7 +297,9 @@ end
 # ------------------------------------------------------------------------------
 
 function Base.getproperty(multigrid::PMultigrid, f::Symbol)
-    if f == :nodecoordinatedifferences
+    if f == :prolongationmatrix
+        return getprolongationmatrix(multigrid)
+    elseif f == :nodecoordinatedifferences
         return getnodecoordinatedifferences(multigrid)
     elseif f == :columnmodemap # Used if nesting multigrid levels
         return multigrid.fineoperator.columnmodemap
@@ -257,7 +314,7 @@ function Base.setproperty!(multigrid::PMultigrid, f::Symbol, value)
     if f == :fineoperator ||
        f == :coarseoperator ||
        f == :smoother ||
-       f == :prolongationbasis
+       f == :prolongationbases
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     else
         return setfield!(multigrid, f, value)
@@ -329,7 +386,7 @@ for dimension in 1:3
     jacobi = Jacobi(finediffusion);
 
     # preconditioner
-    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, ctofbasis);
+    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
 
     # compute symbols
     A = computesymbols(multigrid, [1.0], [1, 1], π*ones(dimension));

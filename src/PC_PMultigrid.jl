@@ -11,7 +11,8 @@ P-Multigrid preconditioner for finite element operators
 
 # Arguments:
 - `fineoperator`:      finite element operator to precondition
-- `coarseoperator`:    coarse grid representation of finite element operator to precondition
+- `coarseoperator`:    coarse grid representation of finite element operator to
+                           precondition
 - `smoother`:          error relaxation operator, such as Jacobi
 - `prolongationbasis`: element prolongation matrix from coarse to fine grid
 
@@ -219,6 +220,10 @@ end
 function Base.getproperty(multigrid::PMultigrid, f::Symbol)
     if f == :nodecoordinatedifferences
         return getnodecoordinatedifferences(multigrid)
+    elseif f == :columnmodemap # Used if nesting multigrid levels
+        return multigrid.fineoperator.columnmodemap
+    elseif f == :inputcoordinates # Used if nesting multigrid levels 
+        return multigrid.fineoperator.inputcoordinates
     else
         return getfield(multigrid, f)
     end

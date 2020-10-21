@@ -469,7 +469,6 @@ function getdiagonal(operator::Operator)
         elementmatrix = operator.elementmatrix
         numberrows, numbercolumns = size(elementmatrix)
         nodecoordinatedifferences = operator.nodecoordinatedifferences
-        diagonalnodes = zeros(Float64, numberrows, numbercolumns)
 
         # compute
         diagonalnodes = Diagonal(elementmatrix)

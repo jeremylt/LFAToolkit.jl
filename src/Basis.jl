@@ -568,6 +568,8 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 - `numbernodes1d`:            number of Gauss-Lobatto nodes
 - `numberquadraturepoints1d`: number of Gauss-Legendre quadrature points
 - `dimension`:                dimension of basis
+- `lagrangequadrature=false`: Gauss-Lagrange or Gauss-Lobatto quadrature points,
+                                  default: Gauss-Lobatto
 
 # Returns:
 - H1 Lagrange tensor product basis object

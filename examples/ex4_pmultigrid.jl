@@ -6,7 +6,7 @@
 mesh = Mesh2D(1.0, 1.0)
 finebasis = TensorH1LagrangeBasis(4, 4, 2)
 coarsebasis = TensorH1LagrangeBasis(2, 4, 2)
-ctofbasis = TensorH1LagrangeBasis(2, 4, 2, lagrangequadrature=true)
+ctofbasis = TensorH1LagrangeBasis(2, 4, 2, lagrangequadrature = true)
 
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     dv = du*w[1]

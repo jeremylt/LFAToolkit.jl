@@ -25,8 +25,7 @@ P-Multigrid preconditioner for finite element operators
 mesh = Mesh2D(1.0, 1.0);
 finebasis = TensorH1LagrangeBasis(5, 5, 2);
 coarsebasis = TensorH1LagrangeBasis(3, 5, 2);
-lagrangequadrature = true;
-ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature);
+ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature=true);
  
 # diffusion setup
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
@@ -358,8 +357,7 @@ for dimension in 1:3
     end
     finebasis = TensorH1LagrangeBasis(5, 5, dimension);
     coarsebasis = TensorH1LagrangeBasis(3, 5, dimension);
-    lagrangequadrature = true;
-    ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature);
+    ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature=true);
     
     
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})

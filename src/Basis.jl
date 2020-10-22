@@ -578,8 +578,7 @@ Tensor product basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 basis = TensorH1LagrangeBasis(4, 4, 2);
 
 # generate basis with Lagrange quadrature points
-lagrangequadrature = true;
-basis = TensorH1LagrangeBasis(4, 4, 2, lagrangequadrature);
+basis = TensorH1LagrangeBasis(4, 4, 2, lagrangequadrature=true);
 
 # verify
 println(basis)
@@ -594,7 +593,7 @@ tensor product basis:
 function TensorH1LagrangeBasis(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
-    dimension::Int,
+    dimension::Int;
     lagrangequadrature::Bool = false,
 )
     # check inputs

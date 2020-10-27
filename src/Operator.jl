@@ -88,6 +88,7 @@ mutable struct Operator
     # data empty until assembled
     elementmatrix::AbstractArray{Float64,2}
     diagonal::AbstractArray{Float64}
+    multiplicity::AbstractArray{Float64}
     rowmodemap::AbstractArray{Float64,2}
     columnmodemap::AbstractArray{Float64,2}
     inputcoordinates::AbstractArray{Float64}
@@ -562,6 +563,53 @@ end
 
 """
 ```julia
+getmultiplicity(operator)
+```
+
+Compute or retrieve the vector of node multiplicity for the operator
+
+# Returns:
+- Vector of node multiplicity for the operator
+"""
+function getmultiplicity(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :multiplicity)
+        # fill matrix
+        numbernodes = size(operator.elementmatrix)[2]
+        multiplicity = spzeros(numbernodes)
+
+        # count multiplicity
+        currentnode = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:input.basis.numbernodes
+                    multiplicity[input.basis.modemap[i]+currentnode] += 1
+                end
+                currentnode += input.basis.numbernodes
+            end
+        end
+
+        # update shared nodes
+        currentnode = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:input.basis.numbernodes
+                    multiplicity[i+currentnode] = multiplicity[input.basis.modemap[i]+currentnode]
+                end
+                currentnode += input.basis.numbernodes
+            end
+        end
+
+        # store
+        operator.multiplicity = multiplicity
+    end
+
+    # return
+    return getfield(operator, :multiplicity)
+end
+
+"""
+```julia
 getcolumnmodemap(operator)
 ```
 
@@ -776,6 +824,8 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getelementmatrix(operator)
     elseif f == :diagonal
         return getdiagonal(operator)
+    elseif f == :multiplicity
+        return getmultiplicity(operator)
     elseif f == :rowmodemap
         return getrowmodemap(operator)
     elseif f == :columnmodemap

@@ -181,7 +181,6 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
     return getfield(multigrid, :nodecoordinatedifferences)
 end
 
-
 """
 ```julia
 getprolongationmatrix(multigrid)
@@ -221,7 +220,7 @@ function getprolongationmatrix(multigrid::PMultigrid)
         end
 
         # store
-        multigrid.prolongationmatrix = prolongationmatrix
+        multigrid.prolongationmatrix = Diagonal(multigrid.fineoperator.multiplicity)^-1*prolongationmatrix
     end
 
     # return
@@ -394,14 +393,14 @@ for dimension in 1:3
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
     if dimension == 1
-       @assert min(eigenvalues...) ≈ -3.8926063079259547
-       @assert max(eigenvalues...) ≈ 0.6907788855328606
+       @assert min(eigenvalues...) ≈ -1.1883144751421012e-15
+       @assert max(eigenvalues...) ≈ 0.6483564034574688
     elseif dimension == 2
-       @assert min(eigenvalues...) ≈ -1.5478589373279685
-       @assert max(eigenvalues...) ≈ 0.995724230621591
+       @assert min(eigenvalues...) ≈ -0.03577008819137712
+       @assert max(eigenvalues...) ≈ 0.9347507063371103
     elseif dimension == 3
-       @assert min(eigenvalues...) ≈ -1.8934899363339088
-       @assert max(eigenvalues...) ≈ 1.4306256666321246
+       @assert min(eigenvalues...) ≈ 0.0010629010666705831
+       @assert max(eigenvalues...) ≈ 1.4279944980917596
     end
 end
 

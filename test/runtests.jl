@@ -53,8 +53,8 @@ end
 @testset "  ex4: p-multigrid example" begin
     include("../examples/ex4_pmultigrid.jl")
 
-    @test min(eigenvalues...) ≈ -1.3794384663287418
-    @test max(eigenvalues...) ≈ 0.3955452899462528
+    @test min(eigenvalues...) ≈ 0.00455330129929403
+    @test max(eigenvalues...) ≈ 0.3955452899462531
 end
 
 # ------------------------------------------------------------------------------

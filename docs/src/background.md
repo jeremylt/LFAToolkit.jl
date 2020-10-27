@@ -193,20 +193,20 @@ Prolongation from the lower order coarse grid to the high order fine grid is giv
 P_{ctof} = P_{fine}^T D_{scale} B_{c to f} P_{coarse}
 ```
 
-where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis, ``P_{f}`` is the fine grid element assembly operator, ``P_{c}`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling for node multiplicity across elements.
+where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis, ``P_{f}`` is the fine grid element assembly operator, ``P_{c}`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling for node multiplicity across element interfaces.
 
 Restriction from the fine grid to the coarse grid is given by the transpose, ``R_{ftoc} = P_{ctof}^T``.
 
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = diag \left( Q_f \right)^T \left( D_{scale} B_{ctof} \odot
+\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot
 \begin{bmatrix}
     e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
     \vdots                                                      &&  \vdots  &&  \vdots                                                            \\
     e^{\imath \left( x_{p_f + 1, f} - x_{0, c} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_f + 1, f} - x_{p_c + 1, c} \right) \theta}  \\
 \end{bmatrix}
-\right) diag \left( Q_c \right)
+\right) Q_c
 ```
 
 and ``\tilde{R}_{ftoc}`` is given by the transpose.

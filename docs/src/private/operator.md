@@ -2,6 +2,7 @@
 
 ```@docs
 LFAToolkit.getelementmatrix
+LFAToolkit.getmultiplicity
 LFAToolkit.getrowmodemap
 LFAToolkit.getcolumnmodemap
 LFAToolkit.getinputcoordinates

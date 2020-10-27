@@ -200,7 +200,7 @@ Restriction from the fine grid to the coarse grid is given by the transpose, ``R
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = diag \left( Q_f \right)^T \left( B_{ctof} \odot
+\tilde{P}_{ctof} \left( \theta \right) = diag \left( Q_f \right)^T \left( D_{scale} B_{ctof} \odot
 \begin{bmatrix}
     e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
     \vdots                                                      &&  \vdots  &&  \vdots                                                            \\

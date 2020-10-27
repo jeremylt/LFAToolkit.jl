@@ -31,8 +31,8 @@ end
 @testset "  ex2: diffusion example  " begin
     include("../examples/ex2_diffusion.jl")
 
-    @test min(eigenvalues...) ≈ 0.24284729156204987
-    @test max(eigenvalues...) ≈ 7.852944737646179
+    @test min(eigenvalues...) ≈ 1.3284547608834352
+    @test max(eigenvalues...) ≈ 8.524474960788456
 end
 
 # ------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ end
 @testset "  ex3: Jacobi example     " begin
     include("../examples/ex3_jacobi.jl")
 
-    @test min(eigenvalues...) ≈ -1.5989685969312784
-    @test max(eigenvalues...) ≈ 0.8446129151683509
+    @test min(eigenvalues...) ≈ -0.6289239142744161
+    @test max(eigenvalues...) ≈ 0.6405931989084651
 end
 
 # ------------------------------------------------------------------------------
@@ -53,8 +53,8 @@ end
 @testset "  ex4: p-multigrid example" begin
     include("../examples/ex4_pmultigrid.jl")
 
-    @test min(eigenvalues...) ≈ -15.673827693874575
-    @test max(eigenvalues...) ≈ 2.5567005739723823
+    @test min(eigenvalues...) ≈ -1.3794384663287418
+    @test max(eigenvalues...) ≈ 0.3955452899462528
 end
 
 # ------------------------------------------------------------------------------

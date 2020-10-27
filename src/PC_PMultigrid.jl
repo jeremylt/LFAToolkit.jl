@@ -397,11 +397,11 @@ for dimension in 1:3
        @assert min(eigenvalues...) ≈ -3.8926063079259547
        @assert max(eigenvalues...) ≈ 0.6907788855328606
     elseif dimension == 2
-       @assert min(eigenvalues...) ≈ -10.288241183013032
-       @assert max(eigenvalues...) ≈ 1.0506250000000024
+       @assert min(eigenvalues...) ≈ -1.5478589373279685
+       @assert max(eigenvalues...) ≈ 0.995724230621591
     elseif dimension == 3
-       @assert min(eigenvalues...) ≈ -26.217946739720766
-       @assert max(eigenvalues...) ≈ 1.6336035156250066
+       @assert min(eigenvalues...) ≈ -1.8934899363339088
+       @assert max(eigenvalues...) ≈ 1.4306256666321246
     end
 end
 

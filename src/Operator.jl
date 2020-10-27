@@ -276,6 +276,8 @@ function getelementmatrix(operator::Operator)
         numbernodes = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
+        numberfieldsin = []
+        numberfieldsout = []
         weightinputindex = 0
         quadratureweights = []
         Bblocks = []
@@ -298,24 +300,25 @@ function getelementmatrix(operator::Operator)
                 push!(weakforminputs, zeros(1))
                 weightinputindex = findfirst(isequal(input), operator.inputs)
             else
-                numbermodes = 0
+                numberfields = 0
                 Bcurrent = []
                 for mode in input.evaluationmodes
                     if mode == EvaluationMode.interpolation
-                        numbermodes += 1
+                        numberfields += 1
                         numberquadratureinputs += 1
                         Bcurrent =
                             Bcurrent == [] ? input.basis.interpolation :
                             [Bcurrent; input.basis.interpolation]
                     elseif mode == EvaluationMode.gradient
-                        numbermodes += input.basis.dimension
+                        numberfields += input.basis.dimension
                         numberquadratureinputs += input.basis.dimension
                         gradient = getdXdxgradient(input.basis, operator.mesh)
                         Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
                     end
                 end
                 push!(Bblocks, Bcurrent)
-                push!(weakforminputs, zeros(numbermodes))
+                push!(weakforminputs, zeros(numberfields))
+                push!(numberfieldsin, numberfields)
             end
         end
 
@@ -341,20 +344,23 @@ function getelementmatrix(operator::Operator)
         # outputs
         for output in operator.outputs
             # output evaluation modes
-            numbermodes = 0
+            numberfields = 0
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
+                    numberfields += 1
                     Btcurrent =
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
+                    numberfields += output.basis.dimension
                     gradient = getdXdxgradient(output.basis, operator.mesh)
                     Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor
                 end
             end
             push!(Btblocks, Btcurrent)
+            push!(numberfieldsout, numberfields)
         end
 
         # output basis matrix
@@ -374,7 +380,6 @@ function getelementmatrix(operator::Operator)
             numberquadratureinputs*numberquadraturepoints,
         )
         # loop over inputs
-        currentfieldin = 0
         for i = 1:length(operator.inputs)
             input = operator.inputs[i]
             if input.evaluationmodes[1] == EvaluationMode.quadratureweights
@@ -389,7 +394,7 @@ function getelementmatrix(operator::Operator)
                 end
 
                 # fill sparse matrix
-                for j = 1:length(input.evaluationmodes)
+                for j = 1:numberfieldsin[i]
                     # run user weak form function
                     weakforminputs[i][j] = 1.0
                     outputs = operator.weakform(weakforminputs...)
@@ -398,11 +403,10 @@ function getelementmatrix(operator::Operator)
                     # store outputs
                     currentfieldout = 0
                     for k = 1:length(operator.outputs)
-                        output = operator.outputs[k]
-                        for l = 1:length(output.evaluationmodes)
+                        for l = 1:numberfieldsout[k]
                             D[
+                                (j-1)*numberquadraturepoints+q,
                                 currentfieldout*numberquadraturepoints+q,
-                                currentfieldin*numberquadraturepoints+q,
                             ] = outputs[k][l]
                             currentfieldout += 1
                         end
@@ -847,8 +851,16 @@ for dimension in 1:3
 
     # verify
     eigenvalues = real(eigvals(A));
-    @assert min(eigenvalues...) ≈ 4*(1/3)^(dimension - 1)
-    @assert max(eigenvalues...) ≈ (16/3)*(16/30)^(dimension - 1)
+    if dimension == 1
+        @assert min(eigenvalues...) ≈ 4
+        @assert max(eigenvalues...) ≈ 16/3
+    elseif dimension == 2
+        @assert min(eigenvalues...) ≈ 8/3
+        @assert max(eigenvalues...) ≈ 256/45
+    elseif dimension == 2
+        @assert min(eigenvalues...) ≈ 4/3
+        @assert max(eigenvalues...) ≈ 1024/225
+    end
 end
 
 # output

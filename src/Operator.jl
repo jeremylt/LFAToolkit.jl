@@ -489,6 +489,54 @@ end
 
 """
 ```julia
+getmultiplicity(operator)
+```
+
+Compute or retrieve the vector of node multiplicity for the operator
+
+# Returns:
+- Vector of node multiplicity for the operator
+"""
+function getmultiplicity(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :multiplicity)
+        # fill matrix
+        numbernodes = size(operator.elementmatrix)[2]
+        multiplicity = spzeros(numbernodes)
+
+        # count multiplicity
+        currentnode = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:input.basis.numbernodes
+                    multiplicity[input.basis.modemap[i]+currentnode] += 1
+                end
+                currentnode += input.basis.numbernodes
+            end
+        end
+
+        # update shared nodes
+        currentnode = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                for i = 1:input.basis.numbernodes
+                    multiplicity[i+currentnode] =
+                        multiplicity[input.basis.modemap[i]+currentnode]
+                end
+                currentnode += input.basis.numbernodes
+            end
+        end
+
+        # store
+        operator.multiplicity = multiplicity
+    end
+
+    # return
+    return getfield(operator, :multiplicity)
+end
+
+"""
+```julia
 getrowmodemap(operator)
 ```
 
@@ -559,53 +607,6 @@ function getrowmodemap(operator::Operator)
 
     # return
     return getfield(operator, :rowmodemap)
-end
-
-"""
-```julia
-getmultiplicity(operator)
-```
-
-Compute or retrieve the vector of node multiplicity for the operator
-
-# Returns:
-- Vector of node multiplicity for the operator
-"""
-function getmultiplicity(operator::Operator)
-    # assemble if needed
-    if !isdefined(operator, :multiplicity)
-        # fill matrix
-        numbernodes = size(operator.elementmatrix)[2]
-        multiplicity = spzeros(numbernodes)
-
-        # count multiplicity
-        currentnode = 0
-        for input in operator.inputs
-            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes
-                    multiplicity[input.basis.modemap[i]+currentnode] += 1
-                end
-                currentnode += input.basis.numbernodes
-            end
-        end
-
-        # update shared nodes
-        currentnode = 0
-        for input in operator.inputs
-            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes
-                    multiplicity[i+currentnode] = multiplicity[input.basis.modemap[i]+currentnode]
-                end
-                currentnode += input.basis.numbernodes
-            end
-        end
-
-        # store
-        operator.multiplicity = multiplicity
-    end
-
-    # return
-    return getfield(operator, :multiplicity)
 end
 
 """

@@ -220,7 +220,8 @@ function getprolongationmatrix(multigrid::PMultigrid)
         end
 
         # store
-        multigrid.prolongationmatrix = Diagonal(multigrid.fineoperator.multiplicity)^-1*prolongationmatrix
+        multigrid.prolongationmatrix =
+            Diagonal(multigrid.fineoperator.multiplicity)^-1*prolongationmatrix
     end
 
     # return

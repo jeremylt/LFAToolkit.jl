@@ -24,5 +24,6 @@ $(read("../../../examples/ex2_diffusion.jl", String))
 
 ```@docs
 Operator
+GalleryOperator
 computesymbols(::Operator, ::Array)
 ```

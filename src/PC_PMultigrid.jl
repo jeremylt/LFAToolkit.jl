@@ -26,8 +26,8 @@ mesh = Mesh2D(1.0, 1.0);
 ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature=true);
 
 # operators
-finediffusion = Operator("diffusion", 5, 5, mesh);
-coarsediffusion = Operator("diffusion", 3, 5, mesh);
+finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
+coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh);
 
 # smoother
 jacobi = Jacobi(finediffusion);
@@ -343,8 +343,8 @@ for dimension in 1:3
     ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature=true);
 
     # operators
-    finediffusion = Operator("diffusion", 5, 5, mesh);
-    coarsediffusion = Operator("diffusion", 3, 5, mesh);
+    finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
+    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh);
 
     # smoother
     jacobi = Jacobi(finediffusion);

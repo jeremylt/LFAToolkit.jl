@@ -77,88 +77,6 @@ tensor product basis:
   evaluation mode:
     interpolation
 ```
-
-# Mass matrix example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-mass = Operator("mass", 4, 4, mesh);
-
-# verify
-println(mass)
-
-# output
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    interpolation
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    interpolation
-```
-
-# Diffusion operator example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-diffusion = Operator("diffusion", 4, 4, mesh);
-
-# verify
-println(diffusion)
-
-# output
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    gradient
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    dimension: 2
-  evaluation mode:
-    gradient
-```
 """
 mutable struct Operator
     # data never changed
@@ -240,17 +158,145 @@ mutable struct Operator
         # constructor
         new(weakform, mesh, inputs, outputs)
     )
+end
 
-    # convenience constructor
-    Operator(name::String, p1d::Int, q1d::Int, mesh::Mesh) = (
-        if name == "mass"
-            massoperator(p1d, q1d, mesh)
-        elseif name == "diffusion"
-            diffusionoperator(p1d, q1d, mesh)
-        else
-            error("operator name not found")
-        end
-    )
+# printing
+# COV_EXCL_START
+function Base.show(io::IO, operator::Operator)
+    print(io, "finite element operator:\n", operator.mesh)
+
+    # inputs
+    if length(operator.inputs) == 1
+        print(io, "\n\n1 input:")
+    else
+        print(io, "\n\n", length(operator.inputs), " inputs:")
+    end
+    for i = 1:length(operator.inputs)
+        print(io, "\n", operator.inputs[i])
+    end
+
+    # outputs
+    if length(operator.outputs) == 1
+        print(io, "\n\n1 output:")
+    else
+        print("\n\n", length(operator.outputs), " outputs:")
+    end
+    for i = 1:length(operator.outputs)
+        print(io, "\n", operator.outputs[i])
+    end
+end
+# COV_EXCL_STOP
+
+# ------------------------------------------------------------------------------
+# user utility constructors
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+GalleryOperator(name, p1d, q1d, mesh)
+```
+
+Finite element operator from a gallery of options
+
+# Arguments:
+- `name`: string containing name of operator
+- `p1d`:  polynomial order of TensorH1LagrangeBasis
+- `q1d`:  number of quadrature points in one dimension for basis
+- `mesh`: mesh for operator
+
+# Returns:
+- Finite element operator object
+
+# Mass matrix example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryOperator("mass", 4, 4, mesh);
+
+# verify
+println(mass)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    interpolation
+```
+
+# Diffusion operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator("diffusion", 4, 4, mesh);
+
+# verify
+println(diffusion)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    gradient
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
+    if name == "mass"
+        return massoperator(p1d, q1d, mesh)
+    elseif name == "diffusion"
+        return diffusionoperator(p1d, q1d, mesh)
+    else
+        throw(ArgumentError("operator name not found"))
+    end
 end
 
 """
@@ -323,33 +369,6 @@ function diffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     return diffusion
 end
 
-# printing
-# COV_EXCL_START
-function Base.show(io::IO, operator::Operator)
-    print(io, "finite element operator:\n", operator.mesh)
-
-    # inputs
-    if length(operator.inputs) == 1
-        print(io, "\n\n1 input:")
-    else
-        print(io, "\n\n", length(operator.inputs), " inputs:")
-    end
-    for i = 1:length(operator.inputs)
-        print(io, "\n", operator.inputs[i])
-    end
-
-    # outputs
-    if length(operator.outputs) == 1
-        print(io, "\n\n1 output:")
-    else
-        print("\n\n", length(operator.outputs), " outputs:")
-    end
-    for i = 1:length(operator.outputs)
-        print(io, "\n", operator.outputs[i])
-    end
-end
-# COV_EXCL_STOP
-
 # ------------------------------------------------------------------------------
 # data for computing symbols
 # ------------------------------------------------------------------------------
@@ -371,20 +390,7 @@ Compute or retrieve the element matrix of operator for computing the symbol
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2);
-    
-function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
-    return [v]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
-mass = Operator(massweakform, mesh, inputs, outputs);
+mass = GalleryOperator("mass", 4, 4, mesh);
     
 # element matrix computation
 # note: either syntax works
@@ -607,20 +613,7 @@ Compute or retrieve the symbol matrix diagonal for an operator
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(3, 3, 1);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
 # note: either syntax works
 diagonal = LFAToolkit.getdiagonal(diffusion);
@@ -717,20 +710,7 @@ Compute or retrieve the matrix mapping the rows of the element matrix to the sym
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(4, 4, 1);
-    
-function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
-    return [v]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
-mass = Operator(massweakform, mesh, inputs, outputs);
+mass = GalleryOperator("mass", 4, 4, mesh);
 
 # note: either syntax works
 modemap = LFAToolkit.getrowmodemap(mass);
@@ -792,20 +772,7 @@ Compute or retrieve the matrix mapping the columns of the element matrix to the
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(4, 4, 1);
-    
-function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
-    return [v]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
-mass = Operator(massweakform, mesh, inputs, outputs);
+mass = GalleryOperator("mass", 4, 4, mesh);
 
 # note: either syntax works
 modemap = LFAToolkit.getcolumnmodemap(mass);
@@ -926,20 +893,7 @@ Compute or retrieve the array of differences in coordinates between nodes
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(4, 4, 1);
-    
-function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
-    return [v]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
-mass = Operator(massweakform, mesh, inputs, outputs);
+mass = GalleryOperator("mass", 4, 4, mesh);
 
 # note: either syntax works
 nodedifferences = LFAToolkit.getnodecoordinatedifferences(mass);
@@ -1050,20 +1004,7 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    basis = TensorH1LagrangeBasis(3, 3, dimension);
-    
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
-        return [dv]
-    end
-    
-    # mass operator
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ];
-     outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-    diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
     # compute symbols
     A = computesymbols(diffusion, π*ones(dimension));

@@ -19,7 +19,7 @@ Jacobi diagonal preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = Operator("mass", 4, 4, mesh);
+mass = GalleryOperator("mass", 4, 4, mesh);
 
 # preconditioner
 jacobi = Jacobi(mass);
@@ -96,7 +96,7 @@ Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-diffusion = Operator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
 # preconditioner
 jacobi = Jacobi(diffusion)
@@ -179,7 +179,7 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    diffusion = Operator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
     # preconditioner
     jacobi = Jacobi(diffusion);

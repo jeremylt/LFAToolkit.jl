@@ -295,7 +295,7 @@ function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
     elseif name == "diffusion"
         return diffusionoperator(p1d, q1d, mesh)
     else
-        throw(ArgumentError("operator name not found"))
+        throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
 end
 

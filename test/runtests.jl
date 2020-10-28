@@ -60,7 +60,7 @@ end
 # p-multigrid multilevel example
 # ------------------------------------------------------------------------------
 
-@testset "  ex4: p-multigrid multilevel example" begin
+@testset "  ex5: p-multigrid multilevel example" begin
     include("../examples/ex5_pmultigrid_multilevel.jl")
 
     @test min(eigenvalues...) ≈ 0.0016168001140563482

@@ -62,10 +62,13 @@ tensor product basis:
 struct OperatorField
     # data
     basis::AbstractBasis
-    evaluationmodes::Array{EvaluationMode.EvalMode}
+    evaluationmodes::AbstractArray{EvaluationMode.EvalMode}
 
     # inner constructor
-    OperatorField(basis, evaluationmodes) = (
+    OperatorField(
+        basis::AbstractBasis,
+        evaluationmodes::AbstractArray{EvaluationMode.EvalMode},
+    ) = (
         # validity checking
         if length(evaluationmodes) > 1 &&
            EvaluationMode.quadratureweights in evaluationmodes

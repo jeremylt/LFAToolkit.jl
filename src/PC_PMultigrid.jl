@@ -23,31 +23,11 @@ P-Multigrid preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finebasis = TensorH1LagrangeBasis(5, 5, 2);
-coarsebasis = TensorH1LagrangeBasis(3, 5, 2);
 ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature=true);
- 
-# diffusion setup
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
-    return [dv]
-end
-    
-# diffusion operator, fine grid
-fineinputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.quadratureweights]),
-];
-fineoutputs = [OperatorField(finebasis, [EvaluationMode.gradient])];
-finediffusion = Operator(diffusionweakform, mesh, fineinputs, fineoutputs);
 
-# diffusion operator, coarse grid
-coarseinputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
-];
-coarseoutputs = [OperatorField(coarsebasis, [EvaluationMode.gradient])];
-coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs);
+# operators
+finediffusion = Operator("diffusion", 5, 5, mesh);
+coarsediffusion = Operator("diffusion", 3, 5, mesh);
 
 # smoother
 jacobi = Jacobi(finediffusion);
@@ -97,14 +77,19 @@ mutable struct PMultigrid <: AbstractPreconditioner
     fineoperator::Operator
     coarseoperator::Any
     smoother::AbstractPreconditioner
-    prolongationbases::Array{AbstractBasis}
+    prolongationbases::AbstractArray{AbstractBasis}
 
     # data empty until assembled
     prolongationmatrix::AbstractArray{Float64}
     nodecoordinatedifferences::AbstractArray{Float64}
 
     # inner constructor
-    PMultigrid(fineoperator, coarseoperator, smoother, prolongationbases) = (
+    PMultigrid(
+        fineoperator::Operator,
+        coarseoperator::Any,
+        smoother::AbstractPreconditioner,
+        prolongationbases::AbstractArray,
+    ) = (
         # check smoother for fine grid
         if fineoperator != smoother.operator
             error("smoother must be for fine grid operator") # COV_EXCL_LINE
@@ -355,31 +340,11 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    finebasis = TensorH1LagrangeBasis(5, 5, dimension);
-    coarsebasis = TensorH1LagrangeBasis(3, 5, dimension);
     ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature=true);
-    
-    
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
-        return [dv]
-    end
-    
-    # diffusion operator, fine grid
-    fineinputs = [
-        OperatorField(finebasis, [EvaluationMode.gradient]),
-        OperatorField(finebasis, [EvaluationMode.quadratureweights]),
-    ];
-    fineoutputs = [OperatorField(finebasis, [EvaluationMode.gradient])];
-    finediffusion = Operator(diffusionweakform, mesh, fineinputs, fineoutputs);
-    
-    # diffusion operator, coarse grid
-    coarseinputs = [
-        OperatorField(coarsebasis, [EvaluationMode.gradient]),
-        OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
-    ];
-    coarseoutputs = [OperatorField(coarsebasis, [EvaluationMode.gradient])];
-    coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs);
+
+    # operators
+    finediffusion = Operator("diffusion", 5, 5, mesh);
+    coarsediffusion = Operator("diffusion", 3, 5, mesh);
 
     # smoother
     jacobi = Jacobi(finediffusion);
@@ -421,17 +386,17 @@ function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Arra
     R_ftoc = transpose(P_ctof)
 
     A_f = computesymbols(multigrid.fineoperator, θ)
-    A_c = []
+    A_c_inv = []
     if isa(multigrid.coarseoperator, Operator)
-        A_c = computesymbols(multigrid.coarseoperator, θ)
+        A_c_inv = computesymbols(multigrid.coarseoperator, θ)^-1
     elseif isa(multigrid.coarseoperator, PMultigrid)
-        A_c = computesymbols(multigrid.coarseoperator, p, v, θ)
+        A_c_inv = computesymbols(multigrid.coarseoperator, p, v, θ)
     else
         Throw(error("coarse operator not supported")) # COV_EXCL_LINE
     end
 
     # return
-    return S_f^v[2]*(I - P_ctof*A_c^-1*R_ftoc*A_f)*S_f^v[1]
+    return S_f^v[2]*(I - P_ctof*A_c_inv*R_ftoc*A_f)*S_f^v[1]
 end
 
 # ------------------------------------------------------------------------------

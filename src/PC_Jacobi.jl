@@ -19,20 +19,7 @@ Jacobi diagonal preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2);
-    
-function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
-    return [v]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.interpolation])];
-mass = Operator(massweakform, mesh, inputs, outputs);
+mass = Operator("mass", 4, 4, mesh);
 
 # preconditioner
 jacobi = Jacobi(mass);
@@ -82,7 +69,7 @@ mutable struct Jacobi <: AbstractPreconditioner
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    Jacobi(operator) = new(operator)
+    Jacobi(operator::Operator) = new(operator)
 end
 
 # printing
@@ -109,20 +96,7 @@ Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1);
-    
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
-    return [dv]
-end
-    
-# mass operator
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+diffusion = Operator("diffusion", 3, 3, mesh);
 
 # preconditioner
 jacobi = Jacobi(diffusion)
@@ -205,20 +179,7 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    basis = TensorH1LagrangeBasis(3, 4, dimension);
-    
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
-        return [dv]
-    end
-    
-    # diffusion operator
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ];
-    outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-    diffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+    diffusion = Operator("diffusion", 3, 3, mesh);
 
     # preconditioner
     jacobi = Jacobi(diffusion);

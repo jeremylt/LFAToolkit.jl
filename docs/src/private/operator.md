@@ -1,6 +1,8 @@
 ## Finite Element Operator
 
 ```@docs
+LFAToolkit.massoperator
+LFAToolkit.diffusionoperator
 LFAToolkit.getelementmatrix
 LFAToolkit.getmultiplicity
 LFAToolkit.getrowmodemap

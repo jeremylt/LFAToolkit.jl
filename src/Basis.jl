@@ -66,14 +66,14 @@ mutable struct TensorBasis <: AbstractBasis
 
     # inner constructor
     TensorBasis(
-        numbernodes1d,
-        numberquadraturepoints1d,
-        dimension,
-        nodes1d,
-        quadraturepoints1d,
-        quadratureweights1d,
-        interpolation1d,
-        gradient1d,
+        numbernodes1d::Int,
+        numberquadraturepoints1d::Int,
+        dimension::Int,
+        nodes1d::AbstractArray{Float64,1},
+        quadraturepoints1d::AbstractArray{Float64,1},
+        quadratureweights1d::AbstractArray{Float64,1},
+        interpolation1d::AbstractArray{Float64,2},
+        gradient1d::AbstractArray{Float64,2},
     ) = (
         # validity checking
         if numbernodes1d < 1
@@ -163,25 +163,25 @@ mutable struct NonTensorBasis <: AbstractBasis
     numbernodes::Int
     numberquadraturepoints::Int
     dimension::Int
-    nodes::Array{Float64}
-    quadraturepoints::Array{Float64,1}
-    quadratureweights::Array{Float64,1}
-    interpolation::Array{Float64,2}
-    gradient::Array{Float64,2}
+    nodes::AbstractArray{Float64}
+    quadraturepoints::AbstractArray{Float64,1}
+    quadratureweights::AbstractArray{Float64,1}
+    interpolation::AbstractArray{Float64,2}
+    gradient::AbstractArray{Float64,2}
     volume::Float64
     numbermodes::Int
-    modemap::Array{Int,1}
+    modemap::AbstractArray{Int,1}
 
     # inner constructor
     NonTensorBasis(
-        numbernodes,
-        numberquadraturepoints,
-        dimension,
-        nodes,
-        quadraturepoints,
-        quadratureweights,
-        interpolation,
-        gradient,
+        numbernodes::Int,
+        numberquadraturepoints::Int,
+        dimension::Int,
+        nodes::Int,
+        quadraturepoints::AbstractArray{Float64},
+        quadratureweights::AbstractArray{Float64,1},
+        interpolation::AbstractArray{Float64,2},
+        gradient::AbstractArray{Float64,2},
     ) = (
         # validity checking
         if numbernodes < 1

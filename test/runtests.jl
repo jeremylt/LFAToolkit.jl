@@ -9,7 +9,7 @@ DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = 
 # documentation tests
 # ------------------------------------------------------------------------------
 
-@testset "  documentation tests     " begin
+@testset "  documentation tests                " begin
     doctest(LFAToolkit; manual = false)
 end
 
@@ -17,7 +17,7 @@ end
 # mass matrix example
 # ------------------------------------------------------------------------------
 
-@testset "  ex1: mass example       " begin
+@testset "  ex1: mass example                  " begin
     include("../examples/ex1_mass.jl")
 
     @test min(eigenvalues...) ≈ 0.008379422444571976
@@ -28,7 +28,7 @@ end
 # diffusion operator example
 # ------------------------------------------------------------------------------
 
-@testset "  ex2: diffusion example  " begin
+@testset "  ex2: diffusion example             " begin
     include("../examples/ex2_diffusion.jl")
 
     @test min(eigenvalues...) ≈ 1.3284547608834352
@@ -39,7 +39,7 @@ end
 # Jacobi smoother example
 # ------------------------------------------------------------------------------
 
-@testset "  ex3: Jacobi example     " begin
+@testset "  ex3: Jacobi example                " begin
     include("../examples/ex3_jacobi.jl")
 
     @test min(eigenvalues...) ≈ -0.6289239142744161
@@ -50,11 +50,21 @@ end
 # p-multigrid example
 # ------------------------------------------------------------------------------
 
-@testset "  ex4: p-multigrid example" begin
+@testset "  ex4: p-multigrid example           " begin
     include("../examples/ex4_pmultigrid.jl")
 
-    @test min(eigenvalues...) ≈ 0.00455330129929403
-    @test max(eigenvalues...) ≈ 0.3955452899462531
+    @test max(eigenvalues...) ≈ 0.13249600000000003
+end
+
+# ------------------------------------------------------------------------------
+# p-multigrid multilevel example
+# ------------------------------------------------------------------------------
+
+@testset "  ex4: p-multigrid multilevel example" begin
+    include("../examples/ex5_pmultigrid_multilevel.jl")
+
+    @test min(eigenvalues...) ≈ 0.0016168001140563482
+    @test max(eigenvalues...) ≈ 0.7949976390578319
 end
 
 # ------------------------------------------------------------------------------

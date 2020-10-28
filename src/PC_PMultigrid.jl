@@ -286,6 +286,8 @@ function Base.getproperty(multigrid::PMultigrid, f::Symbol)
         return getprolongationmatrix(multigrid)
     elseif f == :nodecoordinatedifferences
         return getnodecoordinatedifferences(multigrid)
+    elseif f == :outputs # Used if nesting multigrid levels
+        return multigrid.fineoperator.outputs
     elseif f == :columnmodemap # Used if nesting multigrid levels
         return multigrid.fineoperator.columnmodemap
     elseif f == :inputcoordinates # Used if nesting multigrid levels 

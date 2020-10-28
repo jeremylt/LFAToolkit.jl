@@ -4,30 +4,21 @@
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
-finebasis = TensorH1LagrangeBasis(3, 3, 2)
-coarsebasis = TensorH1LagrangeBasis(2, 3, 2)
-ctofbasis = TensorH1LagrangeBasis(2, 3, 2, lagrangequadrature = true)
+finep = 3
+coarsep = 2
+dimension = 2
+finebasis = TensorH1LagrangeBasis(finep, finep, dimension)
+coarsebasis = TensorH1LagrangeBasis(coarsep, finep, dimension)
+ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature = true)
 
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     dv = du*w[1]
     return [dv]
 end
 
-# fine grid diffusion operator
-fineinputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.quadratureweights]),
-]
-fineoutputs = [OperatorField(finebasis, [EvaluationMode.gradient])]
-finediffusion = Operator(diffusionweakform, mesh, fineinputs, fineoutputs)
-
-# coarse grid diffusion operator
-coarseinputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
-]
-coarseoutputs = [OperatorField(coarsebasis, [EvaluationMode.gradient])]
-coarsediffusion = Operator(diffusionweakform, mesh, coarseinputs, coarseoutputs)
+# diffusion operators
+finediffusion = GalleryOperator("diffusion", finep, finep, mesh)
+coarsediffusion = GalleryOperator("diffusion", coarsep, finep, mesh)
 
 # Jacobi smoother
 jacobi = Jacobi(finediffusion)

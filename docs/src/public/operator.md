@@ -1,5 +1,7 @@
 ## Finite Element Operator
 
+### Examples
+
 This is an example of a simple mass operator in two dimensions.
 
 ````@eval
@@ -21,6 +23,8 @@ $(read("../../../examples/ex2_diffusion.jl", String))
 ```
 """)
 ````
+
+### Documentation
 
 ```@docs
 Operator

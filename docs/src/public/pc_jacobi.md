@@ -1,5 +1,7 @@
 ## Preconditioner: Jacobi
 
+### Example
+
 This is an example of a simple Jacobi smoother.
 
 ````@eval
@@ -10,6 +12,8 @@ $(read("../../../examples/ex3_jacobi.jl", String))
 ```
 """)
 ````
+
+### Documentation
 
 ```@docs
 Jacobi

@@ -2,6 +2,7 @@
 
 [![travis](https://travis-ci.com/jeremylt/LFAToolkit.jl.svg?branch=master)](https://travis-ci.com/github/jeremylt/LFAToolkit.jl)
 [![codecov](https://codecov.io/gh/jeremylt/LFAToolkit.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jeremylt/LFAToolkit.jl)
+[![license](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![docs](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/master?filepath=examples%2Fjupyter)
 

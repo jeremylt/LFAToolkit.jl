@@ -1,9 +1,9 @@
 # LFAToolkit
 
-[![CI](https://github.com/jeremylt/LFAToolkit.jl/workflows/ci/badge.svg)](https://github.com/jeremylt/LFAToolkit.jl/actions)
-[![codecov](https://codecov.io/gh/jeremylt/LFAToolkit.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jeremylt/LFAToolkit.jl)
-[![license](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[![docs](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)
+[![CI Status](https://github.com/jeremylt/LFAToolkit.jl/workflows/ci/badge.svg)](https://github.com/jeremylt/LFAToolkit.jl/actions)
+[![CodeCov](https://codecov.io/gh/jeremylt/LFAToolkit.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jeremylt/LFAToolkit.jl)
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/master?filepath=examples%2Fjupyter)
 
 Local Fourier Analysis for arbitrary order finite element type operators

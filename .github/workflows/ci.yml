@@ -35,8 +35,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Julia setup
         uses: julia-actions/setup-julia@latest
-        with:
-          version: ${{ matrix.julia-version }}
       - name: Check style
         run: julia .Style.jl --color=yes && git diff --exit-code src test examples docs
 

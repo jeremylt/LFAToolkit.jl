@@ -12,7 +12,13 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@latest
-      - name: Run CI
-        run: julia --project --color=yes -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit"; coverage=true)'
+      - name: env setup
+        uses: actions/checkout@v2
+      - name: julia setup
+        uses: julia-actions/setup-julia@latest
+        with:
+          version: ${{ matrix.julia-version }}
+      - name: build package
+        uses: julia-actions/julia-buildpkg@latest
+      - name: run tests
+        uses: julia-actions/julia-runtest@latest

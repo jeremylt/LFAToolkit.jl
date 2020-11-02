@@ -1,11 +1,11 @@
-name: Julia CI
+name: Testing
 
 on: [push, pull_request]
 
 jobs:
-  # testing
-  test:
-    name: Testing
+  # unit testing
+  unittest:
+    name: Unit testing
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -29,8 +29,8 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   # style
-  style:
-    name: Style
+  styletest:
+    name: Style testing
     runs-on: ubuntu-latest
     steps:
       - name: Environment setup

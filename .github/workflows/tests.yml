@@ -1,11 +1,11 @@
-name: Testing
+name: Tests
 
 on: [push, pull_request]
 
 jobs:
-  # unit testing
+  # unit tests
   unittest:
-    name: Unit testing
+    name: Unit tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,9 +28,9 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  # style
+  # style tests
   styletest:
-    name: Style testing
+    name: Style tests
     runs-on: ubuntu-latest
     steps:
       - name: Environment setup

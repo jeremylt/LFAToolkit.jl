@@ -22,7 +22,7 @@ jobs:
       - name: Build package
         uses: julia-actions/julia-buildpkg@latest
       - name: Run tests
-        uses: julia --project --color=yes -e 'using Pkg; Pkg.test("LFAToolkit"; coverage=true)'
+        run: julia --project --color=yes -e 'using Pkg; Pkg.test("LFAToolkit"; coverage=true)'
       - name: CodeCov
         uses: codecov/codecov-action@v1
 

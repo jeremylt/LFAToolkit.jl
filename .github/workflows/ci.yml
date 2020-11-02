@@ -24,9 +24,9 @@ jobs:
       - name: Run tests
         uses: julia-actions/julia-runtest@latest
       - name: CodeCov
-        uses: codecov/codecov-action@v1
-        with:
-          directory: src
+        uses: julia-actions/julia-uploadcodecov@latest
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   # style
   style:

@@ -13,17 +13,17 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - name: env setup
+      - name: Env setup
         uses: actions/checkout@v2
-      - name: julia setup
+      - name: Julia setup
         uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
-      - name: build package
+      - name: Build package
         uses: julia-actions/julia-buildpkg@latest
-      - name: run tests
-        uses: julia-actions/julia-runtest@latest
-      - name: codecov
+      - name: Run tests
+        uses: julia --project --color=yes -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit"; coverage=true)'
+      - name: CodeCov
         uses: codecov/codecov-action@v1
 
   # style
@@ -36,11 +36,11 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - name: env setup
+      - name: Env setup
         uses: actions/checkout@v2
-      - name: julia setup
+      - name: Julia setup
         uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
-      - name: check style
+      - name: Check style
         run: julia .Style.jl --color=yes && git diff --exit-code src test examples docs

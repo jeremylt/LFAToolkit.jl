@@ -1,0 +1,18 @@
+name: Julia CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: ['1.0', '1', 'nightly']
+        julia-arch: [x86]
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@latest
+      - name: Run CI
+        run: julia --project --color=yes -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit"; coverage=true)'

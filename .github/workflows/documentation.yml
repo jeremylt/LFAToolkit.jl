@@ -1,4 +1,4 @@
-name: Documenter
+name: Documentation
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
   pull_request:
 
 jobs:
-  # documentation
-  documentation:
-    name: Documentation
+  # documenter
+  documenter:
+    name: Documenter
     runs-on: ubuntu-latest
     steps:
       - name: Environment setup

@@ -1,0 +1,22 @@
+  name: Documenter
+on:
+  push:
+    branches: [master]
+    tags: [v*]
+  pull_request:
+
+jobs:
+  # documentation
+  documentation:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Environment setup
+        uses: actions/checkout@v2
+      - name: Build package
+        uses: julia-actions/julia-buildpkg@latest
+      - name: Build and deploy documentation
+        uses: julia-actions/julia-docdeploy@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

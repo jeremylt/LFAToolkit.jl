@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   # testing
   test:
+    name: Testing
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -29,6 +30,7 @@ jobs:
 
   # style
   style:
+    name: Style
     runs-on: ubuntu-latest
     steps:
       - name: Environment setup
@@ -37,19 +39,3 @@ jobs:
         uses: julia-actions/setup-julia@latest
       - name: Check style
         run: julia .Style.jl --color=yes && git diff --exit-code src test examples docs
-
-  # documentation
-  documentation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Environment setup
-        uses: actions/checkout@v2
-      - name: Julia setup
-        uses: julia-actions/setup-julia@latest
-      - name: Build package
-        uses: julia-actions/julia-buildpkg@latest
-      - name: Build and deploy documentation
-        uses: julia-actions/julia-docdeploy@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

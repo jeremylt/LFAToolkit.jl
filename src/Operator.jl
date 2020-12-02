@@ -644,20 +644,48 @@ Compute or retrieve the vector of node multiplicity for the operator
 
 # Returns:
 - Vector of node multiplicity for the operator
+
+# Example
+```jldoctest
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    diffusion = GalleryOperator("diffusion", 5, 5, mesh);
+
+    # compute multiplicity
+    mult = diffusion.multiplicity;
+
+    # verify
+    mult1D = [2. 1. 1. 1. 2.];
+    if dimension == 1
+        @assert mult ≈ mult1D
+    elseif dimension == 2
+        @assert mult ≈ kron(mult1D, mult1D)
+    elseif dimension == 3
+        @assert mult ≈ kron(mult1D, mult1D, mult1D)
+    end
+end
 """
 function getmultiplicity(operator::Operator)
     # assemble if needed
     if !isdefined(operator, :multiplicity)
         # fill matrix
         numbernodes = size(operator.elementmatrix)[2]
-        multiplicity = spzeros(numbernodes)
+        multiplicity_sum = spzeros(numbernodes)
 
         # count multiplicity
         currentnode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 for i = 1:input.basis.numbernodes
-                    multiplicity[input.basis.modemap[i]+currentnode] += 1
+                    multiplicity_sum[input.basis.modemap[i]+currentnode] += 1
                 end
                 currentnode += input.basis.numbernodes
             end
@@ -665,11 +693,12 @@ function getmultiplicity(operator::Operator)
 
         # update shared nodes
         currentnode = 0
+        multiplicity = spzeros(numbernodes)
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 for i = 1:input.basis.numbernodes
                     multiplicity[i+currentnode] =
-                        multiplicity[input.basis.modemap[i]+currentnode]
+                        multiplicity_sum[input.basis.modemap[i]+currentnode]
                 end
                 currentnode += input.basis.numbernodes
             end
@@ -1004,7 +1033,7 @@ for dimension in 1:3
     elseif dimension == 2
         @assert min(eigenvalues...) ≈ 8/3
         @assert max(eigenvalues...) ≈ 256/45
-    elseif dimension == 2
+    elseif dimension == 3
         @assert min(eigenvalues...) ≈ 4/3
         @assert max(eigenvalues...) ≈ 1024/225
     end

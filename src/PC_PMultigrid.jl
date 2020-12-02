@@ -175,6 +175,31 @@ Compute or retrieve the prolongation matrix
 
 # Returns:
 - Matrix prolonging from coarse grid to fine grid
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+ctofbasis = TensorH1LagrangeBasis(2, 3, 2, lagrangequadrature=true);
+
+# operators
+finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
+coarsediffusion = GalleryOperator("diffusion", 2, 3, mesh);
+
+# smoother
+jacobi = Jacobi(finediffusion);
+
+# preconditioner
+multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
+
+# verify
+u = ones(ctofbasis.numbernodes);
+v = multigrid.prolongationmatrix * u;
+@assert transpose(v) ≈ [4. 2. 4. 2. 1. 2. 4. 2. 4.].^-1
+
+# output
+
+```
 """
 function getprolongationmatrix(multigrid::PMultigrid)
     # assemble if needed
@@ -363,11 +388,9 @@ for dimension in 1:3
     if dimension == 1
        @assert max(eigenvalues...) ≈ 0.6483564034574688
     elseif dimension == 2
-       @assert min(eigenvalues...) ≈ -0.03577008819137712
-       @assert max(eigenvalues...) ≈ 0.9347507063371103
+       @assert max(eigenvalues...) ≈ 0.9146138945439544
     elseif dimension == 3
-       @assert min(eigenvalues...) ≈ 0.0010629010666705831
-       @assert max(eigenvalues...) ≈ 1.4279944980917596
+       @assert max(eigenvalues...) ≈ 1.4387790627121388
     end
 end
 

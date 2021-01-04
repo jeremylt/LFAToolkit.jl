@@ -558,7 +558,7 @@ TensorH1LagrangeBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     dimension,
-    collocatedquadrature,
+    lagrangequadrature,
 )
 ```
 

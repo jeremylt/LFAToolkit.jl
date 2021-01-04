@@ -95,14 +95,17 @@ mutable struct TensorBasis <: AbstractBasis
             error("must include numberquadraturepoints1d quadrature weights") # COV_EXCL_LINE
         end;
         if size(interpolation1d) != (numberquadraturepoints1d, numbernodes1d)
+            # COV_EXCL_START
             error(
                 "interpolation matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)",
-            ) # COV_EXCL_LINE
+            )
+            # COV_EXCL_STOP
         end;
         if size(gradient1d) != (numberquadraturepoints1d, numbernodes1d)
+            # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)",
-            ) # COV_EXCL_LINE
+            ) # COV_EXCL_STOP
         end;
 
         # constructor
@@ -207,14 +210,18 @@ mutable struct NonTensorBasis <: AbstractBasis
             error("must include sufficient quadrature weights") # COV_EXCL_LINE
         end;
         if size(interpolation) != (numberquadraturepoints, numbernodes)
+            # COV_EXCL_START
             error(
                 "interpolation matrix must have dimensions (numberquadraturepoints, numbernodes)",
-            ) # COV_EXCL_LINE
+            )
+            # COV_EXCL_STOP
         end;
         if size(gradient) != (q*dimension, numbernodes)
+            # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)",
-            ) # COV_EXCL_LINE
+            )
+            # COV_EXCL_STOP
         end;
         if length(modemap) != numbernodes
             error("must map the modes for each basis node") # COV_EXCL_LINE

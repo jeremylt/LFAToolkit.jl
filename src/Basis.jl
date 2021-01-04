@@ -95,10 +95,14 @@ mutable struct TensorBasis <: AbstractBasis
             error("must include numberquadraturepoints1d quadrature weights") # COV_EXCL_LINE
         end;
         if size(interpolation1d) != (numberquadraturepoints1d, numbernodes1d)
-            error("interpolation matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)") # COV_EXCL_LINE
+            error(
+                "interpolation matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)",
+            ) # COV_EXCL_LINE
         end;
         if size(gradient1d) != (numberquadraturepoints1d, numbernodes1d)
-            error("gradient matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)") # COV_EXCL_LINE
+            error(
+                "gradient matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)",
+            ) # COV_EXCL_LINE
         end;
 
         # constructor
@@ -203,10 +207,14 @@ mutable struct NonTensorBasis <: AbstractBasis
             error("must include sufficient quadrature weights") # COV_EXCL_LINE
         end;
         if size(interpolation) != (numberquadraturepoints, numbernodes)
-            error("interpolation matrix must have dimensions (numberquadraturepoints, numbernodes)") # COV_EXCL_LINE
+            error(
+                "interpolation matrix must have dimensions (numberquadraturepoints, numbernodes)",
+            ) # COV_EXCL_LINE
         end;
         if size(gradient) != (q*dimension, numbernodes)
-            error("gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)") # COV_EXCL_LINE
+            error(
+                "gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)",
+            ) # COV_EXCL_LINE
         end;
         if length(modemap) != numbernodes
             error("must map the modes for each basis node") # COV_EXCL_LINE
@@ -503,18 +511,22 @@ function buildinterpolationandgradient(
     numberquadratuepoints1d = length(quadraturepoints1d)
     if numbernodes1d < 2
         # COV_EXCL_START
-        throw(DomanError(
-            numbernodes1d,
-            "length of nodes1d must be greater than or equal to 2",
-        ))
+        throw(
+            DomanError(
+                numbernodes1d,
+                "length of nodes1d must be greater than or equal to 2",
+            ),
+        )
         # COV_EXCL_STOP
     end
     if numbernodes1d < 2
         # COV_EXCL_START
-        throw(DomanError(
-            numbernodes1d,
-            "length of quadraturepoints1d must be greater than or equal to 2",
-        ))
+        throw(
+            DomanError(
+                numbernodes1d,
+                "length of quadraturepoints1d must be greater than or equal to 2",
+            ),
+        )
         # COV_EXCL_STOP
     end
 
@@ -604,10 +616,12 @@ function TensorH1LagrangeBasis(
     end
     if numberquadraturepoints1d < 1
         # COV_EXCL_START
-        throw(DomanError(
-            numberquadraturepoints1d,
-            "numberquadraturepoints1d must be greater than or equal to 1",
-        ))
+        throw(
+            DomanError(
+                numberquadraturepoints1d,
+                "numberquadraturepoints1d must be greater than or equal to 1",
+            ),
+        )
         # COV_EXCL_STOP
     end
     if dimension < 1 || dimension > 3
@@ -686,10 +700,12 @@ function TensorH1UniformBasis(
     end
     if numberquadraturepoints1d < 1
         # COV_EXCL_START
-        throw(DomanError(
-            numberquadraturepoints1d,
-            "numberquadraturepoints1d must be greater than or equal to 1",
-        ))
+        throw(
+            DomanError(
+                numberquadraturepoints1d,
+                "numberquadraturepoints1d must be greater than or equal to 1",
+            ),
+        )
         # COV_EXCL_STOP
     end
     if dimension < 1 || dimension > 3
@@ -811,9 +827,16 @@ function getnodes(basis::TensorBasis)
                 transpose(hcat([[[x, y] for x in basis.nodes1d, y in basis.nodes1d]...]...))
         elseif basis.dimension == 3
             # 3D
-            nodes = transpose(hcat([[
-                [x, y, z] for x in basis.nodes1d, y in basis.nodes1d, z in basis.nodes1d
-            ]...]...))
+            nodes = transpose(
+                hcat(
+                    [
+                        [
+                            [x, y, z] for x in basis.nodes1d, y in basis.nodes1d,
+                            z in basis.nodes1d
+                        ]...,
+                    ]...,
+                ),
+            )
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
@@ -915,17 +938,28 @@ function getquadraturepoints(basis::TensorBasis)
             quadraturepoints = basis.quadraturepoints1d
         elseif basis.dimension == 2
             # 2D
-            quadraturepoints = transpose(hcat([[
-                [x, y] for x in basis.quadraturepoints1d, y in basis.quadraturepoints1d
-            ]...]...))
+            quadraturepoints = transpose(
+                hcat(
+                    [
+                        [
+                            [x, y] for x in basis.quadraturepoints1d,
+                            y in basis.quadraturepoints1d
+                        ]...,
+                    ]...,
+                ),
+            )
         elseif basis.dimension == 3
             # 3D
-            quadraturepoints = transpose(hcat([[
-                [x, y, z]
-                for
-                x in basis.quadraturepoints1d,
-                y in basis.quadraturepoints1d, z in basis.quadraturepoints1d
-            ]...]...))
+            quadraturepoints = transpose(
+                hcat(
+                    [
+                        [
+                            [x, y, z] for x in basis.quadraturepoints1d,
+                            y in basis.quadraturepoints1d, z in basis.quadraturepoints1d
+                        ]...,
+                    ]...,
+                ),
+            )
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
@@ -1231,15 +1265,22 @@ function getmodemap(basis::TensorBasis)
             modemap = modemap1d
         elseif basis.dimension == 2
             # 2D
-            modemap = [[
-                i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d, j in modemap1d
-            ]...]
+            modemap = [
+                [
+                    i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d,
+                    j in modemap1d
+                ]...,
+            ]
         elseif basis.dimension == 3
             # 3D
-            modemap = [[
-                i + (j - 1)*(basis.numbernodes1d - 1) + (k - 1)*(basis.numbernodes1d - 1)^2
-                for i in modemap1d, j in modemap1d, k in modemap1d
-            ]...]
+            modemap = [
+                [
+                    i +
+                    (j - 1)*(basis.numbernodes1d - 1) +
+                    (k - 1)*(basis.numbernodes1d - 1)^2 for i in modemap1d,
+                    j in modemap1d, k in modemap1d
+                ]...,
+            ]
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end

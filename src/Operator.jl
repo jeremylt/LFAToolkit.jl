@@ -934,8 +934,8 @@ function getnodecoordinatedifferences(operator::Operator)
         outputcoordinates = operator.outputcoordinates
         dimension = operator.inputs[1].basis.dimension
         lengths = [
-            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...)
-            for d = 1:dimension
+            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for
+            d = 1:dimension
         ]
 
         # fill matrix

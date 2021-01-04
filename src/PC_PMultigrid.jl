@@ -145,8 +145,8 @@ function getnodecoordinatedifferences(multigrid::PMultigrid)
         inputcoordinates = multigrid.coarseoperator.inputcoordinates
         outputcoordinates = multigrid.fineoperator.outputcoordinates
         lengths = [
-            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...)
-            for d = 1:dimension
+            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for
+            d = 1:dimension
         ]
 
         # fill matrix

@@ -4,4 +4,5 @@
 LFAToolkit.getnodecoordinatedifferences(::PMultigrid)
 LFAToolkit.getprolongationmatrix
 LFAToolkit.computesymbolspprolongation
+LFAToolkit.computesymbolsprestriction
 ```

@@ -93,10 +93,11 @@ where ``\odot`` represents pointwise multiplication of the elements and
 ```math
 Q =
 \begin{bmatrix}
-    1       &&  0       &&  \cdots  &&  0       &&  1       \\
-    0       &&  1       &&  \cdots  &&  0       &&  0       \\
-    \vdots  &&  \vdots  &&  \vdots  &&  \vdots  &&  \vdots  \\
-    0       &&  0       &&  \cdots  &&  1       &&  0       \\
+    1       &&  0       &&  \cdots  &&  0       \\
+    0       &&  1       &&  \cdots  &&  0       \\
+    \vdots  &&  \vdots  &&  \vdots  &&  \vdots  \\
+    0       &&  0       &&  \cdots  &&  1       \\
+    1       &&  0       &&  \cdots  &&  0       \\
 \end{bmatrix}
 ```
 
@@ -209,7 +210,17 @@ Thus, the symbol of ``P_{ctof}`` is given by
 \right) Q_c
 ```
 
-and ``\tilde{R}_{ftoc}`` is given by the transpose.
+and ``\tilde{R}_{ftoc}`` is given by the analagous computation
+
+```math
+\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot
+\begin{bmatrix}
+    e^{\imath \left( x_{0, c} - x_{0, f} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, c} - x_{p_f + 1, f} \right) \theta}        \\
+    \vdots                                                      &&  \vdots  &&  \vdots                                                            \\
+    e^{\imath \left( x_{p_c + 1, c} - x_{0, f} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_c + 1, c} - x_{p_f + 1, f} \right) \theta}  \\
+\end{bmatrix}
+\right) Q_f
+```.
 
 ### Multigrid Error Propagation Operator
 

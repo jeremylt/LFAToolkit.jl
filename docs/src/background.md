@@ -44,7 +44,7 @@ where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing h
 Consider the specific case of the Topeliz operator representing a scalar PDE in 1D with the weak formulation given in [2],
 
 ```math
-\int_{\Omega} u \cdot f_0 \left( u, \nabla u \right) + \nabla v : f_1 \left( u, \nabla u \right) = \int_{\Omega} f v, \forall v \in V
+\int_{\Omega} v \cdot f_0 \left( u, \nabla u \right) + \nabla v : f_1 \left( u, \nabla u \right) = \int_{\Omega} f v, \forall v \in V
 ```
 
 for some suitable ``V \subseteq H_0^1 \left( \Omega \right)``.

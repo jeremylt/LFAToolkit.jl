@@ -29,3 +29,7 @@ To install and test, run
 julia --project -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit")'
 ```
 
+## Examples
+
+Examples can be found in the ``examples`` directory, with interactive examples in Jupyter notebooks found in the ``examples/jupyter`` directory.
+

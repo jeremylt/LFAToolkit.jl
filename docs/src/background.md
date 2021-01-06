@@ -2,16 +2,10 @@
 
 Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
 
-By way of example, we will explore Local Fourier Analysis for multilevel and mutligrid methods for the two dimensional Poisson problem, given by the PDE
-
-```math
-- \nabla^2 u = f.
-```
-
 ## Local Fourier Modes
 
 Local Fourier Analysis considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
-We will describe the simple one dimensional scalar case and extend it to an arbitrary dimension, degree, and component finite element problem.
+We will describe the arbitrary degree, one dimensional scalar case and extend it to an arbitrary dimension and number of components finite element problem.
 
 First consider a scalar Toeplitz operator ``L_h`` on a one dimensional infinite uniform grid ``G_h``.
 This operator is given by
@@ -47,14 +41,15 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 
 where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
-Consider the specific case of the Topeliz operator representing the scalar diffusion operator.
-The Poisson problem has the weak formulation
+Consider the specific case of the Topeliz operator representing a scalar PDE in 1D with the weak formulation given in [2],
 
 ```math
-\int_{\Omega} \nabla u \cdot \nabla v - \int_{\partial \Omega} \nabla u v = \int_{\Omega} f v, \forall v \in V
+\int_{\Omega} u \cdot f_0 \left( u, \nabla u \right) + \nabla v : f_1 \left( u, \nabla u \right) = \int_{\Omega} f v, \forall v \in V
 ```
 
 for some suitable ``V \subseteq H_0^1 \left( \Omega \right)``.
+In this equation, ``\cdot`` represents contraction over fields and ``:`` represents contraction over fields and spatial dimension, both of which are omitted for the sake of clarity in this initial derivation.
+Boundary terms have been omitted, as they are not present on the infinite unitform grid ``G_h``.
 
 Selecting a finite element basis, we can discretize the weak form and produce
 
@@ -72,18 +67,16 @@ A = P^T A_e P
 A_e = B^T D B
 ```
 
-where ``P`` represents the element assembly operator, ``B`` represents computing the derivatives of the basis functions at the quadrature points, and ``D`` represents a pointwise application of the bilinear form with quadrature weights, to include a change of coordinates to the reference space.
-As we are on the infinite grid, ``G_h``, boundary conditions have been omitted.
-This analysis will also be equivalent to periodic boundary conditions.
+where ``P`` represents the element assembly operator, ``B`` represents computing the values and derivatives of the basis functions at the quadrature points, and ``D`` represents a pointwise application of the bilinear form with quadrature weights, to include a change of coordinates to the reference space.
 
-With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent, and we can thus compute the symbol matrix as
+With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent to the same Fourier mode, and we can thus compute the symbol matrix as
 
 ```math
 \tilde{A}_h = Q^T \left( A_e \odot
 \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
+    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_p \right) \theta}        \\
     \vdots                                            &&  \vdots  &&  \vdots                                                  \\
-    e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
+    e^{\imath \left( x_p - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_p - x_p \right) \theta}  \\
 \end{bmatrix}
 \right) Q
 ```
@@ -101,9 +94,29 @@ Q =
 \end{bmatrix}
 ```
 
-maps the equivalent basis nodes to the same Fourier mode.
+maps the two equivalent basis nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
+
+Multiple components are supported by extending the ``p \times p`` system of Toeplitz operators given above to a ``ncomp \cdot p \times ncomp \cdot p`` system of operators.
+
+Tensor products are used to extend this analysis into higher dimensions.
+The basis evaluation operators in higher dimensions are given by tensor products
+
+```math
+B_{interp2d} = B_{interp} \otimes B_{interp}\\
+B_{grad2d} =
+\begin{bmatrix}
+    B_{grad} \otimes B_{interp} \\
+    B_{interp} \otimes B_{grad} \\
+\end{bmatrix}.
+```
+
+Similarly, the mapping of node to modes in higher dimensions is given by tensor products
+
+```math
+Q_{2d} = Q \otimes Q.
+```
 
 ## Multigrid
 
@@ -127,14 +140,15 @@ To explore the convergence of multigrid techniques, we need to analyze the symbo
 E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \right) S_h \left( p, \theta \right).
 ```
 
-The symbol of the coarse grid error propagation operator is given by
+where ``E_c`` represents the symbol of the coarse grid error propagation operator and is given by
 
 ```math
 E_c \left( \theta \right) = I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right).
 ```
 
 The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
-In a multigrid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error, where low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+In a multigrid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error.
+In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
 We build the symbol of the multigrid error propagation operator in parts.
 
@@ -168,9 +182,9 @@ where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 ```math
 \tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot
 \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_{p + 1} \right) \theta}        \\
+    e^{\imath \left( x_0 - x_0 \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_0 - x_p \right) \theta}        \\
     \vdots                                            &&  \vdots  &&  \vdots                                                  \\
-    e^{\imath \left( x_{p + 1} - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p + 1} - x_{p + 1} \right) \theta}  \\
+    e^{\imath \left( x_p - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_p - x_p \right) \theta}  \\
 \end{bmatrix}
 \right) Q.
 ```
@@ -183,12 +197,12 @@ S_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \til
 
 where ``\nu`` is the number of smoothing passes.
 
-User defined smoothers are supported, where the user provides ``M^{-1}`` or a function derive it based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``S_h`` are automatically generated.
+User defined smoothers are supported, where the user provides ``M^{-1}`` or a function computing ``M^{-1}`` based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``S_h`` are automatically generated and used inside the multigrid symbol matrix.
 
 ### Grid Transfer Operators
 
 We consider grid transfer operators for p-type multigrid.
-Prolongation from the lower order coarse grid to the high order fine grid is given by 
+The finite element operator for prolongation from the lower order coarse grid to the high order fine grid is given by 
 
 ```math
 P_{ctof} = P_{fine}^T D_{scale} B_{c to f} P_{coarse}
@@ -203,9 +217,9 @@ Thus, the symbol of ``P_{ctof}`` is given by
 ```math
 \tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot
 \begin{bmatrix}
-    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c + 1, c} \right) \theta}        \\
+    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c, c} \right) \theta}        \\
     \vdots                                                      &&  \vdots  &&  \vdots                                                            \\
-    e^{\imath \left( x_{p_f + 1, f} - x_{0, c} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_f + 1, f} - x_{p_c + 1, c} \right) \theta}  \\
+    e^{\imath \left( x_{p_f, f} - x_{0, c} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_f, f} - x_{p_c, c} \right) \theta}  \\
 \end{bmatrix}
 \right) Q_c
 ```
@@ -215,12 +229,12 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 ```math
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot
 \begin{bmatrix}
-    e^{\imath \left( x_{0, c} - x_{0, f} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, c} - x_{p_f + 1, f} \right) \theta}        \\
+    e^{\imath \left( x_{0, c} - x_{0, f} \right) \theta}        &&  \cdots  &&  e^{\imath \left( x_{0, c} - x_{p_f, f} \right) \theta}        \\
     \vdots                                                      &&  \vdots  &&  \vdots                                                            \\
-    e^{\imath \left( x_{p_c + 1, c} - x_{0, f} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_c + 1, c} - x_{p_f + 1, f} \right) \theta}  \\
+    e^{\imath \left( x_{p_c, c} - x_{0, f} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_c, c} - x_{p_f, f} \right) \theta}  \\
 \end{bmatrix}
-\right) Q_f
-```.
+\right) Q_f.
+```
 
 ### Multigrid Error Propagation Operator
 

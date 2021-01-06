@@ -302,6 +302,70 @@ function computesymbolspprolongation(multigrid::PMultigrid, θ::Array)
     return symbolmatrixmodes
 end
 
+"""
+```julia
+computesymbolsprestriction(multigrid, θ)
+```
+
+Compute the symbol matrix for a p-multigrid restriction operator
+
+# Arguments:
+- `multigrid`: P-multigrid operator to compute restriction symbol matrix for
+- `θ`:         Fourier mode frequency array (one frequency per dimension)
+
+# Returns:
+- Symbol matrix for the p-multigrid restriction operator
+"""
+function computesymbolsprestriction(multigrid::PMultigrid, θ::Array)
+    # setup
+    dimension = multigrid.prolongationbases[1].dimension
+    rowmodemap = multigrid.coarseoperator.rowmodemap
+    columnmodemap = multigrid.fineoperator.columnmodemap
+    prolongationmatrix = multigrid.prolongationmatrix
+    numberrows, numbercolumns = size(prolongationmatrix)
+    nodecoordinatedifferences = multigrid.nodecoordinatedifferences
+    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
+
+    # compute
+    if dimension == 1
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                prolongationmatrix[i, j]*ℯ^(-im*θ[1]*nodecoordinatedifferences[i, j, 1])
+        end
+    elseif dimension == 2
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                prolongationmatrix[
+                    i,
+                    j,
+                ]*ℯ^(
+                    im*(
+                        -θ[1]*nodecoordinatedifferences[i, j, 1] +
+                        -θ[2]*nodecoordinatedifferences[i, j, 2]
+                    )
+                )
+        end
+    elseif dimension == 3
+        for i = 1:numberrows, j = 1:numbercolumns
+            symbolmatrixnodes[i, j] =
+                prolongationmatrix[
+                    i,
+                    j,
+                ]*ℯ^(
+                    im*(
+                        -θ[1]*nodecoordinatedifferences[i, j, 1] +
+                        -θ[2]*nodecoordinatedifferences[i, j, 2] +
+                        -θ[3]*nodecoordinatedifferences[i, j, 3]
+                    )
+                )
+        end
+    end
+    symbolmatrixmodes = rowmodemap*transpose(symbolmatrixnodes)*columnmodemap
+
+    # return
+    return symbolmatrixmodes
+end
+
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -313,6 +377,8 @@ function Base.getproperty(multigrid::PMultigrid, f::Symbol)
         return getnodecoordinatedifferences(multigrid)
     elseif f == :outputs # Used if nesting multigrid levels
         return multigrid.fineoperator.outputs
+    elseif f == :rowmodemap # Used if nesting multigrid levels
+        return multigrid.fineoperator.rowmodemap
     elseif f == :columnmodemap # Used if nesting multigrid levels
         return multigrid.fineoperator.columnmodemap
     elseif f == :inputcoordinates # Used if nesting multigrid levels 
@@ -383,14 +449,13 @@ for dimension in 1:3
     A = computesymbols(multigrid, [1.0], [1, 1], π*ones(dimension));
 
     # verify
-    using LinearAlgebra;
     eigenvalues = real(eigvals(A));
     if dimension == 1
-       @assert max(eigenvalues...) ≈ 0.6483564034574688
+       @assert max(eigenvalues...) ≈ 0.64
     elseif dimension == 2
-       @assert max(eigenvalues...) ≈ 0.9146138945439544
+       @assert max(eigenvalues...) ≈ 0.9082562365654528
     elseif dimension == 3
-       @assert max(eigenvalues...) ≈ 1.4387790627121388
+       @assert max(eigenvalues...) ≈ 1.4359882222222669
     end
 end
 
@@ -407,8 +472,8 @@ function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Arra
     # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
+    R_ftoc = computesymbolsprestriction(multigrid, θ)
     P_ctof = computesymbolspprolongation(multigrid, θ)
-    R_ftoc = transpose(P_ctof)
 
     A_f = computesymbols(multigrid.fineoperator, θ)
     A_c_inv = []

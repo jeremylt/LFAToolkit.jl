@@ -59,10 +59,10 @@ Boundary terms have been omitted, as they are not present on the infinite unifor
 Selecting a finite element basis, we can discretize the weak form and produce
 
 ```math
-A u = b
+A u = b.
 ```
 
-Using the algebraic representation of PDE operators discussed in [2], the assembled matrix is of the form
+Using the algebraic representation of PDE operators discussed in [2], the PDE operator ``A`` is of the form
 
 ```math
 A = P^T A_e P
@@ -72,9 +72,9 @@ A = P^T A_e P
 A_e = B^T D B
 ```
 
-where ``P`` represents the element assembly operator, ``B`` represents computing the values and derivatives of the basis functions at the quadrature points, and ``D`` represents a pointwise application of the bilinear form with quadrature weights, to include a change of coordinates to the reference space.
+where ``P`` represents the element assembly operator, ``B`` is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and ``D`` is a block diagonal operator which provides a pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
-With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent to the same Fourier mode, and we can thus compute the symbol matrix as
+With a nodal basis of order ``p``, the nodes on the boundary of the element map to the same Fourier mode due to periodicity, and we can thus compute the symbol matrix as
 
 ```math
 \tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q
@@ -97,14 +97,14 @@ Q =
 \end{bmatrix}
 ```
 
-maps the two equivalent basis nodes to the same Fourier mode.
+maps the two equivalent solution nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
 Multiple components are supported by extending the ``p \times p`` system of Toeplitz operators given above to a ``ncomp \cdot p \times ncomp \cdot p`` system of operators.
 
 Tensor products are used to extend this analysis into higher dimensions.
-The basis evaluation operators in higher dimensions are given by tensor products
+The basis evaluation operators in higher dimensions are given by
 
 ```math
 B_{interp2d} = B_{interp} \otimes B_{interp}\\
@@ -112,14 +112,18 @@ B_{grad2d} =
 \begin{bmatrix}
     B_{grad} \otimes B_{interp}  \\
     B_{interp} \otimes B_{grad}  \\
-\end{bmatrix}.
+\end{bmatrix}
 ```
 
-Similarly, the mapping of node to modes in higher dimensions is given by tensor products
+where ``B_{interp}`` and ``B_{grad}`` represent 1D basis interpolation and gradient operators, respectively.
+
+Similarly, the mapping of solution nodes to Fourier modes in higher dimensions is given by
 
 ```math
-Q_{2d} = Q \otimes Q.
+Q_{2d} = Q \otimes Q
 ```
+
+and an analogous computation can be done for 3D.
 
 ## P-Multigrid
 

@@ -85,6 +85,10 @@ where ``\odot`` represents pointwise multiplication of the elements and
 ```math
 Q =
 \begin{bmatrix}
+    I    \\
+    e_0  \\
+\end{bmatrix} =
+\begin{bmatrix}
     1       &&  0       &&  \cdots  &&  0       \\
     0       &&  1       &&  \cdots  &&  0       \\
     \vdots  &&  \vdots  &&  \vdots  &&  \vdots  \\

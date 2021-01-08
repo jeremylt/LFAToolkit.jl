@@ -132,13 +132,14 @@ Multigrid follows the following algorithm:
 
 where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ftoc}`` represents the grid restriction operator, ``P_{ctof}`` represents the grid prolongation operator.
 
-To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator
+To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
+The operator is given by
 
 ```math
-E_f \left( p, \theta \right) = S_f \left( p, \theta \right) E_c \left( \theta \right) S_f \left( p, \theta \right).
+E_{TMG} \left( p, \theta \right) = S_f \left( p, \theta \right) E_c \left( \theta \right) S_f \left( p, \theta \right)
 ```
 
-where ``E_c`` represents the symbol of the coarse grid error propagation operator and is given by
+where ``E_c`` represents the coarse grid error propagation operator,
 
 ```math
 E_c \left( \theta \right) = I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right).
@@ -233,7 +234,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-\tilde{E} \left( p, \theta \right) = \tilde{S}_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( p , \theta \right)
+\tilde{E}_{TMG} \left( p, \theta \right) = \tilde{S}_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( p , \theta \right)
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``\tilde{S}_f`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.

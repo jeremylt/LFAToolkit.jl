@@ -169,7 +169,7 @@ In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A 
 The symbol of the error propagation operator is given by
 
 ```math
-\tilde{S}_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
+\tilde{S}_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \left( \omega \right) \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is a relaxation parameter.

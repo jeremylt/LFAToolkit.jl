@@ -41,6 +41,11 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 
 where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
+The spectral radius of the symbol of an error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
+In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+
+## Fourier Modes for High Order Finite Elements
+
 Consider the specific case of the Topeliz operator representing a scalar PDE in 1D with the weak formulation given by Brown in [2],
 
 ```math
@@ -72,11 +77,7 @@ where ``P`` represents the element assembly operator, ``B`` represents computing
 With a nodal basis of order ``p``, the nodes on the boundary of the element are equivalent to the same Fourier mode, and we can thus compute the symbol matrix as
 
 ```math
-\tilde{A}_h = Q^T \left( A_e \odot
-\begin{bmatrix}
-    e^{\imath \left( x_i - x_j \right) \theta}
-\end{bmatrix}
-\right) Q
+\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements and
@@ -133,21 +134,17 @@ Multigrid follows the following algorithm:
 where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ftoc}`` represents the grid restriction operator, ``P_{ctof}`` represents the grid prolongation operator.
 
 To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
-The operator is given by
+The total multigrid error propagation operator is given by
 
 ```math
-E_{TMG} \left( p, \theta \right) = S_f \left( p, \theta \right) E_c \left( \theta \right) S_f \left( p, \theta \right)
+E_{TMG} = S_f E_c S_f
 ```
 
 where ``E_c`` represents the coarse grid error propagation operator,
 
 ```math
-E_c \left( \theta \right) = I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right).
+E_c = I - P_{ctof} A_c^{-1} R_{ftoc} A_f.
 ```
-
-The spectral radius of the symbol of the error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
-In a multigrid technique, the purpose of the smoothing operator is to reduce the higher frequency components of the error.
-In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
 We build the symbol of the multigrid error propagation operator in parts.
 
@@ -179,11 +176,7 @@ Specifically, for Jacobi we have
 where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 
 ```math
-\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot
-\begin{bmatrix}
-    e^{\imath \left( x_i - x_j \right) \theta}
-\end{bmatrix}
-\right) Q.
+\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q.
 ```
 
 If multiple pre or post-smoothing passes are used, we have
@@ -212,21 +205,13 @@ Restriction from the fine grid to the coarse grid is given by the transpose, ``R
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot
-\begin{bmatrix}
-    e^{\imath \left( x_{i, f} - x_{j, c} \right) \theta}
-\end{bmatrix}
-\right) Q_c
+\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \left( x_{i, f} - x_{j, c} \right) \theta} \right] \right) Q_c
 ```
 
 and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 
 ```math
-\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot
-\begin{bmatrix}
-    e^{\imath \left( x_{i, c} - x_{j, f} \right) \theta}
-\end{bmatrix}
-\right) Q_f.
+\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \left( x_{i, c} - x_{j, f} \right) \theta} \right] \right) Q_f.
 ```
 
 ### Multigrid Error Propagation Operator

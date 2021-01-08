@@ -46,15 +46,15 @@ In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \p
 
 ## High Order Finite Elements
 
-Consider the specific case of the Topeliz operator representing a scalar PDE in 1D with the weak formulation given by Brown in [2],
+Consider the specific case of a Topeliz operator representing a scalar PDE in 1D with the weak formulation given by Brown in [2],
 
 ```math
 \int_{\Omega} v \cdot f_0 \left( u, \nabla u \right) + \nabla v : f_1 \left( u, \nabla u \right) = \int_{\Omega} f v, \forall v \in V
 ```
 
 for some suitable ``V \subseteq H_0^1 \left( \Omega \right)``.
-In this equation, ``\cdot`` represents contraction over fields and ``:`` represents contraction over fields and spatial dimension, both of which are omitted for the sake of clarity in this initial derivation.
-Boundary terms have been omitted, as they are not present on the infinite unitform grid ``G_h``.
+In this equation, ``\cdot`` represents contraction over fields and ``:`` represents contraction over fields and spatial dimensions, both of which are omitted for the sake of clarity in this initial derivation.
+Boundary terms have been omitted, as they are not present on the infinite uniform grid ``G_h``.
 
 Selecting a finite element basis, we can discretize the weak form and produce
 

@@ -80,7 +80,8 @@ With a nodal basis of order ``p``, the nodes on the boundary of the element map 
 \tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q
 ```
 
-where ``\odot`` represents pointwise multiplication of the elements and
+where ``\odot`` represents pointwise multiplication of the elements and ``i, j \in \left[ 0, 1, \dots, p \right]``.
+``Q`` is a ``p - 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
 
 ```math
 Q =
@@ -96,8 +97,6 @@ Q =
     1       &&  0       &&  \cdots  &&  0       \\
 \end{bmatrix}
 ```
-
-maps the two equivalent solution nodes to the same Fourier mode.
 
 This same computation of the symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
@@ -144,14 +143,10 @@ where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ft
 The total multigrid error propagation operator is given by
 
 ```math
-E_{TMG} = S_f E_c S_f
+M_{TMG} = S_f \left( I - P_{ctof} A_c^{-1} R_{ftoc} A_f \right) S_f
 ```
 
-where ``E_c`` represents the coarse grid error propagation operator,
-
-```math
-E_c = I - P_{ctof} A_c^{-1} R_{ftoc} A_f.
-```
+where ``S_f`` represents the error propagation operator for the smoother on the fine grid.
 
 This algorithm describes both h-multigrid and p-multigrid.
 While h-multigrid coarsens the mesh by increasing the size of each element, p-multigrid coarsens the mesh by decreasing the order of each element.
@@ -206,10 +201,11 @@ We consider grid transfer operators for p-type multigrid.
 The finite element operator for prolongation from the lower order coarse grid to the high order fine grid is given by 
 
 ```math
-P_{ctof} = P_{fine}^T D_{scale} B_{c to f} P_{coarse}
+P_{ctof} = P_f^T P_e P_c\\
+P_e = D_{scale} B_{ctof}
 ```
 
-where ``B_{c to f}`` is a basis interpolation from the coarse basis to the fine basis, ``P_{f}`` is the fine grid element assembly operator, ``P_{c}`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling for node multiplicity across element interfaces.
+where ``B_{ctof}`` is a basis interpolation from the coarse basis to the fine basis, ``P_f`` is the fine grid element assembly operator, ``P_c`` is the coarse grid element assembly operator, and ``D_{scale}`` is a scaling operator to account for node multiplicity across element interfaces.
 
 Restriction from the fine grid to the coarse grid is given by the transpose, ``R_{ftoc} = P_{ctof}^T``.
 
@@ -227,10 +223,10 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 
 ### Multigrid Error Propagation Symbol
 
-Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
+Combining these elements, the symbol of the error propagation operator for p-multigrid is given by
 
 ```math
-\tilde{E}_{TMG} \left( \omega, \nu, \theta \right) = \tilde{S}_f \left( \omega, \nu, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( \omega, \nu, \theta \right)
+\tilde{M}_{TMG} \left( \omega, \nu, \theta \right) = \tilde{S}_f \left( \omega, \nu, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( \omega, \nu, \theta \right)
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``\tilde{S}_f`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.

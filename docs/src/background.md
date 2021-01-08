@@ -7,7 +7,7 @@ Local Fourier Analysis was first used by Brandt [1] to analyze the convergence o
 Local Fourier Analysis considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
 We will describe the arbitrary degree, one dimensional scalar case and extend it to an arbitrary dimension and number of components finite element problem.
 
-First consider a scalar Toeplitz operator ``L_h`` on a one dimensional infinite uniform grid ``G_h``.
+First consider a scalar Toeplitz operator ``L_h`` on an infinite one dimensional uniform grid ``G_h``,
 This operator is given by
 
 ```math
@@ -16,7 +16,7 @@ L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right)
 L_h w_h \left( x \right) = \sum_{\kappa \in V} s_\kappa w_h \left( x + \kappa h \right)
 ```
 
-where ``V \subset \mathcal{Z}`` is a finite index set, ``s_\kappa \in \mathcal{R}`` are constant coefficients, and ``w_h \left( x \right)`` is a ``l^2`` function on ``G_h``.
+where ``V \subset \mathcal{Z}`` is a finite index set, ``s_\kappa \in \mathcal{R}`` are constant coefficients and ``w_h \left( x \right)`` is a ``l^2`` function on ``G_h``.
 
 As ``L_h`` is Toeplitz, it can be diagonalized by the standard Fourier modes ``\varphi \left( \theta, x \right) = e^{\imath \theta x / h}``.
 
@@ -42,7 +42,7 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing how component ``j`` appears in the equation for component ``i``.
 
 The spectral radius of the symbol of an error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
-In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
+In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \pi / 2, \pi / 2 \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \pi / 2, 3 \pi / 2 \right) \setminus T^{low}``.
 
 ## High Order Finite Elements
 

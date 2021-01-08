@@ -183,7 +183,7 @@ Specifically, for Jacobi we have
 where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 
 ```math
-\tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q.
+\tilde{M}_h = Q^T diag \left( A_e \right) \right) Q.
 ```
 
 If multiple pre or post-smoothing passes are used, we have

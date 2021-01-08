@@ -234,7 +234,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-\tilde{E}_{TMG} \left( p, \theta \right) = \tilde{S}_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( p , \theta \right)
+\tilde{E}_{TMG} \left( \omega, \nu, \theta \right) = \tilde{S}_f \left( \omega, \nu, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( \omega, \nu, \theta \right)
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``\tilde{S}_f`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.

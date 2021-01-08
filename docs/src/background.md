@@ -172,7 +172,7 @@ where ``\omega`` is a relaxation parameter.
 Specifically, for Jacobi we have
 
 ```math
-S_h \left( \omega, \theta \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
+\tilde{S}_h \left( \omega, \theta \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
@@ -188,7 +188,7 @@ where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 If multiple pre or post-smoothing passes are used, we have
 
 ```math
-S_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
+\tilde{S}_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
 ```
 
 where ``\nu`` is the number of smoothing passes.
@@ -233,7 +233,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 
 ```math
-E \left( p, \theta \right) = S_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] S_f \left( p , \theta \right)
+\tilde{E} \left( p, \theta \right) = \tilde{S}_f \left( p, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( p, \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( p , \theta \right)
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``S_h`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.

@@ -135,7 +135,7 @@ where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ft
 To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator
 
 ```math
-E_f \left( p, \theta \right) = S_h \left( p, \theta \right) E_c \left( \theta \right) S_h \left( p, \theta \right).
+E_f \left( p, \theta \right) = S_f \left( p, \theta \right) E_c \left( \theta \right) S_f \left( p, \theta \right).
 ```
 
 where ``E_c`` represents the symbol of the coarse grid error propagation operator and is given by
@@ -164,7 +164,7 @@ In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A 
 The symbol of the error propagation operator is given by
 
 ```math
-S_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
+\tilde{S}_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
 ```
 
 where ``\omega`` is a relaxation parameter.

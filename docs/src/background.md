@@ -133,7 +133,6 @@ Multigrid follows the following algorithm:
 
 where ``f`` and ``c`` represent the fine and coarse grids, respectively, ``R_{ftoc}`` represents the grid restriction operator, ``P_{ctof}`` represents the grid prolongation operator.
 
-To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
 The total multigrid error propagation operator is given by
 
 ```math
@@ -146,7 +145,11 @@ where ``E_c`` represents the coarse grid error propagation operator,
 E_c = I - P_{ctof} A_c^{-1} R_{ftoc} A_f.
 ```
 
-We build the symbol of the multigrid error propagation operator in parts.
+This algorithm describes both h-multigrid and p-multigrid.
+While h-multigrid coarsens the mesh by increasing the size of each element, p-multigrid coarsens the mesh by decreasing the order of each element.
+
+To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
+We build the symbol of the p-multigrid error propagation operator in parts.
 
 ### Smoothing Operator Symbol
 

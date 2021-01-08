@@ -2,7 +2,7 @@
 
 Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
 
-## Local Fourier Modes
+## Local Fourier Analysis
 
 Local Fourier Analysis considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
 We will describe the arbitrary degree, one dimensional scalar case and extend it to an arbitrary dimension and number of components finite element problem.
@@ -117,7 +117,7 @@ Similarly, the mapping of node to modes in higher dimensions is given by tensor 
 Q_{2d} = Q \otimes Q.
 ```
 
-## Multigrid
+## P-Multigrid
 
 Multigrid follows the following algorithm:
 
@@ -148,7 +148,7 @@ E_c = I - P_{ctof} A_c^{-1} R_{ftoc} A_f.
 
 We build the symbol of the multigrid error propagation operator in parts.
 
-### Smoothing Operator
+### Smoothing Operator Symbol
 
 Multigrid techniques require error relaxation techniques.
 The error propagation operator for a relaxation technique is given by
@@ -189,7 +189,7 @@ where ``\nu`` is the number of smoothing passes.
 
 User defined smoothers are supported, where the user provides ``M^{-1}`` or a function computing ``M^{-1}`` based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``S_h`` are automatically generated and used inside the multigrid symbol matrix.
 
-### Grid Transfer Operators
+### Grid Transfer Operators Symbol
 
 We consider grid transfer operators for p-type multigrid.
 The finite element operator for prolongation from the lower order coarse grid to the high order fine grid is given by 
@@ -214,7 +214,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \left( x_{i, c} - x_{j, f} \right) \theta} \right] \right) Q_f.
 ```
 
-### Multigrid Error Propagation Operator
+### Multigrid Error Propagation Symbol
 
 Combining these elements, the symbol of the error propagation operator for p-type multigrid is given by
 

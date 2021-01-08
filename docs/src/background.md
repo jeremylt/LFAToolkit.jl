@@ -44,7 +44,7 @@ where ``\tilde{L}_h^{i, j}`` is given by a scalar Toeplitz operator describing h
 The spectral radius of the symbol of an error propagation operator determines how rapidly a relaxation scheme decreases error at a target frequency for a given parameter value.
 In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \frac{\pi}{p}, \frac{\pi}{p} \right)`` and high frequencies are given by ``\theta \in T^{high} = \left[ - \frac{\pi}{p}, \frac{\left( 2 p - 1 \right) \pi}{p} \right) \setminus T^{low}``.
 
-## Fourier Modes for High Order Finite Elements
+## High Order Finite Elements
 
 Consider the specific case of the Topeliz operator representing a scalar PDE in 1D with the weak formulation given by Brown in [2],
 
@@ -155,7 +155,7 @@ While h-multigrid coarsens the mesh by increasing the size of each element, p-mu
 To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
 We build the symbol of the p-multigrid error propagation operator in parts.
 
-### Smoothing Operator Symbol
+### Smoothing Operator
 
 Multigrid techniques require error relaxation techniques.
 The error propagation operator for a relaxation technique is given by
@@ -196,7 +196,7 @@ where ``\nu`` is the number of smoothing passes.
 
 User defined smoothers are supported, where the user provides ``M^{-1}`` or a function computing ``M^{-1}`` based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``\tilde{S}_h`` are automatically generated and used inside the multigrid symbol matrix.
 
-### Grid Transfer Operators Symbol
+### Grid Transfer Operators
 
 We consider grid transfer operators for p-type multigrid.
 The finite element operator for prolongation from the lower order coarse grid to the high order fine grid is given by 

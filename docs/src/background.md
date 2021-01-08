@@ -33,9 +33,9 @@ We can extend this to a ``p \times p`` linear system of operators representing a
 ```math
 \tilde{L}_h =
 \begin{bmatrix}
-    \tilde{L}_h^{1, 1}  &&  \cdots  &&  \tilde{L}_h^{1, p} \\
-    \vdots              &&  \vdots  &&  \vdots             \\
-    \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L}_h^{p, p} \\
+    \tilde{L}_h^{1, 1}  &&  \cdots  &&  \tilde{L}_h^{1, p}  \\
+    \vdots              &&  \vdots  &&  \vdots              \\
+    \tilde{L}_h^{p, 1}  &&  \cdots  &&  \tilde{L}_h^{p, p}  \\
 \end{bmatrix}
 ```
 
@@ -74,9 +74,7 @@ With a nodal basis of order ``p``, the nodes on the boundary of the element are 
 ```math
 \tilde{A}_h = Q^T \left( A_e \odot
 \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_0 - x_p \right) \theta}  \\
-    \vdots                                      &&  \vdots  &&  \vdots                                      \\
-    e^{\imath \left( x_p - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_p - x_p \right) \theta}  \\
+    e^{\imath \left( x_i - x_j \right) \theta}
 \end{bmatrix}
 \right) Q
 ```
@@ -107,8 +105,8 @@ The basis evaluation operators in higher dimensions are given by tensor products
 B_{interp2d} = B_{interp} \otimes B_{interp}\\
 B_{grad2d} =
 \begin{bmatrix}
-    B_{grad} \otimes B_{interp} \\
-    B_{interp} \otimes B_{grad} \\
+    B_{grad} \otimes B_{interp}  \\
+    B_{interp} \otimes B_{grad}  \\
 \end{bmatrix}.
 ```
 
@@ -182,9 +180,7 @@ where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 ```math
 \tilde{M}_h = Q^T \left( diag \left( A_e \right) \odot
 \begin{bmatrix}
-    e^{\imath \left( x_0 - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_0 - x_p \right) \theta}  \\
-    \vdots                                      &&  \vdots  &&  \vdots                                      \\
-    e^{\imath \left( x_p - x_0 \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_p - x_p \right) \theta}  \\
+    e^{\imath \left( x_i - x_j \right) \theta}
 \end{bmatrix}
 \right) Q.
 ```
@@ -217,9 +213,7 @@ Thus, the symbol of ``P_{ctof}`` is given by
 ```math
 \tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot
 \begin{bmatrix}
-    e^{\imath \left( x_{0, f} - x_{0, c} \right) \theta}    &&  \cdots  &&  e^{\imath \left( x_{0, f} - x_{p_c, c} \right) \theta}    \\
-    \vdots                                                  &&  \vdots  &&  \vdots                                                    \\
-    e^{\imath \left( x_{p_f, f} - x_{0, c} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_f, f} - x_{p_c, c} \right) \theta}  \\
+    e^{\imath \left( x_{i, f} - x_{j, c} \right) \theta}
 \end{bmatrix}
 \right) Q_c
 ```
@@ -229,9 +223,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 ```math
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot
 \begin{bmatrix}
-    e^{\imath \left( x_{0, c} - x_{0, f} \right) \theta}    &&  \cdots  &&  e^{\imath \left( x_{0, c} - x_{p_f, f} \right) \theta}    \\
-    \vdots                                                  &&  \vdots  &&  \vdots                                                    \\
-    e^{\imath \left( x_{p_c, c} - x_{0, f} \right) \theta}  &&  \cdots  &&  e^{\imath \left( x_{p_c, c} - x_{p_f, f} \right) \theta}  \\
+    e^{\imath \left( x_{i, c} - x_{j, f} \right) \theta}
 \end{bmatrix}
 \right) Q_f.
 ```

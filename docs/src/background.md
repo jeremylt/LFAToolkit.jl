@@ -77,10 +77,10 @@ where ``P`` represents the element assembly operator, ``B`` is a basis operator 
 With a nodal basis of order ``p``, the nodes on the boundary of the element map to the same Fourier mode due to periodicity, and we can thus compute the symbol matrix as
 
 ```math
-\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta} \right] \right) Q
+\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta / h} \right] \right) Q
 ```
 
-where ``\odot`` represents pointwise multiplication of the elements and ``i, j \in \left[ 0, 1, \dots, p \right]``.
+where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
 ``Q`` is a ``p - 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
 
 ```math
@@ -123,6 +123,16 @@ Q_{2d} = Q \otimes Q
 ```
 
 and an analogous computation can be done for 3D.
+
+Therefore, the symbol matrix for a PDE with arbitrary dimension, order and number of components is given by
+
+
+```math
+\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_i - \mathbf{x}_j \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q
+```
+
+where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element in each dimension, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
+``Q`` is a ``p - 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
 
 ## P-Multigrid
 
@@ -212,13 +222,13 @@ Restriction from the fine grid to the coarse grid is given by the transpose, ``R
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \left( x_{i, f} - x_{j, c} \right) \theta} \right] \right) Q_c
+\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, f} - \mathbf{x}_{j, c} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_c
 ```
 
 and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 
 ```math
-\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \left( x_{i, c} - x_{j, f} \right) \theta} \right] \right) Q_f.
+\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_f.
 ```
 
 ### Multigrid Error Propagation Symbol

@@ -81,7 +81,7 @@ With a nodal basis of order ``p``, the nodes on the boundary of the element map 
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
-``Q`` is a ``p \times p - 1`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
+``Q`` is a ``p + 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
 
 ```math
 Q =

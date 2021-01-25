@@ -74,14 +74,14 @@ A_e = B^T D B
 
 where ``P`` represents the element assembly operator, ``B`` is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and ``D`` is a block diagonal operator which provides a pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
-With a nodal basis of order ``p``, the nodes on the boundary of the element map to the same Fourier mode due to periodicity, and we can thus compute the symbol matrix as
+We can thus compute the symbol matrix as
 
 ```math
 \tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta / h} \right] \right) Q
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
-``Q`` is a ``p + 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
+``Q`` is a ``p + 1 \times p`` matrix that lecalizes Fourier modes on an element.
 
 ```math
 Q =
@@ -116,7 +116,7 @@ B_{grad2d} =
 
 where ``B_{interp}`` and ``B_{grad}`` represent 1D basis interpolation and gradient operators, respectively.
 
-Similarly, the mapping of solution nodes to Fourier modes in higher dimensions is given by
+Similarly, the localization of Fourier modes in higher dimensions is given by
 
 ```math
 Q_{2d} = Q \otimes Q
@@ -132,7 +132,7 @@ Therefore, the symbol matrix for a PDE with arbitrary dimension, order and numbe
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element in each dimension, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
-``Q`` is a ``p - 1 \times p`` matrix that maps the two equivalent solution nodes to the same Fourier mode.
+``Q`` is a ``p - 1 \times p`` matrix that localizes the Fourier modes on the element.
 
 ## P-Multigrid
 

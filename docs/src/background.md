@@ -81,7 +81,7 @@ We can thus compute the symbol matrix as
 ```
 
 where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
-``Q`` is a ``p + 1 \times p`` matrix that lecalizes Fourier modes on an element.
+``Q`` is a ``p + 1 \times p`` matrix that localizes Fourier modes on an element.
 
 ```math
 Q =

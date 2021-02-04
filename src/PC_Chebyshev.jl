@@ -353,7 +353,8 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     D_inv = preconditioner.operatordiagonalinverse
     D_inv_A = D_inv*A
     k = ω[1] # degree of Chebyshev smoother
-    μ = 1/(upper - lower)
+    μ = (2 - upper - lower)/(upper - lower)
+    γ = 2/(2 - upper + lower)
     c_k = [1, μ, 2*μ^2 - 1]
     E_0 = I
     E_1 = I - D_inv_A
@@ -362,7 +363,7 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
         #     c_{k-1}, c_{k} , c_{k+1}
         c_k = [c_k[2], c_k[3], 2*μ*c_k[2] - c_k[1]]
         ω_n = 2*μ*c_k[2]/c_k[3]
-        E_n = ω_n*(E_1 - E_0 - D_inv_A*E_1) + E_0
+        E_n = ω_n*(E_1 - E_0 - γ*D_inv_A*E_1) + E_0
         E_0 = E_1
         E_1 = E_n
     end

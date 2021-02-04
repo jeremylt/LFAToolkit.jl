@@ -22,7 +22,7 @@ export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
 export OperatorField
 export Operator, GalleryOperator, computesymbols
 export Jacobi
-export Chebyshev, geteigenvalueestimates, seteigenvalueestimatescaling
+export Chebyshev, seteigenvalueestimatescaling
 export PMultigrid
 
 # ------------------------------------------------------------------------------

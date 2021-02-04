@@ -146,7 +146,7 @@ diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 chebyshev = Chebyshev(diffusion)
 
 # estimate eigenvalues
-eigenvalue_estimates = geteigenvalueestimates(chebyshev);
+eigenvalue_estimates = LFAToolkit.geteigenvalueestimates(chebyshev);
 
 # verify
 @assert eigenvalue_estimates ≈ [1, 8/7]

@@ -325,6 +325,9 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     elseif length(ω) > 3
         Throw(error("no more than three parameters allowed for Chebyshev smoothing")) # COV_EXCL_LINE
     end
+    if (ω[1]%1) > 1E-14 || ω[1] < 1
+        Throw(error("first parameter must be degree of Chebyshev smoother")) # COV_EXCL_LINE
+    end
 
     # get operator symbol
     A = computesymbols(preconditioner.operator, θ)

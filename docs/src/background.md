@@ -203,6 +203,8 @@ If multiple pre or post-smoothing passes are used, we have
 
 where ``\nu`` is the number of smoothing passes.
 
+More sophisticated smoothers can be used, such as the Chebyshev semi-iterative method.
+For discussion of the error propegation of the Chebyshev semi-iteative method, see Gutknecht and Röllin [3].
 User defined smoothers are supported, where the user provides ``M^{-1}`` or a function computing ``M^{-1}`` based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``\tilde{S}_h`` are automatically generated and used inside the multigrid symbol matrix.
 
 ### Grid Transfer Operators

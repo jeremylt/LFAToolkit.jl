@@ -73,8 +73,8 @@ end
 @testset "  ex6: Chebyshev example             " begin
     include("../examples/ex6_chebyshev.jl")
 
-    @test min(eigenvalues...) ≈ -0.5681818181818025
-    @test max(eigenvalues...) ≈ 3.375394287979213
+    @test min(eigenvalues...) ≈ -0.4154429715651581
+    @test max(eigenvalues...) ≈ 0.1854866859631604
 end
 
 # ------------------------------------------------------------------------------

@@ -7,7 +7,9 @@
 Chebyshev(operator)
 ```
 
-Chebyshev polynomial preconditioner for finite element operators
+Chebyshev polynomial preconditioner for finite element operators.
+    The Chebyshev semi-iterative method is applied to the matrix D⁻¹ A,
+    where D⁻¹ is the inverse of the operator diagonal.
 
 # Arguments:
 - `operator`: finite element operator to precondition
@@ -30,15 +32,15 @@ println(chebyshev)
 # output
 chebyshev preconditioner:
 eigenvalue estimates:
-  estimated minimum 0.0278
-  estimated maximum 0.3611
+  estimated minimum 0.6944
+  estimated maximum 1.3611
 estimate scaling:
   λ_min = a * estimated min + b * estimated max
   λ_max = c * estimated min + d * estimated max
-  a = 0.0000
-  b = 0.1000
+  a = 1.0000
+  b = 0.0000
   c = 0.0000
-  d = 1.1000
+  d = 1.0000
 ```
 """
 mutable struct Chebyshev <: AbstractPreconditioner
@@ -51,9 +53,7 @@ mutable struct Chebyshev <: AbstractPreconditioner
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    # PETSc default is to use 1.1, 0.1 of max eigenvalue estimate
-    #   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html
-    Chebyshev(operator::Operator) = new(operator, [0.0, 0.1, 0.0, 1.1])
+    Chebyshev(operator::Operator) = new(operator, [1.0, 0.0, 0.0, 1.0])
 end
 
 # printing
@@ -149,7 +149,7 @@ chebyshev = Chebyshev(diffusion)
 eigenvalue_estimates = LFAToolkit.geteigenvalueestimates(chebyshev);
 
 # verify
-@assert eigenvalue_estimates ≈ [1, 8/7]
+@assert eigenvalue_estimates ≈ [0, 15/7]
  
 # output
 
@@ -163,14 +163,7 @@ function geteigenvalueestimates(preconditioner::Chebyshev)
             preconditioner.operator,
             zeros(preconditioner.operator.mesh.dimension),
         )
-        eigenvalues =
-            abs.(
-                eigvals(
-                    preconditioner.operatordiagonalinverse*(
-                        preconditioner.operator.diagonal - A
-                    ),
-                ),
-            )
+        eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse*A),)
         eigenvalueestimates = [min(eigenvalues...), max(eigenvalues...)]
 
         # store
@@ -205,21 +198,23 @@ diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 chebyshev = Chebyshev(diffusion)
 
 # set eigenvalue estimate scaling
-seteigenvalueestimatescaling(chebyshev, [0.0, 1.0, 2.0, 3.0]);
+# PETSc default is to use 1.1, 0.1 of max eigenvalue estimate
+#   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html
+seteigenvalueestimatescaling(chebyshev, [0.0, 0.1, 0.0, 1.1]);
 println(chebyshev)
  
 # output
 chebyshev preconditioner:
 eigenvalue estimates:
-  estimated minimum 1.0000
-  estimated maximum 1.1429
+  estimated minimum 0.0000
+  estimated maximum 2.1429
 estimate scaling:
   λ_min = a * estimated min + b * estimated max
   λ_max = c * estimated min + d * estimated max
   a = 0.0000
-  b = 1.0000
-  c = 2.0000
-  d = 3.0000
+  b = 0.1000
+  c = 0.0000
+  d = 1.1000
 ```
 """
 function seteigenvalueestimatescaling(
@@ -305,12 +300,22 @@ for dimension in 1:3
     # verify
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
+    minmax = [min(eigenvalues...), max(eigenvalues...)]
     if dimension == 1
-        @assert max(eigenvalues...) ≈ 1/7
+        @assert minmax ≈ [
+            -0.07142857142857095,
+            0.0816326530612248,
+        ]
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ -1/14
+        @assert minmax ≈ [
+            0.16841432714259774,
+            0.22385337199975813,
+        ]
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ -0.33928571428571486
+        @assert minmax ≈ [
+            0.10734492838301535,
+            0.333484213192652,
+        ]
     end
 end
 
@@ -353,17 +358,18 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     D_inv = preconditioner.operatordiagonalinverse
     D_inv_A = D_inv*A
     k = ω[1] # degree of Chebyshev smoother
-    μ = (2 - upper - lower)/(upper - lower)
-    γ = 2/(2 - upper + lower)
-    c_k = [1, μ, 2*μ^2 - 1]
+    α = (upper + lower)/2
+    c = (upper - lower)/2
+    η = -α/c
+    β = -c^2/(2*α)
+    γ = -(α + β)
     E_0 = I
-    E_1 = I - D_inv_A
+    E_1 = I - α*D_inv_A
     E_n = I
     for i = 2:k
-        #     c_{k-1}, c_{k} , c_{k+1}
-        c_k = [c_k[2], c_k[3], 2*μ*c_k[2] - c_k[1]]
-        ω_n = 2*μ*c_k[2]/c_k[3]
-        E_n = ω_n*(E_1 - E_0 - γ*D_inv_A*E_1) + E_0
+        β = -c^2/(2*γ)
+        γ = -(α + β)
+        E_n = (α*E_1 + β*E_0 - D_inv_A*E_1)/γ
         E_0 = E_1
         E_1 = E_n
     end

@@ -67,7 +67,7 @@ end
 end
 
 # ------------------------------------------------------------------------------
-# chebyshev smoother example
+# Chebyshev smoother example
 # ------------------------------------------------------------------------------
 
 @testset "  ex6: Chebyshev example                " begin

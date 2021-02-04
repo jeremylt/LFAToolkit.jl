@@ -70,7 +70,7 @@ end
 # Chebyshev smoother example
 # ------------------------------------------------------------------------------
 
-@testset "  ex6: Chebyshev example                " begin
+@testset "  ex6: Chebyshev example             " begin
     include("../examples/ex6_chebyshev.jl")
 
     @test min(eigenvalues...) ≈ -0.9812889061125987

@@ -361,7 +361,7 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     for i = 2:k
         c_k = [c_k[2], c_k[3], 2*μ*c_k[2] - c_k[1]]
         ω_n = 2*c_k[2]/((upper - lower)*c_k[3])
-        E_n = E_0 - ω_n*(E_0 - E_1) - ω_n*D_inv_A*E_1
+        E_n = E_0 + ω_n*(E_1 - E_0) - ω_n*D_inv_A*E_1
         E_0 = E_1
         E_1 = E_n
     end

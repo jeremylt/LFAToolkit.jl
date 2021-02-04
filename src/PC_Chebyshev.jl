@@ -227,7 +227,7 @@ function seteigenvalueestimatescaling(
     eigenvaluebounds::Array{Float64,1},
 )
     if length(eigenvaluebounds) != 4
-        Throw(error("exactly four transformation arguments are required"))
+        Throw(error("exactly four transformation arguments are required")) # COV_EXCL_LINE
     end
 
     preconditioner.eigenvaluebounds[1] = eigenvaluebounds[1]

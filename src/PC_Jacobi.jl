@@ -206,7 +206,7 @@ end
 function computesymbols(preconditioner::Jacobi, ω::Array, θ::Array)
     # validate number of parameters
     if length(ω) != 1
-        Throw(error("only one parameter for Jacobi smoothing")) # COV_EXCL_LINE
+        Throw(error("exactly one parameter required for Jacobi smoothing")) # COV_EXCL_LINE
     end
 
     # return

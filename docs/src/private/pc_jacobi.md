@@ -1,5 +1,5 @@
 ## Preconditioner: Jacobi
 
 ```@docs
-LFAToolkit.getoperatordiagonalinverse
+LFAToolkit.getoperatordiagonalinverse(::Jacobi)
 ```

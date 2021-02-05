@@ -413,7 +413,7 @@ Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 # Arguments:
 - `multigrid`: PMultigrid preconditioner to compute symbol matrix for
 - `p`:         Smoothing paramater array
-- `v`:         Number of pre and post smooths
+- `v`:         Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
 - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:

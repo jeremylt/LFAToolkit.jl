@@ -22,6 +22,7 @@ export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
 export OperatorField
 export Operator, GalleryOperator, computesymbols
 export Chebyshev, seteigenvalueestimatescaling
+export IdentityPC
 export Jacobi
 export PMultigrid
 
@@ -36,6 +37,7 @@ include("OperatorField.jl")
 include("Operator.jl")
 include("PC_Base.jl")
 include("PC_Chebyshev.jl")
+include("PC_Identity.jl")
 include("PC_Jacobi.jl")
 include("PC_PMultigrid.jl")
 

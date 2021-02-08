@@ -8,7 +8,7 @@ This is an example of a Chebyshev smoother.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex6_chebyshev.jl", String))
+$(read("../../../examples/ex111_chebyshev.jl", String))
 ```
 """)
 ````

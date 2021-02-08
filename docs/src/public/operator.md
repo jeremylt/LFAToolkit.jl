@@ -8,7 +8,7 @@ This is an example of a simple mass operator in two dimensions.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex1_mass.jl", String))
+$(read("../../../examples/ex001_mass.jl", String))
 ```
 """)
 ````
@@ -19,7 +19,7 @@ This is an example of a simple diffusion operator in two dimensions.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex2_diffusion.jl", String))
+$(read("../../../examples/ex002_diffusion.jl", String))
 ```
 """)
 ````

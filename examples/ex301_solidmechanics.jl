@@ -63,7 +63,7 @@ function neohookeanweakform(
     return [dP[1, 1:3], dP[2, 1:3], dP[3, 1:3]]
 end
 
-# diffusion operators
+# linearized Neo-Hookean operators
 # -- fine level
 inputs = [
     OperatorField(finebasis, [EvaluationMode.gradient]),

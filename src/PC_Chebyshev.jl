@@ -8,8 +8,8 @@ Chebyshev(operator)
 ```
 
 Chebyshev polynomial preconditioner for finite element operators.
-    The Chebyshev semi-iterative method is applied to the matrix D⁻¹ A,
-    where D⁻¹ is the inverse of the operator diagonal.
+    The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``,
+    where ``D^{-1}`` is the inverse of the operator diagonal.
 
 # Arguments:
 - `operator`: finite element operator to precondition
@@ -182,11 +182,12 @@ seteigenvalueestimatescaling(preconditioner, eigenvaluebounds)
 Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 
 # Arguments:
-- `eigenvaluebounds`: array of 4 scaling factors to use when setting λ_min
-    and λ_max based on eigenvalue estimates
+- `eigenvaluebounds`: array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
+    and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
 
-λ_min = a * estimated min + b * estimated max
-λ_max = c * estimated min + d * estimated max
+``\\lambda_{\\text{min}}`` = a * estimated min + b * estimated max
+
+``\\lambda_{\\text{max}}`` = c * estimated min + d * estimated max
 
 # Example:
 ```jldoctest
@@ -269,7 +270,8 @@ Compute or retrieve the symbol matrix for a Chebyshev preconditioned operator
 # Arguments:
 - `preconditioner`: Chebyshev preconditioner to compute symbol matrix for
 - `ω`:              Smoothing parameter array
-                      [degree], [degree, λ_max], or [degree, λ_min, λ_max]
+                      [degree], [degree, ``\\lambda_{\\text{max}}``], or
+                      [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
 - `θ`:              Fourier mode frequency array (one frequency per dimension)
 
 # Returns:

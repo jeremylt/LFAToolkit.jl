@@ -34,7 +34,6 @@ function neohookeanweakform(
     w::Array{Float64},
 )
     # dP = dF S + F dS
-    #  dS = partialS/partialE
 
     # deformation gradient
     F = gradu + I
@@ -65,32 +64,34 @@ function neohookeanweakform(
 end
 
 # linearized Neo-Hookean operators
-# -- fine level
-inputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.quadratureweights]),
-]
-outputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-]
-fineoperator = Operator(neohookeanweakform, mesh, inputs, outputs)
-# -- coarse level
-inputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
-]
-outputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-]
-coarseoperator = Operator(neohookeanweakform, mesh, inputs, outputs)
+function makeoperator(basis::TensorBasis)
+    inputs = [
+        OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation in x&quot;),
+        OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation in y&quot;),
+        OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation in z&quot;),
+        OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+    ]
+    outputs = [
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            &quot;test function gradient of deformation in x&quot;,
+        ),
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            &quot;test function gradient of deformation in y&quot;,
+        ),
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            &quot;test function gradient of deformation in z&quot;,
+        ),
+    ]
+    return Operator(neohookeanweakform, mesh, inputs, outputs)
+end
+fineoperator = makeoperator(finebasis)
+coarseoperator = makeoperator(coarsebasis)
 
 # Chebyshev smoother
 chebyshev = Chebyshev(fineoperator)
@@ -104,4 +105,4 @@ A = computesymbols(multigrid, [4], [1, 1], [π, π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 8 February 2021 21:02">Monday 8 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 8 February 2021 21:49">Monday 8 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

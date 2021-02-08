@@ -128,12 +128,4 @@ function Base.show(io::IO, field::OperatorField)
 end
 # COV_EXCL_STOP
 
-function Base.setproperty!(field::OperatorField, f::Symbol, value)
-    if f == :basis || f == :evaluationmodes || f == :name
-        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
-    else
-        return setfield!(operator, f, value)
-    end
-end
-
 # ------------------------------------------------------------------------------

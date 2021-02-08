@@ -8,7 +8,7 @@ This is an example of a simple p-multigrid preconditioner.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex4_pmultigrid.jl", String))
+$(read("../../../examples/ex201_pmultigrid.jl", String))
 ```
 """)
 ````
@@ -19,7 +19,7 @@ This is an example of a multilevel p-multigrid preconditioner.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex5_pmultigrid_multilevel.jl", String))
+$(read("../../../examples/ex202_pmultigrid_multilevel.jl", String))
 ```
 """)
 ````

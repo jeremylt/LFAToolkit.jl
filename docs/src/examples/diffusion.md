@@ -1,4 +1,4 @@
-## Examples: Diffusion operator
+## Diffusion operator
 
 This is an example of various preconditioners for the 2D scalar diffusion problem.
 

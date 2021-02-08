@@ -1,4 +1,4 @@
-## Examples: Neo-Hookean hyperelasticity
+## Neo-Hookean hyperelasticity
 
 This is an example of a p-multigrid preconditioner with Chebyshev smoothing for the 3D Neo-Hookean hyperelasticity problem.
 

@@ -42,7 +42,7 @@ function neohookeanweakform(
     # right Cauchy-Green tensor
     C = 2*E + I
     C_inv = C^-1
-    # Second Piola-Kirchhoff
+    # second Piola-Kirchhoff
     S = λ*log(J)*C_inv + μ*(I - C_inv)
 
     # delta du

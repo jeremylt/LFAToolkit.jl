@@ -18,6 +18,7 @@ Example plot for the symbol of p-multigrid with a Jacobi smoother for the 2D sca
 ```@contents
 Pages = [
     "background.md",
+    "examples.md",
     "public.md",
     "private.md",
     "references.md"

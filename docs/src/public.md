@@ -12,6 +12,7 @@ Pages = [
     "public/operatorfield.md",
     "public/operator.md",
     "public/pc_jacobi.md",
+    "public/pc_chebyshev.md",
     "public/pc_pmultigrid.md",
 ]
 ```

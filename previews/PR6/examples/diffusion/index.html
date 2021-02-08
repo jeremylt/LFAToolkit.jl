@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/examples/diffusion/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../">Examples</a></li><li><span class="tocitem">Public API</span><ul><li><a class="tocitem" href="../../public/">Overview</a></li><li><a class="tocitem" href="../../public/mesh/">Rectangular Mesh</a></li><li><a class="tocitem" href="../../public/basis/">Finite Element Basis</a></li><li><a class="tocitem" href="../../public/evaluationmode/">Basis Evaluation Mode</a></li><li><a class="tocitem" href="../../public/operatorfield/">Operator Field</a></li><li><a class="tocitem" href="../../public/operator/">Finite Element Operator</a></li><li><a class="tocitem" href="../../public/pc_identity/">Preconditioner: Identity</a></li><li><a class="tocitem" href="../../public/pc_jacobi/">Preconditioner: Jacobi</a></li><li><a class="tocitem" href="../../public/pc_chebyshev/">Preconditioner: Chebyshev</a></li><li><a class="tocitem" href="../../public/pc_pmultigrid/">Preconditioner: P-Multigrid</a></li></ul></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/examples/diffusion.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Examples:-Diffusion-operator"><a class="docs-heading-anchor" href="#Examples:-Diffusion-operator">Examples: Diffusion operator</a><a id="Examples:-Diffusion-operator-1"></a><a class="docs-heading-anchor-permalink" href="#Examples:-Diffusion-operator" title="Permalink"></a></h2><p>This is an example of various preconditioners for the 2D scalar diffusion problem.</p><h3 id="Problem-formulation"><a class="docs-heading-anchor" href="#Problem-formulation">Problem formulation</a><a id="Problem-formulation-1"></a><a class="docs-heading-anchor-permalink" href="#Problem-formulation" title="Permalink"></a></h3><p>The scalar diffusion problem is given by</p><div>\[\nabla^2 u = f\]</div><p>with a weak form of</p><div>\[\int_\Omega \nabla u \nabla v = \int_\Omega v f, \forall v \in V\]</div><p>for an appropriate test space <span>$V \subseteq H_0^1 \left( \Omega \right)$</span> on the domain. In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.</p><h3 id="LFAToolkit-code"><a class="docs-heading-anchor" href="#LFAToolkit-code">LFAToolkit code</a><a id="LFAToolkit-code-1"></a><a class="docs-heading-anchor-permalink" href="#LFAToolkit-code" title="Permalink"></a></h3><p>This is an example of a Chebyshev smoother.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+# Chebyshev smoother example
+# ------------------------------------------------------------------------------
+
+# setup
+mesh = Mesh2D(1.0, 1.0)
+basis = TensorH1LagrangeBasis(4, 4, 2)
+
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du*w[1]
+    return [dv]
+end
+
+# diffusion operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+]
+outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
+
+# Chebyshev smoother
+chebyshev = Chebyshev(diffusion)
+
+# compute operator symbols
+A = computesymbols(chebyshev, [3], [π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre><p>This is an example of a two level p-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+# p-multigrid example
+# ------------------------------------------------------------------------------
+
+# setup
+mesh = Mesh2D(1.0, 1.0)
+finep = 3
+coarsep = 2
+dimension = 2
+ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature = true)
+
+# diffusion operators
+finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
+coarsediffusion = GalleryOperator(&quot;diffusion&quot;, coarsep, finep, mesh)
+
+# Jacobi smoother
+jacobi = Jacobi(finediffusion)
+
+# p-multigrid preconditioner
+multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
+
+# compute operator symbols
+A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre><p><img src="../../img/multi_grid_spectral_radius_9_to_2_2d.png" alt/></p><p>Example plot for the symbol of two level p-multigrid with a Jacobi smoother for the 2D scalar diffusion problem.</p><p>This is an example of a multilevel p-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+# p-multigrid multilevel example
+# ------------------------------------------------------------------------------
+
+# setup
+mesh = Mesh2D(1.0, 1.0)
+finep = 5
+midp = 3
+coarsep = 2
+dimension = 2
+ctombasis = TensorH1LagrangeBasis(coarsep, midp, dimension, lagrangequadrature = true)
+mtofbasis = TensorH1LagrangeBasis(midp, finep, dimension, lagrangequadrature = true)
+
+# diffusion operators
+finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
+middiffusion = GalleryOperator(&quot;diffusion&quot;, midp, finep, mesh)
+coarsediffusion = GalleryOperator(&quot;diffusion&quot;, coarsep, finep, mesh)
+
+# Jacobi smoothers
+finejacobi = Jacobi(finediffusion)
+midjacobi = Jacobi(middiffusion)
+
+# p-multigrid preconditioner
+midmultigrid = PMultigrid(middiffusion, coarsediffusion, midjacobi, [ctombasis])
+multigrid = PMultigrid(finediffusion, midmultigrid, finejacobi, [mtofbasis])
+
+# compute operator symbols
+A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 8 February 2021 20:52">Monday 8 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

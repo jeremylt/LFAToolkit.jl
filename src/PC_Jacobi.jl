@@ -37,14 +37,14 @@ finite element operator:
 
 2 inputs:
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
     dimension: 2
   evaluation mode:
     interpolation
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
     dimension: 2
@@ -53,7 +53,7 @@ tensor product basis:
 
 1 output:
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
     dimension: 2

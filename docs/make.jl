@@ -34,7 +34,9 @@ makedocs(
             "Basis Evaluation Mode" => "public/evaluationmode.md",
             "Operator Field" => "public/operatorfield.md",
             "Finite Element Operator" => "public/operator.md",
+            "Preconditioner: Identity" => "public/pc_identity.md",
             "Preconditioner: Jacobi" => "public/pc_jacobi.md",
+            "Preconditioner: Chebyshev" => "public/pc_chebyshev.md",
             "Preconditioner: P-Multigrid" => "public/pc_pmultigrid.md",
         ],
         "Private API" => [
@@ -43,6 +45,7 @@ makedocs(
             "Finite Element Basis" => "private/basis.md",
             "Finite Element Operator" => "private/operator.md",
             "Preconditioner: Jacobi" => "private/pc_jacobi.md",
+            "Preconditioner: Chebyshev" => "private/pc_chebyshev.md",
             "Preconditioner: P-Multigrid" => "private/pc_pmultigrid.md",
         ],
         "References" => "references.md",

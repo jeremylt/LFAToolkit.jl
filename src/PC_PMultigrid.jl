@@ -223,8 +223,10 @@ function getprolongationmatrix(multigrid::PMultigrid)
         currentrow = 1
         currentcolumn = 1
         for Pblock in Pblocks
-            prolongationmatrix[currentrow:size(Pblock)[1], currentcolumn:size(Pblock)[2]] =
-                Pblock
+            prolongationmatrix[
+                currentrow:currentrow+size(Pblock)[1]-1,
+                currentcolumn:currentcolumn+size(Pblock)[2]-1,
+            ] = Pblock
             currentrow += size(Pblock)[1]
             currentcolumn += size(Pblock)[2]
         end

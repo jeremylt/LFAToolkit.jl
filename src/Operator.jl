@@ -489,7 +489,10 @@ function getelementmatrix(operator::Operator)
         currentrow = 1
         currentcolumn = 1
         for Bblock in Bblocks
-            B[currentrow:size(Bblock)[1], currentcolumn:size(Bblock)[2]] = Bblock
+            B[
+                currentrow:currentrow+size(Bblock)[1]-1,
+                currentcolumn:currentcolumn+size(Bblock)[2]-1,
+            ] = Bblock
             currentrow += size(Bblock)[1]
             currentcolumn += size(Bblock)[2]
         end
@@ -530,7 +533,10 @@ function getelementmatrix(operator::Operator)
         currentrow = 1
         currentcolumn = 1
         for Btblock in Btblocks
-            Bt[currentrow:size(Btblock)[1], currentcolumn:size(Btblock)[2]] = Btblock
+            Bt[
+                currentrow:currentrow+size(Btblock)[1]-1,
+                currentcolumn:currentcolumn+size(Btblock)[2]-1,
+            ] = Btblock
             currentrow += size(Btblock)[1]
             currentcolumn += size(Btblock)[2]
         end
@@ -542,6 +548,7 @@ function getelementmatrix(operator::Operator)
             numberquadratureinputs*numberquadraturepoints,
         )
         # loop over inputs
+        currentfieldin = 0
         for i = 1:length(operator.inputs)
             input = operator.inputs[i]
             if input.evaluationmodes[1] == EvaluationMode.quadratureweights
@@ -567,7 +574,7 @@ function getelementmatrix(operator::Operator)
                     for k = 1:length(operator.outputs)
                         for l = 1:numberfieldsout[k]
                             D[
-                                (j-1)*numberquadraturepoints+q,
+                                (currentfieldin+j-1)*numberquadraturepoints+q,
                                 currentfieldout*numberquadraturepoints+q,
                             ] = outputs[k][l]
                             currentfieldout += 1
@@ -575,6 +582,7 @@ function getelementmatrix(operator::Operator)
                     end
                 end
             end
+            currentfieldin += numberfieldsin[i]
         end
 
         # multiply A = B^T D B and store

@@ -27,6 +27,7 @@ makedocs(
     pages = [
         "Introduction" => "index.md",
         "Mathematical Background" => "background.md",
+        "Examples" => "examples.md",
         "Public API" => [
             "Overview" => "public.md",
             "Rectangular Mesh" => "public/mesh.md",
@@ -39,15 +40,7 @@ makedocs(
             "Preconditioner: Chebyshev" => "public/pc_chebyshev.md",
             "Preconditioner: P-Multigrid" => "public/pc_pmultigrid.md",
         ],
-        "Private API" => [
-            "Overview" => "private.md",
-            "Rectangular Mesh" => "private/mesh.md",
-            "Finite Element Basis" => "private/basis.md",
-            "Finite Element Operator" => "private/operator.md",
-            "Preconditioner: Jacobi" => "private/pc_jacobi.md",
-            "Preconditioner: Chebyshev" => "private/pc_chebyshev.md",
-            "Preconditioner: P-Multigrid" => "private/pc_pmultigrid.md",
-        ],
+        "Private API" => "private.md",
         "References" => "references.md",
     ],
     clean = false,

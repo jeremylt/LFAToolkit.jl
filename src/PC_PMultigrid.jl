@@ -48,14 +48,14 @@ finite element operator:
 
 2 inputs:
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
     dimension: 2
   evaluation mode:
     gradient
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
     dimension: 2
@@ -64,7 +64,7 @@ tensor product basis:
 
 1 output:
 operator field:
-tensor product basis:
+  tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
     dimension: 2

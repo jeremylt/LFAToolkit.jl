@@ -26,8 +26,8 @@ Finite Element operator input or output, with a basis and evaluation mode
 # basis
 basis = TensorH1LagrangeBasis(4, 3, 2);
 
-# quadrature weights field
-weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights]);
+# quadrature weights field, input only
+weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights");
 
 # verify
 println(weightsfield)
@@ -36,21 +36,27 @@ println(weightsfield)
 inputfield = OperatorField(basis, [
     EvaluationMode.interpolation,
     EvaluationMode.gradient,
-]);
+    ],
+    "gradient of weak form input"
+);
 
 # verify
 println(inputfield)
 
 # output
 operator field:
-tensor product basis:
+  name:
+    quadrature weights 
+  tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
     dimension: 2
   evaluation mode:
     quadratureweights
 operator field:
-tensor product basis:
+  name:
+    gradient of weak form input
+  tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
     dimension: 2
@@ -104,11 +110,11 @@ function Base.show(io::IO, field::OperatorField)
 
     # name
     if isdefined(field, :name)
-        print(io, "  name:", field.name)
+        print(io, "  name:\n    ", field.name, "\n")
     end
 
     # basis
-    print(io, field.basis)
+    print(io, "  ", field.basis)
 
     # evaluation modes
     if length(field.evaluationmodes) == 1

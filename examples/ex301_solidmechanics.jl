@@ -33,7 +33,6 @@ function neohookeanweakform(
     w::Array{Float64},
 )
     # dP = dF S + F dS
-    #  dS = partialS/partialE
 
     # deformation gradient
     F = gradu + I
@@ -64,32 +63,34 @@ function neohookeanweakform(
 end
 
 # linearized Neo-Hookean operators
-# -- fine level
-inputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.quadratureweights]),
-]
-outputs = [
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-    OperatorField(finebasis, [EvaluationMode.gradient]),
-]
-fineoperator = Operator(neohookeanweakform, mesh, inputs, outputs)
-# -- coarse level
-inputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.quadratureweights]),
-]
-outputs = [
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-    OperatorField(coarsebasis, [EvaluationMode.gradient]),
-]
-coarseoperator = Operator(neohookeanweakform, mesh, inputs, outputs)
+function makeoperator(basis::TensorBasis)
+    inputs = [
+        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in x"),
+        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in y"),
+        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in z"),
+        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
+    ]
+    outputs = [
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            "test function gradient of deformation in x",
+        ),
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            "test function gradient of deformation in y",
+        ),
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            "test function gradient of deformation in z",
+        ),
+    ]
+    return Operator(neohookeanweakform, mesh, inputs, outputs)
+end
+fineoperator = makeoperator(finebasis)
+coarseoperator = makeoperator(coarsebasis)
 
 # Chebyshev smoother
 chebyshev = Chebyshev(fineoperator)

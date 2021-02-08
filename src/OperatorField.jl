@@ -63,6 +63,7 @@ struct OperatorField
     # data
     basis::AbstractBasis
     evaluationmodes::AbstractArray{EvaluationMode.EvalMode}
+    name::String
 
     # inner constructor
     OperatorField(
@@ -78,12 +79,36 @@ struct OperatorField
         # constructor
         new(basis, evaluationmodes)
     )
+
+    # inner constructor
+    OperatorField(
+        basis::AbstractBasis,
+        evaluationmodes::AbstractArray{EvaluationMode.EvalMode},
+        name::String,
+    ) = (
+        # validity checking
+        if length(evaluationmodes) > 1 &&
+           EvaluationMode.quadratureweights in evaluationmodes
+            error("quadrature weights must be a separate operator field") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(basis, evaluationmodes, name)
+    )
 end
 
 # printing
 # COV_EXCL_START
 function Base.show(io::IO, field::OperatorField)
-    print(io, "operator field:\n", field.basis)
+    print(io, "operator field:\n")
+
+    # name
+    if isdefined(field, :name)
+        print(io, "  name:", field.name)
+    end
+
+    # basis
+    print(io, field.basis)
 
     # evaluation modes
     if length(field.evaluationmodes) == 1
@@ -96,5 +121,13 @@ function Base.show(io::IO, field::OperatorField)
     end
 end
 # COV_EXCL_STOP
+
+function Base.setproperty!(field::OperatorField, f::Symbol, value)
+    if f == :basis || f == :evaluationmodes || f == :name
+        throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    else
+        return setfield!(operator, f, value)
+    end
+end
 
 # ------------------------------------------------------------------------------

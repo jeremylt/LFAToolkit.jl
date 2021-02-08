@@ -1,4 +1,4 @@
-# Private API
+# Examples
 
 This section documents the LFAToolkit examples.
 

@@ -21,11 +21,7 @@ K = e/(3*(1 - 2*ν))         # bulk modulus
 μ = e/(2*(1 + ν))
 
 # state
-gradu = [
-    1*ones(3)';
-    2*ones(3)';
-    3*ones(3)';
-]
+gradu = [1; 2; 3] * ones(1, 3);
 
 function neohookeanweakform(
     deltadux::Array{Float64},

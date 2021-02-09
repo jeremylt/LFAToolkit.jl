@@ -195,7 +195,7 @@ multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
 # verify
 u = ones(ctofbasis.numbernodes);
 v = multigrid.prolongationmatrix * u;
-@assert transpose(v) ≈ [4. 2. 4. 2. 1. 2. 4. 2. 4.].^-1
+@assert v' ≈ [4. 2. 4. 2. 1. 2. 4. 2. 4.].^-1
 
 # output
 

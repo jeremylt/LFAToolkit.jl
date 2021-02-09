@@ -38,7 +38,7 @@ function neohookeanweakform(
     F = gradu + I
     J = det(F)
     # Green-Lagrange strain tensor
-    E = (gradu*transpose(gradu) + transpose(gradu)*gradu)/2
+    E = (gradu*gradu' + gradu'*gradu)/2
     # right Cauchy-Green tensor
     C = 2*E + I
     C_inv = C^-1
@@ -53,7 +53,7 @@ function neohookeanweakform(
     # dF
     dF = deltadu + I
     # deltaE
-    deltaE = (deltadu*transpose(deltadu) + transpose(deltadu)*deltadu)/2
+    deltaE = (deltadu*deltadu' + deltadu'*deltadu)/2
     # dS
     dS = λ*sum(C_inv.*deltaE)*C_inv + 2*(μ - λ*log(J))*C_inv*deltaE*C_inv
     # dP

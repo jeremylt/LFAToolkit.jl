@@ -540,7 +540,7 @@ function getelementmatrix(operator::Operator)
             currentrow += size(Btblock)[1]
             currentcolumn += size(Btblock)[2]
         end
-        Bt = transpose(Bt)
+        Bt = Bt'
 
         # QFunction matrix
         D = spzeros(

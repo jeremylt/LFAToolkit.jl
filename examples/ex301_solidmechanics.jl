@@ -21,10 +21,11 @@ K = e/(3*(1 - 2*ν))         # bulk modulus
 μ = e/(2*(1 + ν))
 
 # state
-gradu = zeros(3, 3);
-gradu[1, 1:3] = 1*ones(3);
-gradu[2, 1:3] = 2*ones(3);
-gradu[3, 1:3] = 3*ones(3);
+gradu = [
+    1*ones(3)';
+    2*ones(3)';
+    3*ones(3)';
+]
 
 function neohookeanweakform(
     deltadux::Array{Float64},
@@ -43,13 +44,14 @@ function neohookeanweakform(
     C = 2*E + I
     C_inv = C^-1
     # second Piola-Kirchhoff
-    S = λ*log(J)*C_inv + μ*(I - C_inv)
+    S = λ*log(J)*C_inv + 2*μ*C_inv*E
 
     # delta du
-    deltadu = zeros(3, 3)
-    deltadu[1, 1:3] = deltadux
-    deltadu[2, 1:3] = deltaduy
-    deltadu[3, 1:3] = deltaduz
+    deltadu = [
+        deltadux';
+        deltaduy';
+        deltaduz';
+    ]
     # dF
     dF = deltadu + I
     # deltaE

@@ -18,7 +18,13 @@ using SparseArrays
 
 export EvaluationMode
 export Mesh1D, Mesh2D, Mesh3D
-export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
+export TensorBasis,
+    NonTensorBasis,
+    TensorH1LagrangeBasis,
+    TensorH1UniformBasis,
+    TensorMacroElementBasisFrom1D,
+    TensorH1LagrangeMacroBasis,
+    TensorH1UniformMacroBasis
 export OperatorField
 export Operator, GalleryOperator, computesymbols
 export Chebyshev, seteigenvalueestimatescaling

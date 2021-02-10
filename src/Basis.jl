@@ -54,7 +54,7 @@ mutable struct TensorBasis <: AbstractBasis
     interpolation1d::AbstractArray{Float64,2}
     gradient1d::AbstractArray{Float64,2}
     volume::Float64
-    macroelementbasis::Bool
+    numberelements1d::Int
 
     # data empty until assembled
     nodes::AbstractArray{Float64}
@@ -75,7 +75,7 @@ mutable struct TensorBasis <: AbstractBasis
         quadratureweights1d::AbstractArray{Float64,1},
         interpolation1d::AbstractArray{Float64,2},
         gradient1d::AbstractArray{Float64,2};
-        macroelementbasis::Bool = false,
+        numberelements1d::Int = 1,
     ) = (
         # validity checking
         if numbernodes1d < 1
@@ -121,23 +121,27 @@ mutable struct TensorBasis <: AbstractBasis
             interpolation1d,
             gradient1d,
             (max(nodes1d...) - min(nodes1d...))^dimension,
-            macroelementbasis,
+            numberelements1d,
         )
     )
 end
 
 # printing
 # COV_EXCL_START
-Base.show(io::IO, basis::TensorBasis) = print(
-    io,
-    "tensor product basis:
-    numbernodes1d: ",
-    basis.numbernodes1d,
-    "\n    numberquadraturepoints1d: ",
-    basis.numberquadratuepoints1d,
-    "\n    dimension: ",
-    basis.dimension,
-)
+function Base.show(io::IO, basis::TensorBasis)
+    print(
+        io,
+        basis.numberelements1d == 1 ? "" : "macro element ",
+        "tensor product basis:\n    numbernodes1d: ",
+        basis.numbernodes1d,
+        "\n    numberquadraturepoints1d: ",
+        basis.numberquadratuepoints1d,
+    )
+    if basis.numberelements1d != 1
+        print(io, "\n    numberelements1d: ", basis.numberelements1d)
+    end
+    print(io, "\n    dimension: ", basis.dimension)
+end
 # COV_EXCL_STOP
 
 """
@@ -179,9 +183,9 @@ mutable struct NonTensorBasis <: AbstractBasis
     interpolation::AbstractArray{Float64,2}
     gradient::AbstractArray{Float64,2}
     volume::Float64
-    macroelementbasis::Bool
     numbermodes::Int
     modemap::AbstractArray{Int,1}
+    numberelements::Int
 
     # inner constructor
     NonTensorBasis(
@@ -193,7 +197,7 @@ mutable struct NonTensorBasis <: AbstractBasis
         quadratureweights::AbstractArray{Float64,1},
         interpolation::AbstractArray{Float64,2},
         gradient::AbstractArray{Float64,2};
-        macroelementbasis::Bool = false,
+        numberelements::Int = 1,
     ) = (
         # validity checking
         if numbernodes < 1
@@ -249,25 +253,29 @@ mutable struct NonTensorBasis <: AbstractBasis
             interpolation,
             gradient,
             volume,
-            macroelementbasis,
             max(modemap...),
             modemap,
+            numberelements,
         )
     )
 end
 
 # printing
 # COV_EXCL_START
-Base.show(io::IO, basis::NonTensorBasis) = print(
-    io,
-    "non-tensor product basis:
-    numbernodes: ",
-    basis.numbernodes,
-    "\n    numberquadraturepoints: ",
-    basis.numberquadratuepoints,
-    "\n    dimension: ",
-    basis.dimension,
-)
+function Base.show(io::IO, basis::NonTensorBasis)
+    print(
+        io,
+        basis.numberelements == 1 ? "" : "macro element ",
+        "non-tensor product basis:\n    numbernodes: ",
+        basis.numbernodes,
+        "\n    numberquadraturepoints: ",
+        basis.numberquadratuepoints,
+    )
+    if basis.numberelements != 1
+        print(io, "\n    numberelements: ", basis.numberelements)
+    end
+    print(io, "\n    dimension: ", basis.dimension)
+end
 # COV_EXCL_STOP
 
 # ------------------------------------------------------------------------------
@@ -780,9 +788,10 @@ basis = TensorH1LagrangeMacroBasis(4, 4, 2, 2, lagrangequadrature=true);
 println(basis)
 
 # output
-tensor product basis:
+macro element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 8
+    numberelements1d: 2
     dimension: 2
 ```
 """
@@ -830,9 +839,10 @@ basis = TensorH1UniformMacroBasis(4, 3, 2, 2);
 println(basis)
 
 # output
-tensor product basis:
+macro element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 6
+    numberelements1d: 2
     dimension: 2
 ```
 """
@@ -853,6 +863,19 @@ function TensorH1UniformMacroBasis(
     )
 end
 
+"""
+Tensor product macro element basis from 1d single element tensor product basis
+
+# Arguments:
+- `numbernodes1d`:            number of basis nodes
+- `numberquadraturepoints1d`: number of quadrature points
+- `dimension`:                dimension of basis
+- `numberelements1d`:         number of elements in macro element
+- `basis1dmicro`:             1d micro element basis to replicate 
+    
+# Returns:
+- Tensor product macro element basis object
+"""
 function TensorMacroElementBasisFrom1D(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
@@ -912,7 +935,7 @@ function TensorMacroElementBasisFrom1D(
         quadratureweights1dmacro,
         interpolation1dmacro,
         gradient1dmacro,
-        macroelementbasis = true,
+        numberelements1d = numberelements1d,
     )
 end
 

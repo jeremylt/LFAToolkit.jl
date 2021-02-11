@@ -595,7 +595,7 @@ TensorH1LagrangeBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     dimension,
-    lagrangequadrature,
+    lagrangequadrature = false,
 )
 ```
 
@@ -762,6 +762,17 @@ end
 # ------------------------------------------------------------------------------
 
 """
+```julia
+TensorMacroElementBasisFrom1D(
+    numbernodes1d,
+    numberquadraturepoints1d,
+    dimension,
+    numberelements1d,
+    basis1dmicro,
+    overlapquadraturepoints = false,
+)
+```
+
 Tensor product macro element basis from 1d single element tensor product basis
 
 # Arguments:
@@ -855,7 +866,7 @@ end
 
 """
 ```julia
-TensorH1LagrangeBasis(
+TensorH1LagrangeMacroBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     dimension,
@@ -919,6 +930,15 @@ function TensorH1LagrangeMacroBasis(
 end
 
 """
+```julia
+TensorH1UniformMacroBasis(
+    numbernodes1d,
+    numberquadraturepoints1d,
+    dimension,
+    numberelements1d,
+)
+```
+
 Tensor product macro element basis on uniformly points with Gauss-Legendre quadrature
 
 # Arguments:
@@ -1019,6 +1039,15 @@ end
 # ------------------------------------------------------------------------------
 
 """
+```julia
+TensorHProlongationBasis(
+    coarsenodes1d,
+    finenodes1d,
+    dimension,
+    numberfineelements1d,
+)
+```
+
 Tensor product h prolongation basis
 
 # Arguments:
@@ -1055,6 +1084,14 @@ function TensorHProlongationBasis(
 end
 
 """
+```julia
+TensorH1LagrangeHProlongationBasis(
+    numbernodes1d,
+    dimension,
+    numberfineelements1d,
+)
+```
+
 Tensor product h prolongation basis on Gauss-Lobatto points
 
 # Arguments:
@@ -1103,6 +1140,14 @@ function TensorH1LagrangeHProlongationBasis(
 end
 
 """
+```julia
+TensorH1UniformHProlongationBasis(
+    numbernodes1d,
+    dimension,
+    numberfineelements1d,
+)
+```
+
 Tensor product h prolongation basis on uniformly spaced points
 
 # Arguments:
@@ -1151,6 +1196,15 @@ function TensorH1UniformHProlongationBasis(
 end
 
 """
+```julia
+TensorH1LagrangeHProlongationMacroBasis(
+    numbernodes1d,
+    dimension,
+    numbercoarseelements1d,
+    numberfineelements1d,
+)
+```
+
 Tensor product macro element h prolongation basis on Gauss-Lobatto points
 
 # Arguments:
@@ -1210,6 +1264,14 @@ function TensorH1LagrangeHProlongationMacroBasis(
 end
 
 """
+TensorH1UniformHProlongationMacroBasis(
+    numbernodes1d,
+    dimension,
+    numbercoarseelements1d,
+    numberfineelements1d,
+)
+```
+
 Tensor product macro element h prolongation basis on uniformly spaced points
 
 # Arguments:

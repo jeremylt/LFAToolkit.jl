@@ -5,6 +5,7 @@ LFAToolkit.AbstractBasis
 LFAToolkit.gaussquadrature
 LFAToolkit.lobattoquadrature
 LFAToolkit.TensorMacroElementBasisFrom1D
+LFAToolkit.TensorHProlongationBasis
 LFAToolkit.buildinterpolationandgradient
 LFAToolkit.getnumbernodes
 LFAToolkit.getnodes

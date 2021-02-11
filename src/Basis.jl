@@ -585,6 +585,10 @@ end
 # user utility constructors
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+# -- single element bases
+# ------------------------------------------------------------------------------
+
 """
 ```julia
 TensorH1LagrangeBasis(
@@ -753,6 +757,92 @@ function TensorH1UniformBasis(
     )
 end
 
+# ------------------------------------------------------------------------------
+# -- marco element bases
+# ------------------------------------------------------------------------------
+
+"""
+Tensor product macro element basis from 1d single element tensor product basis
+
+# Arguments:
+- `numbernodes1d`:            number of basis nodes
+- `numberquadraturepoints1d`: number of quadrature points
+- `dimension`:                dimension of basis
+- `numberelements1d`:         number of elements in macro element
+- `basis1dmicro`:             1d micro element basis to replicate 
+    
+# Returns:
+- Tensor product macro element basis object
+"""
+function TensorMacroElementBasisFrom1D(
+    numbernodes1d::Int,
+    numberquadraturepoints1d::Int,
+    dimension::Int,
+    numberelements1d::Int,
+    basis1dmicro::TensorBasis;
+    overlapquadraturepoints::Bool = false,
+)
+    if numberelements1d < 2
+        throw(
+            DomanError(numberelements1d, "macro elements must contain at least 2 elements"),
+        ) # COV_EXCL_LINE
+    end
+
+    # compute dimensions
+    numbernodes1dmacro = (numbernodes1d - 1)*numberelements1d + 1
+    numberquadraturepoints1dmacro =
+        overlapquadraturepoints ? (numberquadraturepoints1d - 1)*numberelements1d + 1 :
+        numberquadraturepoints1d*numberelements1d
+
+    # basis nodes
+    width = basis1dmicro.volume
+    nodes1dmacro = zeros(numbernodes1dmacro)
+    nodes1dmacro[1:numbernodes1d] = basis1dmicro.nodes1d
+    for i = 2:numberelements1d
+        nodes1dmacro[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
+            basis1dmicro.nodes1d .+ width*(i - 1)
+    end
+
+    # basis quadrature points and weights
+    quadratureweights1dmacro =
+        kron(ones(numberelements1d), basis1dmicro.quadratureweights1d)
+    quadraturepoints1dmacro = zeros(numberquadraturepoints1dmacro)
+    quadraturepoints1dmacro[1:numberquadraturepoints1d] = basis1dmicro.quadraturepoints1d
+    for i = 2:numberelements1d
+        offset = overlapquadraturepoints ? 0 : -i + 1
+        quadraturepoints1dmacro[(i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset] =
+            basis1dmicro.quadraturepoints1d .+ width*(i - 1)
+    end
+
+    # basis operations
+    interpolation1dmacro = spzeros(numberquadraturepoints1dmacro, numbernodes1dmacro)
+    gradient1dmacro = spzeros(numberquadraturepoints1dmacro, numbernodes1dmacro)
+    for i = 1:numberelements1d
+        offset = overlapquadraturepoints ? 0 : -i + 1
+        interpolation1dmacro[
+            (i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset,
+            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
+        ] = basis1dmicro.interpolation1d
+        gradient1dmacro[
+            (i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset,
+            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
+        ] = basis1dmicro.gradient1d
+    end
+
+    # use basic constructor
+    return TensorBasis(
+        numbernodes1dmacro,
+        numberquadraturepoints1dmacro,
+        dimension,
+        nodes1dmacro,
+        quadraturepoints1dmacro,
+        quadratureweights1dmacro,
+        interpolation1dmacro,
+        gradient1dmacro,
+        numberelements1d = numberelements1d,
+    )
+end
+
 """
 ```julia
 TensorH1LagrangeBasis(
@@ -863,81 +953,9 @@ function TensorH1UniformMacroBasis(
     )
 end
 
-"""
-Tensor product macro element basis from 1d single element tensor product basis
-
-# Arguments:
-- `numbernodes1d`:            number of basis nodes
-- `numberquadraturepoints1d`: number of quadrature points
-- `dimension`:                dimension of basis
-- `numberelements1d`:         number of elements in macro element
-- `basis1dmicro`:             1d micro element basis to replicate 
-    
-# Returns:
-- Tensor product macro element basis object
-"""
-function TensorMacroElementBasisFrom1D(
-    numbernodes1d::Int,
-    numberquadraturepoints1d::Int,
-    dimension::Int,
-    numberelements1d::Int,
-    basis1dmicro::TensorBasis,
-)
-    if numberelements1d < 2
-        throw(
-            DomanError(numberelements1d, "macro elements must contain at least 2 elements"),
-        ) # COV_EXCL_LINE
-    end
-
-    # compute dimensions
-    numbernodes1dmacro = (numbernodes1d - 1)*numberelements1d + 1
-    numberquadraturepoints1dmacro = numberquadraturepoints1d*numberelements1d
-
-    # basis nodes
-    width = basis1dmicro.volume
-    nodes1dmacro = zeros(numbernodes1dmacro)
-    nodes1dmacro[1:numbernodes1d] = basis1dmicro.nodes1d
-    for i = 2:numberelements1d
-        nodes1dmacro[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            basis1dmicro.nodes1d .+ width*(i - 1)
-    end
-
-    # basis quadrature points and weights
-    quadratureweights1dmacro =
-        kron(ones(numberelements1d), basis1dmicro.quadratureweights1d)
-    quadraturepoints1dmacro = kron(ones(numberelements1d), basis1dmicro.quadraturepoints1d)
-    for i = 2:numberelements1d
-        quadraturepoints1dmacro[(i-1)*numberquadraturepoints1d+1:i*numberquadraturepoints1d] .+=
-            width*(i - 1)
-    end
-
-    # basis operations
-    interpolation1dmacro = spzeros(numberquadraturepoints1dmacro, numbernodes1dmacro)
-    gradient1dmacro = spzeros(numberquadraturepoints1dmacro, numbernodes1dmacro)
-    for i = 1:numberelements1d
-        interpolation1dmacro[
-            (i-1)*numberquadraturepoints1d+1:i*numberquadraturepoints1d,
-            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
-        ] = basis1dmicro.interpolation1d
-        gradient1dmacro[
-            (i-1)*numberquadraturepoints1d+1:i*numberquadraturepoints1d,
-            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
-        ] = basis1dmicro.gradient1d
-    end
-
-    # use basic constructor
-    return TensorBasis(
-        numbernodes1dmacro,
-        numberquadraturepoints1dmacro,
-        dimension,
-        nodes1dmacro,
-        quadraturepoints1dmacro,
-        quadratureweights1dmacro,
-        interpolation1dmacro,
-        gradient1dmacro,
-        numberelements1d = numberelements1d,
-    )
-end
+# ------------------------------------------------------------------------------
+# -- h multigrid interpolation bases
+# ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
 # basis properties

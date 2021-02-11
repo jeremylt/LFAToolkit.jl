@@ -24,7 +24,13 @@ export TensorBasis,
     TensorH1UniformBasis,
     TensorMacroElementBasisFrom1D,
     TensorH1LagrangeMacroBasis,
-    TensorH1UniformMacroBasis
+    TensorH1UniformMacroBasis,
+    TensorHProlongationBasis,
+    TensorH1LagrangeHProlongationBasis,
+    TensorH1UniformHProlongationBasis,
+    TensorHProlongationMacroBasisFrom1D,
+    TensorH1LagrangeHProlongationMacroBasis,
+    TensorH1UniformHProlongationMacroBasis
 export OperatorField
 export Operator, GalleryOperator, computesymbols
 export Chebyshev, seteigenvalueestimatescaling

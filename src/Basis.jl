@@ -847,7 +847,9 @@ function TensorMacroElementBasisFrom1D(
     # scale for element interfaces if prolongation basis
     if overlapquadraturepoints
         interpolation1dmacro =
-        Diagonal(1 ./ (interpolation1dmacro*ones(numbernodes1dmacro)))*interpolation1dmacro
+            Diagonal(
+                1 ./ (interpolation1dmacro*ones(numbernodes1dmacro)),
+            )*interpolation1dmacro
     end
 
     # use basic constructor

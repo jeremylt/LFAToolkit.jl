@@ -964,6 +964,57 @@ function TensorH1UniformMacroBasis(
 end
 
 # ------------------------------------------------------------------------------
+# -- p multigrid interpolation bases
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+TensorH1LagrangePProlongationBasis(
+    numbercoarsenodes1d,
+    numberfinenodes1d,
+    dimension,
+)
+```
+
+Tensor product p prolongation basis on Gauss-Lobatto points
+
+# Arguments:
+- `numbercoarsenodes1d`: number of coarse grid Gauss-Lobatto nodes
+- `numberfinenodes1d`:   number of fine grid Gauss-Lobatto nodes
+- `dimension`:           dimension of basis
+
+# Returns:
+- H1 Lagrange tensor product basis object
+
+# Example:
+```jldoctest
+# generate H1 Lagrange tensor product basis
+basisctof = TensorH1LagrangePProlongationBasis(2, 3, 2);
+
+# verify
+println(basisctof)
+
+# output
+tensor product basis:
+    numbernodes1d: 2
+    numberquadraturepoints1d: 3
+    dimension: 2
+```
+"""
+function TensorH1LagrangePProlongationBasis(
+    numbercoarsenodes1d::Int,
+    numberfinenodes1d::Int,
+    dimension::Int,
+)
+    return TensorH1LagrangeBasis(
+        numbercoarsenodes1d,
+        numberfinenodes1d,
+        dimension,
+        lagrangequadrature = true,
+    )
+end
+
+# ------------------------------------------------------------------------------
 # -- h multigrid interpolation bases
 # ------------------------------------------------------------------------------
 

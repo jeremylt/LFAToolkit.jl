@@ -19,6 +19,12 @@ TensorH1LagrangeMacroBasis
 TensorH1UniformMacroBasis
 ```
 
+### P Prolongation Basis
+
+```@docs
+TensorH1LagrangePProlongationBasis
+```
+
 ### H Prolongation Bases
 
 ```@docs

@@ -28,6 +28,7 @@ export TensorBasis,
     TensorHProlongationBasis,
     TensorH1LagrangeHProlongationBasis,
     TensorH1UniformHProlongationBasis,
+    TensorH1LagrangePProlongationBasis,
     TensorHProlongationMacroBasisFrom1D,
     TensorH1LagrangeHProlongationMacroBasis,
     TensorH1UniformHProlongationMacroBasis

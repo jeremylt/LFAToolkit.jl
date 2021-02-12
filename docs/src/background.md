@@ -134,7 +134,7 @@ Therefore, the symbol matrix for a PDE with arbitrary dimension, order and numbe
 where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element in each dimension, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
 ``Q`` is a ``p - 1 \times p`` matrix that localizes the Fourier modes on the element.
 
-## P-Multigrid
+## Multigrid
 
 Multigrid follows the following algorithm:
 
@@ -232,6 +232,8 @@ and ``\tilde{R}_{ftoc}`` is given by the analagous computation
 ```math
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_f.
 ```
+
+The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro elements that consist of multiple micro elements of the same polynomial order as the coarse grid elements.
 
 ### Multigrid Error Propagation Symbol
 

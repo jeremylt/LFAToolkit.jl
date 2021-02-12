@@ -21,6 +21,10 @@ In this weak formulation, boundary terms have been omitted, as they are not pres
 
 ### LFAToolkit code
 
+The diffusion operator is the classical test case for multigrid preconditioners and solvers.
+
+#### Chebyshev
+
 This is an example of a Chebyshev smoother.
 
 ````@eval
@@ -31,6 +35,8 @@ $(read("../../../examples/ex111_chebyshev.jl", String))
 ```
 """)
 ````
+
+#### P-Multigrid
 
 This is an example of a two level p-multigrid preconditioner.
 
@@ -57,6 +63,8 @@ $(read("../../../examples/ex202_pmultigrid_multilevel.jl", String))
 ```
 """)
 ````
+
+#### H-Multigrid
 
 This is an example of a two level h-multigrid preconditioner.
 

@@ -27,4 +27,27 @@ quadratureweights = 2
 
 end # submodule
 
+module MultigridType
+
+"""
+Multigrid types
+
+# Modes:
+- `pmultigrid`: p-multigrid
+- `hmultigrid`: h-multigrid
+
+# Example:
+```@jldoctest
+LFAToolkit.MultigridType.MgridType
+
+# output
+Enum LFAToolkit.MultigridType.MgridType:
+pmultigrid = 0
+hmultigrid = 1
+```
+"""
+@enum MgridType hmultigrid pmultigrid
+
+end # submodule
+
 # ------------------------------------------------------------------------------

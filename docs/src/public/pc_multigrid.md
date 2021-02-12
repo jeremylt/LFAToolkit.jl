@@ -1,6 +1,14 @@
-## Preconditioner: P-Multigrid
+## Preconditioner: Multigrid
 
-### Examples
+LFAToolkit supports both p-multigrid and h-multigrid.
+
+```@docs
+MultigridType.MgridType
+```
+
+### P-Multigrid
+
+#### Example
 
 This is an example of a simple p-multigrid preconditioner.
 
@@ -24,9 +32,21 @@ $(read("../../../examples/ex202_pmultigrid_multilevel.jl", String))
 """)
 ````
 
-### Documentation
+#### Documentation
 
 ```@docs
 PMultigrid
-computesymbols(::PMultigrid, ::Array, ::Array{Int}, ::Array)
+computesymbols(::Multigrid, ::Array, ::Array{Int}, ::Array)
+```
+
+### H-Multigrid
+
+#### Example
+
+This is an example of a simple h-multigrid preconditioner.
+
+#### Documentation
+
+```@docs
+HMultigrid
 ```

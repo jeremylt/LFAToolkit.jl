@@ -865,6 +865,7 @@ TensorH1LagrangeMacroBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     dimension,
+    numberelements1d,
     lagrangequadrature,
 )
 ```

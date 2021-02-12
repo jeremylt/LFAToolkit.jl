@@ -1122,7 +1122,7 @@ function TensorH1LagrangeHProlongationBasis(
     nodesfine1d = zeros((numbernodes1d - 1)*numberfineelements1d + 1)
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) - 1)/numberfineelements1d)
+            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) + 1)/numberfineelements1d - 1)
     end
 
     # single coarse to multiple fine elements
@@ -1178,7 +1178,7 @@ function TensorH1UniformHProlongationBasis(
     nodesfine1d = [-1.0:(2.0/((numbernodes1d-1)*numberfineelements1d)):1.0...]
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) - 1)/numberfineelements1d)
+            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) + 1)/numberfineelements1d - 1)
     end
 
     # single coarse to multiple fine elements

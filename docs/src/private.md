@@ -12,6 +12,6 @@ Pages = [
     "private/pc_base.md",
     "private/pc_jacobi.md",
     "private/pc_chebyshev.md",
-    "private/pc_pmultigrid.md",
+    "private/pc_multigrid.md",
 ]
 ```

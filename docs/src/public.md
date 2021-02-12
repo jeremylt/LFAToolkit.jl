@@ -14,6 +14,6 @@ Pages = [
     "public/pc_identity.md",
     "public/pc_jacobi.md",
     "public/pc_chebyshev.md",
-    "public/pc_pmultigrid.md",
+    "public/pc_multigrid.md",
 ]
 ```

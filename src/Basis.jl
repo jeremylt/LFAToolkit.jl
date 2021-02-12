@@ -844,13 +844,6 @@ function TensorMacroElementBasisFrom1D(
             (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
         ] = basis1dmicro.gradient1d
     end
-    # scale for element interfaces if prolongation basis
-    if overlapquadraturepoints
-        interpolation1dmacro =
-            Diagonal(
-                1 ./ (interpolation1dmacro*ones(numbernodes1dmacro)),
-            )*interpolation1dmacro
-    end
 
     # use basic constructor
     return TensorBasis(
@@ -1129,7 +1122,7 @@ function TensorH1LagrangeHProlongationBasis(
     nodesfine1d = zeros((numbernodes1d - 1)*numberfineelements1d + 1)
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+ (2*(i - 1)/numberfineelements1d - 1)
+            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) - 1)/numberfineelements1d)
     end
 
     # single coarse to multiple fine elements
@@ -1185,7 +1178,7 @@ function TensorH1UniformHProlongationBasis(
     nodesfine1d = [-1.0:(2.0/((numbernodes1d-1)*numberfineelements1d)):1.0...]
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+ (2*(i - 1)/numberfineelements1d - 1)
+            nodescoarse1d./numberfineelements1d .+ ((2*(i - 1) - 1)/numberfineelements1d)
     end
 
     # single coarse to multiple fine elements

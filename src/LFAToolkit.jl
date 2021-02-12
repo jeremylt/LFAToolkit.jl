@@ -16,15 +16,28 @@ using SparseArrays
 # user available types and methods
 # ------------------------------------------------------------------------------
 
-export EvaluationMode
+export EvaluationMode, MultigridType
 export Mesh1D, Mesh2D, Mesh3D
-export TensorBasis, NonTensorBasis, TensorH1LagrangeBasis, TensorH1UniformBasis
+export TensorBasis,
+    NonTensorBasis,
+    TensorH1LagrangeBasis,
+    TensorH1UniformBasis,
+    TensorMacroElementBasisFrom1D,
+    TensorH1LagrangeMacroBasis,
+    TensorH1UniformMacroBasis,
+    TensorHProlongationBasis,
+    TensorH1LagrangeHProlongationBasis,
+    TensorH1UniformHProlongationBasis,
+    TensorH1LagrangePProlongationBasis,
+    TensorHProlongationMacroBasisFrom1D,
+    TensorH1LagrangeHProlongationMacroBasis,
+    TensorH1UniformHProlongationMacroBasis
 export OperatorField
 export Operator, GalleryOperator, computesymbols
 export Chebyshev, seteigenvalueestimatescaling
 export IdentityPC
 export Jacobi
-export PMultigrid
+export Multigrid, PMultigrid, HMultigrid
 
 # ------------------------------------------------------------------------------
 # imports
@@ -39,7 +52,7 @@ include("PC_Base.jl")
 include("PC_Chebyshev.jl")
 include("PC_Identity.jl")
 include("PC_Jacobi.jl")
-include("PC_PMultigrid.jl")
+include("PC_Multigrid.jl")
 
 end # module
 

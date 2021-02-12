@@ -1,10 +1,91 @@
 # ------------------------------------------------------------------------------
-# P-multigrid
+# multigrid
 # ------------------------------------------------------------------------------
 
 """
 ```julia
-PMultigrid(fineoperator, coarseoperator, smoother, prolongation)
+multigrid(fineoperator, coarseoperator, smoother, prolongation)
+```
+
+Multigrid preconditioner for finite element operators
+
+# Arguments:
+- `fineoperator`:      finite element operator to precondition
+- `coarseoperator`:    coarse grid representation of finite element operator to
+                           precondition
+- `smoother`:          error relaxation operator, such as Jacobi
+- `prolongationbases`: element prolongation bases from coarse to fine grid
+
+# Returns:
+- Multigrid preconditioner object
+"""
+mutable struct Multigrid <: AbstractPreconditioner
+    # data never changed
+    fineoperator::Operator
+    coarseoperator::Any
+    smoother::AbstractPreconditioner
+    prolongationbases::AbstractArray{AbstractBasis}
+    multigridtype::MultigridType.MgridType
+
+    # data empty until assembled
+    prolongationmatrix::AbstractArray{Float64}
+    nodecoordinatedifferences::AbstractArray{Float64}
+
+    # inner constructor
+    Multigrid(
+        fineoperator::Operator,
+        coarseoperator::Any,
+        smoother::AbstractPreconditioner,
+        prolongationbases::AbstractArray,
+        multigridtype::MultigridType.MgridType,
+    ) = (
+        # check smoother for fine grid
+        if fineoperator != smoother.operator
+            error("smoother must be for fine grid operator") # COV_EXCL_LINE
+        end;
+
+        # check coarse operator is operator or Multigrid
+        if !isa(coarseoperator, Operator) && !isa(coarseoperator, Multigrid)
+            error("coarse operator must be an operator or multigrid") # COV_EXCL_LINE
+        end;
+
+        # check agreement in number of fields
+        if length(prolongationbases) != length(fineoperator.outputs) ||
+           length(prolongationbases) != length(coarseoperator.outputs)
+            error("operators and prolongation bases must have same number of fields") # COV_EXCL_LINE
+        end;
+
+        # check dimensions
+        for basis in prolongationbases
+            if fineoperator.inputs[1].basis.dimension != basis.dimension
+                error("fine grid and prolongation space dimensions must agree") #COV_EXCL_LINE
+            end
+        end;
+
+        # constructor
+        new(fineoperator, coarseoperator, smoother, prolongationbases, multigridtype)
+    )
+end
+
+# printing
+# COV_EXCL_START
+function Base.show(io::IO, preconditioner::Multigrid)
+    if preconditioner.multigridtype == MultigridType.hmultigrid
+        print(io, "h")
+    elseif preconditioner.multigridtype == MultigridType.pmultigrid
+        print(io, "p")
+    end
+    print(io, "-multigrid preconditioner")
+end
+# COV_EXCL_STOP
+
+# ------------------------------------------------------------------------------
+# p-multigrid
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+Pmultigrid(fineoperator, coarseoperator, smoother, prolongation)
 ```
 
 P-Multigrid preconditioner for finite element operators
@@ -23,7 +104,7 @@ P-Multigrid preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-ctofbasis = TensorH1LagrangeBasis(3, 5, 2, lagrangequadrature=true);
+ctofbasis = TensorH1LagrangePProlongationBasis(3, 5, 2);
 
 # operators
 finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
@@ -72,56 +153,132 @@ operator field:
     gradient
 ```
 """
-mutable struct PMultigrid <: AbstractPreconditioner
-    # data never changed
-    fineoperator::Operator
-    coarseoperator::Any
-    smoother::AbstractPreconditioner
-    prolongationbases::AbstractArray{AbstractBasis}
-
-    # data empty until assembled
-    prolongationmatrix::AbstractArray{Float64}
-    nodecoordinatedifferences::AbstractArray{Float64}
-
-    # inner constructor
-    PMultigrid(
-        fineoperator::Operator,
-        coarseoperator::Any,
-        smoother::AbstractPreconditioner,
-        prolongationbases::AbstractArray,
-    ) = (
-        # check smoother for fine grid
-        if fineoperator != smoother.operator
-            error("smoother must be for fine grid operator") # COV_EXCL_LINE
-        end;
-
-        # check coarse operator is operator or Multigrid
-        if !isa(coarseoperator, Operator) && !isa(coarseoperator, PMultigrid)
-            error("coarse operator must be an operator or multigrid") # COV_EXCL_LINE
-        end;
-
-        # check agreement in number of fields
-        if length(prolongationbases) != length(fineoperator.outputs) ||
-           length(prolongationbases) != length(coarseoperator.outputs)
-            error("operators and prolongation bases must have same number of fields") # COV_EXCL_LINE
-        end;
-
-        # check dimensions
-        for basis in prolongationbases
-            if fineoperator.inputs[1].basis.dimension != basis.dimension
-                error("fine grid and prolongation space dimensions must agree") #COV_EXCL_LINE
-            end
-        end;
-
-        # constructor
-        new(fineoperator, coarseoperator, smoother, prolongationbases)
+function PMultigrid(
+    fineoperator::Operator,
+    coarseoperator::Any,
+    smoother::AbstractPreconditioner,
+    prolongationbases::AbstractArray,
+)
+    # common constructor
+    return Multigrid(
+        fineoperator,
+        coarseoperator,
+        smoother,
+        prolongationbases,
+        MultigridType.pmultigrid,
     )
 end
 
-# printing
-# COV_EXCL_START
-Base.show(io::IO, preconditioner::PMultigrid) = print(io, "p-multigrid preconditioner")
-# COV_EXCL_STOP
+# ------------------------------------------------------------------------------
+# h-multigrid
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+Hmultigrid(fineoperator, coarseoperator, smoother, prolongation)
+```
+
+H-Multigrid preconditioner for finite element operators
+
+# Arguments:
+- `fineoperator`:      finite element operator to precondition
+- `coarseoperator`:    coarse grid representation of finite element operator to
+                           precondition
+- `smoother`:          error relaxation operator, such as Jacobi
+- `prolongationbases`: element prolongation bases from coarse to fine grid
+
+# Returns:
+- H-multigrid preconditioner object
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+ctofbasis = TensorH1LagrangeHProlongationBasis(2, 2, 2);
+
+# operators
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du*w[1]
+    return [dv]
+end
+# -- fine
+basis = TensorH1LagrangeMacroBasis(2, 3, 2, 2);
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+# -- fine
+basis = TensorH1LagrangeBasis(2, 3, 2);
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# smoother
+jacobi = Jacobi(finediffusion);
+
+# preconditioner
+multigrid = HMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
+
+# verify
+println(multigrid)
+println(multigrid.fineoperator)
+
+# output
+h-multigrid preconditioner
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  macro element tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 6
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    gradient
+operator field:
+  macro element tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 6
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  macro element tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 6
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function HMultigrid(
+    fineoperator::Operator,
+    coarseoperator::Any,
+    smoother::AbstractPreconditioner,
+    prolongationbases::AbstractArray,
+)
+    # common constructor
+    return Multigrid(
+        fineoperator,
+        coarseoperator,
+        smoother,
+        prolongationbases,
+        MultigridType.hmultigrid,
+    )
+end
 
 # ------------------------------------------------------------------------------
 # data for computing symbols
@@ -137,7 +294,7 @@ Compute or retrieve the array of differences in coordinates between nodes
 # Returns:
 - Array of differences in coordinates between nodes
 """
-function getnodecoordinatedifferences(multigrid::PMultigrid)
+function getnodecoordinatedifferences(multigrid::Multigrid)
     # assemble if needed
     if !isdefined(multigrid, :nodecoordinatedifferences)
         # setup for computation
@@ -201,7 +358,7 @@ v = multigrid.prolongationmatrix * u;
 
 ```
 """
-function getprolongationmatrix(multigrid::PMultigrid)
+function getprolongationmatrix(multigrid::Multigrid)
     # assemble if needed
     if !isdefined(multigrid, :prolongationmatrix)
         # setup
@@ -242,19 +399,19 @@ end
 
 """
 ```julia
-computesymbolspprolongation(multigrid, θ)
+computesymbolsprolongation(multigrid, θ)
 ```
 
-Compute the symbol matrix for a p-multigrid prolongation operator
+Compute the symbol matrix for a multigrid prolongation operator
 
 # Arguments:
-- `multigrid`: P-multigrid operator to compute prolongation symbol matrix for
+- `multigrid`: Multigrid operator to compute prolongation symbol matrix for
 - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the p-multigrid prolongation operator
+- Symbol matrix for the multigrid prolongation operator
 """
-function computesymbolspprolongation(multigrid::PMultigrid, θ::Array)
+function computesymbolsprolongation(multigrid::Multigrid, θ::Array)
     # setup
     dimension = multigrid.prolongationbases[1].dimension
     rowmodemap = multigrid.fineoperator.rowmodemap
@@ -306,19 +463,19 @@ end
 
 """
 ```julia
-computesymbolsprestriction(multigrid, θ)
+computesymbolsrestriction(multigrid, θ)
 ```
 
-Compute the symbol matrix for a p-multigrid restriction operator
+Compute the symbol matrix for a multigrid restriction operator
 
 # Arguments:
-- `multigrid`: P-multigrid operator to compute restriction symbol matrix for
+- `multigrid`: Multigrid operator to compute restriction symbol matrix for
 - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the p-multigrid restriction operator
+- Symbol matrix for the multigrid restriction operator
 """
-function computesymbolsprestriction(multigrid::PMultigrid, θ::Array)
+function computesymbolsrestriction(multigrid::Multigrid, θ::Array)
     # setup
     dimension = multigrid.prolongationbases[1].dimension
     rowmodemap = multigrid.coarseoperator.rowmodemap
@@ -372,7 +529,7 @@ end
 # get/set property
 # ------------------------------------------------------------------------------
 
-function Base.getproperty(multigrid::PMultigrid, f::Symbol)
+function Base.getproperty(multigrid::Multigrid, f::Symbol)
     if f == :prolongationmatrix
         return getprolongationmatrix(multigrid)
     elseif f == :nodecoordinatedifferences
@@ -390,11 +547,12 @@ function Base.getproperty(multigrid::PMultigrid, f::Symbol)
     end
 end
 
-function Base.setproperty!(multigrid::PMultigrid, f::Symbol, value)
+function Base.setproperty!(multigrid::Multigrid, f::Symbol, value)
     if f == :fineoperator ||
        f == :coarseoperator ||
        f == :smoother ||
-       f == :prolongationbases
+       f == :prolongationbases ||
+       f == :multigridtype
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     else
         return setfield!(multigrid, f, value)
@@ -413,13 +571,13 @@ computesymbols(multigrid, p, v, θ)
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
-- `multigrid`: PMultigrid preconditioner to compute symbol matrix for
+- `multigrid`: Multigrid preconditioner to compute symbol matrix for
 - `p`:         Smoothing paramater array
 - `v`:         Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
 - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the p-multigrid preconditioned operator
+- Symbol matrix for the multigrid preconditioned operator
 
 # Example:
 ```jldoctest
@@ -465,7 +623,7 @@ end
 
 ```
 """
-function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Array)
+function computesymbols(multigrid::Multigrid, p::Array, v::Array{Int}, θ::Array)
     # validate number of parameters
     if length(v) != 2
         Throw(error("must specify number of pre and post smooths")) # COV_EXCL_LINE
@@ -474,14 +632,14 @@ function computesymbols(multigrid::PMultigrid, p::Array, v::Array{Int}, θ::Arra
     # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
-    R_ftoc = computesymbolsprestriction(multigrid, θ)
-    P_ctof = computesymbolspprolongation(multigrid, θ)
+    R_ftoc = computesymbolsrestriction(multigrid, θ)
+    P_ctof = computesymbolsprolongation(multigrid, θ)
 
     A_f = computesymbols(multigrid.fineoperator, θ)
     A_c_inv = []
     if isa(multigrid.coarseoperator, Operator)
         A_c_inv = computesymbols(multigrid.coarseoperator, θ)^-1
-    elseif isa(multigrid.coarseoperator, PMultigrid)
+    elseif isa(multigrid.coarseoperator, Multigrid)
         A_c = computesymbols(multigrid.coarseoperator.fineoperator, θ)
         A_c_inv = (I - computesymbols(multigrid.coarseoperator, p, v, θ))*A_c^-1
     else

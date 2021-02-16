@@ -19,14 +19,14 @@ ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature 
 finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
 coarsediffusion = GalleryOperator(&quot;diffusion&quot;, coarsep, finep, mesh)
 
-# Jacobi smoother
-jacobi = Jacobi(finediffusion)
+# Chebyshev smoother
+chebyshev = Chebyshev(finediffusion)
 
 # p-multigrid preconditioner
-multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
+multigrid = PMultigrid(finediffusion, coarsediffusion, chebyshev, [ctofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
@@ -40,24 +40,24 @@ finep = 5
 midp = 3
 coarsep = 2
 dimension = 2
-ctombasis = TensorH1LagrangeBasis(coarsep, midp, dimension, lagrangequadrature = true)
-mtofbasis = TensorH1LagrangeBasis(midp, finep, dimension, lagrangequadrature = true)
+ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, dimension)
+mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, dimension)
 
 # diffusion operators
 finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
 middiffusion = GalleryOperator(&quot;diffusion&quot;, midp, finep, mesh)
 coarsediffusion = GalleryOperator(&quot;diffusion&quot;, coarsep, finep, mesh)
 
-# Jacobi smoothers
-finejacobi = Jacobi(finediffusion)
-midjacobi = Jacobi(middiffusion)
+# Chebyshev smoothers
+finechebyshev = Chebyshev(finediffusion)
+midchebyshev = Chebyshev(middiffusion)
 
 # p-multigrid preconditioner
-midmultigrid = PMultigrid(middiffusion, coarsediffusion, midjacobi, [ctombasis])
-multigrid = PMultigrid(finediffusion, midmultigrid, finejacobi, [mtofbasis])
+midmultigrid = PMultigrid(middiffusion, coarsediffusion, midchebyshev, [ctombasis])
+multigrid = PMultigrid(finediffusion, midmultigrid, finechebyshev, [mtofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ operator field:
     numberquadraturepoints1d: 5
     dimension: 2
   evaluation mode:
-    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/47c95d71784c464b4809499336c42c9bd862e488/src/PC_Multigrid.jl#L86-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbols-Tuple{Multigrid,Array,Array{Int64,N} where N,Array}" href="#LFAToolkit.computesymbols-Tuple{Multigrid,Array,Array{Int64,N} where N,Array}"><code>LFAToolkit.computesymbols</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbols(multigrid, p, v, θ)</code></pre><p>Compute or retrieve the symbol matrix for a Jacobi preconditioned operator</p><p><strong>Arguments:</strong></p><ul><li><code>multigrid</code>: Multigrid preconditioner to compute symbol matrix for</li><li><code>p</code>:         Smoothing paramater array</li><li><code>v</code>:         Pre and post smooths iteration count array, 0 indicates no pre or post smoothing</li><li><code>θ</code>:         Fourier mode frequency array (one frequency per dimension)</li></ul><p><strong>Returns:</strong></p><ul><li>Symbol matrix for the multigrid preconditioned operator</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LinearAlgebra
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/648ea4c64e8490cea53a51b6565549fdb77e36d7/src/PC_Multigrid.jl#L86-L155">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbols-Tuple{Multigrid,Array,Array{Int64,N} where N,Array}" href="#LFAToolkit.computesymbols-Tuple{Multigrid,Array,Array{Int64,N} where N,Array}"><code>LFAToolkit.computesymbols</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbols(multigrid, p, v, θ)</code></pre><p>Compute or retrieve the symbol matrix for a Jacobi preconditioned operator</p><p><strong>Arguments:</strong></p><ul><li><code>multigrid</code>: Multigrid preconditioner to compute symbol matrix for</li><li><code>p</code>:         Smoothing paramater array</li><li><code>v</code>:         Pre and post smooths iteration count array, 0 indicates no pre or post smoothing</li><li><code>θ</code>:         Fourier mode frequency array (one frequency per dimension)</li></ul><p><strong>Returns:</strong></p><ul><li>Symbol matrix for the multigrid preconditioned operator</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LinearAlgebra
 
 for dimension in 1:3
     # setup
@@ -148,7 +148,7 @@ for dimension in 1:3
 end
 
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/47c95d71784c464b4809499336c42c9bd862e488/src/PC_Multigrid.jl#L566-L625">source</a></section></article><h3 id="H-Multigrid"><a class="docs-heading-anchor" href="#H-Multigrid">H-Multigrid</a><a id="H-Multigrid-1"></a><a class="docs-heading-anchor-permalink" href="#H-Multigrid" title="Permalink"></a></h3><h4 id="Example-2"><a class="docs-heading-anchor" href="#Example-2">Example</a><a class="docs-heading-anchor-permalink" href="#Example-2" title="Permalink"></a></h4><p>This is an example of a simple h-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/648ea4c64e8490cea53a51b6565549fdb77e36d7/src/PC_Multigrid.jl#L566-L625">source</a></section></article><h3 id="H-Multigrid"><a class="docs-heading-anchor" href="#H-Multigrid">H-Multigrid</a><a id="H-Multigrid-1"></a><a class="docs-heading-anchor-permalink" href="#H-Multigrid" title="Permalink"></a></h3><h4 id="Example-2"><a class="docs-heading-anchor" href="#Example-2">Example</a><a class="docs-heading-anchor-permalink" href="#Example-2" title="Permalink"></a></h4><p>This is an example of a simple h-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
 # h-multigrid example
 # ------------------------------------------------------------------------------
 
@@ -181,14 +181,14 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# Jacobi smoother
-jacobi = Jacobi(finediffusion)
+# Chebyshev smoother
+chebyshev = Chebyshev(finediffusion)
 
 # h-multigrid preconditioner
-multigrid = HMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
+multigrid = HMultigrid(finediffusion, coarsediffusion, chebyshev, [ctofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
@@ -240,16 +240,16 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# Jacobi smoothers
-finejacobi = Jacobi(finediffusion)
-midjacobi = Jacobi(middiffusion)
+# Chebyshev smoothers
+finechebyshev = Chebyshev(finediffusion)
+midchebyshev = Chebyshev(middiffusion)
 
 # h-multigrid preconditioner
-midmultigrid = HMultigrid(middiffusion, coarsediffusion, midjacobi, [ctombasis])
-multigrid = HMultigrid(finediffusion, midmultigrid, finejacobi, [mtofbasis])
+midmultigrid = HMultigrid(middiffusion, coarsediffusion, midchebyshev, [ctombasis])
+multigrid = HMultigrid(finediffusion, midmultigrid, finechebyshev, [mtofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
@@ -322,4 +322,4 @@ operator field:
     numberelements1d: 2
     dimension: 2
   evaluation mode:
-    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/47c95d71784c464b4809499336c42c9bd862e488/src/PC_Multigrid.jl#L176-L266">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 16 February 2021 20:44">Tuesday 16 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/648ea4c64e8490cea53a51b6565549fdb77e36d7/src/PC_Multigrid.jl#L176-L266">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 16 February 2021 22:02">Tuesday 16 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

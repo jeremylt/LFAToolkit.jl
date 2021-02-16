@@ -13,14 +13,14 @@ ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature 
 finediffusion = GalleryOperator("diffusion", finep, finep, mesh)
 coarsediffusion = GalleryOperator("diffusion", coarsep, finep, mesh)
 
-# Jacobi smoother
-jacobi = Jacobi(finediffusion)
+# Chebyshev smoother
+chebyshev = Chebyshev(finediffusion)
 
 # p-multigrid preconditioner
-multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
+multigrid = PMultigrid(finediffusion, coarsediffusion, chebyshev, [ctofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

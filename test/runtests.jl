@@ -64,7 +64,7 @@ end
 @testset "  ex201: p-multigrid example           " begin
     include("../examples/ex201_pmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.09000000000000002
+    @test max(eigenvalues...) ≈ 0.023313871226588227
 end
 
 # ------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ end
 @testset "  ex202: p-multigrid multilevel example" begin
     include("../examples/ex202_pmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.2463055119550956
+    @test max(eigenvalues...) ≈ 0.5292890335817175
 end
 
 # ------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ end
 @testset "  ex211: h-multigrid example           " begin
     include("../examples/ex211_hmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.09000000000000002
+    @test max(eigenvalues...) ≈ 0.029660493827160444
 end
 
 # ------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ end
 @testset "  ex212: h-multigrid multilevel example" begin
     include("../examples/ex212_hmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.5152515529852459
+    @test max(eigenvalues...) ≈ 0.07185378086419703
 end
 
 # ------------------------------------------------------------------------------

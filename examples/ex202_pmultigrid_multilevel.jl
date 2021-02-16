@@ -16,16 +16,16 @@ finediffusion = GalleryOperator("diffusion", finep, finep, mesh)
 middiffusion = GalleryOperator("diffusion", midp, finep, mesh)
 coarsediffusion = GalleryOperator("diffusion", coarsep, finep, mesh)
 
-# Jacobi smoothers
-finejacobi = Jacobi(finediffusion)
-midjacobi = Jacobi(middiffusion)
+# Chebyshev smoothers
+finechebyshev = Chebyshev(finediffusion)
+midchebyshev = Chebyshev(middiffusion)
 
 # p-multigrid preconditioner
-midmultigrid = PMultigrid(middiffusion, coarsediffusion, midjacobi, [ctombasis])
-multigrid = PMultigrid(finediffusion, midmultigrid, finejacobi, [mtofbasis])
+midmultigrid = PMultigrid(middiffusion, coarsediffusion, midchebyshev, [ctombasis])
+multigrid = PMultigrid(finediffusion, midmultigrid, finechebyshev, [mtofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

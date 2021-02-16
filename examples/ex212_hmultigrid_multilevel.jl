@@ -46,16 +46,16 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 
-# Jacobi smoothers
-finejacobi = Jacobi(finediffusion)
-midjacobi = Jacobi(middiffusion)
+# Chebyshev smoothers
+finechebyshev = Chebyshev(finediffusion)
+midchebyshev = Chebyshev(middiffusion)
 
 # h-multigrid preconditioner
-midmultigrid = HMultigrid(middiffusion, coarsediffusion, midjacobi, [ctombasis])
-multigrid = HMultigrid(finediffusion, midmultigrid, finejacobi, [mtofbasis])
+midmultigrid = HMultigrid(middiffusion, coarsediffusion, midchebyshev, [ctombasis])
+multigrid = HMultigrid(finediffusion, midmultigrid, finechebyshev, [mtofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [0.7], [1, 1], [π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

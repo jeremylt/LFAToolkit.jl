@@ -8,8 +8,8 @@ finep = 5
 midp = 3
 coarsep = 2
 dimension = 2
-ctombasis = TensorH1LagrangeBasis(coarsep, midp, dimension, lagrangequadrature = true)
-mtofbasis = TensorH1LagrangeBasis(midp, finep, dimension, lagrangequadrature = true)
+ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, dimension)
+mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, dimension)
 
 # diffusion operators
 finediffusion = GalleryOperator("diffusion", finep, finep, mesh)

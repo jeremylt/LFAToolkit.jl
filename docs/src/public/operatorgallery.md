@@ -8,8 +8,20 @@ The following PDEs are available in the operator gallery.
 LFAToolkit.massoperator
 ```
 
+### Vector Mass Operator
+
+```@docs
+LFAToolkit.vectormassoperator
+```
+
 ### Scalar Diffusion Operator
 
 ```@docs
 LFAToolkit.diffusionoperator
+```
+
+### Vector Diffusion Operator
+
+```@docs
+LFAToolkit.vectordiffusionoperator
 ```

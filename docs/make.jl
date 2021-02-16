@@ -43,6 +43,7 @@ makedocs(
 # ------------------------------------------------------------------------------
 deploydocs(
     repo = "github.com/jeremylt/LFAToolkit.jl.git",
+    devbranch = "main",
     target = "build",
     push_preview = true,
 )

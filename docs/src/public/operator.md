@@ -36,12 +36,3 @@ Operator
 GalleryOperator
 computesymbols(::Operator, ::Array)
 ```
-
-### Operator Gallery
-
-The following PDEs are available in the operator gallery.
-
-```@docs
-LFAToolkit.massoperator
-LFAToolkit.diffusionoperator
-```

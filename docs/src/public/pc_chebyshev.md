@@ -15,6 +15,10 @@ $(read("../../../examples/ex111_chebyshev.jl", String))
 """)
 ````
 
+![](../img/111_chebyshev_spectral_radius_3_2d.png)
+
+Plot for the symbol a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.
+
 ### Documentation
 
 ```@docs

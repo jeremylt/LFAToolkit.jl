@@ -4,6 +4,8 @@ This section documents the public API of the LFAToolkit.
 
 ## Contents
 
+### Finite Element Operators
+
 ```@contents
 Pages = [
     "public/mesh.md",
@@ -12,6 +14,13 @@ Pages = [
     "public/operatorfield.md",
     "public/operator.md",
     "public/operatorgallery.md",
+]
+```
+
+### Preconditioners
+
+```@contents
+Pages = [
     "public/pc_identity.md",
     "public/pc_jacobi.md",
     "public/pc_chebyshev.md",

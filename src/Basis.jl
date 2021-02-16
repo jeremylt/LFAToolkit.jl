@@ -1262,6 +1262,7 @@ function TensorH1LagrangeHProlongationMacroBasis(
 end
 
 """
+```
 TensorH1UniformHProlongationMacroBasis(
     numbernodes1d,
     dimension,

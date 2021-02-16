@@ -1,5 +1,7 @@
 ## Preconditioner: Jacobi
 
+This smoother provides Jacobi smoothing based on the operator diagonal.
+
 ### Example
 
 This is an example of a simple Jacobi smoother.
@@ -12,6 +14,10 @@ $(read("../../../examples/ex101_jacobi.jl", String))
 ```
 """)
 ````
+
+![](../img/101_jacobi_spectral_radius_3_2d.png)
+
+Plot for the symbol of a Jacobi smoother for the 2D scalar diffusion problem with cubic basis.
 
 ### Documentation
 

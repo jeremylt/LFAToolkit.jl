@@ -794,9 +794,11 @@ function TensorMacroElementBasisFrom1D(
     overlapquadraturepoints::Bool = false,
 )
     if numberelements1d < 2
+        # COV_EXCL_START
         throw(
             DomanError(numberelements1d, "macro elements must contain at least 2 elements"),
-        ) # COV_EXCL_LINE
+        )
+        # COV_EXCL_STOP
     end
 
     # compute dimensions
@@ -1238,12 +1240,14 @@ function TensorH1LagrangeHProlongationMacroBasis(
 )
     # validate inputs
     if numberfineelements1d%numbercoarseelements1d != 0
+        # COV_EXCL_START
         throw(
             DomanError(
                 numberfineelements1d,
                 "numberfineelements1d must be a multiple of numbercoarseelements1d",
             ),
-        ) # COV_EXCL_LINE
+        )
+        # COV_EXCL_STOP
     end
 
     # single coarse to multiple fine elements
@@ -1262,6 +1266,7 @@ function TensorH1LagrangeHProlongationMacroBasis(
 end
 
 """
+```
 TensorH1UniformHProlongationMacroBasis(
     numbernodes1d,
     dimension,
@@ -1305,12 +1310,14 @@ function TensorH1UniformHProlongationMacroBasis(
 )
     # validate inputs
     if numberfineelements1d%numbercoarseelements1d != 0
+        # COV_EXCL_START
         throw(
             DomanError(
                 numberfineelements1d,
                 "numberfineelements1d must be a multiple of numbercoarseelements1d",
             ),
-        ) # COV_EXCL_LINE
+        )
+        # COV_EXCL_STOP
     end
 
     # single coarse to multiple fine elements

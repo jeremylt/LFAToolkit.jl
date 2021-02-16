@@ -2,6 +2,8 @@
 # finite element operators
 # ------------------------------------------------------------------------------
 
+include("OperatorGallery.jl")
+
 """
 ```julia
 Operator(
@@ -29,12 +31,12 @@ Finite element operator comprising of a weak form and bases
 # setup
 mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 2);
-    
+
 function massweakform(u::Array{Float64}, w::Array{Float64})
     v = u*w[1]
     return [v]
 end
-    
+
 # mass operator
 inputs = [
     OperatorField(basis, [EvaluationMode.interpolation]),
@@ -290,83 +292,11 @@ operator field:
 ```
 """
 function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
-    if name == "mass"
-        return massoperator(p1d, q1d, mesh)
-    elseif name == "diffusion"
-        return diffusionoperator(p1d, q1d, mesh)
+    if haskey(operatorgallery, name)
+        return operatorgallery[name](p1d, q1d, mesh)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
-end
-
-"""
-```julia
-Operator("mass", p, mesh)
-```
-
-Convenience constructor for scalar mass operator
-
-# Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
-
-# Returns:
-- Mass matrix operator of order p on mesh
-"""
-function massoperator(p1d::Int, q1d::Int, mesh::Mesh)
-    # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
-    function massweakform(u::Array{Float64}, w::Array{Float64})
-        v = u*w[1]
-        return [v]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.interpolation]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.interpolation])]
-
-    # operator
-    mass = Operator(massweakform, mesh, inputs, outputs)
-    return mass
-end
-
-"""
-```julia
-Operator("diffusion", p, mesh)
-```
-
-Convenience constructor for scalar diffusion operator
-
-# Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
-
-# Returns:
-- Diffusion operator of order p on mesh
-"""
-function diffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
-    # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
-        return [dv]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
-
-    # operator
-    diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
-    return diffusion
 end
 
 # ------------------------------------------------------------------------------
@@ -391,7 +321,7 @@ Compute or retrieve the element matrix of operator for computing the symbol
 # setup
 mesh = Mesh2D(1.0, 1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
-    
+
 # element matrix computation
 # note: either syntax works
 elementmatrix = LFAToolkit.getelementmatrix(mass);
@@ -400,10 +330,10 @@ elementmatrix = mass.elementmatrix;
 # verify
 u = ones(4*4);
 v = elementmatrix*u;
-    
+
 total = sum(v);
 @assert total ≈ 1.0
-    
+
 # output
 
 ```
@@ -413,19 +343,19 @@ total = sum(v);
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 4, 4, mesh);
-    
+
 # element matrix computation
 # note: either syntax works
 elementmatrix = LFAToolkit.getelementmatrix(diffusion);
 elementmatrix = diffusion.elementmatrix;
-    
+
 # verify
 u = ones(4*4);
 v = elementmatrix*u;
-    
+
 total = sum(v);
 @assert abs(total) < 1e-14
-    
+
 # output
 
 ```
@@ -616,7 +546,7 @@ diagonal = diffusion.diagonal;
 
 # verify
 @assert diagonal ≈ [14/3 0; 0 16/3]
- 
+
 # output
 
 ```
@@ -742,7 +672,7 @@ modemap = mass.rowmodemap;
 
 # verify
 @assert modemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
-    
+
 # output
 
 ```
@@ -804,7 +734,7 @@ modemap = mass.columnmodemap;
 
 # verify
 @assert modemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
-    
+
 # output
 
 ```
@@ -929,7 +859,7 @@ truenodedifferences = [
     (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
 ];
 @assert nodedifferences ≈ truenodedifferences
- 
+
 # output
 
 ```

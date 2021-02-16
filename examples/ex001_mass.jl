@@ -6,6 +6,7 @@
 mesh = Mesh2D(1.0, 1.0)
 basis = TensorH1LagrangeBasis(4, 4, 2)
 
+# weak form
 function massweakform(u::Array{Float64}, w::Array{Float64})
     v = u*w[1]
     return [v]

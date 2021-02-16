@@ -1,5 +1,7 @@
 ## Preconditioner: Jacobi
 
+This smoother provides Jacobi smoothing based on the operator diagonal.
+
 ### Example
 
 This is an example of a simple Jacobi smoother.

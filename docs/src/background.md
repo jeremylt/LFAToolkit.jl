@@ -11,8 +11,7 @@ First consider a scalar Toeplitz operator ``L_h`` on an infinite one dimensional
 This operator is given by
 
 ```math
-L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right)
-
+L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right)\\
 L_h w_h \left( x \right) = \sum_{\kappa \in V} s_\kappa w_h \left( x + \kappa h \right)
 ```
 
@@ -227,7 +226,7 @@ Thus, the symbol of ``P_{ctof}`` is given by
 \tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, f} - \mathbf{x}_{j, c} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_c
 ```
 
-and ``\tilde{R}_{ftoc}`` is given by the analagous computation
+and ``\tilde{R}_{ftoc}`` is given by the analogous computation
 
 ```math
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_f.

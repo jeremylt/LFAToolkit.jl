@@ -249,7 +249,7 @@ mutable struct NonTensorBasis <: AbstractBasis
             )
             # COV_EXCL_STOP
         end;
-        if length(modemap) != numbernodes
+        if length(modemap) != numbercomponents*numbernodes
             error("must map the modes for each basis node") # COV_EXCL_LINE
         end;
 
@@ -1761,14 +1761,22 @@ function getinterpolation(basis::TensorBasis)
         interpolation = []
         if basis.dimension == 1
             # 1D
-            interpolation = basis.interpolation1d
+            interpolation = kron(I(basis.numbercomponents), basis.interpolation1d)
         elseif basis.dimension == 2
             # 2D
-            interpolation = kron(basis.interpolation1d, basis.interpolation1d)
+            interpolation = kron(
+                I(basis.numbercomponents),
+                basis.interpolation1d,
+                basis.interpolation1d,
+            )
         elseif basis.dimension == 3
             # 3D
-            interpolation =
-                kron(basis.interpolation1d, basis.interpolation1d, basis.interpolation1d)
+            interpolation = kron(
+                I(basis.numbercomponents),
+                basis.interpolation1d,
+                basis.interpolation1d,
+                basis.interpolation1d,
+            )
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
@@ -1820,20 +1828,26 @@ function getgradient(basis::TensorBasis)
         gradient = []
         if basis.dimension == 1
             # 1D
-            gradient = basis.gradient1d
+            gradient = kron(I(basis.numbercomponents), basis.gradient1d)
         elseif basis.dimension == 2
             # 2D
-            gradient = [
-                kron(basis.gradient1d, basis.interpolation1d)
-                kron(basis.interpolation1d, basis.gradient1d)
-            ]
+            gradient = kron(
+                I(basis.numbercomponents),
+                [
+                    kron(basis.gradient1d, basis.interpolation1d)
+                    kron(basis.interpolation1d, basis.gradient1d)
+                ],
+            )
         elseif basis.dimension == 3
             # 3D
-            gradient = [
-                kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
-                kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
-                kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
-            ]
+            gradient = kron(
+                I(basis.numbercomponents),
+                [
+                    kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
+                    kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)
+                    kron(basis.interpolation1d, basis.interpolation1d, basis.gradient1d)
+                ],
+            )
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
@@ -1869,7 +1883,7 @@ for dimension in 1:3
     numbermodes = basis.numbermodes;
 
     # verify
-    @assert numbermodes == 3^dimension
+    @assert numbermodes == (2*3)^dimension
 end
 
 # output
@@ -1904,7 +1918,7 @@ Get mode mapping vector for basis
 # test for all supported dimensions
 for dimension in 1:3
     # get mode map vector
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
 
     # note: either syntax works
     modemap = LFAToolkit.getmodemap(basis);
@@ -1938,8 +1952,8 @@ end
 function getmodemap(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :modemap)
-        modemap1d = [1:basis.numbernodes1d;]
-        modemap1d[end] = 1
+        modemap1d = [1:basis.numbernodes1d*basis.numbercomponents;]
+        modemap1d[end-basis.numbercomponents+1:end] = [1:basis.numbercomponents;]
         modemap = []
         if basis.dimension == 1
             # 1D
@@ -1948,8 +1962,8 @@ function getmodemap(basis::TensorBasis)
             # 2D
             modemap = [
                 [
-                    i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d,
-                    j in modemap1d
+                    i + (j - 1)*(basis.numbernodes1d - 1)*basis.numbercomponents for
+                    i in modemap1d, j in modemap1d
                 ]...,
             ]
         elseif basis.dimension == 3
@@ -1957,9 +1971,9 @@ function getmodemap(basis::TensorBasis)
             modemap = [
                 [
                     i +
-                    (j - 1)*(basis.numbernodes1d - 1) +
-                    (k - 1)*(basis.numbernodes1d - 1)^2 for i in modemap1d,
-                    j in modemap1d, k in modemap1d
+                    (j - 1)*(basis.numbernodes1d - 1)*basis.numbercomponents +
+                    (k - 1)*((basis.numbernodes1d - 1)*basis.numbercomponents)^2 for
+                    i in modemap1d, j in modemap1d, k in modemap1d
                 ]...,
             ]
         else
@@ -2069,7 +2083,7 @@ for dimension in 1:3
     end
 
     # basis
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
 
     # get gradient on mesh
     gradient = LFAToolkit.getdXdxgradient(basis, mesh);

@@ -567,8 +567,6 @@ function getdiagonal(operator::Operator)
         rowmodemap = operator.rowmodemap
         columnmodemap = operator.columnmodemap
         elementmatrix = operator.elementmatrix
-        numberrows, numbercolumns = size(elementmatrix)
-        nodecoordinatedifferences = operator.nodecoordinatedifferences
 
         # compute
         diagonalnodes = Diagonal(elementmatrix)
@@ -799,9 +797,10 @@ function getinputcoordinates(operator::Operator)
         inputcoordinates = []
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                currentinputnodes = kron(I(input.basis.numbercomponents), input.basis.nodes)
                 inputcoordinates =
-                    inputcoordinates == [] ? input.basis.nodes :
-                    [inputcoordinates; input.basis.nodes]
+                    inputcoordinates == [] ? currentinputnodes :
+                    [inputcoordinates; currentinputnodes]
             end
         end
 
@@ -829,9 +828,10 @@ function getoutputcoordinates(operator::Operator)
         # setup for computation
         outputcoordinates = []
         for output in operator.outputs
+            currentoutputnodes = kron(I(output.basis.numbercomponents), output.basis.nodes)
             outputcoordinates =
-                outputcoordinates == [] ? output.basis.nodes :
-                [outputcoordinates; output.basis.nodes]
+                outputcoordinates == [] ? currentoutputnodes :
+                [outputcoordinates; currentoutputnodes]
         end
 
         # store

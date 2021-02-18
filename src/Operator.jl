@@ -405,13 +405,13 @@ function getelementmatrix(operator::Operator)
                 Bcurrent = []
                 for mode in input.evaluationmodes
                     if mode == EvaluationMode.interpolation
-                        numberfields += 1
-                        numberquadratureinputs += 1
+                        numberfields += input.basis.numbercomponents
+                        numberquadratureinputs += input.basis.numbercomponents
                         Bcurrent =
                             Bcurrent == [] ? input.basis.interpolation :
                             [Bcurrent; input.basis.interpolation]
                     elseif mode == EvaluationMode.gradient
-                        numberfields += input.basis.dimension
+                        numberfields += input.basis.dimension*input.basis.numbercomponents
                         numberquadratureinputs += input.basis.dimension
                         gradient = getdXdxgradient(input.basis, operator.mesh)
                         Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
@@ -452,12 +452,12 @@ function getelementmatrix(operator::Operator)
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
-                    numberfields += 1
+                    numberfields += output.basis.numbercomponents
                     Btcurrent =
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    numberfields += output.basis.dimension
+                    numberfields += output.basis.dimension*output.basis.numbercomponents
                     gradient = getdXdxgradient(output.basis, operator.mesh)
                     Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor

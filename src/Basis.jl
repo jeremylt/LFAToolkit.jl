@@ -1883,7 +1883,7 @@ for dimension in 1:3
     numbermodes = basis.numbermodes;
 
     # verify
-    @assert numbermodes == (2*3)^dimension
+    @assert numbermodes == 2*3^dimension
 end
 
 # output
@@ -1952,8 +1952,8 @@ end
 function getmodemap(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :modemap)
-        modemap1d = [1:basis.numbernodes1d*basis.numbercomponents;]
-        modemap1d[end-basis.numbercomponents+1:end] = [1:basis.numbercomponents;]
+        modemap1d = [1:basis.numbernodes1d;]
+        modemap1d[end] = 1
         modemap = []
         if basis.dimension == 1
             # 1D
@@ -1962,8 +1962,8 @@ function getmodemap(basis::TensorBasis)
             # 2D
             modemap = [
                 [
-                    i + (j - 1)*(basis.numbernodes1d - 1)*basis.numbercomponents for
-                    i in modemap1d, j in modemap1d
+                    i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d,
+                    j in modemap1d
                 ]...,
             ]
         elseif basis.dimension == 3
@@ -1971,14 +1971,20 @@ function getmodemap(basis::TensorBasis)
             modemap = [
                 [
                     i +
-                    (j - 1)*(basis.numbernodes1d - 1)*basis.numbercomponents +
-                    (k - 1)*((basis.numbernodes1d - 1)*basis.numbercomponents)^2 for
-                    i in modemap1d, j in modemap1d, k in modemap1d
+                    (j - 1)*(basis.numbernodes1d - 1) +
+                    (k - 1)*(basis.numbernodes1d - 1)^2 for i in modemap1d,
+                    j in modemap1d, k in modemap1d
                 ]...,
             ]
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
+        numbermodes1component = max(modemap...)
+        modemap = vcat(
+            [
+                ((i - 1)*numbermodes1component) .+ modemap for i = 1:basis.numbercomponents
+            ]...,
+        )
         basis.modemap = modemap
         basis.numbermodes = max(modemap...)
     end

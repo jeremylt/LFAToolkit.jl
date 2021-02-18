@@ -8,7 +8,7 @@ using LinearAlgebra
 mesh = Mesh3D(1.0, 1.0, 1.0)
 finep = 3
 coarsep = 2
-numbercomponents = 1
+numbercomponents = 3
 dimension = 3
 finebasis = TensorH1LagrangeBasis(finep, finep, numbercomponents, dimension)
 coarsebasis = TensorH1LagrangeBasis(coarsep, finep, numbercomponents, dimension)
@@ -30,12 +30,7 @@ K = e/(3*(1 - 2*ν))         # bulk modulus
 # state
 gradu = [1; 2; 3]*ones(1, 3);
 
-function neohookeanweakform(
-    deltadux::Array{Float64},
-    deltaduy::Array{Float64},
-    deltaduz::Array{Float64},
-    w::Array{Float64},
-)
+function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     # dP = dF S + F dS
 
     # deformation gradient
@@ -50,11 +45,7 @@ function neohookeanweakform(
     S = λ*log(J)*C_inv + 2*μ*C_inv*E
 
     # delta du
-    deltadu = [
-        deltadux'
-        deltaduy'
-        deltaduz'
-    ]
+    deltadu = reshape(deltadu, 3, 3)
     # dF
     dF = deltadu + I
     # deltaE
@@ -64,32 +55,20 @@ function neohookeanweakform(
     # dP
     dP = dF*S + F*dS
 
-    return [dP[1, 1:3], dP[2, 1:3], dP[3, 1:3]]
+    return [dP]
 end
 
 # linearized Neo-Hookean operators
 function makeoperator(basis::TensorBasis)
     inputs = [
-        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in x"),
-        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in y"),
-        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation in z"),
+        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation"),
         OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
     ]
     outputs = [
         OperatorField(
             basis,
             [EvaluationMode.gradient],
-            "test function gradient of deformation in x",
-        ),
-        OperatorField(
-            basis,
-            [EvaluationMode.gradient],
-            "test function gradient of deformation in y",
-        ),
-        OperatorField(
-            basis,
-            [EvaluationMode.gradient],
-            "test function gradient of deformation in z",
+            "test function gradient of deformation",
         ),
     ]
     return Operator(neohookeanweakform, mesh, inputs, outputs)
@@ -101,11 +80,10 @@ coarseoperator = makeoperator(coarsebasis)
 chebyshev = Chebyshev(fineoperator)
 
 # p-multigrid preconditioner
-multigrid =
-    PMultigrid(fineoperator, coarseoperator, chebyshev, [ctofbasis, ctofbasis, ctofbasis])
+multigrid = PMultigrid(fineoperator, coarseoperator, chebyshev, [ctofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [4], [1, 1], [π, π, π])
+A = computesymbols(multigrid, [3], [1, 1], [π, π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

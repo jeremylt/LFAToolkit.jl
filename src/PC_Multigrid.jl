@@ -375,8 +375,8 @@ function getprolongationmatrix(multigrid::Multigrid)
         # field prolongation matrices
         for basis in multigrid.prolongationbases
             # number of nodes
-            numberfinenodes += basis.numberquadraturepoints
-            numbercoarsenodes += basis.numbernodes
+            numberfinenodes += basis.numberquadraturepoints*basis.numbercomponents
+            numbercoarsenodes += basis.numbernodes*basis.numbercomponents
 
             # prolongation matrices
             push!(Pblocks, basis.interpolation)

@@ -1761,21 +1761,18 @@ function getinterpolation(basis::TensorBasis)
         interpolation = []
         if basis.dimension == 1
             # 1D
-            interpolation = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
-                basis.interpolation1d,
-            )
+            interpolation = kron(I(basis.numbercomponents), basis.interpolation1d)
         elseif basis.dimension == 2
             # 2D
             interpolation = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
+                I(basis.numbercomponents),
                 basis.interpolation1d,
                 basis.interpolation1d,
             )
         elseif basis.dimension == 3
             # 3D
             interpolation = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
+                I(basis.numbercomponents),
                 basis.interpolation1d,
                 basis.interpolation1d,
                 basis.interpolation1d,
@@ -1831,14 +1828,11 @@ function getgradient(basis::TensorBasis)
         gradient = []
         if basis.dimension == 1
             # 1D
-            gradient = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
-                basis.gradient1d,
-            )
+            gradient = kron(I(basis.numbercomponents), basis.gradient1d)
         elseif basis.dimension == 2
             # 2D
             gradient = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
+                I(basis.numbercomponents),
                 [
                     kron(basis.gradient1d, basis.interpolation1d)
                     kron(basis.interpolation1d, basis.gradient1d)
@@ -1847,7 +1841,7 @@ function getgradient(basis::TensorBasis)
         elseif basis.dimension == 3
             # 3D
             gradient = kron(
-                Matrix(I, basis.numbercomponents, basis.numbercomponents),
+                I(basis.numbercomponents),
                 [
                     kron(basis.gradient1d, basis.interpolation1d, basis.interpolation1d)
                     kron(basis.interpolation1d, basis.gradient1d, basis.interpolation1d)

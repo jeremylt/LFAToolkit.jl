@@ -2004,6 +2004,7 @@ end
 function Base.setproperty!(basis::TensorBasis, f::Symbol, value)
     if f == :numbernodes1d ||
        f == :numberquadraturepoints1d ||
+       f == :numbercomponents ||
        f == :dimension ||
        f == :nodes1d ||
        f == :quadraturepoints1d ||
@@ -2020,6 +2021,7 @@ end
 function Base.setproperty!(basis::NonTensorBasis, f::Symbol, value)
     if f == :numbernodes ||
        f == :numberquadraturepoints ||
+       f == :numbercomponents ||
        f == :dimension ||
        f == :nodes ||
        f == :quadraturepoints ||

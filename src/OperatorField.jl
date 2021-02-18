@@ -24,7 +24,7 @@ Finite Element operator input or output, with a basis and evaluation mode
 # Example:
 ```jldoctest
 # basis
-basis = TensorH1LagrangeBasis(4, 3, 2);
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 
 # quadrature weights field, input only
 weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights");
@@ -50,7 +50,8 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
-    dimension: 2
+    numbercomponents: 2
+    dimension: 1
   evaluation mode:
     quadratureweights
 operator field:
@@ -59,7 +60,8 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
-    dimension: 2
+    numbercomponents: 2
+    dimension: 1
   evaluation modes:
     interpolation
     gradient

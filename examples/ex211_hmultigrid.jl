@@ -6,8 +6,10 @@
 mesh = Mesh2D(1.0, 1.0)
 p = 2
 numberfineelements1d = 2
+numbercomponents = 1
 dimension = 2
-ctofbasis = TensorH1LagrangeHProlongationBasis(p, dimension, numberfineelements1d);
+ctofbasis =
+    TensorH1LagrangeHProlongationBasis(p, numbercomponents, dimension, numberfineelements1d);
 
 # operators
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
@@ -15,7 +17,8 @@ function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     return [dv]
 end
 # -- fine
-basis = TensorH1LagrangeMacroBasis(p, p + 1, dimension, numberfineelements1d);
+basis =
+    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -23,7 +26,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # -- coarse
-basis = TensorH1LagrangeBasis(p, p + 1, dimension);
+basis = TensorH1LagrangeBasis(p, p + 1, numbercomponents, dimension);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),

@@ -30,7 +30,7 @@ Finite element operator comprising of a weak form and bases
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2);
+basis = TensorH1LagrangeBasis(4, 4, 1, 2);
 
 function massweakform(u::Array{Float64}, w::Array{Float64})
     v = u*w[1]
@@ -59,6 +59,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -66,6 +67,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -75,6 +77,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -229,6 +232,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -236,6 +240,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -245,6 +250,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -270,6 +276,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -277,6 +284,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -286,6 +294,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient

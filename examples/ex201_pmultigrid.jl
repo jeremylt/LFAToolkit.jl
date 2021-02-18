@@ -6,8 +6,15 @@
 mesh = Mesh2D(1.0, 1.0)
 finep = 3
 coarsep = 2
+numbercomponents = 1
 dimension = 2
-ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature = true)
+ctofbasis = TensorH1LagrangeBasis(
+    coarsep,
+    finep,
+    numbercomponents,
+    dimension,
+    lagrangequadrature = true,
+)
 
 # diffusion operators
 finediffusion = GalleryOperator("diffusion", finep, finep, mesh)

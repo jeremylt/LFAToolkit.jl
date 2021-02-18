@@ -7,9 +7,10 @@ mesh = Mesh2D(1.0, 1.0)
 finep = 5
 midp = 3
 coarsep = 2
+numbercomponents = 1
 dimension = 2
-ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, dimension)
-mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, dimension)
+ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, numbercomponents, dimension)
+mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, numbercomponents, dimension)
 
 # diffusion operators
 finediffusion = GalleryOperator("diffusion", finep, finep, mesh)

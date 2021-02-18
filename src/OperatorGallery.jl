@@ -40,6 +40,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -47,6 +48,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -56,6 +58,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -63,7 +66,7 @@ operator field:
 """
 function massoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
+    basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
     function massweakform(u::Array{Float64}, w::Array{Float64})
         v = u*w[1]
         return [v]
@@ -119,6 +122,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -126,6 +130,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -133,6 +138,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -140,6 +146,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -149,6 +156,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -156,6 +164,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -163,6 +172,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     interpolation
@@ -170,7 +180,7 @@ operator field:
 """
 function vectormassoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
+    basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
     function massweakform(
         u1::Array{Float64},
         u2::Array{Float64},
@@ -240,6 +250,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -247,6 +258,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -256,6 +268,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -263,7 +276,7 @@ operator field:
 """
 function diffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
+    basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
         dv = du*w[1]
         return [dv]
@@ -322,6 +335,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -329,6 +343,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -336,6 +351,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -343,6 +359,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -352,6 +369,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -359,6 +377,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -366,6 +385,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 4
+    numbercomponents: 3
     dimension: 2
   evaluation mode:
     gradient
@@ -373,7 +393,7 @@ operator field:
 """
 function vectordiffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
+    basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
     function diffusionweakform(
         du1::Array{Float64},
         du2::Array{Float64},

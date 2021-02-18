@@ -8,10 +8,17 @@ using LinearAlgebra
 mesh = Mesh3D(1.0, 1.0, 1.0)
 finep = 3
 coarsep = 2
+numbercomponents = 1
 dimension = 3
-finebasis = TensorH1LagrangeBasis(finep, finep, dimension)
-coarsebasis = TensorH1LagrangeBasis(coarsep, finep, dimension)
-ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature = true)
+finebasis = TensorH1LagrangeBasis(finep, finep, numbercomponents, dimension)
+coarsebasis = TensorH1LagrangeBasis(coarsep, finep, numbercomponents, dimension)
+ctofbasis = TensorH1LagrangeBasis(
+    coarsep,
+    finep,
+    numbercomponents,
+    dimension,
+    lagrangequadrature = true,
+)
 
 # constants
 e = 1E6                     # Young's modulus

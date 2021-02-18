@@ -171,9 +171,16 @@ operator field:
 function vectormassoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
-    function massweakform(u::Array{Float64}, w::Array{Float64})
-        v = u*w[1]
-        return [v]
+    function massweakform(
+        u1::Array{Float64},
+        u2::Array{Float64},
+        u3::Array{Float64},
+        w::Array{Float64},
+    )
+        v1 = u1*w[1]
+        v2 = u2*w[1]
+        v3 = u3*w[1]
+        return [v1, v2, v3]
     end
 
     # fields
@@ -367,9 +374,16 @@ operator field:
 function vectordiffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, mesh.dimension)
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
-        return [dv]
+    function diffusionweakform(
+        du1::Array{Float64},
+        du2::Array{Float64},
+        du3::Array{Float64},
+        w::Array{Float64},
+    )
+        dv1 = du1*w[1]
+        dv2 = du2*w[1]
+        dv3 = du3*w[1]
+        return [dv1, dv2, dv3]
     end
 
     # fields

@@ -139,7 +139,7 @@ end
 function Base.show(io::IO, basis::TensorBasis)
     print(
         io,
-        basis.numberelements1d == 1 ? "" : "macro element ",
+        basis.numberelements1d == 1 ? "" : "macro-element ",
         "tensor product basis:\n    numbernodes1d: ",
         basis.numbernodes1d,
         "\n    numberquadraturepoints1d: ",
@@ -283,7 +283,7 @@ end
 function Base.show(io::IO, basis::NonTensorBasis)
     print(
         io,
-        basis.numberelements == 1 ? "" : "macro element ",
+        basis.numberelements == 1 ? "" : "macro-element ",
         "non-tensor product basis:\n    numbernodes: ",
         basis.numbernodes,
         "\n    numberquadraturepoints: ",
@@ -804,18 +804,18 @@ TensorMacroElementBasisFrom1D(
 )
 ```
 
-Tensor product macro element basis from 1d single element tensor product basis
+Tensor product macro-element basis from 1d single element tensor product basis
 
 # Arguments:
 - `numbernodes1d`:            number of basis nodes
 - `numberquadraturepoints1d`: number of quadrature points
 - `numbercomponents`:         number of components
 - `dimension`:                dimension of basis
-- `numberelements1d`:         number of elements in macro element
+- `numberelements1d`:         number of elements in macro-element
 - `basis1dmicro`:             1d micro element basis to replicate 
     
 # Returns:
-- Tensor product macro element basis object
+- Tensor product macro-element basis object
 """
 function TensorMacroElementBasisFrom1D(
     numbernodes1d::Int,
@@ -829,7 +829,7 @@ function TensorMacroElementBasisFrom1D(
     if numberelements1d < 2
         # COV_EXCL_START
         throw(
-            DomanError(numberelements1d, "macro elements must contain at least 2 elements"),
+            DomanError(numberelements1d, "macro-elements must contain at least 2 elements"),
         )
         # COV_EXCL_STOP
     end
@@ -907,23 +907,23 @@ TensorH1LagrangeMacroBasis(
 )
 ```
 
-Tensor product macro element basis on Gauss-Lobatto points with Gauss-Legendre quadrature
+Tensor product macro-element basis on Gauss-Lobatto points with Gauss-Legendre quadrature
 
 # Arguments:
 - `numbernodes1d`:            number of Gauss-Lobatto nodes
 - `numberquadraturepoints1d`: number of Gauss-Legendre quadrature points
 - `numbercomponents`:         number of components
 - `dimension`:                dimension of basis
-- `numberelements1d`:         number of elements in macro element
+- `numberelements1d`:         number of elements in macro-element
 - `lagrangequadrature=false`: Gauss-Lagrange or Gauss-Lobatto quadrature points,
                                   default: Gauss-Lobatto
 
 # Returns:
-- H1 Lagrange tensor product macro element basis object
+- H1 Lagrange tensor product macro-element basis object
 
 # Example:
 ```jldoctest
-# generate H1 Lagrange tensor macro element product basis
+# generate H1 Lagrange tensor macro-element product basis
 basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2);
 
 # generate basis with Lagrange quadrature points
@@ -933,7 +933,7 @@ basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2, lagrangequadrature=true);
 println(basis)
 
 # output
-macro element tensor product basis:
+macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 8
     numbercomponents: 1
@@ -978,28 +978,28 @@ TensorH1UniformMacroBasis(
 )
 ```
 
-Tensor product macro element basis on uniformly points with Gauss-Legendre quadrature
+Tensor product macro-element basis on uniformly points with Gauss-Legendre quadrature
 
 # Arguments:
 - `numbernodes1d`:            number of uniformly spaced nodes
 - `numberquadraturepoints1d`: number of Gauss-Legendre quadrature points
 - `numbercomponents`:         number of components
 - `dimension`:                dimension of basis
-- `numberelements1d`:         number of elements in macro element
+- `numberelements1d`:         number of elements in macro-element
 
 # Returns:
-- H1 uniformly spaced tensor product macro element basis object
+- H1 uniformly spaced tensor product macro-element basis object
 
 # Example:
 ```jldoctest
-# generate H1 uniformly spaced tensor product macro element basis
+# generate H1 uniformly spaced tensor product macro-element basis
 basis = TensorH1UniformMacroBasis(4, 3, 1, 2, 2);
 
 # verify
 println(basis)
 
 # output
-macro element tensor product basis:
+macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 6
     numbercomponents: 1
@@ -1272,28 +1272,28 @@ TensorH1LagrangeHProlongationMacroBasis(
 )
 ```
 
-Tensor product macro element h prolongation basis on Gauss-Lobatto points
+Tensor product macro-element h prolongation basis on Gauss-Lobatto points
 
 # Arguments:
 - `numbernodes1d`:            number of Gauss-Lobatto nodes per element
 - `numbercomponents`:         number of components
 - `dimension`:                dimension of basis
-- `numbercoarseelements1d`:   number of coarse grid elements in macro element
-- `numberfineelements1d`:     number of fine grid elements in macro element
+- `numbercoarseelements1d`:   number of coarse grid elements in macro-element
+- `numberfineelements1d`:     number of fine grid elements in macro-element
 
 # Returns:
-- H1 Gauss-Lobatto tensor product h prolongation macro element basis object
+- H1 Gauss-Lobatto tensor product h prolongation macro-element basis object
 
 # Example:
 ```jldoctest
-# generate H1 Gauss-Lobatto tensor product h prolongation macro element basis
+# generate H1 Gauss-Lobatto tensor product h prolongation macro-element basis
 basis = TensorH1LagrangeHProlongationMacroBasis(4, 1, 2, 2, 4);
 
 # verify
 println(basis)
 
 # output
-macro element tensor product basis:
+macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 13
     numbercomponents: 1
@@ -1348,28 +1348,28 @@ TensorH1UniformHProlongationMacroBasis(
 )
 ```
 
-Tensor product macro element h prolongation basis on uniformly spaced points
+Tensor product macro-element h prolongation basis on uniformly spaced points
 
 # Arguments:
 - `numbernodes1d`:            number of uniformly spaced nodes per element
 - `numbercomponents`:         number of components
 - `dimension`:                dimension of basis
-- `numbercoarseelements1d`:   number of coarse grid elements in macro element
-- `numberfineelements1d`:     number of fine grid elements in macro element
+- `numbercoarseelements1d`:   number of coarse grid elements in macro-element
+- `numberfineelements1d`:     number of fine grid elements in macro-element
 
 # Returns:
-- H1 uniformly spaced tensor product h prolongation macro element basis object
+- H1 uniformly spaced tensor product h prolongation macro-element basis object
 
 # Example:
 ```jldoctest
-# generate H1 uniformly spaced tensor product h prolongation macro element basis
+# generate H1 uniformly spaced tensor product h prolongation macro-element basis
 basis = TensorH1UniformHProlongationMacroBasis(4, 1, 2, 2, 4);
 
 # verify
 println(basis)
 
 # output
-macro element tensor product basis:
+macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 13
     numbercomponents: 1

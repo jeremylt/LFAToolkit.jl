@@ -24,9 +24,9 @@ TensorH1LagrangeBasis
 TensorH1UniformBasis
 ```
 
-### Macro Element Bases
+### Macro-Element Bases
 
-These bases represent a macro element consisting of multiple overlapping micro elements, where the micro elements are created as above.
+These bases represent a macro-element consisting of multiple overlapping micro elements, where the micro elements are created as above.
 
 ```@docs
 TensorH1LagrangeMacroBasis
@@ -43,7 +43,7 @@ TensorH1LagrangePProlongationBasis
 
 ### H Prolongation Bases
 
-These bases provide prolongation from a single element to a macro element of the same order or a macro element to a macro element with a larger number of elements.
+These bases provide prolongation from a single element to a macro-element of the same order or a macro-element to a macro-element with a larger number of elements.
 
 ```@docs
 TensorH1LagrangeHProlongationBasis

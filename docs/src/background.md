@@ -232,7 +232,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analogous computation
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_f.
 ```
 
-The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro elements that consist of multiple micro elements of the same polynomial order as the coarse grid elements.
+The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro-elements that consist of multiple micro elements of the same polynomial order as the coarse grid elements.
 
 ### Multigrid Error Propagation Symbol
 

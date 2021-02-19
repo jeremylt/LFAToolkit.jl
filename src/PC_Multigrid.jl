@@ -240,7 +240,7 @@ finite element operator:
 
 2 inputs:
 operator field:
-  macro element tensor product basis:
+  macro-element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
     numbercomponents: 1
@@ -249,7 +249,7 @@ operator field:
   evaluation mode:
     gradient
 operator field:
-  macro element tensor product basis:
+  macro-element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
     numbercomponents: 1
@@ -260,7 +260,7 @@ operator field:
 
 1 output:
 operator field:
-  macro element tensor product basis:
+  macro-element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
     numbercomponents: 1

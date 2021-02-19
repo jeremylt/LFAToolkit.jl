@@ -104,7 +104,7 @@ end
 @testset "  ex301: solid mechanics example       " begin
     include("../examples/ex301_solidmechanics.jl")
 
-    @test max(eigenvalues...) ≈ 0.1439358226765758
+    @test max(eigenvalues...) ≈ 0.2851697038981916
 end
 
 # ------------------------------------------------------------------------------

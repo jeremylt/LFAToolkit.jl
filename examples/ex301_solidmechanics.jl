@@ -45,7 +45,7 @@ function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     S = λ*log(J)*C_inv + 2*μ*C_inv*E
 
     # delta du
-    deltadu = reshape(deltadu, 3, 3)
+    deltadu = reshape(deltadu, 3, 3)'
     # dF
     dF = deltadu + I
     # deltaE
@@ -55,7 +55,7 @@ function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     # dP
     dP = dF*S + F*dS
 
-    return [dP]
+    return [dP']
 end
 
 # linearized Neo-Hookean operators

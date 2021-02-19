@@ -3,6 +3,8 @@
 # Jacobi smoother example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 4
@@ -22,6 +24,8 @@ eigenvalues = real(eigvals(A))
 # Chebyshev smoother example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 4
@@ -40,6 +44,8 @@ eigenvalues = real(eigvals(A))
 </code></pre><p><img src="../../img/111_chebyshev_spectral_radius_3_2d.png" alt/></p><p>Plot for the symbol of a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.</p><h4 id="P-Multigrid"><a class="docs-heading-anchor" href="#P-Multigrid">P-Multigrid</a><a id="P-Multigrid-1"></a><a class="docs-heading-anchor-permalink" href="#P-Multigrid" title="Permalink"></a></h4><p>This is an example of a two level p-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
 # p-multigrid example
 # ------------------------------------------------------------------------------
+
+using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
@@ -74,6 +80,8 @@ eigenvalues = real(eigvals(A))
 # p-multigrid multilevel example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 finep = 5
@@ -105,6 +113,8 @@ eigenvalues = real(eigvals(A))
 </code></pre><p><img src="../../img/202_pmultigrid_spectral_radius_5_to_3_to_2_2d.png" alt/></p><p>Example plot for the symbol of multilevel p-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.</p><h4 id="H-Multigrid"><a class="docs-heading-anchor" href="#H-Multigrid">H-Multigrid</a><a id="H-Multigrid-1"></a><a class="docs-heading-anchor-permalink" href="#H-Multigrid" title="Permalink"></a></h4><p>This is an example of a two level h-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
 # h-multigrid example
 # ------------------------------------------------------------------------------
+
+using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
@@ -152,6 +162,8 @@ eigenvalues = real(eigvals(A))
 </code></pre><p><img src="../../img/211_hmultigrid_spectral_radius_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p><p>This is an example of a multilevel h-multigrid preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
 # h-multigrid multilevel example
 # ------------------------------------------------------------------------------
+
+using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
@@ -215,4 +227,4 @@ A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 18 February 2021 23:58">Thursday 18 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 19 February 2021 00:11">Friday 19 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

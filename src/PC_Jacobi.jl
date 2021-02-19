@@ -40,6 +40,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -47,6 +48,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -56,6 +58,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation

@@ -30,7 +30,7 @@ Finite element operator comprising of a weak form and bases
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(4, 4, 2);
+basis = TensorH1LagrangeBasis(4, 4, 1, 2);
 
 function massweakform(u::Array{Float64}, w::Array{Float64})
     v = u*w[1]
@@ -59,6 +59,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -66,6 +67,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -75,6 +77,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -229,6 +232,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -236,6 +240,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -245,6 +250,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -270,6 +276,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -277,6 +284,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -286,6 +294,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -366,6 +375,7 @@ function getelementmatrix(operator::Operator)
         # collect info on operator
         weakforminputs = []
         numbernodes = 0
+        numbernodeinputs = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
         numberfieldsin = []
@@ -396,14 +406,17 @@ function getelementmatrix(operator::Operator)
                 Bcurrent = []
                 for mode in input.evaluationmodes
                     if mode == EvaluationMode.interpolation
-                        numberfields += 1
-                        numberquadratureinputs += 1
+                        numberfields += input.basis.numbercomponents
+                        numbernodeinputs += input.basis.numbercomponents
+                        numberquadratureinputs += input.basis.numbercomponents
                         Bcurrent =
                             Bcurrent == [] ? input.basis.interpolation :
                             [Bcurrent; input.basis.interpolation]
                     elseif mode == EvaluationMode.gradient
-                        numberfields += input.basis.dimension
-                        numberquadratureinputs += input.basis.dimension
+                        numberfields += input.basis.dimension*input.basis.numbercomponents
+                        numbernodeinputs += input.basis.numbercomponents
+                        numberquadratureinputs +=
+                            input.basis.dimension*input.basis.numbercomponents
                         gradient = getdXdxgradient(input.basis, operator.mesh)
                         Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
                     end
@@ -415,7 +428,10 @@ function getelementmatrix(operator::Operator)
         end
 
         # input basis matrix
-        B = spzeros(numberquadratureinputs*numberquadraturepoints, numbernodes)
+        B = spzeros(
+            numberquadratureinputs*numberquadraturepoints,
+            numbernodeinputs*numbernodes,
+        )
         currentrow = 1
         currentcolumn = 1
         for Bblock in Bblocks
@@ -443,12 +459,12 @@ function getelementmatrix(operator::Operator)
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
-                    numberfields += 1
+                    numberfields += output.basis.numbercomponents
                     Btcurrent =
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    numberfields += output.basis.dimension
+                    numberfields += output.basis.dimension*output.basis.numbercomponents
                     gradient = getdXdxgradient(output.basis, operator.mesh)
                     Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor
@@ -459,7 +475,10 @@ function getelementmatrix(operator::Operator)
         end
 
         # output basis matrix
-        Bt = spzeros(numberquadratureinputs*numberquadraturepoints, numbernodes)
+        Bt = spzeros(
+            numberquadratureinputs*numberquadraturepoints,
+            numbernodeinputs*numbernodes,
+        )
         currentrow = 1
         currentcolumn = 1
         for Btblock in Btblocks
@@ -558,8 +577,6 @@ function getdiagonal(operator::Operator)
         rowmodemap = operator.rowmodemap
         columnmodemap = operator.columnmodemap
         elementmatrix = operator.elementmatrix
-        numberrows, numbercolumns = size(elementmatrix)
-        nodecoordinatedifferences = operator.nodecoordinatedifferences
 
         # compute
         diagonalnodes = Diagonal(elementmatrix)
@@ -622,7 +639,7 @@ function getmultiplicity(operator::Operator)
         currentnode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes
+                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
                     multiplicity_sum[input.basis.modemap[i]+currentnode] += 1
                 end
                 currentnode += input.basis.numbernodes
@@ -634,7 +651,7 @@ function getmultiplicity(operator::Operator)
         multiplicity = spzeros(numbernodes)
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes
+                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
                     multiplicity[i+currentnode] =
                         multiplicity_sum[input.basis.modemap[i]+currentnode]
                 end
@@ -695,7 +712,7 @@ function getrowmodemap(operator::Operator)
         currentmode = 0
         for output in operator.outputs
             if output.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:output.basis.numbernodes
+                for i = 1:output.basis.numbernodes*output.basis.numbercomponents
                     rowmodemap[output.basis.modemap[i]+currentmode, i+currentnode] = 1
                 end
                 currentnode += output.basis.numbernodes
@@ -757,7 +774,7 @@ function getcolumnmodemap(operator::Operator)
         currentmode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes
+                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
                     columnmodemap[i+currentnode, input.basis.modemap[i]+currentmode] = 1
                 end
                 currentnode += input.basis.numbernodes
@@ -790,9 +807,13 @@ function getinputcoordinates(operator::Operator)
         inputcoordinates = []
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                currentinputnodes = kron(
+                    ones(input.basis.numbercomponents, input.basis.numbercomponents),
+                    input.basis.nodes,
+                )
                 inputcoordinates =
-                    inputcoordinates == [] ? input.basis.nodes :
-                    [inputcoordinates; input.basis.nodes]
+                    inputcoordinates == [] ? currentinputnodes :
+                    [inputcoordinates; currentinputnodes]
             end
         end
 
@@ -820,9 +841,13 @@ function getoutputcoordinates(operator::Operator)
         # setup for computation
         outputcoordinates = []
         for output in operator.outputs
+            currentoutputnodes = kron(
+                ones(output.basis.numbercomponents, output.basis.numbercomponents),
+                output.basis.nodes,
+            )
             outputcoordinates =
-                outputcoordinates == [] ? output.basis.nodes :
-                [outputcoordinates; output.basis.nodes]
+                outputcoordinates == [] ? currentoutputnodes :
+                [outputcoordinates; currentoutputnodes]
         end
 
         # store

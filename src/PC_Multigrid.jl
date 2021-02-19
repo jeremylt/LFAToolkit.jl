@@ -104,7 +104,7 @@ P-Multigrid preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-ctofbasis = TensorH1LagrangePProlongationBasis(3, 5, 2);
+ctofbasis = TensorH1LagrangePProlongationBasis(3, 5, 1, 2);
 
 # operators
 finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
@@ -132,6 +132,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -139,6 +140,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -148,6 +150,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 5
     numberquadraturepoints1d: 5
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -194,7 +197,7 @@ H-Multigrid preconditioner for finite element operators
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-ctofbasis = TensorH1LagrangeHProlongationBasis(2, 2, 2);
+ctofbasis = TensorH1LagrangeHProlongationBasis(2, 1, 2, 2);
 
 # operators
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
@@ -202,7 +205,7 @@ function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     return [dv]
 end
 # -- fine
-basis = TensorH1LagrangeMacroBasis(2, 3, 2, 2);
+basis = TensorH1LagrangeMacroBasis(2, 3, 1, 2, 2);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -210,7 +213,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # -- fine
-basis = TensorH1LagrangeBasis(2, 3, 2);
+basis = TensorH1LagrangeBasis(2, 3, 1, 2);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -240,6 +243,7 @@ operator field:
   macro element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
+    numbercomponents: 1
     numberelements1d: 2
     dimension: 2
   evaluation mode:
@@ -248,6 +252,7 @@ operator field:
   macro element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
+    numbercomponents: 1
     numberelements1d: 2
     dimension: 2
   evaluation mode:
@@ -258,6 +263,7 @@ operator field:
   macro element tensor product basis:
     numbernodes1d: 3
     numberquadraturepoints1d: 6
+    numbercomponents: 1
     numberelements1d: 2
     dimension: 2
   evaluation mode:
@@ -337,7 +343,7 @@ Compute or retrieve the prolongation matrix
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-ctofbasis = TensorH1LagrangeBasis(2, 3, 2, lagrangequadrature=true);
+ctofbasis = TensorH1LagrangeBasis(2, 3, 1, 2, lagrangequadrature=true);
 
 # operators
 finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
@@ -369,8 +375,8 @@ function getprolongationmatrix(multigrid::Multigrid)
         # field prolongation matrices
         for basis in multigrid.prolongationbases
             # number of nodes
-            numberfinenodes += basis.numberquadraturepoints
-            numbercoarsenodes += basis.numbernodes
+            numberfinenodes += basis.numberquadraturepoints*basis.numbercomponents
+            numbercoarsenodes += basis.numbernodes*basis.numbercomponents
 
             # prolongation matrices
             push!(Pblocks, basis.interpolation)
@@ -593,7 +599,7 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    ctofbasis = TensorH1LagrangeBasis(3, 5, dimension, lagrangequadrature=true);
+    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension, lagrangequadrature=true);
 
     # operators
     finediffusion = GalleryOperator("diffusion", 5, 5, mesh);

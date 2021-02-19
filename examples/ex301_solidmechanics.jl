@@ -83,7 +83,7 @@ chebyshev = Chebyshev(fineoperator)
 multigrid = PMultigrid(fineoperator, coarseoperator, chebyshev, [ctofbasis])
 
 # compute operator symbols
-A = computesymbols(multigrid, [3], [1, 1], [π, π, π])
+A = computesymbols(multigrid, [4], [1, 1], [π, π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

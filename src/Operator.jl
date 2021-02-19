@@ -807,7 +807,10 @@ function getinputcoordinates(operator::Operator)
         inputcoordinates = []
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                currentinputnodes = kron(I(input.basis.numbercomponents), input.basis.nodes)
+                currentinputnodes = kron(
+                    ones(input.basis.numbercomponents, input.basis.numbercomponents),
+                    input.basis.nodes,
+                )
                 inputcoordinates =
                     inputcoordinates == [] ? currentinputnodes :
                     [inputcoordinates; currentinputnodes]
@@ -838,7 +841,10 @@ function getoutputcoordinates(operator::Operator)
         # setup for computation
         outputcoordinates = []
         for output in operator.outputs
-            currentoutputnodes = kron(I(output.basis.numbercomponents), output.basis.nodes)
+            currentoutputnodes = kron(
+                ones(output.basis.numbercomponents, output.basis.numbercomponents),
+                output.basis.nodes,
+            )
             outputcoordinates =
                 outputcoordinates == [] ? currentoutputnodes :
                 [outputcoordinates; currentoutputnodes]

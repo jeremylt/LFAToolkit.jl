@@ -2,6 +2,8 @@
 # p-multigrid multilevel example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 finep = 5

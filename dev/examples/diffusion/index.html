@@ -3,6 +3,8 @@
 # Jacobi smoother example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 4
@@ -21,6 +23,8 @@ eigenvalues = real(eigvals(A))
 </code></pre><p><img src="../../img/101_jacobi_spectral_radius_3_2d.png" alt/></p><p>Plot for the symbol of a Jacobi smoother for the 2D scalar diffusion problem with cubic basis.</p><h4 id="Chebyshev"><a class="docs-heading-anchor" href="#Chebyshev">Chebyshev</a><a id="Chebyshev-1"></a><a class="docs-heading-anchor-permalink" href="#Chebyshev" title="Permalink"></a></h4><p>This is an example of a Chebyshev smoother.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
 # Chebyshev smoother example
 # ------------------------------------------------------------------------------
+
+using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
@@ -41,12 +45,21 @@ eigenvalues = real(eigvals(A))
 # p-multigrid example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 finep = 3
 coarsep = 2
+numbercomponents = 1
 dimension = 2
-ctofbasis = TensorH1LagrangeBasis(coarsep, finep, dimension, lagrangequadrature = true)
+ctofbasis = TensorH1LagrangeBasis(
+    coarsep,
+    finep,
+    numbercomponents,
+    dimension,
+    lagrangequadrature = true,
+)
 
 # diffusion operators
 finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
@@ -67,14 +80,17 @@ eigenvalues = real(eigvals(A))
 # p-multigrid multilevel example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 finep = 5
 midp = 3
 coarsep = 2
+numbercomponents = 1
 dimension = 2
-ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, dimension)
-mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, dimension)
+ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, numbercomponents, dimension)
+mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, numbercomponents, dimension)
 
 # diffusion operators
 finediffusion = GalleryOperator(&quot;diffusion&quot;, finep, finep, mesh)
@@ -98,12 +114,16 @@ eigenvalues = real(eigvals(A))
 # h-multigrid example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 2
 numberfineelements1d = 2
+numbercomponents = 1
 dimension = 2
-ctofbasis = TensorH1LagrangeHProlongationBasis(p, dimension, numberfineelements1d);
+ctofbasis =
+    TensorH1LagrangeHProlongationBasis(p, numbercomponents, dimension, numberfineelements1d);
 
 # operators
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
@@ -111,7 +131,8 @@ function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     return [dv]
 end
 # -- fine
-basis = TensorH1LagrangeMacroBasis(p, p + 1, dimension, numberfineelements1d);
+basis =
+    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -119,7 +140,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # -- coarse
-basis = TensorH1LagrangeBasis(p, p + 1, dimension);
+basis = TensorH1LagrangeBasis(p, p + 1, numbercomponents, dimension);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -142,15 +163,20 @@ eigenvalues = real(eigvals(A))
 # h-multigrid multilevel example
 # ------------------------------------------------------------------------------
 
+using LinearAlgebra
+
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 2
 numberfineelements1d = 4
 numbermidelements1d = 2
+numbercomponents = 1
 dimension = 2
-ctombasis = TensorH1LagrangeHProlongationBasis(p, dimension, numbermidelements1d);
+ctombasis =
+    TensorH1LagrangeHProlongationBasis(p, numbercomponents, dimension, numbermidelements1d);
 mtofbasis = TensorH1LagrangeHProlongationMacroBasis(
     p,
+    numbercomponents,
     dimension,
     numbermidelements1d,
     numberfineelements1d,
@@ -162,7 +188,8 @@ function diffusionweakform(du::Array{Float64}, w::Array{Float64})
     return [dv]
 end
 # -- fine
-basis = TensorH1LagrangeMacroBasis(p, p + 1, dimension, numberfineelements1d);
+basis =
+    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -170,7 +197,8 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # -- mid
-basis = TensorH1LagrangeMacroBasis(p, p + 1, dimension, numbermidelements1d);
+basis =
+    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numbermidelements1d);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -178,7 +206,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])];
 middiffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 # -- coarse
-basis = TensorH1LagrangeBasis(p, p + 1, dimension);
+basis = TensorH1LagrangeBasis(p, p + 1, numbercomponents, dimension);
 inputs = [
     OperatorField(basis, [EvaluationMode.gradient]),
     OperatorField(basis, [EvaluationMode.quadratureweights]),
@@ -199,4 +227,4 @@ A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 18 February 2021 18:29">Thursday 18 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 19 February 2021 00:44">Friday 19 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

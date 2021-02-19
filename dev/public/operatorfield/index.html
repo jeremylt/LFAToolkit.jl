@@ -3,7 +3,7 @@
     basis,
     evaluationmodes
 )</code></pre><p>Finite Element operator input or output, with a basis and evaluation mode</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>:           finite element basis for the field</li><li><code>evaluationmodes</code>: array of basis evaluation modes,                        note that quadrature weights must be listed in a                        separate operator field</li></ul><p><strong>Returns:</strong></p><ul><li>Finite element operator field object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># basis
-basis = TensorH1LagrangeBasis(4, 3, 2);
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 
 # quadrature weights field, input only
 weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;);
@@ -29,7 +29,8 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
-    dimension: 2
+    numbercomponents: 2
+    dimension: 1
   evaluation mode:
     quadratureweights
 operator field:
@@ -38,7 +39,8 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
-    dimension: 2
+    numbercomponents: 2
+    dimension: 1
   evaluation modes:
     interpolation
-    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/11eb868c2e561a3ca33b04eafdae111259dfeb4a/src/OperatorField.jl#L5-L67">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 18 February 2021 18:29">Thursday 18 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/82fdb4155b7f8c8d8448ffb9efdf0aa2173a8f12/src/OperatorField.jl#L5-L69">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 19 February 2021 00:44">Friday 19 February 2021</span>. Using Julia version 1.5.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

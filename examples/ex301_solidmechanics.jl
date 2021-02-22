@@ -45,7 +45,7 @@ function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     S = λ*log(J)*C_inv + 2*μ*C_inv*E
 
     # delta du
-    deltadu = reshape(deltadu, 3, 3)'
+    deltadu = deltadu'
     # dF
     dF = deltadu + I
     # deltaE

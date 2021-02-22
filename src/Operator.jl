@@ -406,14 +406,14 @@ function getelementmatrix(operator::Operator)
                 Bcurrent = []
                 for mode in input.evaluationmodes
                     if mode == EvaluationMode.interpolation
-                        numberfields += input.basis.numbercomponents
+                        numberfields += 1
                         numbernodeinputs += input.basis.numbercomponents
                         numberquadratureinputs += input.basis.numbercomponents
                         Bcurrent =
                             Bcurrent == [] ? input.basis.interpolation :
                             [Bcurrent; input.basis.interpolation]
                     elseif mode == EvaluationMode.gradient
-                        numberfields += input.basis.dimension*input.basis.numbercomponents
+                        numberfields += input.basis.dimension
                         numbernodeinputs += input.basis.numbercomponents
                         numberquadratureinputs +=
                             input.basis.dimension*input.basis.numbercomponents
@@ -422,8 +422,8 @@ function getelementmatrix(operator::Operator)
                     end
                 end
                 push!(Bblocks, Bcurrent)
-                push!(weakforminputs, zeros(numberfields))
-                push!(numberfieldsin, numberfields)
+                push!(weakforminputs, zeros(numberfields, input.basis.numbercomponents))
+                push!(numberfieldsin, numberfields*input.basis.numbercomponents)
             end
         end
 

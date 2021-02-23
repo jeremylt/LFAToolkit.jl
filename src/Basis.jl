@@ -354,7 +354,7 @@ function gaussquadrature(q::Int)
     # build qref1d, qweight1d
     for i = 0:floor(Int, q/2)
         # guess
-        xi = cos(pi*(2*i + 1.0)/(2*q))
+        xi = cos(π*(2*i + 1.0)/(2*q))
 
         # Pn(xi)
         p0 = 1.0
@@ -371,8 +371,9 @@ function gaussquadrature(q::Int)
         xi = xi - p2/dp2
 
         # Newton to convergence
-        itr = 0
-        while itr < 100 && abs(p2) > 1e-15
+        iter = 0
+        maxiter = 100
+        while iter < maxiter && abs(p2) > 1e-15
             p0 = 1.0
             p1 = xi
             for j = 2:q
@@ -382,7 +383,10 @@ function gaussquadrature(q::Int)
             end
             dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
             xi = xi - p2/dp2
-            itr += 1
+            iter += 1
+        end
+        if iter == maxiter
+            throw(error("Newton failed to converge for Gauss points")) # COV_EXCL_LINE
         end
 
         # save xi, wi
@@ -451,7 +455,7 @@ function lobattoquadrature(q::Int, weights::Bool)
     # build qref1d, qweight1d
     for i = 1:floor(Int, (q - 1)/2)
         # guess
-        xi = cos(pi*i/(q - 1.0))
+        xi = cos(π*i/(q - 1.0))
 
         # Pn(xi)
         p0 = 1.0
@@ -469,8 +473,9 @@ function lobattoquadrature(q::Int, weights::Bool)
         xi = xi - dp2/d2p2
 
         # Newton to convergence
-        itr = 0
-        while itr < 100 && abs(dp2) > 1e-15
+        iter = 0
+        maxiter = 100
+        while iter < maxiter && abs(dp2) > 1e-15
             p0 = 1.0
             p1 = xi
             for j = 2:q-1
@@ -481,7 +486,10 @@ function lobattoquadrature(q::Int, weights::Bool)
             dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
             d2p2 = (2*xi*dp2 - q*(q - 1.0)*p2)/(1.0 - xi*xi)
             xi = xi - dp2/d2p2
-            itr += 1
+            iter += 1
+        end
+        if iter == maxiter
+            throw(error("Newton failed to converge for Gauss-Lobatto points")) # COV_EXCL_LINE
         end
 
         # save xi, wi
@@ -2167,7 +2175,7 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
 end
 
 function getdXdxgradient(basis::NonTensorBasis, mesh::Mesh)
-    error("unimplemented")
+    throw(error("dXdxgradient unimplemented for non-tensor bases"))
 end
 
 # ------------------------------------------------------------------------------

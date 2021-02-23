@@ -2002,6 +2002,39 @@ function getmodemap(basis::TensorBasis)
     return getfield(basis, :modemap)
 end
 
+"""
+```julia
+getnumberelements(basis)
+```
+
+Get the number of elements for the basis
+
+# Arguments:
+- `basis`: basis to compute number of micro-elements
+
+# Returns:
+- Integer number of basis micro-elements
+
+# Example:
+```jldoctest
+# get number of nodes for basis
+basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2);
+
+# note: either syntax works
+numbernodes = LFAToolkit.getnumberelements(basis);
+numbernodes = basis.numberelements;
+
+# verify
+@assert numbernodes == 2^2
+
+# output
+
+```
+"""
+function getnumberelements(basis::TensorBasis)
+    return basis.numberelements1d^basis.dimension
+end
+
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -2025,6 +2058,8 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getnumbermodes(basis)
     elseif f == :modemap
         return getmodemap(basis)
+    elseif f == :numberelements
+        return getnumberelements(basis)
     else
         return getfield(basis, f)
     end

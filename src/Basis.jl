@@ -841,12 +841,13 @@ function TensorMacroElementBasisFrom1D(
         numberquadraturepoints1d*numberelements1d
 
     # basis nodes
+    lower = min(basis1dmicro.nodes1d...)
     width = basis1dmicro.volume
     nodes1dmacro = zeros(numbernodes1dmacro)
-    nodes1dmacro[1:numbernodes1d] = basis1dmicro.nodes1d
-    for i = 2:numberelements1d
+    micronodes = (basis1dmicro.nodes1d .- lower)./numberelements1d
+    for i = 1:numberelements1d
         nodes1dmacro[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            basis1dmicro.nodes1d .+ width*(i - 1)
+            micronodes .+ lower .+ width/numberelements1d*(i - 1)
     end
 
     # basis quadrature points and weights
@@ -858,11 +859,11 @@ function TensorMacroElementBasisFrom1D(
             kron(ones(numberelements1d), basis1dmicro.quadratureweights1d)
     end
     quadraturepoints1dmacro = zeros(numberquadraturepoints1dmacro)
-    quadraturepoints1dmacro[1:numberquadraturepoints1d] = basis1dmicro.quadraturepoints1d
-    for i = 2:numberelements1d
+    microquadraturepoints = (basis1dmicro.quadraturepoints1d .- lower)./numberelements1d
+    for i = 1:numberelements1d
         offset = overlapquadraturepoints ? -i + 1 : 0
         quadraturepoints1dmacro[(i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset] =
-            basis1dmicro.quadraturepoints1d .+ width*(i - 1)
+            microquadraturepoints .+ lower .+ width/numberelements1d*(i - 1)
     end
 
     # basis operations

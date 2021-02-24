@@ -1,10 +1,12 @@
 # Mathematical Background
 
-Local Fourier Analysis was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
+Local Fourier Analysis (LFA) was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
+While this library focuses on the finite element discretizations, finite difference discretizations of PDEs can often be recovered from finite element formulations by using linear finite elements on a structured grid.
+This fact makes LFAToolkit.jl an extremely flexible tool for LFA.
 
 ## Local Fourier Analysis
 
-Local Fourier Analysis considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
+LFA considers the local properties of the descretized system via its Fourier modes and the eigenvalues of the associated symbol matrix.
 We will describe the arbitrary degree, one dimensional scalar case and extend it to an arbitrary dimension and number of components finite element problem.
 
 First consider a scalar Toeplitz operator ``L_h`` on an infinite one dimensional uniform grid ``G_h``,

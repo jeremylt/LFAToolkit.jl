@@ -276,6 +276,20 @@ function HMultigrid(
     smoother::AbstractPreconditioner,
     prolongationbases::AbstractArray,
 )
+    # check for h-multigrid
+    for input in fineoperator.inputs
+        if input.basis.numberelements == 1
+            # COV_EXCL_START
+            throw(
+                DomanError(
+                    field.basis.numberelements,
+                    "must use macro elements in the fine operator for h-multigrid",
+                ),
+            )
+            # COV_EXCL_STOP
+        end
+    end
+
     # common constructor
     return Multigrid(
         fineoperator,

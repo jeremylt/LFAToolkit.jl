@@ -16,6 +16,7 @@ LFAToolkit.getinterpolation
 LFAToolkit.getgradient
 LFAToolkit.getnumbermodes
 LFAToolkit.getmodemap
+LFAToolkit.getnumberelements
 LFAToolkit.getdiagonal
 LFAToolkit.getdXdxgradient
 ```

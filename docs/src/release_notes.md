@@ -26,7 +26,7 @@ Minor bugfixes
 
 ## v0.1
 
-This release includes initial basic functionality of LFAToolkit.
+This release includes initial basic functionality of LFAToolkit.jl.
 
 Functionality includes:
 

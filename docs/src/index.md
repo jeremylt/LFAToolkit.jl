@@ -23,6 +23,7 @@ Pages = [
     "examples.md",
     "public.md",
     "private.md",
+    "release_notes.md",
     "references.md"
 ]
 Depth = 1

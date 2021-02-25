@@ -30,6 +30,7 @@ makedocs(
         "Examples" => "examples.md",
         "Public API" => "public.md",
         "Private API" => "private.md",
+        "Release Notes" => "release_notes.md",
         "References" => "references.md",
     ],
     clean = false,

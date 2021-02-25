@@ -1,8 +1,8 @@
 # Release Notes
 
-## Development
+## v0.2
 
-The current main branch includes updated functionality and an improved interface.
+This release includes updated functionality and an improved interface.
 
 Functionality updates include:
 

@@ -10,12 +10,12 @@ This is an example of a Chebyshev smoother.
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex111_chebyshev.jl", String))
+$(read("../../../../examples/ex111_chebyshev.jl", String))
 ```
 """)
 ````
 
-![](../img/111_chebyshev_spectral_radius_3_2d.png)
+![](../../img/111_chebyshev_spectral_radius_3_2d.png)
 
 Plot for the symbol a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.
 

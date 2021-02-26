@@ -9,9 +9,9 @@ Pages = [
     "private/mesh.md",
     "private/basis.md",
     "private/operator.md",
-    "private/pc_base.md",
-    "private/pc_jacobi.md",
-    "private/pc_chebyshev.md",
-    "private/pc_multigrid.md",
+    "private/pc/base.md",
+    "private/pc/jacobi.md",
+    "private/pc/chebyshev.md",
+    "private/pc/multigrid.md",
 ]
 ```

@@ -2,8 +2,6 @@
 # finite element operators
 # ------------------------------------------------------------------------------
 
-include("OperatorGallery.jl")
-
 """
 ```julia
 Operator(
@@ -191,122 +189,6 @@ function Base.show(io::IO, operator::Operator)
     end
 end
 # COV_EXCL_STOP
-
-# ------------------------------------------------------------------------------
-# user utility constructors
-# ------------------------------------------------------------------------------
-
-"""
-```julia
-GalleryOperator(name, p1d, q1d, mesh)
-```
-
-Finite element operator from a gallery of options
-
-# Arguments:
-- `name`: string containing name of operator
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
-
-# Returns:
-- Finite element operator object
-
-# Mass matrix example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
-
-# verify
-println(mass)
-
-# output
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    interpolation
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    interpolation
-```
-
-# Diffusion operator example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 4, 4, mesh);
-
-# verify
-println(diffusion)
-
-# output
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    gradient
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    gradient
-```
-"""
-function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
-    if haskey(operatorgallery, name)
-        return operatorgallery[name](p1d, q1d, mesh)
-    else
-        throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
-    end
-end
 
 # ------------------------------------------------------------------------------
 # data for computing symbols

@@ -21,9 +21,9 @@ Pages = [
 
 ```@contents
 Pages = [
-    "public/pc_identity.md",
-    "public/pc_jacobi.md",
-    "public/pc_chebyshev.md",
-    "public/pc_multigrid.md",
+    "public/pc/identity.md",
+    "public/pc/jacobi.md",
+    "public/pc/chebyshev.md",
+    "public/pc/multigrid.md",
 ]
 ```

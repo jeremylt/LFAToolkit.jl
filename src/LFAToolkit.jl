@@ -17,7 +17,9 @@ using SparseArrays
 # ------------------------------------------------------------------------------
 
 export EvaluationMode, MultigridType
+# mesh
 export Mesh1D, Mesh2D, Mesh3D
+# bases
 export TensorBasis,
     NonTensorBasis,
     TensorH1LagrangeBasis,
@@ -32,11 +34,15 @@ export TensorBasis,
     TensorHProlongationMacroBasisFrom1D,
     TensorH1LagrangeHProlongationMacroBasis,
     TensorH1UniformHProlongationMacroBasis
+# operato oields
 export OperatorField
+# operators
 export Operator, GalleryOperator, computesymbols
+# preconditioners
 export IdentityPC
 export Jacobi
 export Chebyshev, seteigenvalueestimatescaling
+# -- multigrid
 export Multigrid, PMultigrid, HMultigrid
 
 # ------------------------------------------------------------------------------
@@ -44,15 +50,24 @@ export Multigrid, PMultigrid, HMultigrid
 # ------------------------------------------------------------------------------
 
 include("Enums.jl")
+# mesh
 include("Mesh.jl")
-include("Basis.jl")
+# bases
+include("Basis/Base.jl")
+include("Basis/Constructors.jl")
+# operator fields
 include("OperatorField.jl")
-include("Operator.jl")
-include("PC_Base.jl")
-include("PC_Identity.jl")
-include("PC_Jacobi.jl")
-include("PC_Chebyshev.jl")
-include("PC_Multigrid.jl")
+# operators
+include("Operator/Base.jl")
+include("Operator/Constructors.jl")
+# preconditioners
+include("PC/Base.jl")
+include("PC/Identity.jl")
+include("PC/Jacobi.jl")
+include("PC/Chebyshev.jl")
+# -- multigrid
+include("PC/Multigrid/Base.jl")
+include("PC/Multigrid/Constructors.jl")
 
 end # module
 

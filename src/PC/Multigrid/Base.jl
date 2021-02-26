@@ -4,7 +4,7 @@
 
 """
 ```julia
-multigrid(fineoperator, coarseoperator, smoother, prolongation)
+Multigrid(fineoperator, coarseoperator, smoother, prolongation, multigridtype)
 ```
 
 Multigrid preconditioner for finite element operators

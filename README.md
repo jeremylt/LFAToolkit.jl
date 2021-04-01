@@ -18,7 +18,7 @@ This package provides a toolkit for analyzing the performance of preconditioners
 
 ## Installing
 
-To install, run
+To install a development version, run
 
 ```
 julia --project -e 'using Pkg; Pkg.build(); Pkg.add("./")'

@@ -1,5 +1,13 @@
 # Release Notes
 
+## v0.2.1
+
+Minor bugfixes:
+
+* Gauss and Gauss-Lobatto node computation tolerances relaxed
+* Typo fixes
+* `src` directory reorganized to better support future development
+
 ## v0.2
 
 This release includes updated functionality and an improved interface.
@@ -22,7 +30,7 @@ Additonal changes include:
 
 ## v0.1.1
 
-Minor bugfixes
+Minor bugfixes.
 
 ## v0.1
 

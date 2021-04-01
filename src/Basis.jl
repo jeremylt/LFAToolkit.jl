@@ -385,7 +385,7 @@ function gaussquadrature(q::Int)
             xi = xi - p2/dp2
             iter += 1
         end
-        if iter == maxiter
+        if iter == maxiter && abs(dp2) > 1e-14
             throw(error("Newton failed to converge for Gauss points")) # COV_EXCL_LINE
         end
 
@@ -488,7 +488,7 @@ function lobattoquadrature(q::Int, weights::Bool)
             xi = xi - dp2/d2p2
             iter += 1
         end
-        if iter == maxiter
+        if iter == maxiter && abs(dp2) > 1e-14
             throw(error("Newton failed to converge for Gauss-Lobatto points")) # COV_EXCL_LINE
         end
 

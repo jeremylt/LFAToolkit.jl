@@ -1,5 +1,9 @@
 # Release Notes
 
+## v0.2.2
+
+Relax compatibility requirement to Julia 1.3 - 1.6.
+
 ## v0.2.1
 
 Minor bugfixes:

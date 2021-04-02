@@ -5,7 +5,8 @@
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![Documentation](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue)](https://jeremylt.github.io/LFAToolkit.jl/stable/)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/master?filepath=examples%2Fjupyter)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/main?filepath=examples%2Fjupyter)
+[![Run on Repl.it](https://repl.it/badge/github/jeremylt/LFAToolkit.jl)](https://replit.com/@jeremylt/LFAToolkitjl)
 
 Local Fourier Analysis for arbitrary order finite element type operators
 
@@ -34,3 +35,11 @@ julia --project -e 'using Pkg; Pkg.build(); Pkg.add("./"); Pkg.test("LFAToolkit"
 
 Examples can be found in the ``examples`` directory, with interactive examples in Jupyter notebooks found in the ``examples/jupyter`` directory.
 
+## Online Demos
+
+Both of the current online demos are performing smoothly.
+
+The Binder with interactive Jupyter notebooks takes a long time to start due to the time required to install LFAToolkit.jl and the plotting utilities.
+
+The repl.it often reports a System Error with `Disk quota exceeded`.
+Clicking 'Run' again will typically clear the issue within a few attempts.

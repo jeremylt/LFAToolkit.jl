@@ -37,7 +37,7 @@ Examples can be found in the ``examples`` directory, with interactive examples i
 
 ## Online Demos
 
-Both of the current online demos are performing smoothly.
+Both of the current online demos are not performing smoothly.
 
 The Binder with interactive Jupyter notebooks takes a long time to start due to the time required to install LFAToolkit.jl and the plotting utilities.
 

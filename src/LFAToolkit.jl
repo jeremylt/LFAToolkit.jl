@@ -16,7 +16,7 @@ using SparseArrays
 # user available types and methods
 # ------------------------------------------------------------------------------
 
-export EvaluationMode, MultigridType
+export EvaluationMode, MultigridType, BDDCInjectionType
 # mesh
 export Mesh1D, Mesh2D, Mesh3D
 # bases

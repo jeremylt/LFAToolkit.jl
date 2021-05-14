@@ -196,6 +196,37 @@ end
 
 """
 ```julia
+getdimension(operator)
+```
+
+Retrieve the dimension of an operator
+
+# Arguments:
+- `operator`: operator to retrieve the dimension of
+
+# Returns:
+- Dimension of the operator
+
+# Example
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryOperator("mass", 4, 4, mesh);
+
+# verify
+@assert mass.dimension == 2
+
+# output
+
+```
+"""
+function getdimension(operator::Operator)
+    return operator.mesh.dimension
+end
+
+
+"""
+```julia
 getelementmatrix(operator)
 ```
 
@@ -804,7 +835,9 @@ end
 # ------------------------------------------------------------------------------
 
 function Base.getproperty(operator::Operator, f::Symbol)
-    if f == :elementmatrix
+    if f == :dimension
+        return getdimension(operator)
+    elseif f == :elementmatrix
         return getelementmatrix(operator)
     elseif f == :diagonal
         return getdiagonal(operator)

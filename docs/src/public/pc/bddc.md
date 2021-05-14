@@ -1,4 +1,4 @@
-## Preconditioner: Multigrid
+## Preconditioner: BDDC
 
 LFAToolkit supports lumped and Dirichlet BDDC preconditioners.
 
@@ -6,7 +6,7 @@ LFAToolkit supports lumped and Dirichlet BDDC preconditioners.
 BDDCInjectionType.BDDCInjectType
 ```
 
-### Lumped
+### Lumped BDDC
 
 #### Documentation
 
@@ -14,7 +14,7 @@ BDDCInjectionType.BDDCInjectType
 LumpedBDDC
 ```
 
-### Dirichlet
+### Dirichlet BDDC
 
 #### Documentation
 

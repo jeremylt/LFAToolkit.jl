@@ -97,7 +97,7 @@ function getnodecoordinatedifferences(multigrid::Multigrid)
     # assemble if needed
     if !isdefined(multigrid, :nodecoordinatedifferences)
         # setup for computation
-        dimension = multigrid.prolongationbases[1].dimension
+        dimension = multigrid.fineoperator.dimension
         inputcoordinates = multigrid.coarseoperator.inputcoordinates
         outputcoordinates = multigrid.fineoperator.outputcoordinates
         lengths = [
@@ -212,7 +212,7 @@ Compute the symbol matrix for a multigrid prolongation operator
 """
 function computesymbolsprolongation(multigrid::Multigrid, θ::Array)
     # setup
-    dimension = multigrid.prolongationbases[1].dimension
+    dimension = multigrid.fineoperator.dimension
     rowmodemap = multigrid.fineoperator.rowmodemap
     columnmodemap = multigrid.coarseoperator.columnmodemap
     prolongationmatrix = multigrid.prolongationmatrix
@@ -273,7 +273,7 @@ Compute the symbol matrix for a multigrid restriction operator
 """
 function computesymbolsrestriction(multigrid::Multigrid, θ::Array)
     # setup
-    dimension = multigrid.prolongationbases[1].dimension
+    dimension = multigrid.fineoperator.dimension
     rowmodemap = multigrid.coarseoperator.rowmodemap
     columnmodemap = multigrid.fineoperator.columnmodemap
     prolongationmatrix = multigrid.prolongationmatrix

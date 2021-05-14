@@ -67,6 +67,7 @@ mutable struct TensorBasis <: AbstractBasis
     gradient::AbstractArray{Float64,2}
     numbermodes::Int
     modemap::AbstractArray{Int,1}
+    primalvertices::AbstractArray{Int,1}
 
     # inner constructor
     TensorBasis(
@@ -199,6 +200,7 @@ mutable struct NonTensorBasis <: AbstractBasis
     numbermodes::Int
     modemap::AbstractArray{Int,1}
     numberelements::Int
+    primalvertices::AbstractArray{Int,1}
 
     # inner constructor
     NonTensorBasis(
@@ -881,6 +883,79 @@ end
 
 """
 ```julia
+getprimalvertices(basis)
+```
+
+Get primal vertices for basis
+
+# Arguments:
+- `basis`: basis to compute primal vertices
+
+# Returns:
+- Basis primal vertices vector
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    p = 4
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+
+    # note: either syntax works
+    primalvertices = LFAToolkit.getprimalvertices(basis);
+    primalvertices = basis.primalvertices;
+
+    # verify
+    trueprimalvertices = []
+    if dimension == 1
+        trueprimalvertices = [1, p];
+    elseif dimension == 2
+        trueprimalvertices = [1, p, p^2-p+1, p^2]
+    elseif dimension == 3
+        trueprimalvertices = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
+    end
+
+    @assert trueprimalvertices == primalvertices
+end
+
+# output
+
+```
+"""
+function getprimalvertices(basis::TensorBasis)
+    # assemble if needed
+    if !isdefined(basis, :primalvertices)
+        primalvertices1component = []
+        p = basis.numbernodes1d
+        if basis.dimension == 1
+            # 1D
+            primalvertices1component = [1, p]
+        elseif basis.dimension == 2
+            # 2D
+            primalvertices1component = [1, p, p^2 - p + 1, p^2]
+        elseif basis.dimension == 3
+            # 3D
+            primalvertices1component =
+                [1, p, p^2 - p + 1, p^2, p^3 - p^2 + 1, p^3 - p^2 + p, p^3 - p + 1, p^3]
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        primalvertices = vcat(
+            [
+                (i - 1) * basis.numbernodes .+ primalvertices1component for
+                i = 1:basis.numbercomponents
+            ]...,
+        )
+        basis.primalvertices = primalvertices
+    end
+
+    # return
+    return getfield(basis, :primalvertices)
+end
+
+"""
+```julia
 getnumberelements(basis)
 ```
 
@@ -935,6 +1010,8 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getnumbermodes(basis)
     elseif f == :modemap
         return getmodemap(basis)
+    elseif f == :primalvertices
+        return getprimalvertices(basis)
     elseif f == :numberelements
         return getnumberelements(basis)
     else

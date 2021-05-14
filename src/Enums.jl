@@ -32,7 +32,7 @@ module MultigridType
 """
 Multigrid types
 
-# Modes:
+# Types:
 - `pmultigrid`: p-multigrid
 - `hmultigrid`: h-multigrid
 
@@ -47,6 +47,29 @@ hmultigrid = 1
 ```
 """
 @enum MgridType hmultigrid pmultigrid
+
+end # submodule
+
+module BDDCInjectionType
+
+"""
+BDDC injection types
+
+# Types:
+- `scaled`:   scaled injection
+- `harmonic`: discrete harmonic extension
+
+# Example
+```@jldoctest
+LFAToolkit.BDDCInjectionType.BDDCInjectType
+
+#output
+Enum LFAToolkit.BDDCInjectionType.BDDCInjectType:
+scaled = 0
+harmonic = 1
+```
+"""
+@enum BDDCInjectType scaled harmonic
 
 end # submodule
 

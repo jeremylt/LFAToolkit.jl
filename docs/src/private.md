@@ -13,5 +13,6 @@ Pages = [
     "private/pc/jacobi.md",
     "private/pc/chebyshev.md",
     "private/pc/multigrid.md",
+    "private/pc/bddc.md",
 ]
 ```

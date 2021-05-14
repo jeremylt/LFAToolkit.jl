@@ -1,0 +1,5 @@
+## Preconditioner: BDDC
+
+```@docs
+BDDC
+```

@@ -45,7 +45,7 @@ export Chebyshev, seteigenvalueestimatescaling
 # -- multigrid
 export Multigrid, PMultigrid, HMultigrid
 # -- BDDC
-export BDDC
+export BDDC, LumpedBDDC, DirichletBDDC
 
 # ------------------------------------------------------------------------------
 # imports
@@ -72,6 +72,7 @@ include("PC/Multigrid/Base.jl")
 include("PC/Multigrid/Constructors.jl")
 # -- BDDC
 include("PC/BDDC/Base.jl")
+include("PC/BDDC/Constructors.jl")
 
 end # module
 

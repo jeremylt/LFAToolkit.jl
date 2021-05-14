@@ -24,6 +24,8 @@ mutable struct BDDC <: AbstractPreconditioner
     # data empty until assembled
     primalvertices::AbstractArray{Int,1}
     subassembledvertices::AbstractArray{Int,1}
+    interfacevertices::AbstractArray{Int,1}
+    interiorvertices::AbstractArray{Int,1}
 
     # inner constructor
     BDDC(fineoperator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
@@ -138,6 +140,105 @@ function getsubassembledvertices(bddc::BDDC)
     return getfield(bddc, :subassembledvertices)
 end
 
+"""
+```julia
+getinterfacevertices(bddc)
+```
+
+Compute or retrieve the interface vertices for a BDDC preconditioner
+
+# Returns:
+- Vector of interface vertices for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interfacevertices = LFAToolkit.getinterfacevertices(bddc);
+interfacevertices = bddc.interfacevertices;
+
+# verify
+@assert interfacevertices == [1, p]
+
+# output
+
+```
+"""
+function getinterfacevertices(bddc::BDDC)
+    # assemble if needed
+    operator = bddc.fineoperator
+    if !isdefined(bddc, :interfacevertices)
+        interfacevertices = []
+        numbernodes = 0
+        for input in operator.inputs
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                interfacevertices = vcat(
+                    interfacevertices...,
+                    [input.basis.interfacevertices .+ numbernodes]...,
+                )
+                numbernodes += input.basis.numbernodes
+            end
+        end
+
+        # store
+        bddc.interfacevertices = interfacevertices
+    end
+
+    # return
+    return getfield(bddc, :interfacevertices)
+end
+
+"""
+```julia
+getinteriorvertices(bddc)
+```
+
+Compute or retrieve the interior vertices for a BDDC preconditioner
+
+# Returns:
+- Vector of interior vertices for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiorvertices = LFAToolkit.getinteriorvertices(bddc);
+interiorvertices = bddc.interiorvertices;
+
+# verify
+trueinterfacevertices = [1:p..., p^2-p+1:p^2...]
+for i = 1:p-2
+    push!(trueinterfacevertices, i*p+1)
+    push!(trueinterfacevertices, (i+1)*p)
+end
+trueinterfacevertices = sort(trueinterfacevertices)
+@assert interiorvertices == setdiff(1:p^2, trueinterfacevertices)
+
+# output
+
+```
+"""
+function getinteriorvertices(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interiorvertices)
+        numbernodes, _ = size(bddc.fineoperator.elementmatrix)
+        bddc.interiorvertices = setdiff(1:numbernodes, bddc.interfacevertices)
+    end
+
+    # return
+    return getfield(bddc, :interiorvertices)
+end
+
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -147,6 +248,10 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getprimalvertices(bddc)
     elseif f == :subassembledvertices
         return getsubassembledvertices(bddc)
+    elseif f == :interfacevertices
+        return getinterfacevertices(bddc)
+    elseif f == :interiorvertices
+        return getinteriorvertices(bddc)
     else
         return getfield(bddc, f)
     end

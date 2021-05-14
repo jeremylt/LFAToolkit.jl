@@ -20,4 +20,5 @@ LFAToolkit.getnumberelements
 LFAToolkit.getdiagonal
 LFAToolkit.getdXdxgradient
 LFAToolkit.getprimalvertices(::TensorBasis)
+LFAToolkit.getinterfacevertices(::TensorBasis)
 ```

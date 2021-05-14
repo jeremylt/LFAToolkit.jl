@@ -10,7 +10,7 @@ basis = TensorH1LagrangeBasis(4, 4, 1, 2)
 
 # weak form
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
+    dv = du * w[1]
     return [dv]
 end
 

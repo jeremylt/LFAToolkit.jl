@@ -23,12 +23,12 @@ ctofbasis = TensorH1LagrangeBasis(
 # constants
 e = 1E6                     # Young's modulus
 ν = 0.3                     # Poisson's ratio
-K = e/(3*(1 - 2*ν))         # bulk modulus
-λ = e*ν/((1 + ν)*(1 - 2*ν)) # Lamé parameters
-μ = e/(2*(1 + ν))
+K = e / (3 * (1 - 2 * ν))         # bulk modulus
+λ = e * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
+μ = e / (2 * (1 + ν))
 
 # state
-gradu = [1; 2; 3]*ones(1, 3);
+gradu = [1; 2; 3] * ones(1, 3);
 
 function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     # dP = dF S + F dS
@@ -37,23 +37,23 @@ function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
     F = gradu + I
     J = det(F)
     # Green-Lagrange strain tensor
-    E = (gradu*gradu' + gradu'*gradu)/2
+    E = (gradu * gradu' + gradu' * gradu) / 2
     # right Cauchy-Green tensor
-    C = 2*E + I
+    C = 2 * E + I
     C_inv = C^-1
     # second Piola-Kirchhoff
-    S = λ*log(J)*C_inv + 2*μ*C_inv*E
+    S = λ * log(J) * C_inv + 2 * μ * C_inv * E
 
     # delta du
     deltadu = deltadu'
     # dF
     dF = deltadu + I
     # deltaE
-    deltaE = (deltadu*deltadu' + deltadu'*deltadu)/2
+    deltaE = (deltadu * deltadu' + deltadu' * deltadu) / 2
     # dS
-    dS = λ*sum(C_inv.*deltaE)*C_inv + 2*(μ - λ*log(J))*C_inv*deltaE*C_inv
+    dS = λ * sum(C_inv .* deltaE) * C_inv + 2 * (μ - λ * log(J)) * C_inv * deltaE * C_inv
     # dP
-    dP = dF*S + F*dS
+    dP = dF * S + F * dS
 
     return [dP']
 end

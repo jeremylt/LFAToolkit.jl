@@ -56,23 +56,23 @@ function gaussquadrature(q::Int)
     end
 
     # build qref1d, qweight1d
-    for i = 0:floor(Int, q/2)
+    for i = 0:floor(Int, q / 2)
         # guess
-        xi = cos(π*(2*i + 1.0)/(2*q))
+        xi = cos(π * (2 * i + 1.0) / (2 * q))
 
         # Pn(xi)
         p0 = 1.0
         p1 = xi
         p2 = 0.0
         for j = 2:q
-            p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
+            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
             p0 = p1
             p1 = p2
         end
 
         # first Newton step
-        dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
-        xi = xi - p2/dp2
+        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
+        xi = xi - p2 / dp2
 
         # Newton to convergence
         iter = 0
@@ -81,12 +81,12 @@ function gaussquadrature(q::Int)
             p0 = 1.0
             p1 = xi
             for j = 2:q
-                p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
+                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
                 p0 = p1
                 p1 = p2
             end
-            dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
-            xi = xi - p2/dp2
+            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
+            xi = xi - p2 / dp2
             iter += 1
         end
         if iter == maxiter && abs(dp2) > 1e-14
@@ -96,7 +96,7 @@ function gaussquadrature(q::Int)
         # save xi, wi
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi
-        wi = 2.0/((1.0 - xi*xi)*dp2*dp2)
+        wi = 2.0 / ((1.0 - xi * xi) * dp2 * dp2)
         quadratureweights[i+1] = wi
         quadratureweights[q-i] = wi
     end
@@ -151,30 +151,30 @@ function lobattoquadrature(q::Int, weights::Bool)
     quadraturepoints[1] = -1.0
     quadraturepoints[q] = 1.0
     if weights
-        wi = 2.0/(q*(q - 1.0))
+        wi = 2.0 / (q * (q - 1.0))
         quadratureweights[1] = wi
         quadratureweights[q] = wi
     end
 
     # build qref1d, qweight1d
-    for i = 1:floor(Int, (q - 1)/2)
+    for i = 1:floor(Int, (q - 1) / 2)
         # guess
-        xi = cos(π*i/(q - 1.0))
+        xi = cos(π * i / (q - 1.0))
 
         # Pn(xi)
         p0 = 1.0
         p1 = xi
         p2 = 0.0
         for j = 2:q-1
-            p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
+            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
             p0 = p1
             p1 = p2
         end
 
         # first Newton step
-        dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
-        d2p2 = (2*xi*dp2 - q*(q - 1.0)*p2)/(1.0 - xi*xi)
-        xi = xi - dp2/d2p2
+        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
+        d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
+        xi = xi - dp2 / d2p2
 
         # Newton to convergence
         iter = 0
@@ -183,13 +183,13 @@ function lobattoquadrature(q::Int, weights::Bool)
             p0 = 1.0
             p1 = xi
             for j = 2:q-1
-                p2 = ((2*j - 1.0)*xi*p1 - (j - 1.0)*p0)/j
+                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
                 p0 = p1
                 p1 = p2
             end
-            dp2 = (xi*p2 - p0)*q/(xi*xi - 1.0)
-            d2p2 = (2*xi*dp2 - q*(q - 1.0)*p2)/(1.0 - xi*xi)
-            xi = xi - dp2/d2p2
+            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
+            d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
+            xi = xi - dp2 / d2p2
             iter += 1
         end
         if iter == maxiter && abs(dp2) > 1e-14
@@ -200,7 +200,7 @@ function lobattoquadrature(q::Int, weights::Bool)
         quadraturepoints[i+1] = -xi
         quadraturepoints[q-i] = xi
         if weights
-            wi = 2.0/(q*(q - 1.0)*p2*p2)
+            wi = 2.0 / (q * (q - 1.0) * p2 * p2)
             quadratureweights[i+1] = wi
             quadratureweights[q-i] = wi
         end
@@ -299,11 +299,12 @@ function buildinterpolationandgradient(
                 dx = nodes1d[j] - nodes1d[k]
                 c2 *= dx
                 if k == j - 1
-                    gradient1d[i, j] = c1*(interpolation1d[i, k] - c4*gradient1d[i, k])/c2
-                    interpolation1d[i, j] = -c1*c4*interpolation1d[i, k]/c2
+                    gradient1d[i, j] =
+                        c1 * (interpolation1d[i, k] - c4 * gradient1d[i, k]) / c2
+                    interpolation1d[i, j] = -c1 * c4 * interpolation1d[i, k] / c2
                 end
-                gradient1d[i, k] = (c3*gradient1d[i, k] - interpolation1d[i, k])/dx
-                interpolation1d[i, k] = c3*interpolation1d[i, k]/dx
+                gradient1d[i, k] = (c3 * gradient1d[i, k] - interpolation1d[i, k]) / dx
+                interpolation1d[i, k] = c3 * interpolation1d[i, k] / dx
             end
             c1 = c2
         end
@@ -547,19 +548,19 @@ function TensorMacroElementBasisFrom1D(
     end
 
     # compute dimensions
-    numbernodes1dmacro = (numbernodes1d - 1)*numberelements1d + 1
+    numbernodes1dmacro = (numbernodes1d - 1) * numberelements1d + 1
     numberquadraturepoints1dmacro =
-        overlapquadraturepoints ? (numberquadraturepoints1d - 1)*numberelements1d + 1 :
-        numberquadraturepoints1d*numberelements1d
+        overlapquadraturepoints ? (numberquadraturepoints1d - 1) * numberelements1d + 1 :
+        numberquadraturepoints1d * numberelements1d
 
     # basis nodes
     lower = min(basis1dmicro.nodes1d...)
     width = basis1dmicro.volume
     nodes1dmacro = zeros(numbernodes1dmacro)
-    micronodes = (basis1dmicro.nodes1d .- lower)./numberelements1d
+    micronodes = (basis1dmicro.nodes1d .- lower) ./ numberelements1d
     for i = 1:numberelements1d
         nodes1dmacro[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            micronodes .+ lower .+ width/numberelements1d*(i - 1)
+            micronodes .+ lower .+ width / numberelements1d * (i - 1)
     end
 
     # basis quadrature points and weights
@@ -571,11 +572,11 @@ function TensorMacroElementBasisFrom1D(
             kron(ones(numberelements1d), basis1dmicro.quadratureweights1d)
     end
     quadraturepoints1dmacro = zeros(numberquadraturepoints1dmacro)
-    microquadraturepoints = (basis1dmicro.quadraturepoints1d .- lower)./numberelements1d
+    microquadraturepoints = (basis1dmicro.quadraturepoints1d .- lower) ./ numberelements1d
     for i = 1:numberelements1d
         offset = overlapquadraturepoints ? -i + 1 : 0
         quadraturepoints1dmacro[(i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset] =
-            microquadraturepoints .+ lower .+ width/numberelements1d*(i - 1)
+            microquadraturepoints .+ lower .+ width / numberelements1d * (i - 1)
     end
 
     # basis operations
@@ -895,11 +896,11 @@ function TensorH1LagrangeHProlongationBasis(
 )
     # generate nodes
     nodescoarse1d = lobattoquadrature(numbernodes1d, false)
-    nodesfine1d = zeros((numbernodes1d - 1)*numberfineelements1d + 1)
+    nodesfine1d = zeros((numbernodes1d - 1) * numberfineelements1d + 1)
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+
-            ((2*(i - 1) + 1)/numberfineelements1d - 1)
+            nodescoarse1d ./ numberfineelements1d .+
+            ((2 * (i - 1) + 1) / numberfineelements1d - 1)
     end
 
     # single coarse to multiple fine elements
@@ -960,8 +961,8 @@ function TensorH1UniformHProlongationBasis(
     nodesfine1d = [-1.0:(2.0/((numbernodes1d-1)*numberfineelements1d)):1.0...]
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
-            nodescoarse1d./numberfineelements1d .+
-            ((2*(i - 1) + 1)/numberfineelements1d - 1)
+            nodescoarse1d ./ numberfineelements1d .+
+            ((2 * (i - 1) + 1) / numberfineelements1d - 1)
     end
 
     # single coarse to multiple fine elements
@@ -1022,7 +1023,7 @@ function TensorH1LagrangeHProlongationMacroBasis(
     numberfineelements1d::Int,
 )
     # validate inputs
-    if numberfineelements1d%numbercoarseelements1d != 0
+    if numberfineelements1d % numbercoarseelements1d != 0
         # COV_EXCL_START
         throw(
             DomanError(
@@ -1034,14 +1035,14 @@ function TensorH1LagrangeHProlongationMacroBasis(
     end
 
     # single coarse to multiple fine elements
-    scale = Int(numberfineelements1d/numbercoarseelements1d)
+    scale = Int(numberfineelements1d / numbercoarseelements1d)
     hprolongationbasis1dmicro =
         TensorH1LagrangeHProlongationBasis(numbernodes1d, numbercomponents, 1, scale)
 
     # use common constructor
     return TensorMacroElementBasisFrom1D(
         numbernodes1d,
-        (numbernodes1d - 1)*scale + 1,
+        (numbernodes1d - 1) * scale + 1,
         numbercomponents,
         dimension,
         numbercoarseelements1d,
@@ -1098,7 +1099,7 @@ function TensorH1UniformHProlongationMacroBasis(
     numberfineelements1d::Int,
 )
     # validate inputs
-    if numberfineelements1d%numbercoarseelements1d != 0
+    if numberfineelements1d % numbercoarseelements1d != 0
         # COV_EXCL_START
         throw(
             DomanError(
@@ -1110,14 +1111,14 @@ function TensorH1UniformHProlongationMacroBasis(
     end
 
     # single coarse to multiple fine elements
-    scale = Int(numberfineelements1d/numbercoarseelements1d)
+    scale = Int(numberfineelements1d / numbercoarseelements1d)
     hprolongationbasis1dmicro =
         TensorH1UniformHProlongationBasis(numbernodes1d, numbercomponents, 1, scale)
 
     # use common constructor
     return TensorMacroElementBasisFrom1D(
         numbernodes1d,
-        (numbernodes1d - 1)*scale + 1,
+        (numbernodes1d - 1) * scale + 1,
         numbercomponents,
         dimension,
         numbercoarseelements1d,

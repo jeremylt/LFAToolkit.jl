@@ -298,21 +298,21 @@ function getelementmatrix(operator::Operator)
                         numberfields += input.basis.dimension
                         numbernodeinputs += input.basis.numbercomponents
                         numberquadratureinputs +=
-                            input.basis.dimension*input.basis.numbercomponents
+                            input.basis.dimension * input.basis.numbercomponents
                         gradient = getdXdxgradient(input.basis, operator.mesh)
                         Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
                     end
                 end
                 push!(Bblocks, Bcurrent)
                 push!(weakforminputs, zeros(numberfields, input.basis.numbercomponents))
-                push!(numberfieldsin, numberfields*input.basis.numbercomponents)
+                push!(numberfieldsin, numberfields * input.basis.numbercomponents)
             end
         end
 
         # input basis matrix
         B = spzeros(
-            numberquadratureinputs*numberquadraturepoints,
-            numbernodeinputs*numbernodes,
+            numberquadratureinputs * numberquadraturepoints,
+            numbernodeinputs * numbernodes,
         )
         currentrow = 1
         currentcolumn = 1
@@ -331,7 +331,7 @@ function getelementmatrix(operator::Operator)
             quadratureweights =
                 getquadratureweights(operator.inputs[weightinputindex].basis)
             weightscale =
-                operator.mesh.volume/operator.inputs[weightinputindex].basis.volume
+                operator.mesh.volume / operator.inputs[weightinputindex].basis.volume
         end
 
         # outputs
@@ -346,7 +346,7 @@ function getelementmatrix(operator::Operator)
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    numberfields += output.basis.dimension*output.basis.numbercomponents
+                    numberfields += output.basis.dimension * output.basis.numbercomponents
                     gradient = getdXdxgradient(output.basis, operator.mesh)
                     Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor
@@ -358,8 +358,8 @@ function getelementmatrix(operator::Operator)
 
         # output basis matrix
         Bt = spzeros(
-            numberquadratureinputs*numberquadraturepoints,
-            numbernodeinputs*numbernodes,
+            numberquadratureinputs * numberquadraturepoints,
+            numbernodeinputs * numbernodes,
         )
         currentrow = 1
         currentcolumn = 1
@@ -375,8 +375,8 @@ function getelementmatrix(operator::Operator)
 
         # QFunction matrix
         D = spzeros(
-            numberquadratureinputs*numberquadraturepoints,
-            numberquadratureinputs*numberquadraturepoints,
+            numberquadratureinputs * numberquadraturepoints,
+            numberquadratureinputs * numberquadraturepoints,
         )
         # loop over inputs
         currentfieldin = 0
@@ -390,7 +390,7 @@ function getelementmatrix(operator::Operator)
             for q = 1:numberquadraturepoints
                 # set quadrature weight
                 if weightinputindex != 0
-                    weakforminputs[weightinputindex][1] = quadratureweights[q]*weightscale
+                    weakforminputs[weightinputindex][1] = quadratureweights[q] * weightscale
                 end
 
                 # fill sparse matrix
@@ -417,7 +417,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # multiply A = B^T D B and store
-        elementmatrix = Bt*D*B
+        elementmatrix = Bt * D * B
         operator.elementmatrix = elementmatrix
     end
 
@@ -462,7 +462,7 @@ function getdiagonal(operator::Operator)
 
         # compute
         diagonalnodes = Diagonal(elementmatrix)
-        diagonalmodes = Diagonal(rowmodemap*diagonalnodes*columnmodemap)
+        diagonalmodes = Diagonal(rowmodemap * diagonalnodes * columnmodemap)
 
         # store
         operator.diagonal = diagonalmodes
@@ -788,7 +788,7 @@ function getnodecoordinatedifferences(operator::Operator)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
-                (inputcoordinates[j, k] - outputcoordinates[i, k])/lengths[k]
+                (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
         end
 
         # store
@@ -907,37 +907,33 @@ function computesymbols(operator::Operator, θ::Array)
     if dimension == 1
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[i, j]*ℯ^(im*θ[1]*nodecoordinatedifferences[i, j, 1])
+                elementmatrix[i, j] * ℯ^(im * θ[1] * nodecoordinatedifferences[i, j, 1])
         end
     elseif dimension == 2
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[
-                    i,
-                    j,
-                ]*ℯ^(
-                    im*(
-                        θ[1]*nodecoordinatedifferences[i, j, 1] +
-                        θ[2]*nodecoordinatedifferences[i, j, 2]
+                elementmatrix[i, j] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[i, j, 1] +
+                        θ[2] * nodecoordinatedifferences[i, j, 2]
                     )
                 )
         end
     elseif dimension == 3
         for i = 1:numberrows, j = 1:numbercolumns
             symbolmatrixnodes[i, j] =
-                elementmatrix[
-                    i,
-                    j,
-                ]*ℯ^(
-                    im*(
-                        θ[1]*nodecoordinatedifferences[i, j, 1] +
-                        θ[2]*nodecoordinatedifferences[i, j, 2] +
-                        θ[3]*nodecoordinatedifferences[i, j, 3]
+                elementmatrix[i, j] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[i, j, 1] +
+                        θ[2] * nodecoordinatedifferences[i, j, 2] +
+                        θ[3] * nodecoordinatedifferences[i, j, 3]
                     )
                 )
         end
     end
-    symbolmatrixmodes = rowmodemap*symbolmatrixnodes*columnmodemap
+    symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
     # return
     return symbolmatrixmodes

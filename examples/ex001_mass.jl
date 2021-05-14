@@ -10,7 +10,7 @@ basis = TensorH1LagrangeBasis(4, 4, 1, 2)
 
 # weak form
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
+    v = u * w[1]
     return [v]
 end
 

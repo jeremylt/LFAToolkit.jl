@@ -242,14 +242,14 @@ mutable struct NonTensorBasis <: AbstractBasis
             )
             # COV_EXCL_STOP
         end;
-        if size(gradient) != (q*dimension, numbernodes)
+        if size(gradient) != (q * dimension, numbernodes)
             # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)",
             )
             # COV_EXCL_STOP
         end;
-        if length(modemap) != numbercomponents*numbernodes
+        if length(modemap) != numbercomponents * numbernodes
             error("must map the modes for each basis node") # COV_EXCL_LINE
         end;
 
@@ -847,7 +847,7 @@ function getmodemap(basis::TensorBasis)
             # 2D
             modemap = [
                 [
-                    i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d,
+                    i + (j - 1) * (basis.numbernodes1d - 1) for i in modemap1d,
                     j in modemap1d
                 ]...,
             ]
@@ -856,8 +856,8 @@ function getmodemap(basis::TensorBasis)
             modemap = [
                 [
                     i +
-                    (j - 1)*(basis.numbernodes1d - 1) +
-                    (k - 1)*(basis.numbernodes1d - 1)^2 for i in modemap1d,
+                    (j - 1) * (basis.numbernodes1d - 1) +
+                    (k - 1) * (basis.numbernodes1d - 1)^2 for i in modemap1d,
                     j in modemap1d, k in modemap1d
                 ]...,
             ]
@@ -867,7 +867,8 @@ function getmodemap(basis::TensorBasis)
         numbermodes1component = max(modemap...)
         modemap = vcat(
             [
-                ((i - 1)*numbermodes1component) .+ modemap for i = 1:basis.numbercomponents
+                ((i - 1) * numbermodes1component) .+ modemap for
+                i = 1:basis.numbercomponents
             ]...,
         )
         basis.modemap = modemap
@@ -1061,26 +1062,26 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
     # adjust for mesh
     if dimension == 1
         # 1D
-        return gradient*lengthreference/mesh.dx
+        return gradient * lengthreference / mesh.dx
     elseif dimension == 2
         # 2D
-        scalex = lengthreference/mesh.dx
-        scaley = lengthreference/mesh.dy
+        scalex = lengthreference / mesh.dx
+        scaley = lengthreference / mesh.dy
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :]*scalex
-            gradient[numberquadraturepoints+1:end, :]*scaley
+            gradient[1:numberquadraturepoints, :] * scalex
+            gradient[numberquadraturepoints+1:end, :] * scaley
         ]
     elseif dimension == 3
         # 3D
-        scalex = lengthreference/mesh.dx
-        scaley = lengthreference/mesh.dy
-        scalez = lengthreference/mesh.dz
+        scalex = lengthreference / mesh.dx
+        scaley = lengthreference / mesh.dy
+        scalez = lengthreference / mesh.dz
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :]*scalex
-            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :]*scaley
-            gradient[2*numberquadraturepoints+1:end, :]*scalez
+            gradient[1:numberquadraturepoints, :] * scalex
+            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :] * scaley
+            gradient[2*numberquadraturepoints+1:end, :] * scalez
         ]
     end
 end

@@ -214,8 +214,8 @@ function computesymbols(preconditioner::Jacobi, ω::Array, θ::Array)
 
     # return
     return I -
-           ω[1]*
-           preconditioner.operatordiagonalinverse*
+           ω[1] *
+           preconditioner.operatordiagonalinverse *
            computesymbols(preconditioner.operator, θ)
 end
 

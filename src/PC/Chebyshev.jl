@@ -163,7 +163,7 @@ function geteigenvalueestimates(preconditioner::Chebyshev)
             preconditioner.operator,
             zeros(preconditioner.operator.mesh.dimension),
         )
-        eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse*A),)
+        eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
         eigenvalueestimates = [min(eigenvalues...), max(eigenvalues...)]
 
         # store
@@ -332,7 +332,7 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     elseif length(ω) > 3
         Throw(error("no more than three parameters allowed for Chebyshev smoothing")) # COV_EXCL_LINE
     end
-    if (ω[1]%1) > 1E-14 || ω[1] < 1
+    if (ω[1] % 1) > 1E-14 || ω[1] < 1
         Throw(error("first parameter must be degree of Chebyshev smoother")) # COV_EXCL_LINE
     end
 
@@ -352,26 +352,28 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
         λ_max = ω[3]
     end
     lower =
-        λ_min*preconditioner.eigenvaluebounds[1] + λ_max*preconditioner.eigenvaluebounds[2]
+        λ_min * preconditioner.eigenvaluebounds[1] +
+        λ_max * preconditioner.eigenvaluebounds[2]
     upper =
-        λ_min*preconditioner.eigenvaluebounds[3] + λ_max*preconditioner.eigenvaluebounds[4]
+        λ_min * preconditioner.eigenvaluebounds[3] +
+        λ_max * preconditioner.eigenvaluebounds[4]
 
     # compute Chebyshev smoother of given degree
     D_inv = preconditioner.operatordiagonalinverse
-    D_inv_A = D_inv*A
+    D_inv_A = D_inv * A
     k = ω[1] # degree of Chebyshev smoother
-    α = (upper + lower)/2
-    c = (upper - lower)/2
-    η = -α/c
-    β = -c^2/(2*α)
+    α = (upper + lower) / 2
+    c = (upper - lower) / 2
+    η = -α / c
+    β = -c^2 / (2 * α)
     γ = -(α + β)
     E_0 = I
-    E_1 = I - α*D_inv_A
+    E_1 = I - α * D_inv_A
     E_n = I
     for i = 2:k
-        β = -c^2/(2*γ)
+        β = -c^2 / (2 * γ)
         γ = -(α + β)
-        E_n = (α*E_1 + β*E_0 - D_inv_A*E_1)/γ
+        E_n = (α * E_1 + β * E_0 - D_inv_A * E_1) / γ
         E_0 = E_1
         E_1 = E_n
     end

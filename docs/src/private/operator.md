@@ -4,8 +4,8 @@
 LFAToolkit.getdimension
 LFAToolkit.getelementmatrix
 LFAToolkit.getmultiplicity
-LFAToolkit.getrowmodemap
-LFAToolkit.getcolumnmodemap
+LFAToolkit.getrowmodemap(::Operator)
+LFAToolkit.getcolumnmodemap(::Operator)
 LFAToolkit.getinputcoordinates
 LFAToolkit.getoutputcoordinates
 LFAToolkit.getnodecoordinatedifferences(::Operator)

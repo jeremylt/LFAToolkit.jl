@@ -14,7 +14,7 @@ LumpedBDDC(fineoperator)
 Lumped BDDC preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:      finite element operator to precondition
+- `fineoperator`:  finite element operator to precondition
 
 # Returns:
 - Lumped BDDC preconditioner object
@@ -24,7 +24,7 @@ Lumped BDDC preconditioner for finite element operators
 # setup
 mesh = Mesh2D(1.0, 1.0);
 
-# operators
+# operator
 finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
 
 # preconditioner
@@ -87,7 +87,7 @@ DirichletBDDC(fineoperator)
 Dirichlet BDDC preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:      finite element operator to precondition
+- `fineoperator`:  finite element operator to precondition
 
 # Returns:
 - Dirichlet BDDC preconditioner object
@@ -97,7 +97,7 @@ Dirichlet BDDC preconditioner for finite element operators
 # setup
 mesh = Mesh2D(1.0, 1.0);
 
-# operators
+# operator
 finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
 
 # preconditioner

@@ -19,6 +19,6 @@ LFAToolkit.getmodemap
 LFAToolkit.getnumberelements
 LFAToolkit.getdiagonal
 LFAToolkit.getdXdxgradient
-LFAToolkit.getprimalvertices(::TensorBasis)
-LFAToolkit.getinterfacevertices(::TensorBasis)
+LFAToolkit.getprimalnodes(::TensorBasis)
+LFAToolkit.getinterfacenodes(::TensorBasis)
 ```

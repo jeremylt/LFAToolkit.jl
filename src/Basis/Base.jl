@@ -67,8 +67,8 @@ mutable struct TensorBasis <: AbstractBasis
     gradient::AbstractArray{Float64,2}
     numbermodes::Int
     modemap::AbstractArray{Int,1}
-    primalvertices::AbstractArray{Int,1}
-    interfacevertices::AbstractArray{Int,1}
+    primalnodes::AbstractArray{Int,1}
+    interfacenodes::AbstractArray{Int,1}
 
     # inner constructor
     TensorBasis(
@@ -201,8 +201,8 @@ mutable struct NonTensorBasis <: AbstractBasis
     numbermodes::Int
     modemap::AbstractArray{Int,1}
     numberelements::Int
-    primalvertices::AbstractArray{Int,1}
-    interfacevertices::AbstractArray{Int,1}
+    primalnodes::AbstractArray{Int,1}
+    interfacenodes::AbstractArray{Int,1}
 
     # inner constructor
     NonTensorBasis(
@@ -885,16 +885,16 @@ end
 
 """
 ```julia
-getprimalvertices(basis)
+getprimalnodes(basis)
 ```
 
-Get primal vertices for basis
+Get primal nodes for basis
 
 # Arguments:
-- `basis`: basis to compute primal vertices
+- `basis`: basis to compute primal nodes
 
 # Returns:
-- Basis primal vertices vector
+- Basis primal nodes vector
 
 # Example:
 ```jldoctest
@@ -905,69 +905,69 @@ for dimension in 1:3
     basis = TensorH1LagrangeBasis(p, p, 1, dimension);
 
     # note: either syntax works
-    primalvertices = LFAToolkit.getprimalvertices(basis);
-    primalvertices = basis.primalvertices;
+    primalnodes = LFAToolkit.getprimalnodes(basis);
+    primalnodes = basis.primalnodes;
 
     # verify
-    trueprimalvertices = []
+    trueprimalnodes = []
     if dimension == 1
-        trueprimalvertices = [1, p];
+        trueprimalnodes = [1, p];
     elseif dimension == 2
-        trueprimalvertices = [1, p, p^2-p+1, p^2]
+        trueprimalnodes = [1, p, p^2-p+1, p^2]
     elseif dimension == 3
-        trueprimalvertices = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
+        trueprimalnodes = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
     end
 
-    @assert trueprimalvertices == primalvertices
+    @assert trueprimalnodes == primalnodes
 end
 
 # output
 
 ```
 """
-function getprimalvertices(basis::TensorBasis)
+function getprimalnodes(basis::TensorBasis)
     # assemble if needed
-    if !isdefined(basis, :primalvertices)
-        primalvertices1component = []
+    if !isdefined(basis, :primalnodes)
+        primalnodes1component = []
         p = basis.numbernodes1d
         if basis.dimension == 1
             # 1D
-            primalvertices1component = [1, p]
+            primalnodes1component = [1, p]
         elseif basis.dimension == 2
             # 2D
-            primalvertices1component = [1, p, p^2 - p + 1, p^2]
+            primalnodes1component = [1, p, p^2 - p + 1, p^2]
         elseif basis.dimension == 3
             # 3D
-            primalvertices1component =
+            primalnodes1component =
                 [1, p, p^2 - p + 1, p^2, p^3 - p^2 + 1, p^3 - p^2 + p, p^3 - p + 1, p^3]
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
-        primalvertices = vcat(
+        primalnodes = vcat(
             [
-                (i - 1) * basis.numbernodes .+ primalvertices1component for
+                (i - 1) * basis.numbernodes .+ primalnodes1component for
                 i = 1:basis.numbercomponents
             ]...,
         )
-        basis.primalvertices = primalvertices
+        basis.primalnodes = primalnodes
     end
 
     # return
-    return getfield(basis, :primalvertices)
+    return getfield(basis, :primalnodes)
 end
 
 """
 ```julia
-getinterfacevertices(basis)
+getinterfacenodes(basis)
 ```
 
-Get interface vertices for basis
+Get interface nodes for basis
 
 # Arguments:
-- `basis`: basis to compute primal vertices
+- `basis`: basis to compute primal nodes
 
 # Returns:
-- Basis primal vertices vector
+- Basis primal nodes vector
 
 # Example:
 ```jldoctest
@@ -978,76 +978,76 @@ for dimension in 1:3
     basis = TensorH1LagrangeBasis(p, p, 1, dimension);
 
     # note: either syntax works
-    interfacevertices = LFAToolkit.getinterfacevertices(basis);
-    interfacevertices = basis.interfacevertices;
+    interfacenodes = LFAToolkit.getinterfacenodes(basis);
+    interfacenodes = basis.interfacenodes;
 
     # verify
-    trueinterfacevertices = []
+    trueinterfacenodes = []
     if dimension == 1
-        trueinterfacevertices = [1, p];
+        trueinterfacenodes = [1, p];
     elseif dimension == 2
-        trueinterfacevertices = [1:p..., p^2-p+1:p^2...]
+        trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
         for i = 1:p-2
-            push!(trueinterfacevertices, i*p+1)
-            push!(trueinterfacevertices, (i+1)*p)
+            push!(trueinterfacenodes, i*p+1)
+            push!(trueinterfacenodes, (i+1)*p)
         end
     elseif dimension == 3
-        trueinterfacevertices = [1:p^2..., p^3-p^2+1:p^3...]
+        trueinterfacenodes = [1:p^2..., p^3-p^2+1:p^3...]
         for i = 1:p-2
-            push!(trueinterfacevertices, i*p^2+1:i*p^2+p...)
-            push!(trueinterfacevertices, (i+1)*p^2-p+1:(i+1)*p^2...)
-            push!(trueinterfacevertices, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
-            push!(trueinterfacevertices, i*p^2+2*p:p:(i+1)*p^2-p...)
+            push!(trueinterfacenodes, i*p^2+1:i*p^2+p...)
+            push!(trueinterfacenodes, (i+1)*p^2-p+1:(i+1)*p^2...)
+            push!(trueinterfacenodes, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
+            push!(trueinterfacenodes, i*p^2+2*p:p:(i+1)*p^2-p...)
         end
     end
-    trueinterfacevertices = sort(trueinterfacevertices)
+    trueinterfacenodes = sort(trueinterfacenodes)
 
-    @assert trueinterfacevertices == interfacevertices
+    @assert trueinterfacenodes == interfacenodes
 end
 
 # output
 
 ```
 """
-function getinterfacevertices(basis::TensorBasis)
+function getinterfacenodes(basis::TensorBasis)
     # assemble if needed
-    if !isdefined(basis, :interfacevertices)
-        interfacevertices1component = []
+    if !isdefined(basis, :interfacenodes)
+        interfacenodes1component = []
         p = basis.numbernodes1d
         if basis.dimension == 1
             # 1D
-            interfacevertices1component = [1, p]
+            interfacenodes1component = [1, p]
         elseif basis.dimension == 2
             # 2D
-            interfacevertices1component = [1:p..., p^2-p+1:p^2...]
+            interfacenodes1component = [1:p..., p^2-p+1:p^2...]
             for i = 1:p-2
-                push!(interfacevertices1component, i * p + 1)
-                push!(interfacevertices1component, (i + 1) * p)
+                push!(interfacenodes1component, i * p + 1)
+                push!(interfacenodes1component, (i + 1) * p)
             end
         elseif basis.dimension == 3
             # 3D
-            interfacevertices1component = [1:p^2..., p^3-p^2+1:p^3...]
+            interfacenodes1component = [1:p^2..., p^3-p^2+1:p^3...]
             for i = 1:p-2
-                push!(interfacevertices1component, i*p^2+1:i*p^2+p...)
-                push!(interfacevertices1component, (i+1)*p^2-p+1:(i+1)*p^2...)
-                push!(interfacevertices1component, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
-                push!(interfacevertices1component, i*p^2+2*p:p:(i+1)*p^2-p...)
+                push!(interfacenodes1component, i*p^2+1:i*p^2+p...)
+                push!(interfacenodes1component, (i+1)*p^2-p+1:(i+1)*p^2...)
+                push!(interfacenodes1component, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
+                push!(interfacenodes1component, i*p^2+2*p:p:(i+1)*p^2-p...)
             end
         else
             throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
-        interfacevertices1component = sort(interfacevertices1component)
-        interfacevertices = vcat(
+        interfacenodes1component = sort(interfacenodes1component)
+        interfacenodes = vcat(
             [
-                (i - 1) * basis.numbernodes .+ interfacevertices1component for
+                (i - 1) * basis.numbernodes .+ interfacenodes1component for
                 i = 1:basis.numbercomponents
             ]...,
         )
-        basis.interfacevertices = interfacevertices
+        basis.interfacenodes = interfacenodes
     end
 
     # return
-    return getfield(basis, :interfacevertices)
+    return getfield(basis, :interfacenodes)
 end
 
 """
@@ -1106,10 +1106,10 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getnumbermodes(basis)
     elseif f == :modemap
         return getmodemap(basis)
-    elseif f == :primalvertices
-        return getprimalvertices(basis)
-    elseif f == :interfacevertices
-        return getinterfacevertices(basis)
+    elseif f == :primalnodes
+        return getprimalnodes(basis)
+    elseif f == :interfacenodes
+        return getinterfacenodes(basis)
     elseif f == :numberelements
         return getnumberelements(basis)
     else

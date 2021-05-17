@@ -26,6 +26,8 @@ mutable struct BDDC <: AbstractPreconditioner
     subassembledvertices::AbstractArray{Int,1}
     interfacevertices::AbstractArray{Int,1}
     interiorvertices::AbstractArray{Int,1}
+    subassembledinverse::AbstractArray{Float64,2}
+    interiorinverse::AbstractArray{Float64,2}
 
     # inner constructor
     BDDC(fineoperator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
@@ -239,6 +241,89 @@ function getinteriorvertices(bddc::BDDC)
     return getfield(bddc, :interiorvertices)
 end
 
+"""
+```julia
+getsubassembledinverse(bddc)
+```
+
+Compute or retrieve the subassembled subdomain solver for a BDDC preconditioner
+
+# Returns:
+- Matrix of inverse of subassembled subdomain matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+subassembledinverse = LFAToolkit.getsubassembledinverse(bddc);
+subassembledinverse = bddc.subassembledinverse;
+
+# verify
+@assert subassembledinverse ≈ Matrix(diffusion.elementmatrix[bddc.subassembledvertices, bddc.subassembledvertices])^-1
+
+# output
+
+```
+"""
+function getsubassembledinverse(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :subassembledinverse)
+        elementmatrix = bddc.fineoperator.elementmatrix
+        subassembledmatrix =
+            Matrix(elementmatrix[bddc.subassembledvertices, bddc.subassembledvertices])
+        bddc.subassembledinverse = subassembledmatrix^-1
+    end
+
+    # return
+    return getfield(bddc, :subassembledinverse)
+end
+
+"""
+```julia
+getinteriorinverse(bddc)
+```
+
+Compute or retrieve the interior solver for a BDDC preconditioner
+
+# Returns:
+- Matrix of inverse of interior matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiorinverse = LFAToolkit.getinteriorinverse(bddc);
+interiorinverse = bddc.interiorinverse;
+
+# verify
+@assert interiorinverse ≈ Matrix(diffusion.elementmatrix[bddc.interiorvertices, bddc.interiorvertices])^-1
+
+# output
+
+```
+"""
+function getinteriorinverse(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :subassembledinverse)
+        elementmatrix = bddc.fineoperator.elementmatrix
+        interiormatrix = Matrix(elementmatrix[bddc.interiorvertices, bddc.interiorvertices])
+        bddc.interiorinverse = interiormatrix^-1
+    end
+
+    # return
+    return getfield(bddc, :interiorinverse)
+end
+
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -252,6 +337,10 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getinterfacevertices(bddc)
     elseif f == :interiorvertices
         return getinteriorvertices(bddc)
+    elseif f == :subassembledinverse
+        return getsubassembledinverse(bddc)
+    elseif f == :interiorinverse
+        return getinteriorinverse(bddc)
     else
         return getfield(bddc, f)
     end

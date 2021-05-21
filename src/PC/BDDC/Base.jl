@@ -502,8 +502,8 @@ function getinjection(bddc::BDDC)
             # lumped BDDC
             injection = Diagonal(
                 vcat(
-                    bddc.fineoperator.multiplicity[bddc.subassemblednodes] .^ -1...,
                     ones(numberprimalmodes, 1)...,
+                    bddc.fineoperator.multiplicity[bddc.subassemblednodes] .^ -1...,
                 ),
             )
         elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
@@ -543,7 +543,7 @@ modemap = LFAToolkit.getrowmodemap(bddc);
 modemap = bddc.rowmodemap;
 
 # verify
-@assert modemap ≈ [1 0 0 0 1 0; 0 1 0 1 0 0; 0 0 1 0 0 0; 0 0 0 0 0 1]
+@assert modemap ≈ [1 0 0 0 0 0; 0 1 0 0 0 1; 0 0 1 0 1 0; 0 0 0 1 0 0]
 
 # output
 
@@ -556,10 +556,10 @@ function getrowmodemap(bddc::BDDC)
         numberprimalmodes = max(size(bddc.primalmodes)...)
         numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
         rowmodemap = spzeros(numbermodes, numbermixed)
-        rowmodemap[1:end-numberprimalmodes, 1:end-numberprimalmodes] =
+        rowmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
             bddc.fineoperator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
-        for i = 0:numberprimalmodes-1
-            rowmodemap[numbermodes-i, numbermixed-i] = 1
+        for i = 1:numberprimalmodes
+            rowmodemap[i, i] = 1
         end
 
         # store
@@ -593,7 +593,7 @@ modemap = LFAToolkit.getcolumnmodemap(bddc);
 modemap = bddc.columnmodemap;
 
 # verify
-@assert modemap ≈ [1 0 0 0; 0 1 0 0; 0 0 1 0; 0 1 0 0; 1 0 0 0; 0 0 0 1]
+@assert modemap ≈ [1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1; 0 0 1 0; 0 1 0 0]
 
 # output
 
@@ -606,10 +606,10 @@ function getcolumnmodemap(bddc::BDDC)
         numberprimalmodes = max(size(bddc.primalmodes)...)
         numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
         columnmodemap = spzeros(numbermixed, numbermodes)
-        columnmodemap[1:end-numberprimalmodes, 1:end-numberprimalmodes] =
+        columnmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
             bddc.fineoperator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
-        for i = 0:numberprimalmodes-1
-            columnmodemap[numbermixed-i, numbermodes-i] = 1
+        for i = 1:numberprimalmodes
+            columnmodemap[i, i] = 1
         end
 
         # store
@@ -971,16 +971,16 @@ function computesymbols(bddc::BDDC, θ::Array)
     # subassembled nodes primal modes
     Ø = zeros((numberprimalmodes, numbersubassemblednodes))
     K_u_inv = [
-        I(numbersubassemblednodes) -A_rr_inv_nodes*Â_rΠ_modes
-        Ø I(numberprimalmodes)
+        I(numberprimalmodes) Ø
+        -A_rr_inv_nodes*Â_rΠ_modes I(numbersubassemblednodes)
     ]
     P_inv = [
-        A_rr_inv_nodes transpose(Ø)
-        Ø Ŝ_Π_inv_modes
+        Ŝ_Π_inv_modes Ø
+        transpose(Ø) A_rr_inv_nodes
     ]
     K_u_T_inv = [
-        I(numbersubassemblednodes) transpose(Ø)
-        -Â_Πr_modes*A_rr_inv_nodes I(numberprimalmodes)
+        I(numberprimalmodes) -Â_Πr_modes*A_rr_inv_nodes
+        transpose(Ø) I(numbersubassemblednodes)
     ]
     mixedsubassembled = K_u_inv * P_inv * K_u_T_inv
 

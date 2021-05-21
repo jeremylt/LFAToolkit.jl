@@ -888,6 +888,7 @@ function computesymbols(bddc::BDDC, θ::Array)
         end
     end
     Â_Πr_modes = bddc.primalrowmodemap * Â_Πr_nodes
+
     Â_rΠ_nodes = zeros(ComplexF64, numbersubassemblednodes, numberprimalnodes)
     if dimension == 1
         for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes

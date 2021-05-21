@@ -470,7 +470,7 @@ function getschur(bddc::BDDC)
         schur =
             elementmatrix[bddc.primalnodes, bddc.primalnodes] -
             elementmatrix[bddc.primalnodes, bddc.subassemblednodes] *
-            Matrix(elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1 *
+            bddc.subassembledinverse *
             elementmatrix[bddc.subassemblednodes, bddc.primalnodes]
 
         # store

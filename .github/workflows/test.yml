@@ -1,4 +1,4 @@
-name: Tests
+name: Test
 
 on:
   push:
@@ -31,15 +31,3 @@ jobs:
         uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  # style tests
-  styletest:
-    name: Style tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Environment setup
-        uses: actions/checkout@v2
-      - name: Julia setup
-        uses: julia-actions/setup-julia@latest
-      - name: Check style
-        run: julia .Style.jl --color=yes && git diff --exit-code src test examples docs

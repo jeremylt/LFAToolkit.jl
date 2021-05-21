@@ -67,6 +67,8 @@ mutable struct TensorBasis <: AbstractBasis
     gradient::AbstractArray{Float64,2}
     numbermodes::Int
     modemap::AbstractArray{Int,1}
+    primalnodes::AbstractArray{Int,1}
+    interfacenodes::AbstractArray{Int,1}
 
     # inner constructor
     TensorBasis(
@@ -199,6 +201,8 @@ mutable struct NonTensorBasis <: AbstractBasis
     numbermodes::Int
     modemap::AbstractArray{Int,1}
     numberelements::Int
+    primalnodes::AbstractArray{Int,1}
+    interfacenodes::AbstractArray{Int,1}
 
     # inner constructor
     NonTensorBasis(
@@ -242,14 +246,14 @@ mutable struct NonTensorBasis <: AbstractBasis
             )
             # COV_EXCL_STOP
         end;
-        if size(gradient) != (q*dimension, numbernodes)
+        if size(gradient) != (q * dimension, numbernodes)
             # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)",
             )
             # COV_EXCL_STOP
         end;
-        if length(modemap) != numbercomponents*numbernodes
+        if length(modemap) != numbercomponents * numbernodes
             error("must map the modes for each basis node") # COV_EXCL_LINE
         end;
 
@@ -847,7 +851,7 @@ function getmodemap(basis::TensorBasis)
             # 2D
             modemap = [
                 [
-                    i + (j - 1)*(basis.numbernodes1d - 1) for i in modemap1d,
+                    i + (j - 1) * (basis.numbernodes1d - 1) for i in modemap1d,
                     j in modemap1d
                 ]...,
             ]
@@ -856,8 +860,8 @@ function getmodemap(basis::TensorBasis)
             modemap = [
                 [
                     i +
-                    (j - 1)*(basis.numbernodes1d - 1) +
-                    (k - 1)*(basis.numbernodes1d - 1)^2 for i in modemap1d,
+                    (j - 1) * (basis.numbernodes1d - 1) +
+                    (k - 1) * (basis.numbernodes1d - 1)^2 for i in modemap1d,
                     j in modemap1d, k in modemap1d
                 ]...,
             ]
@@ -867,7 +871,8 @@ function getmodemap(basis::TensorBasis)
         numbermodes1component = max(modemap...)
         modemap = vcat(
             [
-                ((i - 1)*numbermodes1component) .+ modemap for i = 1:basis.numbercomponents
+                ((i - 1) * numbermodes1component) .+ modemap for
+                i = 1:basis.numbercomponents
             ]...,
         )
         basis.modemap = modemap
@@ -876,6 +881,173 @@ function getmodemap(basis::TensorBasis)
 
     # return
     return getfield(basis, :modemap)
+end
+
+"""
+```julia
+getprimalnodes(basis)
+```
+
+Get primal nodes for basis
+
+# Arguments:
+- `basis`: basis to compute primal nodes
+
+# Returns:
+- Basis primal nodes vector
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    p = 4
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+
+    # note: either syntax works
+    primalnodes = LFAToolkit.getprimalnodes(basis);
+    primalnodes = basis.primalnodes;
+
+    # verify
+    trueprimalnodes = []
+    if dimension == 1
+        trueprimalnodes = [1, p];
+    elseif dimension == 2
+        trueprimalnodes = [1, p, p^2-p+1, p^2]
+    elseif dimension == 3
+        trueprimalnodes = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
+    end
+
+    @assert trueprimalnodes == primalnodes
+end
+
+# output
+
+```
+"""
+function getprimalnodes(basis::TensorBasis)
+    # assemble if needed
+    if !isdefined(basis, :primalnodes)
+        primalnodes1component = []
+        p = basis.numbernodes1d
+        if basis.dimension == 1
+            # 1D
+            primalnodes1component = [1, p]
+        elseif basis.dimension == 2
+            # 2D
+            primalnodes1component = [1, p, p^2 - p + 1, p^2]
+        elseif basis.dimension == 3
+            # 3D
+            primalnodes1component =
+                [1, p, p^2 - p + 1, p^2, p^3 - p^2 + 1, p^3 - p^2 + p, p^3 - p + 1, p^3]
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        primalnodes = vcat(
+            [
+                (i - 1) * basis.numbernodes .+ primalnodes1component for
+                i = 1:basis.numbercomponents
+            ]...,
+        )
+        basis.primalnodes = primalnodes
+    end
+
+    # return
+    return getfield(basis, :primalnodes)
+end
+
+"""
+```julia
+getinterfacenodes(basis)
+```
+
+Get interface nodes for basis
+
+# Arguments:
+- `basis`: basis to compute primal nodes
+
+# Returns:
+- Basis primal nodes vector
+
+# Example:
+```jldoctest
+# test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    p = 4
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+
+    # note: either syntax works
+    interfacenodes = LFAToolkit.getinterfacenodes(basis);
+    interfacenodes = basis.interfacenodes;
+
+    # verify
+    trueinterfacenodes = []
+    if dimension == 1
+        trueinterfacenodes = [1, p];
+    elseif dimension == 2
+        trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
+        for i = 1:p-2
+            push!(trueinterfacenodes, i*p+1)
+            push!(trueinterfacenodes, (i+1)*p)
+        end
+    elseif dimension == 3
+        trueinterfacenodes = [1:p^2..., p^3-p^2+1:p^3...]
+        for i = 1:p-2
+            push!(trueinterfacenodes, i*p^2+1:i*p^2+p...)
+            push!(trueinterfacenodes, (i+1)*p^2-p+1:(i+1)*p^2...)
+            push!(trueinterfacenodes, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
+            push!(trueinterfacenodes, i*p^2+2*p:p:(i+1)*p^2-p...)
+        end
+    end
+    trueinterfacenodes = sort(trueinterfacenodes)
+
+    @assert trueinterfacenodes == interfacenodes
+end
+
+# output
+
+```
+"""
+function getinterfacenodes(basis::TensorBasis)
+    # assemble if needed
+    if !isdefined(basis, :interfacenodes)
+        interfacenodes1component = []
+        p = basis.numbernodes1d
+        if basis.dimension == 1
+            # 1D
+            interfacenodes1component = [1, p]
+        elseif basis.dimension == 2
+            # 2D
+            interfacenodes1component = [1:p..., p^2-p+1:p^2...]
+            for i = 1:p-2
+                push!(interfacenodes1component, i * p + 1)
+                push!(interfacenodes1component, (i + 1) * p)
+            end
+        elseif basis.dimension == 3
+            # 3D
+            interfacenodes1component = [1:p^2..., p^3-p^2+1:p^3...]
+            for i = 1:p-2
+                push!(interfacenodes1component, i*p^2+1:i*p^2+p...)
+                push!(interfacenodes1component, (i+1)*p^2-p+1:(i+1)*p^2...)
+                push!(interfacenodes1component, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
+                push!(interfacenodes1component, i*p^2+2*p:p:(i+1)*p^2-p...)
+            end
+        else
+            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+        end
+        interfacenodes1component = sort(interfacenodes1component)
+        interfacenodes = vcat(
+            [
+                (i - 1) * basis.numbernodes .+ interfacenodes1component for
+                i = 1:basis.numbercomponents
+            ]...,
+        )
+        basis.interfacenodes = interfacenodes
+    end
+
+    # return
+    return getfield(basis, :interfacenodes)
 end
 
 """
@@ -934,6 +1106,10 @@ function Base.getproperty(basis::TensorBasis, f::Symbol)
         return getnumbermodes(basis)
     elseif f == :modemap
         return getmodemap(basis)
+    elseif f == :primalnodes
+        return getprimalnodes(basis)
+    elseif f == :interfacenodes
+        return getinterfacenodes(basis)
     elseif f == :numberelements
         return getnumberelements(basis)
     else
@@ -1061,26 +1237,26 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
     # adjust for mesh
     if dimension == 1
         # 1D
-        return gradient*lengthreference/mesh.dx
+        return gradient * lengthreference / mesh.dx
     elseif dimension == 2
         # 2D
-        scalex = lengthreference/mesh.dx
-        scaley = lengthreference/mesh.dy
+        scalex = lengthreference / mesh.dx
+        scaley = lengthreference / mesh.dy
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :]*scalex
-            gradient[numberquadraturepoints+1:end, :]*scaley
+            gradient[1:numberquadraturepoints, :] * scalex
+            gradient[numberquadraturepoints+1:end, :] * scaley
         ]
     elseif dimension == 3
         # 3D
-        scalex = lengthreference/mesh.dx
-        scaley = lengthreference/mesh.dy
-        scalez = lengthreference/mesh.dz
+        scalex = lengthreference / mesh.dx
+        scaley = lengthreference / mesh.dy
+        scalez = lengthreference / mesh.dz
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :]*scalex
-            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :]*scaley
-            gradient[2*numberquadraturepoints+1:end, :]*scalez
+            gradient[1:numberquadraturepoints, :] * scalex
+            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :] * scaley
+            gradient[2*numberquadraturepoints+1:end, :] * scalez
         ]
     end
 end

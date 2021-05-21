@@ -104,7 +104,7 @@ struct Mesh2D <: Mesh
         end;
 
         # constructor
-        new(2, dx, dy, dx*dy)
+        new(2, dx, dy, dx * dy)
     )
 end
 
@@ -166,7 +166,7 @@ struct Mesh3D <: Mesh
         end;
 
         # constructor
-        new(3, dx, dy, dz, dx*dy*dz)
+        new(3, dx, dy, dz, dx * dy * dz)
     )
 end
 

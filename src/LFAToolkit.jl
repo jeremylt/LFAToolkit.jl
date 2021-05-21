@@ -16,7 +16,7 @@ using SparseArrays
 # user available types and methods
 # ------------------------------------------------------------------------------
 
-export EvaluationMode, MultigridType
+export EvaluationMode, MultigridType, BDDCInjectionType
 # mesh
 export Mesh1D, Mesh2D, Mesh3D
 # bases
@@ -44,6 +44,8 @@ export Jacobi
 export Chebyshev, seteigenvalueestimatescaling
 # -- multigrid
 export Multigrid, PMultigrid, HMultigrid
+# -- BDDC
+export BDDC, LumpedBDDC, DirichletBDDC
 
 # ------------------------------------------------------------------------------
 # imports
@@ -68,6 +70,9 @@ include("PC/Chebyshev.jl")
 # -- multigrid
 include("PC/Multigrid/Base.jl")
 include("PC/Multigrid/Constructors.jl")
+# -- BDDC
+include("PC/BDDC/Base.jl")
+include("PC/BDDC/Constructors.jl")
 
 end # module
 

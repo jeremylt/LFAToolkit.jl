@@ -188,7 +188,7 @@ function massoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
     function massweakform(u::Array{Float64}, w::Array{Float64})
-        v = u*w[1]
+        v = u * w[1]
         return [v]
     end
 
@@ -270,7 +270,7 @@ function vectormassoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
     function massweakform(u::Array{Float64}, w::Array{Float64})
-        v = u*w[1]
+        v = u * w[1]
         return [v]
     end
 
@@ -353,7 +353,7 @@ function diffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
+        dv = du * w[1]
         return [dv]
     end
 
@@ -438,7 +438,7 @@ function vectordiffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
     # setup
     basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du*w[1]
+        dv = du * w[1]
         return [dv]
     end
 

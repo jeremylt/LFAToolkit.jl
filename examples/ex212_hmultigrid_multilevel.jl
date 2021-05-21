@@ -23,7 +23,7 @@ mtofbasis = TensorH1LagrangeHProlongationMacroBasis(
 
 # operators
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
+    dv = du * w[1]
     return [dv]
 end
 # -- fine

@@ -63,7 +63,7 @@ BDDC injection types
 ```@jldoctest
 LFAToolkit.BDDCInjectionType.BDDCInjectType
 
-#output
+# output
 Enum LFAToolkit.BDDCInjectionType.BDDCInjectType:
 scaled = 0
 harmonic = 1

@@ -849,7 +849,7 @@ function computesymbols(bddc::BDDC, θ::Array)
         end
     end
 
-    # mixed subassembled primal matrix
+    # mixed subassembled primal matrices
     Â_Πr_nodes = zeros(ComplexF64, numberprimalnodes, numbersubassemblednodes)
     if dimension == 1
         for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
@@ -888,6 +888,44 @@ function computesymbols(bddc::BDDC, θ::Array)
         end
     end
     Â_Πr_modes = bddc.primalrowmodemap * Â_Πr_nodes
+    Â_rΠ_nodes = zeros(ComplexF64, numbersubassemblednodes, numberprimalnodes)
+    if dimension == 1
+        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
+            indxi = bddc.subassemblednodes[i]
+            indxj = bddc.primalnodes[j]
+            Â_rΠ_nodes[i, j] =
+                elementmatrix[indxi, indxj] *
+                ℯ^(im * θ[1] * nodecoordinatedifferences[indxi, indxj, 1])
+        end
+    elseif dimension == 2
+        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
+            indxi = bddc.subassemblednodes[i]
+            indxj = bddc.primalnodes[j]
+            Â_rΠ_nodes[i, j] =
+                elementmatrix[indxi, indxj] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
+                    )
+                )
+        end
+    elseif dimension == 3
+        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
+            indxi = bddc.subassemblednodes[i]
+            indxj = bddc.primalnodes[j]
+            Â_rΠ_nodes[i, j] =
+                elementmatrix[indxi, indxj] *
+                ℯ^(
+                    im * (
+                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
+                        θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
+                    )
+                )
+        end
+    end
+    Â_rΠ_modes = Â_rΠ_nodes * bddc.primalcolumnmodemap
 
     # Schur complement
     Ŝ_Π = bddc.schur
@@ -932,14 +970,18 @@ function computesymbols(bddc::BDDC, θ::Array)
     # subassembled nodes primal modes
     Ø = zeros((numberprimalmodes, numbersubassemblednodes))
     K_u_inv = [
-        I(numbersubassemblednodes) (-1)*A_rr_inv_nodes*transpose(Â_Πr_modes)
+        I(numbersubassemblednodes) -A_rr_inv_nodes*Â_rΠ_modes
         Ø I(numberprimalmodes)
     ]
-    K_ld_inv = [
+    P_inv = [
         A_rr_inv_nodes transpose(Ø)
-        (-1)*Ŝ_Π_inv_modes*Â_Πr_modes*A_rr_inv_nodes Ŝ_Π_inv_modes
+        Ø Ŝ_Π_inv_modes
     ]
-    mixedsubassembled = K_u_inv * K_ld_inv
+    K_u_T_inv = [
+        I(numbersubassemblednodes) transpose(Ø)
+        -Â_Πr_modes*A_rr_inv_nodes I(numberprimalmodes)
+    ]
+    mixedsubassembled = K_u_inv * P_inv * K_u_T_inv
 
     # injection
     mixedinjected = transpose(bddc.injection) * mixedsubassembled * bddc.injection

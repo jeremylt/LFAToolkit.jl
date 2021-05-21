@@ -104,8 +104,8 @@ end
 @testset "  ex221: lumped BDDC example           " begin
     include("../examples/ex221_lumpedbddc.jl")
 
-    @test min(eigenvalues...) ≈ -4.795647139061568
-    @test max(eigenvalues...) ≈ 0.6011398181204948
+    @test min(eigenvalues...) ≈ -4.263437393438461
+    @test max(eigenvalues...) ≈ 0.6052662562209075
 end
 
 # ------------------------------------------------------------------------------

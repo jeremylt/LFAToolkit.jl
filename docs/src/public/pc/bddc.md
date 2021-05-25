@@ -20,6 +20,19 @@ $(read("../../../../examples/ex221_lumpedbddc.jl", String))
 ```
 """)
 ````
+![](../../img/221_lumpedbddc_spectral_radius_4_2d.png)
+
+This is an example of a simple lumped BDDC preconditioner on a macro-element patch.
+
+````@eval
+using Markdown
+Markdown.parse("""
+```julia
+$(read("../../../../examples/ex222_lumpedbddc.jl", String))
+```
+""")
+````
+![](../../img/222_lumpedbddc_spectral_radius_4_elem_2d.png)
 
 #### Documentation
 

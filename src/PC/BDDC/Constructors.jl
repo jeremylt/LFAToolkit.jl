@@ -8,13 +8,13 @@
 
 """
 ```julia
-LumpedBDDC(fineoperator)
+LumpedBDDC(operator)
 ```
 
 Lumped BDDC preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:  finite element operator to precondition
+- `operator`:  finite element operator to precondition
 
 # Returns:
 - Lumped BDDC preconditioner object
@@ -32,7 +32,7 @@ bddc = LumpedBDDC(finediffusion);
 
 # verify
 println(bddc)
-println(bddc.fineoperator)
+println(bddc.operator)
 
 # output
 lumped BDDC preconditioner
@@ -70,9 +70,9 @@ operator field:
     gradient
 ```
 """
-function LumpedBDDC(fineoperator::Operator)
+function LumpedBDDC(operator::Operator)
     # common constructor
-    return BDDC(fineoperator, BDDCInjectionType.scaled)
+    return BDDC(operator, BDDCInjectionType.scaled)
 end
 
 # ------------------------------------------------------------------------------
@@ -81,13 +81,13 @@ end
 
 """
 ```julia
-DirichletBDDC(fineoperator)
+DirichletBDDC(operator)
 ```
 
 Dirichlet BDDC preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:  finite element operator to precondition
+- `operator`:  finite element operator to precondition
 
 # Returns:
 - Dirichlet BDDC preconditioner object
@@ -105,7 +105,7 @@ bddc = DirichletBDDC(finediffusion);
 
 # verify
 println(bddc)
-println(bddc.fineoperator)
+println(bddc.operator)
 
 # output
 Dirichlet BDDC preconditioner
@@ -143,9 +143,9 @@ operator field:
     gradient
 ```
 """
-function DirichletBDDC(fineoperator::Operator)
+function DirichletBDDC(operator::Operator)
     # common constructor
-    return BDDC(fineoperator, BDDCInjectionType.harmonic)
+    return BDDC(operator, BDDCInjectionType.harmonic)
 end
 
 # ------------------------------------------------------------------------------

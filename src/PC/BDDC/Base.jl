@@ -4,13 +4,13 @@
 
 """
 ```julia
-BDDC(fineoperator, coarseoperator, smoother, prolongation)
+BDDC(operator, coarseoperator, smoother, prolongation)
 ```
 
 BDDC preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:  finite element operator to precondition
+- `operator`:      finite element operator to precondition
 - `injectiontype`: type of injection into subassembled space to use
 
 # Returns:
@@ -18,7 +18,7 @@ BDDC preconditioner for finite element operators
 """
 mutable struct BDDC <: AbstractPreconditioner
     # data never changed
-    fineoperator::Operator
+    operator::Operator
     injectiontype::BDDCInjectionType.BDDCInjectType
 
     # data empty until assembled
@@ -38,9 +38,15 @@ mutable struct BDDC <: AbstractPreconditioner
     primalcolumnmodemap::AbstractArray{Float64,2}
 
     # inner constructor
-    BDDC(fineoperator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
-    # constructor
-    new(fineoperator, injectiontype))
+    BDDC(operator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
+        # validity check
+        if operator.dimension == 1
+            error("BDDC preconditioner only valid for 1 and 2 dimensional operators") # COV_EXCL_LINE
+        end;
+
+        # constructor
+        new(operator, injectiontype)
+    )
 end
 
 # printing
@@ -72,7 +78,7 @@ Compute or retrieve the primal nodes for a BDDC preconditioner
 # Example:
 ```jldoctest
 # setup
-mesh = Mesh1D(1.0);
+mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion)
@@ -82,7 +88,7 @@ primalnodes = LFAToolkit.getprimalnodes(bddc);
 primalnodes = bddc.primalnodes;
 
 # verify
-@assert primalnodes == [1, p]
+@assert primalnodes == [1, p, p^2 - p + 1, p^2]
 
 # output
 
@@ -91,7 +97,7 @@ primalnodes = bddc.primalnodes;
 function getprimalnodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :primalnodes)
-        operator = bddc.fineoperator
+        operator = bddc.operator
         primalnodes = []
         numbernodes = 0
         for input in operator.inputs
@@ -142,7 +148,7 @@ subassemblednodes = bddc.subassemblednodes;
 function getsubassemblednodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :subassemblednodes)
-        numbernodes, _ = size(bddc.fineoperator.elementmatrix)
+        numbernodes, _ = size(bddc.operator.elementmatrix)
 
         # store
         bddc.subassemblednodes = setdiff(1:numbernodes, bddc.primalnodes)
@@ -165,7 +171,7 @@ Compute or retrieve the primal modes for a BDDC preconditioner
 # Example:
 ```jldoctest
 # setup
-mesh = Mesh1D(1.0);
+mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion)
@@ -186,9 +192,8 @@ function getprimalmodes(bddc::BDDC)
     if !isdefined(bddc, :primalmodes)
         primalmodes::Array{Int,1} = []
         numberprimalnodes = max(size(bddc.primalnodes)...)
-        numbermodes, _ = size(bddc.fineoperator.rowmodemap)
-        modemap =
-            bddc.fineoperator.rowmodemap[:, bddc.primalnodes] * ones(numberprimalnodes)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+        modemap = bddc.operator.rowmodemap[:, bddc.primalnodes] * ones(numberprimalnodes)
         for i = 1:numbermodes
             if modemap[i] > 0.0
                 push!(primalmodes, i)
@@ -235,7 +240,7 @@ subassembledmodes = bddc.subassembledmodes;
 function getsubassembledmodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :subassembledmodes)
-        numbermodes, _ = size(bddc.fineoperator.rowmodemap)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
 
         # store
         bddc.subassembledmodes = setdiff(1:numbermodes, bddc.primalmodes)
@@ -258,7 +263,7 @@ Compute or retrieve the interface nodes for a BDDC preconditioner
 # Example:
 ```jldoctest
 # setup
-mesh = Mesh1D(1.0);
+mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion)
@@ -268,7 +273,13 @@ interfacenodes = LFAToolkit.getinterfacenodes(bddc);
 interfacenodes = bddc.interfacenodes;
 
 # verify
-@assert interfacenodes == [1, p]
+trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
+for i = 1:p-2
+    push!(trueinterfacenodes, i*p+1)
+    push!(trueinterfacenodes, (i+1)*p)
+end
+trueinterfacenodes = sort(trueinterfacenodes)
+@assert interfacenodes == trueinterfacenodes
 
 # output
 
@@ -277,7 +288,7 @@ interfacenodes = bddc.interfacenodes;
 function getinterfacenodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interfacenodes)
-        operator = bddc.fineoperator
+        operator = bddc.operator
         interfacenodes = []
         numbernodes = 0
         for input in operator.inputs
@@ -334,7 +345,7 @@ trueinterfacenodes = sort(trueinterfacenodes)
 function getinteriornodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interiornodes)
-        numbernodes, _ = size(bddc.fineoperator.elementmatrix)
+        numbernodes, _ = size(bddc.operator.elementmatrix)
 
         # store
         bddc.interiornodes = setdiff(1:numbernodes, bddc.interfacenodes)
@@ -376,7 +387,7 @@ subassembledinverse = bddc.subassembledinverse;
 function getsubassembledinverse(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :subassembledinverse)
-        elementmatrix = bddc.fineoperator.elementmatrix
+        elementmatrix = bddc.operator.elementmatrix
         subassembledmatrix =
             Matrix(elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])
 
@@ -420,7 +431,7 @@ interiorinverse = bddc.interiorinverse;
 function getinteriorinverse(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interiorinverse)
-        elementmatrix = bddc.fineoperator.elementmatrix
+        elementmatrix = bddc.operator.elementmatrix
         interiormatrix = Matrix(elementmatrix[bddc.interiornodes, bddc.interiornodes])
 
         # store
@@ -466,12 +477,11 @@ schur = bddc.schur;
 function getschur(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :schur)
-        elementmatrix = bddc.fineoperator.elementmatrix
+        elementmatrix = bddc.operator.elementmatrix
+        mixedmatrix = elementmatrix[bddc.primalnodes, bddc.subassemblednodes]
         schur =
             elementmatrix[bddc.primalnodes, bddc.primalnodes] -
-            elementmatrix[bddc.primalnodes, bddc.subassemblednodes] *
-            bddc.subassembledinverse *
-            elementmatrix[bddc.subassemblednodes, bddc.primalnodes]
+            mixedmatrix * bddc.subassembledinverse * mixedmatrix'
 
         # store
         bddc.schur = schur
@@ -503,7 +513,7 @@ function getinjection(bddc::BDDC)
             injection = Diagonal(
                 vcat(
                     ones(numberprimalmodes, 1)...,
-                    bddc.fineoperator.multiplicity[bddc.subassemblednodes] .^ -1...,
+                    bddc.operator.multiplicity[bddc.subassemblednodes] .^ -1...,
                 ),
             )
         elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
@@ -552,12 +562,12 @@ modemap = bddc.rowmodemap;
 function getrowmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :rowmodemap)
-        numbermodes, _ = size(bddc.fineoperator.rowmodemap)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
         numberprimalmodes = max(size(bddc.primalmodes)...)
         numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
         rowmodemap = spzeros(numbermodes, numbermixed)
         rowmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
-            bddc.fineoperator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+            bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
         for i = 1:numberprimalmodes
             rowmodemap[i, i] = 1
         end
@@ -602,12 +612,12 @@ modemap = bddc.columnmodemap;
 function getcolumnmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :columnmodemap)
-        _, numbermodes = size(bddc.fineoperator.columnmodemap)
+        _, numbermodes = size(bddc.operator.columnmodemap)
         numberprimalmodes = max(size(bddc.primalmodes)...)
         numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
         columnmodemap = spzeros(numbermixed, numbermodes)
         columnmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
-            bddc.fineoperator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+            bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
         for i = 1:numberprimalmodes
             columnmodemap[i, i] = 1
         end
@@ -651,7 +661,7 @@ primalmodemap = bddc.primalrowmodemap;
 function getprimalrowmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :rowmodemap)
-        primalrowmodemap = bddc.fineoperator.rowmodemap[bddc.primalmodes, bddc.primalnodes]
+        primalrowmodemap = bddc.operator.rowmodemap[bddc.primalmodes, bddc.primalnodes]
 
         # store
         bddc.primalrowmodemap = primalrowmodemap
@@ -694,7 +704,7 @@ function getprimalcolumnmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :primalcolumnmodemap)
         primalcolumnmodemap =
-            bddc.fineoperator.columnmodemap[bddc.primalnodes, bddc.primalmodes]
+            bddc.operator.columnmodemap[bddc.primalnodes, bddc.primalmodes]
 
         # store
         bddc.primalcolumnmodemap = primalcolumnmodemap
@@ -743,7 +753,7 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
 end
 
 function Base.setproperty!(bddc::BDDC, f::Symbol, value)
-    if f == :fineoperator || f == :injectiontype
+    if f == :operator || f == :injectiontype
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     else
         return setfield!(bddc, f, value)
@@ -772,12 +782,10 @@ Compute the symbol matrix for a BDDC preconditioned operator
 ```jldoctest
 using LinearAlgebra;
 
-for dimension in 1:3
+for dimension in 2:3
     # setup
     mesh = []
-    if dimension == 1
-        mesh = Mesh1D(1.0);
-    elseif dimension == 2
+    if dimension == 2
         mesh = Mesh2D(1.0, 1.0);
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
@@ -789,7 +797,14 @@ for dimension in 1:3
     A = computesymbols(bddc, π*ones(dimension));
 
     # verify
-
+    eigenvalues = real(eigvals(A));
+    if dimension == 2
+        @assert min(eigenvalues...) ≈ 1.0
+        @assert max(eigenvalues...) ≈ 2.8
+    elseif dimension == 3
+        @assert min(eigenvalues...) ≈ 0.9999999999999996
+        @assert max(eigenvalues...) ≈ 8.159999999999982
+    end
 end
 
 # output
@@ -799,28 +814,21 @@ end
 function computesymbols(bddc::BDDC, θ::Array)
     # validity check
     dimension = length(θ)
-    if dimension != bddc.fineoperator.inputs[1].basis.dimension
+    if dimension != bddc.operator.inputs[1].basis.dimension
         throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
     end
 
     # setup
-    elementmatrix = bddc.fineoperator.elementmatrix
+    elementmatrix = bddc.operator.elementmatrix
     numberprimalnodes = max(size(bddc.primalnodes)...)
     numberprimalmodes = max(size(bddc.primalmodes)...)
     numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
-    nodecoordinatedifferences = bddc.fineoperator.nodecoordinatedifferences
+    nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
 
     # subdomain solver
     A_rr_inv = bddc.subassembledinverse
     A_rr_inv_nodes = zeros(ComplexF64, numbersubassemblednodes, numbersubassemblednodes)
-    if dimension == 1
-        for i = 1:numbersubassemblednodes, j = 1:numbersubassemblednodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.subassemblednodes[j]
-            A_rr_inv_nodes[i, j] =
-                A_rr_inv[i, j] * ℯ^(im * θ[1] * nodecoordinatedifferences[indxi, indxj, 1])
-        end
-    elseif dimension == 2
+    if dimension == 2
         for i = 1:numbersubassemblednodes, j = 1:numbersubassemblednodes
             indxi = bddc.subassemblednodes[i]
             indxj = bddc.subassemblednodes[j]
@@ -851,15 +859,7 @@ function computesymbols(bddc::BDDC, θ::Array)
 
     # mixed subassembled primal matrices
     Â_Πr_nodes = zeros(ComplexF64, numberprimalnodes, numbersubassemblednodes)
-    if dimension == 1
-        for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.subassemblednodes[j]
-            Â_Πr_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(im * θ[1] * nodecoordinatedifferences[indxi, indxj, 1])
-        end
-    elseif dimension == 2
+    if dimension == 2
         for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
             indxi = bddc.primalnodes[i]
             indxj = bddc.subassemblednodes[j]
@@ -889,56 +889,10 @@ function computesymbols(bddc::BDDC, θ::Array)
     end
     Â_Πr_modes = bddc.primalrowmodemap * Â_Πr_nodes
 
-    Â_rΠ_nodes = zeros(ComplexF64, numbersubassemblednodes, numberprimalnodes)
-    if dimension == 1
-        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.primalnodes[j]
-            Â_rΠ_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(im * θ[1] * nodecoordinatedifferences[indxi, indxj, 1])
-        end
-    elseif dimension == 2
-        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.primalnodes[j]
-            Â_rΠ_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numbersubassemblednodes, j = 1:numberprimalnodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.primalnodes[j]
-            Â_rΠ_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                        θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                    )
-                )
-        end
-    end
-    Â_rΠ_modes = Â_rΠ_nodes * bddc.primalcolumnmodemap
-
     # Schur complement
     Ŝ_Π = bddc.schur
     Ŝ_Π_nodes = zeros(ComplexF64, numberprimalnodes, numberprimalnodes)
-    if dimension == 1
-        for i = 1:numberprimalnodes, j = 1:numberprimalnodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.primalnodes[j]
-            Ŝ_Π_nodes[i, j] =
-                Ŝ_Π[i, j] * ℯ^(im * θ[1] * nodecoordinatedifferences[indxi, indxj, 1])
-        end
-    elseif dimension == 2
+    if dimension == 2
         for i = 1:numberprimalnodes, j = 1:numberprimalnodes
             indxi = bddc.primalnodes[i]
             indxj = bddc.primalnodes[j]
@@ -972,25 +926,26 @@ function computesymbols(bddc::BDDC, θ::Array)
     Ø = zeros((numberprimalmodes, numbersubassemblednodes))
     K_u_inv = [
         I(numberprimalmodes) Ø
-        -A_rr_inv_nodes*Â_rΠ_modes I(numbersubassemblednodes)
+        -A_rr_inv_nodes*Â_Πr_modes' I(numbersubassemblednodes)
     ]
     P_inv = [
         Ŝ_Π_inv_modes Ø
-        transpose(Ø) A_rr_inv_nodes
+        Ø' A_rr_inv_nodes
     ]
     K_u_T_inv = [
         I(numberprimalmodes) -Â_Πr_modes*A_rr_inv_nodes
-        transpose(Ø) I(numbersubassemblednodes)
+        Ø' I(numbersubassemblednodes)
     ]
     mixedsubassembled = K_u_inv * P_inv * K_u_T_inv
 
     # injection
-    mixedinjected = transpose(bddc.injection) * mixedsubassembled * bddc.injection
+    mixedinjected = bddc.injection' * mixedsubassembled * bddc.injection
 
     # return
-    return I -
-           bddc.rowmodemap * mixedinjected * bddc.columnmodemap *
-           computesymbols(bddc.fineoperator, θ)
+    #! format: off
+    return bddc.rowmodemap * mixedinjected * bddc.columnmodemap *
+           computesymbols(bddc.operator, θ)
+    #! format: on
 end
 
 # ------------------------------------------------------------------------------

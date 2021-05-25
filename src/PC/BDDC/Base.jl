@@ -942,8 +942,10 @@ function computesymbols(bddc::BDDC, θ::Array)
     mixedinjected = bddc.injection' * mixedsubassembled * bddc.injection
 
     # return
+    #! format: off
     return bddc.rowmodemap * mixedinjected * bddc.columnmodemap *
            computesymbols(bddc.operator, θ)
+    #! format: on
 end
 
 # ------------------------------------------------------------------------------

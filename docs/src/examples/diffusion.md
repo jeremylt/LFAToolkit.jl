@@ -124,3 +124,31 @@ $(read("../../../examples/ex212_hmultigrid_multilevel.jl", String))
 ![](../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png)
 
 Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.
+
+#### Lumped BDDC
+
+
+
+This is an example of a simple lumped BDDC preconditioner.
+
+````@eval
+using Markdown
+Markdown.parse("""
+```julia
+$(read("../../../examples/ex221_lumped_bddc.jl", String))
+```
+""")
+````
+![](../img/221_lumped_bddc_spectral_radius_4_2d.png)
+
+This is an example of a simple lumped BDDC preconditioner on a macro-element patch.
+
+````@eval
+using Markdown
+Markdown.parse("""
+```julia
+$(read("../../../examples/ex222_lumped_bddc.jl", String))
+```
+""")
+````
+![](../img/222_lumped_bddc_spectral_radius_4_elem_2d.png)

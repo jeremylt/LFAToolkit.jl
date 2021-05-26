@@ -1272,7 +1272,7 @@ Compute the symbol matrix for a BDDC preconditioned operator
 # Returns:
 - Symbol matrix for the BDDC preconditioned operator
 
-# Example:
+# Lumped BDDC Example:
 ```jldoctest
 using LinearAlgebra;
 
@@ -1298,6 +1298,39 @@ for dimension in 2:3
     elseif dimension == 3
         @assert min(eigenvalues...) ≈ 0.9999999999999996
         @assert max(eigenvalues...) ≈ 8.159999999999982
+    end
+end
+
+# output
+
+```
+
+# Dirichlet BDDC Example:
+```jldoctest
+using LinearAlgebra;
+
+for dimension in 2:3
+    # setup
+    mesh = []
+    if dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    bddc = DirichletBDDC(diffusion)
+
+    # compute symbols
+    A = computesymbols(bddc, π*ones(dimension));
+
+    # verify
+    eigenvalues = real(eigvals(A));
+    if dimension == 2
+        @assert min(eigenvalues...) ≈ 1.0
+        @assert max(eigenvalues...) ≈ 2.8
+    elseif dimension == 3
+        @assert min(eigenvalues...) ≈ 0.9999999999999994
+        @assert max(eigenvalues...) ≈ 8.159999999999986
     end
 end
 

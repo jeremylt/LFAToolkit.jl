@@ -56,6 +56,17 @@ $(read("../../../../examples/ex223_dirichlet_bddc.jl", String))
 """)
 ````
 
+This is an example of a simple Dirichlet BDDC preconditioner on a macro-element patch.
+
+````@eval
+using Markdown
+Markdown.parse("""
+```julia
+$(read("../../../../examples/ex224_dirichlet_bddc.jl", String))
+```
+""")
+````
+
 #### Documentation
 
 ```@docs

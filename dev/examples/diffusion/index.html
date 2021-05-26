@@ -227,4 +227,61 @@ A = computesymbols(multigrid, [3], [1, 1], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 25 May 2021 21:26">Tuesday 25 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p><img src="../../img/212_hmultigrid_spectral_radius_4_to_2_to_1_2d.png" alt/></p><p>Example plot for the symbol of multilevel h-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with linear basis.</p><h4 id="Lumped-BDDC"><a class="docs-heading-anchor" href="#Lumped-BDDC">Lumped BDDC</a><a id="Lumped-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Lumped-BDDC" title="Permalink"></a></h4><p>This is an example of a simple lumped BDDC preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+# lumped BDDC example
+# ------------------------------------------------------------------------------
+
+using LinearAlgebra
+
+# setup
+mesh = Mesh2D(1.0, 1.0)
+p = 4
+
+# diffusion operator
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh)
+
+# lumped BDDC preconditioner
+bddc = LumpedBDDC(diffusion)
+
+# compute operator symbols
+A = computesymbols(bddc, [π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre><p><img src="../../img/221_lumped_bddc_spectral_radius_4_2d.png" alt/></p><p>This is an example of a simple lumped BDDC preconditioner on a macro-element patch.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+# lumped BDDC on macro elements example
+# ------------------------------------------------------------------------------
+
+using LinearAlgebra
+
+# setup
+mesh = Mesh2D(1.0, 1.0)
+p = 2
+numberfineelements1d = 4
+numbercomponents = 1
+dimension = 2
+
+# operators
+function diffusionweakform(du::Array{Float64}, w::Array{Float64})
+    dv = du * w[1]
+    return [dv]
+end
+# -- fine
+basis =
+    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
+inputs = [
+    OperatorField(basis, [EvaluationMode.gradient]),
+    OperatorField(basis, [EvaluationMode.quadratureweights]),
+];
+outputs = [OperatorField(basis, [EvaluationMode.gradient])];
+finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+
+# BDDC smoother
+bddc = LumpedBDDC(finediffusion)
+
+# compute operator symbols
+A = computesymbols(bddc, [π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre><p><img src="../../img/222_lumped_bddc_spectral_radius_4_elem_2d.png" alt/></p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 26 May 2021 22:02">Wednesday 26 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -971,7 +971,11 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
         # -- validity check
         dimension = length(θ)
         if dimension != bddc.operator.inputs[1].basis.dimension
-            throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+            throw(
+                ArgumentError(
+                    "Must provide as many values of θ as the mesh has dimensions",
+                ),
+            ) # COV_EXCL_LINE
         end
 
         # -- harmonic operator
@@ -1094,7 +1098,11 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         # -- validity check
         dimension = length(θ)
         if dimension != bddc.operator.inputs[1].basis.dimension
-            throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+            throw(
+                ArgumentError(
+                    "Must provide as many values of θ as the mesh has dimensions",
+                ),
+            ) # COV_EXCL_LINE
         end
 
         # -- harmonic operator

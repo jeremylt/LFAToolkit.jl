@@ -28,6 +28,8 @@ mutable struct BDDC <: AbstractPreconditioner
     interiornodes::AbstractArray{Int,1}
     primalmodes::AbstractArray{Int,1}
     subassembledmodes::AbstractArray{Int,1}
+    interfacemodes::AbstractArray{Int,1}
+    interiormodes::AbstractArray{Int,1}
     subassembledinverse::AbstractArray{Float64,2}
     interiorinverse::AbstractArray{Float64,2}
     schur::AbstractArray{Float64,2}
@@ -35,6 +37,10 @@ mutable struct BDDC <: AbstractPreconditioner
     primalcolumnmodemap::AbstractArray{Float64,2}
     subassembledrowmodemap::AbstractArray{Float64,2}
     subassembledcolumnmodemap::AbstractArray{Float64,2}
+    interfacerowmodemap::AbstractArray{Float64,2}
+    interfacecolumnmodemap::AbstractArray{Float64,2}
+    interiorrowmodemap::AbstractArray{Float64,2}
+    interiorcolumnmodemap::AbstractArray{Float64,2}
 
     # inner constructor
     BDDC(operator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
@@ -159,98 +165,6 @@ end
 
 """
 ```julia
-getprimalmodes(bddc)
-```
-
-Compute or retrieve the primal modes for a BDDC preconditioner
-
-# Returns:
-- Vector of primal modes for BDDC preconditioner
-
-# Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
-
-# note: either syntax works
-primalmodes = LFAToolkit.getprimalmodes(bddc);
-primalmodes = bddc.primalmodes;
-
-# verify
-@assert primalmodes == [1]
-
-# output
-
-```
-"""
-function getprimalmodes(bddc::BDDC)
-    # assemble if needed
-    if !isdefined(bddc, :primalmodes)
-        primalmodes::Array{Int,1} = []
-        numberprimalnodes = max(size(bddc.primalnodes)...)
-        numbermodes, _ = size(bddc.operator.rowmodemap)
-        modemap = bddc.operator.rowmodemap[:, bddc.primalnodes] * ones(numberprimalnodes)
-        for i = 1:numbermodes
-            if modemap[i] > 0.0
-                push!(primalmodes, i)
-            end
-        end
-
-        # store
-        bddc.primalmodes = primalmodes
-    end
-
-    # return
-    return getfield(bddc, :primalmodes)
-end
-
-"""
-```julia
-getsubassembledmodes(bddc)
-```
-
-Compute or retrieve the subassembled modes for a BDDC preconditioner
-
-# Returns:
-- Vector of subassembled modes for BDDC preconditioner
-
-# Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
-
-# note: either syntax works
-subassembledmodes = LFAToolkit.getsubassembledmodes(bddc);
-subassembledmodes = bddc.subassembledmodes;
-
-# verify
-@assert subassembledmodes == setdiff(1:(p-1)^2, [1])
-
-# output
-
-```
-"""
-function getsubassembledmodes(bddc::BDDC)
-    # assemble if needed
-    if !isdefined(bddc, :subassembledmodes)
-        numbermodes, _ = size(bddc.operator.rowmodemap)
-
-        # store
-        bddc.subassembledmodes = setdiff(1:numbermodes, bddc.primalmodes)
-    end
-
-    # return
-    return getfield(bddc, :subassembledmodes)
-end
-
-"""
-```julia
 getinterfacenodes(bddc)
 ```
 
@@ -352,6 +266,196 @@ function getinteriornodes(bddc::BDDC)
 
     # return
     return getfield(bddc, :interiornodes)
+end
+
+"""
+```julia
+getprimalmodes(bddc)
+```
+
+Compute or retrieve the primal modes for a BDDC preconditioner
+
+# Returns:
+- Vector of primal modes for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+primalmodes = LFAToolkit.getprimalmodes(bddc);
+primalmodes = bddc.primalmodes;
+
+# verify
+@assert primalmodes == [1]
+
+# output
+
+```
+"""
+function getprimalmodes(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :primalmodes)
+        primalmodes::Array{Int,1} = []
+        numberprimalnodes = max(size(bddc.primalnodes)...)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+        modemap = bddc.operator.rowmodemap[:, bddc.primalnodes] * ones(numberprimalnodes)
+        for i = 1:numbermodes
+            if modemap[i] > 0.0
+                push!(primalmodes, i)
+            end
+        end
+
+        # store
+        bddc.primalmodes = primalmodes
+    end
+
+    # return
+    return getfield(bddc, :primalmodes)
+end
+
+"""
+```julia
+getsubassembledmodes(bddc)
+```
+
+Compute or retrieve the subassembled modes for a BDDC preconditioner
+
+# Returns:
+- Vector of subassembled modes for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+subassembledmodes = LFAToolkit.getsubassembledmodes(bddc);
+subassembledmodes = bddc.subassembledmodes;
+
+# verify
+@assert subassembledmodes == setdiff(1:(p-1)^2, [1])
+
+# output
+
+```
+"""
+function getsubassembledmodes(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :subassembledmodes)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+
+        # store
+        bddc.subassembledmodes = setdiff(1:numbermodes, bddc.primalmodes)
+    end
+
+    # return
+    return getfield(bddc, :subassembledmodes)
+end
+
+"""
+```julia
+getinterfacemodes(bddc)
+```
+
+Compute or retrieve the interface modes for a BDDC preconditioner
+
+# Returns:
+- Vector of interface modes for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interfacemodes = LFAToolkit.getinterfacemodes(bddc);
+interfacemodes = bddc.interfacemodes;
+
+# verify
+trueinterfacemodes = [1:p-1...]
+for i = 1:p-2
+    push!(trueinterfacemodes, i*(p-1)+1)
+end
+trueinterfacemodes = sort(trueinterfacemodes)
+@assert interfacemodes == trueinterfacemodes
+
+# output
+
+```
+"""
+function getinterfacemodes(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interfacemodes)
+        interfacemodes::Array{Int,1} = []
+        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+        modemap =
+            bddc.operator.rowmodemap[:, bddc.interfacenodes] * ones(numberinterfacenodes)
+        for i = 1:numbermodes
+            if modemap[i] > 0.0
+                push!(interfacemodes, i)
+            end
+        end
+
+        # store
+        bddc.interfacemodes = interfacemodes
+    end
+
+    # return
+    return getfield(bddc, :interfacemodes)
+end
+
+"""
+```julia
+getinteriormodes(bddc)
+```
+
+Compute or retrieve the interior modes for a BDDC preconditioner
+
+# Returns:
+- Vector of interior modes for BDDC preconditioner
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator("diffusion", p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiormodes = LFAToolkit.getinteriormodes(bddc);
+interiormodes = bddc.interiormodes;
+
+# verify
+@assert interiormodes == setdiff(1:(p-1)^2, bddc.interfacemodes)
+
+# output
+
+```
+"""
+function getinteriormodes(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interiormodes)
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+
+        # store
+        bddc.interiormodes = setdiff(1:numbermodes, bddc.interfacemodes)
+    end
+
+    # return
+    return getfield(bddc, :interiormodes)
 end
 
 """
@@ -504,8 +608,8 @@ Compute or retrieve the matrix mapping the rows of the primal BDDC matrix to the
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
 
 # note: either syntax works
 primalmodemap = LFAToolkit.getprimalrowmodemap(bddc);
@@ -546,8 +650,8 @@ primal symbol matrix
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
 
 # note: either syntax works
 primalmodemap = LFAToolkit.getprimalcolumnmodemap(bddc);
@@ -589,8 +693,8 @@ subassembled symbol matrix
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
 
 # note: either syntax works
 subassembledmodemap = LFAToolkit.getsubassembledrowmodemap(bddc);
@@ -632,8 +736,8 @@ subassembled symbol matrix
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
 
 # note: either syntax works
 subassembledmodemap = LFAToolkit.getsubassembledcolumnmodemap(bddc);
@@ -658,6 +762,178 @@ function getsubassembledcolumnmodemap(bddc::BDDC)
 
     # return
     return getfield(bddc, :subassembledcolumnmodemap)
+end
+
+"""
+```julia
+getinterfacerowmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the rows of the interface BDDC matrix to the
+interface symbol matrix
+
+# Returns:
+- Matrix mapping rows of interface BDDC matrix to interface symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interfacemodemap = LFAToolkit.getinterfacerowmodemap(bddc);
+interfacemodemap = bddc.interfacerowmodemap;
+
+# verify
+@assert interfacemodemap ≈ bddc.operator.rowmodemap[bddc.interfacemodes, bddc.interfacenodes]
+
+# output
+
+```
+"""
+function getinterfacerowmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interfacerowmodemap)
+        interfacerowmodemap =
+            bddc.operator.rowmodemap[bddc.interfacemodes, bddc.interfacenodes]
+
+        # store
+        bddc.interfacerowmodemap = interfacerowmodemap
+    end
+
+    # return
+    return getfield(bddc, :interfacerowmodemap)
+end
+
+"""
+```julia
+getinterfacecolumnmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the columns of the interface BDDC matrix to the
+interface symbol matrix
+
+# Returns:
+- Matrix mapping columns of interface BDDC matrix to interface symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interfacemodemap = LFAToolkit.getinterfacecolumnmodemap(bddc);
+interfacemodemap = bddc.interfacecolumnmodemap;
+
+# verify
+@assert interfacemodemap ≈ bddc.operator.columnmodemap[bddc.interfacenodes, bddc.interfacemodes]
+
+# output
+
+```
+"""
+function getinterfacecolumnmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interfacecolumnmodemap)
+        interfacecolumnmodemap =
+            bddc.operator.columnmodemap[bddc.interfacenodes, bddc.interfacemodes]
+
+        # store
+        bddc.interfacecolumnmodemap = interfacecolumnmodemap
+    end
+
+    # return
+    return getfield(bddc, :interfacecolumnmodemap)
+end
+
+"""
+```julia
+getinteriorrowmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the rows of the interior BDDC matrix to the
+interior symbol matrix
+
+# Returns:
+- Matrix mapping rows of interior BDDC matrix to interior symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interiormodemap = LFAToolkit.getinteriorrowmodemap(bddc);
+interiormodemap = bddc.interiorrowmodemap;
+
+# verify
+@assert interiormodemap ≈ bddc.operator.rowmodemap[bddc.interiormodes, bddc.interiornodes]
+
+# output
+
+```
+"""
+function getinteriorrowmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interiorrowmodemap)
+        interiorrowmodemap =
+            bddc.operator.rowmodemap[bddc.interiormodes, bddc.interiornodes]
+
+        # store
+        bddc.interiorrowmodemap = interiorrowmodemap
+    end
+
+    # return
+    return getfield(bddc, :interiorrowmodemap)
+end
+
+"""
+```julia
+getinteriorcolumnmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the columns of the interior BDDC matrix to the
+interior symbol matrix
+
+# Returns:
+- Matrix mapping columns of interior BDDC matrix to interior symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interiormodemap = LFAToolkit.getinteriorcolumnmodemap(bddc);
+interiormodemap = bddc.interiorcolumnmodemap;
+
+# verify
+@assert interiormodemap ≈ bddc.operator.columnmodemap[bddc.interiornodes, bddc.interiormodes]
+
+# output
+
+```
+"""
+function getinteriorcolumnmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :interiorcolumnmodemap)
+        interiorcolumnmodemap =
+            bddc.operator.columnmodemap[bddc.interiornodes, bddc.interiormodes]
+
+        # store
+        bddc.interiorcolumnmodemap = interiorcolumnmodemap
+    end
+
+    # return
+    return getfield(bddc, :interiorcolumnmodemap)
 end
 
 # ------------------------------------------------------------------------------
@@ -692,7 +968,96 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
         return scaled
     elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
         # Dirichlet BDDC
-        throw(ArgumentError("Injection type not yet supported")) # COV_EXCL_LINE
+        # -- validity check
+        dimension = length(θ)
+        if dimension != bddc.operator.inputs[1].basis.dimension
+            throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+        end
+
+        # -- harmonic operator
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+        numberinteriornodes = max(size(bddc.interiornodes)...)
+        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
+        A_IΓ = bddc.operator.elementmatrix[bddc.interiornodes, bddc.interfacenodes]
+        A_IΓ_nodes = zeros(ComplexF64, numberinteriornodes, numberinterfacenodes)
+        if dimension == 2
+            for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interfacenodes[j]
+                A_IΓ_nodes[i, j] =
+                    A_IΓ[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
+                        )
+                    )
+            end
+        elseif dimension == 3
+            for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interfacenodes[j]
+                A_IΓ_nodes[i, j] =
+                    A_IΓ[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
+                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
+                        )
+                    )
+            end
+        end
+
+        A_II_inv = bddc.interiorinverse
+        A_II_inv_nodes = zeros(ComplexF64, numberinteriornodes, numberinteriornodes)
+        if dimension == 2
+            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interiornodes[j]
+                A_II_inv_nodes[i, j] =
+                    A_II_inv[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
+                        )
+                    )
+            end
+        elseif dimension == 3
+            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interiornodes[j]
+                A_II_inv_nodes[i, j] =
+                    A_II_inv[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
+                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
+                        )
+                    )
+            end
+        end
+
+        # -- jump mapping
+        J = Diagonal(
+            vcat(
+                zeros((numberprimalmodes, 1))...,
+                -(
+                    bddc.operator.multiplicity[bddc.subassemblednodes]' *
+                    bddc.subassembledcolumnmodemap
+                ) .^ (-1 / 2) .+ 1...,
+            ),
+        ) # ToDo: Need to fix scaling
+
+        # -- injection mapping
+        rowmodemap = zeros((numbermodes, numberinteriornodes))
+        rowmodemap[bddc.interiormodes, :] = bddc.interiorrowmodemap
+        columnmodemap = zeros((numberinterfacenodes, numbermodes))
+        columnmodemap[:, bddc.interfacemodes] = bddc.interfacecolumnmodemap
+        return scaled + J * rowmodemap * A_II_inv_nodes * A_IΓ_nodes * columnmodemap
     else
         throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
     end
@@ -726,7 +1091,96 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         return scaled
     elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
         # Dirichlet BDDC
-        throw(ArgumentError("Injection type not yet supported")) # COV_EXCL_LINE
+        # -- validity check
+        dimension = length(θ)
+        if dimension != bddc.operator.inputs[1].basis.dimension
+            throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+        end
+
+        # -- harmonic operator
+        numbermodes, _ = size(bddc.operator.rowmodemap)
+        numberinteriornodes = max(size(bddc.interiornodes)...)
+        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
+        A_ΓI = bddc.operator.elementmatrix[bddc.interfacenodes, bddc.interiornodes]
+        A_ΓI_nodes = zeros(ComplexF64, numberinterfacenodes, numberinteriornodes)
+        if dimension == 2
+            for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
+                indxi = bddc.interfacenodes[i]
+                indxj = bddc.interiornodes[j]
+                A_ΓI_nodes[i, j] =
+                    A_ΓI[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
+                        )
+                    )
+            end
+        elseif dimension == 3
+            for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
+                indxi = bddc.interfacenodes[i]
+                indxj = bddc.interiornodes[j]
+                A_ΓI_nodes[i, j] =
+                    A_ΓI[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
+                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
+                        )
+                    )
+            end
+        end
+
+        A_II_inv = bddc.interiorinverse
+        A_II_inv_nodes = zeros(ComplexF64, numberinteriornodes, numberinteriornodes)
+        if dimension == 2
+            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interiornodes[j]
+                A_II_inv_nodes[i, j] =
+                    A_II_inv[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
+                        )
+                    )
+            end
+        elseif dimension == 3
+            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+                indxi = bddc.interiornodes[i]
+                indxj = bddc.interiornodes[j]
+                A_II_inv_nodes[i, j] =
+                    A_II_inv[i, j] *
+                    ℯ^(
+                        im * (
+                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
+                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
+                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
+                        )
+                    )
+            end
+        end
+
+        # -- jump mapping
+        J = Diagonal(
+            vcat(
+                zeros((numberprimalmodes, 1))...,
+                -(
+                    bddc.operator.multiplicity[bddc.subassemblednodes]' *
+                    bddc.subassembledcolumnmodemap
+                ) .^ (-1 / 2) .+ 1...,
+            ),
+        ) # ToDo: Need to fix scaling
+
+        # -- injection mapping
+        rowmodemap = zeros((numbermodes, numberinterfacenodes))
+        rowmodemap[bddc.interfacemodes, :] = bddc.interfacerowmodemap
+        columnmodemap = zeros((numberinteriornodes, numbermodes))
+        columnmodemap[:, bddc.interiormodes] = bddc.interiorcolumnmodemap
+        return scaled + J * rowmodemap * A_ΓI_nodes * A_II_inv_nodes * columnmodemap
     else
         throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
     end
@@ -741,22 +1195,24 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getprimalnodes(bddc)
     elseif f == :subassemblednodes
         return getsubassemblednodes(bddc)
-    elseif f == :primalmodes
-        return getprimalmodes(bddc)
-    elseif f == :subassembledmodes
-        return getsubassembledmodes(bddc)
     elseif f == :interfacenodes
         return getinterfacenodes(bddc)
     elseif f == :interiornodes
         return getinteriornodes(bddc)
+    elseif f == :primalmodes
+        return getprimalmodes(bddc)
+    elseif f == :subassembledmodes
+        return getsubassembledmodes(bddc)
+    elseif f == :interfacemodes
+        return getinterfacemodes(bddc)
+    elseif f == :interiormodes
+        return getinteriormodes(bddc)
     elseif f == :subassembledinverse
         return getsubassembledinverse(bddc)
     elseif f == :interiorinverse
         return getinteriorinverse(bddc)
     elseif f == :schur
         return getschur(bddc)
-    elseif f == :injection
-        return getinjection(bddc)
     elseif f == :primalrowmodemap
         return getprimalrowmodemap(bddc)
     elseif f == :primalcolumnmodemap
@@ -765,6 +1221,14 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getsubassembledrowmodemap(bddc)
     elseif f == :subassembledcolumnmodemap
         return getsubassembledcolumnmodemap(bddc)
+    elseif f == :interfacerowmodemap
+        return getinterfacerowmodemap(bddc)
+    elseif f == :interfacecolumnmodemap
+        return getinterfacecolumnmodemap(bddc)
+    elseif f == :interiorrowmodemap
+        return getinteriorrowmodemap(bddc)
+    elseif f == :interiorcolumnmodemap
+        return getinteriorcolumnmodemap(bddc)
     else
         return getfield(bddc, f)
     end

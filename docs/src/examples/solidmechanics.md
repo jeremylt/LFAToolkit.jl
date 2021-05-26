@@ -30,7 +30,7 @@ For a full discussion of the formulation of the 3D Neo-Hookean hyperelasticity p
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex301_solidmechanics.jl", String))
+$(read("../../../examples/ex301_solid_mechanics.jl", String))
 ```
 """)
 ````

@@ -102,7 +102,7 @@ end
 # ------------------------------------------------------------------------------
 
 @testset "  ex221: lumped BDDC example              " begin
-    include("../examples/ex221_lumpedbddc.jl")
+    include("../examples/ex221_lumped_bddc.jl")
 
     @test min(eigenvalues...) ≈ 0.9999999999999992
     @test max(eigenvalues...) ≈ 5.999999999999997
@@ -113,10 +113,21 @@ end
 # ------------------------------------------------------------------------------
 
 @testset "  ex222: lumped BDDC macro element example" begin
-    include("../examples/ex222_lumpedbddc.jl")
+    include("../examples/ex222_lumped_bddc.jl")
 
     @test min(eigenvalues...) ≈ 0.9999999999999989
     @test max(eigenvalues...) ≈ 4.443546705148796
+end
+
+# ------------------------------------------------------------------------------
+# Dirichlet BDDC example
+# ------------------------------------------------------------------------------
+
+@testset "  ex223: Dirichlet BDDC example           " begin
+    include("../examples/ex223_dirichlet_bddc.jl")
+
+    @test min(eigenvalues...) ≈ 0.9999999997897949
+    @test max(eigenvalues...) ≈ 5.999999999999993
 end
 
 # ------------------------------------------------------------------------------
@@ -124,7 +135,7 @@ end
 # ------------------------------------------------------------------------------
 
 @testset "  ex301: solid mechanics example          " begin
-    include("../examples/ex301_solidmechanics.jl")
+    include("../examples/ex301_solid_mechanics.jl")
 
     @test max(eigenvalues...) ≈ 0.2851697038981916
 end

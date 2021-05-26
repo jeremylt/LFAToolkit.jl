@@ -11,9 +11,10 @@ LFAToolkit.getinteriornodes(::BDDC)
 LFAToolkit.getsubassembledinverse
 LFAToolkit.getinteriorinverse
 LFAToolkit.getschur
-LFAToolkit.getinjection
-LFAToolkit.getrowmodemap(::BDDC)
-LFAToolkit.getcolumnmodemap(::BDDC)
 LFAToolkit.getprimalrowmodemap
 LFAToolkit.getprimalcolumnmodemap
+LFAToolkit.getsubassembledrowmodemap
+LFAToolkit.getsubassembledcolumnmodemap
+LFAToolkit.computesymbolsrestriction(::BDDC, ::Array)
+LFAToolkit.computesymbolsinjection(::BDDC, ::Array)
 ```

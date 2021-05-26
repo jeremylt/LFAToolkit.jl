@@ -31,11 +31,10 @@ mutable struct BDDC <: AbstractPreconditioner
     subassembledinverse::AbstractArray{Float64,2}
     interiorinverse::AbstractArray{Float64,2}
     schur::AbstractArray{Float64,2}
-    injection::AbstractArray{Float64}
-    rowmodemap::AbstractArray{Float64,2}
-    columnmodemap::AbstractArray{Float64,2}
     primalrowmodemap::AbstractArray{Float64,2}
     primalcolumnmodemap::AbstractArray{Float64,2}
+    subassembledrowmodemap::AbstractArray{Float64,2}
+    subassembledcolumnmodemap::AbstractArray{Float64,2}
 
     # inner constructor
     BDDC(operator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
@@ -493,145 +492,6 @@ end
 
 """
 ```julia
-getcolumnmodemap(bddc)
-```
-
-Compute or retrieve the injection operator for the mixed BDDC matrix
-
-# Returns:
-- Matrix providing the injection operator of mixed BDDC matrix
-
-# Example:
-"""
-function getinjection(bddc::BDDC)
-    # assemble if needed
-    if !isdefined(bddc, :injection)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
-        injection = []
-        if (bddc.injectiontype == BDDCInjectionType.scaled)
-            # lumped BDDC
-            injection = Diagonal(
-                vcat(
-                    ones(numberprimalmodes, 1)...,
-                    bddc.operator.multiplicity[bddc.subassemblednodes] .^ -1...,
-                ),
-            )
-        elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
-            # Dirichlet BDDC
-            throw(ArgumentError("Injection type not yet supported")) # COV_EXCL_LINE
-        else
-            throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
-        end
-
-        # store
-        bddc.injection = injection
-    end
-
-    # return
-    return getfield(bddc, :injection)
-end
-
-"""
-```julia
-getrowmodemap(bddc)
-```
-
-Compute or retrieve the matrix mapping the rows of the mixed BDDC matrix to the symbol matrix
-
-# Returns:
-- Matrix mapping rows of mixed BDDC matrix to symbol matrix
-
-# Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
-
-# note: either syntax works
-modemap = LFAToolkit.getrowmodemap(bddc);
-modemap = bddc.rowmodemap;
-
-# verify
-@assert modemap ≈ [1 0 0 0 0 0; 0 1 0 0 0 1; 0 0 1 0 1 0; 0 0 0 1 0 0]
-
-# output
-
-```
-"""
-function getrowmodemap(bddc::BDDC)
-    # assemble if needed
-    if !isdefined(bddc, :rowmodemap)
-        numbermodes, _ = size(bddc.operator.rowmodemap)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
-        numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
-        rowmodemap = spzeros(numbermodes, numbermixed)
-        rowmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
-            bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
-        for i = 1:numberprimalmodes
-            rowmodemap[i, i] = 1
-        end
-
-        # store
-        bddc.rowmodemap = rowmodemap
-    end
-
-    # return
-    return getfield(bddc, :rowmodemap)
-end
-
-"""
-```julia
-getcolumnmodemap(bddc)
-```
-
-Compute or retrieve the matrix mapping the columns of the mixed BDDC matrix to the
-  symbol matrix
-
-# Returns:
-- Matrix mapping columns of mixed BDDC matrix to symbol matrix
-
-# Example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
-bddc = LumpedBDDC(finediffusion);
-
-# note: either syntax works
-modemap = LFAToolkit.getcolumnmodemap(bddc);
-modemap = bddc.columnmodemap;
-
-# verify
-@assert modemap ≈ [1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1; 0 0 1 0; 0 1 0 0]
-
-# output
-
-```
-"""
-function getcolumnmodemap(bddc::BDDC)
-    # assemble if needed
-    if !isdefined(bddc, :columnmodemap)
-        _, numbermodes = size(bddc.operator.columnmodemap)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
-        numbermixed = numberprimalmodes + max(size(bddc.subassemblednodes)...)
-        columnmodemap = spzeros(numbermixed, numbermodes)
-        columnmodemap[numberprimalmodes+1:end, numberprimalmodes+1:end] =
-            bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
-        for i = 1:numberprimalmodes
-            columnmodemap[i, i] = 1
-        end
-
-        # store
-        bddc.columnmodemap = columnmodemap
-    end
-
-    # return
-    return getfield(bddc, :columnmodemap)
-end
-
-"""
-```julia
 getprimalrowmodemap(bddc)
 ```
 
@@ -660,7 +520,7 @@ primalmodemap = bddc.primalrowmodemap;
 """
 function getprimalrowmodemap(bddc::BDDC)
     # assemble if needed
-    if !isdefined(bddc, :rowmodemap)
+    if !isdefined(bddc, :primalrowmodemap)
         primalrowmodemap = bddc.operator.rowmodemap[bddc.primalmodes, bddc.primalnodes]
 
         # store
@@ -714,6 +574,164 @@ function getprimalcolumnmodemap(bddc::BDDC)
     return getfield(bddc, :primalcolumnmodemap)
 end
 
+"""
+```julia
+getsubassembledrowmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix to the
+subassembled symbol matrix
+
+# Returns:
+- Matrix mapping rows of subassembled BDDC matrix to subassembled symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(finediffusion);
+
+# note: either syntax works
+subassembledmodemap = LFAToolkit.getsubassembledrowmodemap(bddc);
+subassembledmodemap = bddc.subassembledrowmodemap;
+
+# verify
+@assert subassembledmodemap ≈ bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+
+# output
+
+```
+"""
+function getsubassembledrowmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :subassembledrowmodemap)
+        subassembledrowmodemap =
+            bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+
+        # store
+        bddc.subassembledrowmodemap = subassembledrowmodemap
+    end
+
+    # return
+    return getfield(bddc, :subassembledrowmodemap)
+end
+
+"""
+```julia
+getsubassembledcolumnmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the columns of the subassembled BDDC matrix to the
+subassembled symbol matrix
+
+# Returns:
+- Matrix mapping columns of subassembled BDDC matrix to subassembled symbol matrix
+
+# Example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
+bddc = LumpedBDDC(finediffusion);
+
+# note: either syntax works
+subassembledmodemap = LFAToolkit.getsubassembledcolumnmodemap(bddc);
+subassembledmodemap = bddc.subassembledcolumnmodemap;
+
+# verify
+@assert subassembledmodemap ≈ bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+
+# output
+
+```
+"""
+function getsubassembledcolumnmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :subassembledcolumnmodemap)
+        subassembledcolumnmodemap =
+            bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+
+        # store
+        bddc.subassembledcolumnmodemap = subassembledcolumnmodemap
+    end
+
+    # return
+    return getfield(bddc, :subassembledcolumnmodemap)
+end
+
+# ------------------------------------------------------------------------------
+# data for computing symbols
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+computesymbolsrestriction(bddc)
+```
+
+Compute or retrieve the restriction operator for the BDDC symbol matrix
+
+# Returns:
+- Matrix providing the restriction operator of BDDC symbol matrix
+
+# Example:
+"""
+function computesymbolsrestriction(bddc::BDDC, θ::Array)
+    numberprimalmodes = max(size(bddc.primalmodes)...)
+    scaled = Diagonal(
+        vcat(
+            ones(numberprimalmodes, 1)...,
+            (
+                bddc.operator.multiplicity[bddc.subassemblednodes]' *
+                bddc.subassembledcolumnmodemap
+            ) .^ (-1 / 2)...,
+        ),
+    )
+    if (bddc.injectiontype == BDDCInjectionType.scaled)
+        # lumped BDDC
+        return scaled
+    elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
+        # Dirichlet BDDC
+        throw(ArgumentError("Injection type not yet supported")) # COV_EXCL_LINE
+    else
+        throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
+    end
+end
+
+"""
+```julia
+computesymbolsinjection(bddc)
+```
+
+Compute or retrieve the injection operator for the BDDC symbol matrix
+
+# Returns:
+- Matrix providing the injection operator of BDDC symbol matrix
+
+# Example:
+"""
+function computesymbolsinjection(bddc::BDDC, θ::Array)
+    numberprimalmodes = max(size(bddc.primalmodes)...)
+    scaled = Diagonal(
+        vcat(
+            ones(numberprimalmodes, 1)...,
+            (
+                bddc.operator.multiplicity[bddc.subassemblednodes]' *
+                bddc.subassembledcolumnmodemap
+            ) .^ (-1 / 2)...,
+        ),
+    )
+    if (bddc.injectiontype == BDDCInjectionType.scaled)
+        # lumped BDDC
+        return scaled
+    elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
+        # Dirichlet BDDC
+        throw(ArgumentError("Injection type not yet supported")) # COV_EXCL_LINE
+    else
+        throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
+    end
+end
+
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -739,14 +757,14 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getschur(bddc)
     elseif f == :injection
         return getinjection(bddc)
-    elseif f == :rowmodemap
-        return getrowmodemap(bddc)
-    elseif f == :columnmodemap
-        return getcolumnmodemap(bddc)
     elseif f == :primalrowmodemap
         return getprimalrowmodemap(bddc)
     elseif f == :primalcolumnmodemap
         return getprimalcolumnmodemap(bddc)
+    elseif f == :subassembledrowmodemap
+        return getsubassembledrowmodemap(bddc)
+    elseif f == :subassembledcolumnmodemap
+        return getsubassembledcolumnmodemap(bddc)
     else
         return getfield(bddc, f)
     end
@@ -823,6 +841,7 @@ function computesymbols(bddc::BDDC, θ::Array)
     numberprimalnodes = max(size(bddc.primalnodes)...)
     numberprimalmodes = max(size(bddc.primalmodes)...)
     numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
     nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
 
     # subdomain solver
@@ -936,16 +955,22 @@ function computesymbols(bddc::BDDC, θ::Array)
         I(numberprimalmodes) -Â_Πr_modes*A_rr_inv_nodes
         Ø' I(numbersubassemblednodes)
     ]
-    mixedsubassembled = K_u_inv * P_inv * K_u_T_inv
+    rowmodemap = [
+        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
+        zeros((numbersubassembledmodes, numberprimalmodes)) bddc.subassembledrowmodemap
+    ]
+    columnmodemap = [
+        I(numberprimalmodes) zeros(numberprimalmodes, numbersubassembledmodes)
+        zeros((numbersubassemblednodes, numberprimalmodes)) bddc.subassembledcolumnmodemap
+    ]
+    Â_inv_modes = rowmodemap * K_u_inv * P_inv * K_u_T_inv * columnmodemap
 
     # injection
-    mixedinjected = bddc.injection' * mixedsubassembled * bddc.injection
+    R_T_Â_inv_R_modes =
+        computesymbolsrestriction(bddc, θ) * Â_inv_modes * computesymbolsinjection(bddc, θ)
 
     # return
-    #! format: off
-    return bddc.rowmodemap * mixedinjected * bddc.columnmodemap *
-           computesymbols(bddc.operator, θ)
-    #! format: on
+    return R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)
 end
 
 # ------------------------------------------------------------------------------

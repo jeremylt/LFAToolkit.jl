@@ -954,6 +954,12 @@ Compute or retrieve the restriction operator for the BDDC symbol matrix
 """
 function computesymbolsrestriction(bddc::BDDC, θ::Array)
     numberprimalmodes = max(size(bddc.primalmodes)...)
+    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
+    numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+    mixedcolumnmodemap = [
+        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
+        zeros(numbersubassembledmodes, numberprimalmodes) bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+    ]
     scaled = Diagonal(
         vcat(
             ones(numberprimalmodes, 1)...,
@@ -965,7 +971,7 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
     )
     if (bddc.injectiontype == BDDCInjectionType.scaled)
         # lumped BDDC
-        return scaled
+        return scaled * mixedcolumnmodemap
     elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
         # Dirichlet BDDC
         # -- validity check
@@ -1063,7 +1069,8 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
         rowmodemap[bddc.interiormodes, :] = bddc.interiorrowmodemap
         columnmodemap = zeros((numberinterfacenodes, numbermodes))
         columnmodemap[:, bddc.interfacemodes] = bddc.interfacecolumnmodemap
-        return scaled + J * rowmodemap * A_II_inv_nodes * A_IΓ_nodes * columnmodemap
+        return (scaled + J * rowmodemap * A_II_inv_nodes * A_IΓ_nodes * columnmodemap) *
+               mixedcolumnmodemap
     else
         throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
     end
@@ -1083,6 +1090,12 @@ Compute or retrieve the injection operator for the BDDC symbol matrix
 """
 function computesymbolsinjection(bddc::BDDC, θ::Array)
     numberprimalmodes = max(size(bddc.primalmodes)...)
+    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
+    numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+    mixedrowmodemap = [
+        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassembledmodes))
+        zeros(numbersubassemblednodes, numberprimalmodes) bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+    ]
     scaled = Diagonal(
         vcat(
             ones(numberprimalmodes, 1)...,
@@ -1094,7 +1107,7 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
     )
     if (bddc.injectiontype == BDDCInjectionType.scaled)
         # lumped BDDC
-        return scaled
+        return mixedrowmodemap * scaled
     elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
         # Dirichlet BDDC
         # -- validity check
@@ -1192,7 +1205,8 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         rowmodemap[bddc.interfacemodes, :] = bddc.interfacerowmodemap
         columnmodemap = zeros((numberinteriornodes, numbermodes))
         columnmodemap[:, bddc.interiormodes] = bddc.interiorcolumnmodemap
-        return scaled + J * rowmodemap * A_ΓI_nodes * A_II_inv_nodes * columnmodemap
+        return mixedrowmodemap *
+               (scaled + J * rowmodemap * A_ΓI_nodes * A_II_inv_nodes * columnmodemap)
     else
         throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
     end
@@ -1464,15 +1478,7 @@ function computesymbols(bddc::BDDC, θ::Array)
         I(numberprimalmodes) -Â_Πr_modes*A_rr_inv_nodes
         Ø' I(numbersubassemblednodes)
     ]
-    rowmodemap = [
-        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
-        zeros((numbersubassembledmodes, numberprimalmodes)) bddc.subassembledrowmodemap
-    ]
-    columnmodemap = [
-        I(numberprimalmodes) zeros(numberprimalmodes, numbersubassembledmodes)
-        zeros((numbersubassemblednodes, numberprimalmodes)) bddc.subassembledcolumnmodemap
-    ]
-    Â_inv_modes = rowmodemap * K_u_inv * P_inv * K_u_T_inv * columnmodemap
+    Â_inv_modes = K_u_inv * P_inv * K_u_T_inv
 
     # injection
     R_T_Â_inv_R_modes =

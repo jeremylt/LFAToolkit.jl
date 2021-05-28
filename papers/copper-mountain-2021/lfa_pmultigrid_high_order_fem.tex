@@ -79,7 +79,7 @@ Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited t
 
 % -----------------------------------------------------------------------------
 \begin{keywords}
-  % 7. Keywords that describe the paper
+  % Keywords that describe the paper
   local fourier analysis, p-multigrid, high-order, finite elements
 \end{keywords}
 % -----------------------------------------------------------------------------
@@ -250,21 +250,11 @@ Note that this LFA notation is applicable to any second-order PDE with a weak fo
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $B$, the node to mode mapping $Q$, and the pointwise representation of the weak form $D$, and the software can provide the LFA of the PDE with various preconditioners.
 
 % -----------------------------------------------------------------------------
-\subsection{P-Multigrid}\label{sec:multigrid}
+\subsection{Polynomial Smoothers}\label{sec:smooth}
 % -----------------------------------------------------------------------------
 
-With this representation of the symbol of high-order PDE operators, we can derive the symbol of the p-multigrid error propagation operator.
-
-The total multigrid error propagation operator is given by
-\begin{equation}
-E_{\text{TMG}} = S_f \left( I - P_{\text{ctof}} A_c^{-1} R_{\text{ftoc}} A_f \right) S_f
-\end{equation}
-where $S_f$ represents the smoother error propagation operator, while $P_{\text{ctof}}$ and $R_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
-
-This error propagation operator can represent both h-multigrid and p-multigrid, depending upon the grid transfer operators and coarse grid representation chosen; however, we use p-multigrid grid transfer operators in this paper.
-
 % -----------------------------------------------------------------------------
-\subsubsection{Smoothing Operator}\label{sec:smooth}
+\subsubsection{Jacobi Smoother}\label{sec:jacobi}
 % -----------------------------------------------------------------------------
 
 The error propagation operator for a smoother is given by $S = I - M^{-1} A$.
@@ -298,6 +288,87 @@ where $\nu$ is the number of smoothing passes.
 Using Definition \ref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{M}^{-1} \tilde{A} \left( \theta \right)$ in Figure \ref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order basis on Gauss-Lobatto points.
 In Figure \ref{fig:jacobi_smooth_factor} we plot the LFA smoothing factor for Jacobi smoothing as a function of the smoothing parameter $\omega$.
 The Jacobi smoothing factor is not an accurate predictor of the two-grid performance, as we will see below.
+
+% -----------------------------------------------------------------------------
+\subsubsection{Chebyshev Smoother}\label{sec:chebyshev}
+% -----------------------------------------------------------------------------
+
+It is well known that polynomial smoothers allow more aggressive coarsening than Jacobi \cite{brannick2015polynomial}.
+For further discussion of the error propagation properties of the Chebyshev semi-iterative method, see \cite{gutknecht2002revisited}.
+
+We use the Jacobi preconditioned operator, $\left( \diag {\color{burgundy}\mathbf{A}} \right)^{-1} {\color{burgundy}\mathbf{A}}$, in this iteration instead of the finite element operator ${\color{burgundy}\mathbf{A}}$, similar to the discussion in \cite{adams2003parallel}.
+
+The terms in the Chebyshev semi-iterative method can be modeled by the three term recurrence relation given by
+\begin{equation}
+\mathbf{x}_{n + 1} = - \left( \mathbf{r}_n + \alpha \mathbf{x}_n + \beta_{n - 1} \mathbf{x}_{n - 1} \right) / \gamma_{n - 1}
+\label{eq:chebyshev_recursive}
+\end{equation}
+where the spectrum of $\left( \diag {\color{burgundy}\mathbf{A}} \right)^{-1} {\color{burgundy}\mathbf{A}}$ lies on the line segment $\left[ \alpha - c, \alpha + c \right]$ and the parameters $\beta$ and $\gamma$ are given by the recurrence
+\begin{equation}
+\begin{tabular}{c c}
+$\beta_0 = - \frac{c^2}{2 \alpha}$ & $\gamma_0 = - \alpha$\\
+$\beta_n = \frac{c}{2} \frac{T_n \left( \eta \right)}{T_{n + 1} \left( \eta \right)} = \left( \frac{c}{2} \right)^2 \frac{1}{\gamma_n}$ & $\gamma_n = \frac{c}{2} \frac{T_{n + 1} \left( \eta \right)}{T_n \left( \eta \right)} = - \left( \alpha + \beta_{n - 1} \right)$.
+\end{tabular}
+\end{equation}
+In this equation, $T_i \left( \zeta \right) = 2 \zeta T_{i - 1} \left( \zeta \right) - T_{i - 2} \left( \zeta \right)$ are the classical Chebyshev polynomials, which are evaluated at the point $\eta = - \alpha / c$.
+
+The residual in the Chebyshev semi-iterative method can therefore be modeled by the three term recurrence
+\begin{equation}
+\mathbf{r}_{n + 1} = \left( \left( \diag {\color{burgundy}\mathbf{A}} \right)^{-1} {\color{burgundy}\mathbf{A}} \mathbf{r}_n - \alpha \mathbf{r}_n - \beta_{n - 1} \mathbf{r}_{n - 1} \right) / \gamma_{n - 1}.
+\label{eq:chebyshev_error_recursive}
+\end{equation}
+
+Using the recurrence relation given in Equation \ref{eq:chebyshev_error_recursive}, we can define the error propagation of the $n$th order Chebyshev smoother in terms of the error in the first term:
+\begin{equation}
+\begin{tabular}{c}
+$\mathbf{E}_0 = \mathbf{I}$\\
+$\mathbf{E}_1 = \mathbf{I} - \alpha \left( \diag {\color{burgundy}\mathbf{A}} \right)^{-1} {\color{burgundy}\mathbf{A}}$\\
+$\mathbf{E}_n = \left( \alpha \mathbf{E}_{n - 1} + \beta_{n - 2} \mathbf{E}_{n - 2} - \left( \diag {\color{burgundy}\mathbf{A}} \right)^{-1} {\color{burgundy}\mathbf{A}} \mathbf{E}_{n - 2} \right) / \gamma_{n - 1}$
+\end{tabular}
+\label{eq:chebyshev_error_propagation}
+\end{equation}
+With this recursive definition of the error propagation operator, we can define the symbol for Chebyshev smoothing.
+
+\begin{definition}
+The symbol of the error propagation operator for $n$th order Chebyshev smoothing based on the Jacobi preconditioned operator is given by
+\begin{equation}
+\tilde{\mathbf{S}} \left( \nu, n, \theta \right) = \left( \tilde{\mathbf{E}}_n \right)^\nu,
+\end{equation}
+where $\nu$ is the number of smoothing passes and $\tilde{\mathbf{E}}_n \left( \mathbf{\theta} \right)$ is given by the recursive definition
+\begin{equation}
+\begin{tabular}{c}
+$\tilde{\mathbf{E}}_0 \left( \mathbf{\theta} \right) = \mathbf{I}$\\
+$\tilde{\mathbf{E}}_1 \left( \mathbf{\theta} \right) = \mathbf{I} - \alpha \left( \diag \tilde{\color{burgundy}\mathbf{A}} \right)^{-1} \tilde{\color{burgundy}\mathbf{A}} \left( \mathbf{\theta} \right)$\\
+$\tilde{\mathbf{E}}_n \left( \mathbf{\theta} \right) = \left( \alpha \tilde{\mathbf{E}}_{n - 1} \left( \mathbf{\theta} \right) + \beta_{n - 2} \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) - \left( \diag \tilde{\color{burgundy}\mathbf{A}} \right)^{-1} \tilde{\color{burgundy}\mathbf{A}} \left( \mathbf{\theta} \right) \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) \right) / \gamma_{n - 1}$
+\end{tabular}
+\end{equation}
+\label{def:chebyshev_symbol}
+\end{definition}
+
+\begin{figure}[!ht]
+  \centering
+  \subfloat[Spectrum of 1D Chebyshev for $p = 4$]{\includegraphics[width=0.48\textwidth]{../img/ChebyshevSymbol1D}\label{fig:chebyshev_spectrum_1d}}
+  \hfill
+  \subfloat[Spectrum of 2D Chebyshev for $p = 4$]{\includegraphics[width=0.48\textwidth]{../img/ChebyshevSymbol2D}\label{fig:chebyshev_spectrum_2d}}
+  \caption{Spectrum of Chebyshev Preconditioner Symbol}
+\end{figure}
+
+Using Definition \ref{def:chebyshev_symbol}, in Figures \ref{fig:chebyshev_spectrum_1d} and \ref{fig:chebyshev_spectrum_2d}, we see the spectral radius of the symbol of third order Chebyshev polynomial preconditioning for the scalar diffusion operator with a fourth-order H1 Lagrange finite element basis on the Gauss-Lobatto points in one and two dimensions.
+When compared to Figures \ref{fig:jacobi_spectrum_1d} and \ref{fig:jacobi_spectrum_2d}, we can see that smoothing based upon Chebyshev semi-iterative offers better error reduction than weighted or unweighted Jacobi, albeit at a higher computational cost.
+
+% -----------------------------------------------------------------------------
+\subsection{P-Multigrid}\label{sec:multigrid}
+% -----------------------------------------------------------------------------
+
+With this representation of the symbol of high-order PDE operators, we can derive the symbol of the p-multigrid error propagation operator.
+
+The total multigrid error propagation operator is given by
+\begin{equation}
+E_{\text{TMG}} = S_f \left( I - P_{\text{ctof}} A_c^{-1} R_{\text{ftoc}} A_f \right) S_f
+\end{equation}
+where $S_f$ represents the smoother error propagation operator, while $P_{\text{ctof}}$ and $R_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
+
+This error propagation operator can represent both h-multigrid and p-multigrid, depending upon the grid transfer operators and coarse grid representation chosen; however, we use p-multigrid grid transfer operators in this paper.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Grid Transfer Operator}\label{sec:grids}

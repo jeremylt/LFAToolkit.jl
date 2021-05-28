@@ -119,34 +119,16 @@ using LinearAlgebra
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 2
-numberfineelements1d = 2
 numbercomponents = 1
+numberfineelements1d = 2
 dimension = 2
 ctofbasis =
     TensorH1LagrangeHProlongationBasis(p, numbercomponents, dimension, numberfineelements1d);
 
 # operators
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-# -- fine
-basis =
-    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-# -- coarse
-basis = TensorH1LagrangeBasis(p, p + 1, numbercomponents, dimension);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+finediffusion =
+    GalleryMacroElementOperator(&quot;diffusion&quot;, p, p + 1, numberfineelements1d, mesh);
+coarsediffusion = GalleryOperator(&quot;diffusion&quot;, p, p + 1, mesh);
 
 # Chebyshev smoother
 chebyshev = Chebyshev(finediffusion)
@@ -183,36 +165,10 @@ mtofbasis = TensorH1LagrangeHProlongationMacroBasis(
 );
 
 # operators
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-# -- fine
-basis =
-    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-# -- mid
-basis =
-    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numbermidelements1d);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-middiffusion = Operator(diffusionweakform, mesh, inputs, outputs);
-# -- coarse
-basis = TensorH1LagrangeBasis(p, p + 1, numbercomponents, dimension);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-coarsediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+finediffusion =
+    GalleryMacroElementOperator(&quot;diffusion&quot;, p, p + 1, numberfineelements1d, mesh);
+middiffusion = GalleryMacroElementOperator(&quot;diffusion&quot;, p, p + 1, numbermidelements1d, mesh);
+coarsediffusion = GalleryOperator(&quot;diffusion&quot;, p, p + 1, mesh);
 
 # Chebyshev smoothers
 finechebyshev = Chebyshev(finediffusion)
@@ -284,4 +240,4 @@ A = computesymbols(bddc, [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../img/222_lumped_bddc_spectral_radius_4_elem_2d.png" alt/></p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 27 May 2021 22:19">Thursday 27 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre><p><img src="../../img/222_lumped_bddc_spectral_radius_4_elem_2d.png" alt/></p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 28 May 2021 22:23">Friday 28 May 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

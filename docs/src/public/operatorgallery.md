@@ -2,26 +2,20 @@
 
 The following PDEs are available in the operator gallery.
 
-### Scalar Mass Operator
+### Scalar Mass and Diffusion Operator
 
 ```@docs
-LFAToolkit.massoperator
+GalleryOperator
 ```
 
-### Vector Mass Operator
+### Vector Mass and Diffusion Operator
 
 ```@docs
-LFAToolkit.vectormassoperator
+GalleryVectorOperator
 ```
 
-### Scalar Diffusion Operator
+### Scalar Macro-Element Mass and Diffusion Operators
 
 ```@docs
-LFAToolkit.diffusionoperator
-```
-
-### Vector Diffusion Operator
-
-```@docs
-LFAToolkit.vectordiffusionoperator
+GalleryMacroElementOperator
 ```

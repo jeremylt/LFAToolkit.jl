@@ -112,7 +112,254 @@ operator field:
 """
 function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
     if haskey(operatorgallery, name)
-        return operatorgallery[name](p1d, q1d, mesh)
+        basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
+        return operatorgallery[name](basis, mesh)
+    else
+        throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
+    end
+end
+
+"""
+```julia
+GalleryVectorOperator(name, p1d, q1d, numberelements1d, mesh)
+```
+
+Finite element operator from a gallery of options
+
+# Arguments:
+- `name`:              string containing name of operator
+- `p1d`:               polynomial order of TensorH1LagrangeBasis
+- `q1d`:               number of quadrature points in one dimension for basis
+- `numbercomponents` : number of components
+- `mesh`:              mesh for operator
+
+# Returns:
+- Finite element operator object
+
+# Mass matrix example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryVectorOperator("mass", 4, 4, 3, mesh);
+
+# verify
+println(mass)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    interpolation
+```
+
+# Diffusion operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryVectorOperator("diffusion", 4, 4, 3, mesh);
+
+# verify
+println(diffusion)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    gradient
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function GalleryVectorOperator(
+    name::String,
+    p1d::Int,
+    q1d::Int,
+    numbercomponents::Int,
+    mesh::Mesh,
+)
+    if haskey(operatorgallery, name)
+        basis = TensorH1LagrangeBasis(p1d, q1d, numbercomponents, mesh.dimension)
+        return operatorgallery[name](basis, mesh)
+    else
+        throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
+    end
+end
+
+"""
+```julia
+GalleryMacroElementOperator(name, p1d, q1d, numberelements1d, mesh)
+```
+
+Finite element operator from a gallery of options
+
+# Arguments:
+- `name`:              string containing name of operator
+- `p1d`:               polynomial order of TensorH1LagrangeBasis
+- `q1d`:               number of quadrature points in one dimension for basis
+- `numberelements1d` : number of elements in macro-element
+- `mesh`:              mesh for operator
+
+# Returns:
+- Finite element operator object
+
+# Mass matrix example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryMacroElementOperator("mass", 4, 4, 2, mesh);
+
+# verify
+println(mass)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    interpolation
+```
+
+# Diffusion operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryMacroElementOperator("diffusion", 4, 4, 2, mesh);
+
+# verify
+println(diffusion)
+
+# output
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    gradient
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  macro-element tensor product basis:
+    numbernodes1d: 7
+    numberquadraturepoints1d: 8
+    numbercomponents: 1
+    numberelements1d: 2
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function GalleryMacroElementOperator(
+    name::String,
+    p1d::Int,
+    q1d::Int,
+    numberelements1d::Int,
+    mesh::Mesh,
+)
+    if haskey(operatorgallery, name)
+        basis = TensorH1LagrangeMacroBasis(p1d, q1d, 1, mesh.dimension, numberelements1d)
+        return operatorgallery[name](basis, mesh)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
@@ -124,27 +371,27 @@ end
 
 """
 ```julia
-GalleryOperator("mass", p1d, q1d, mesh)
+massoperator(basis, mesh)
 ```
 
-Convenience constructor for scalar mass operator
+Convenience constructor for mass operator
 
 # Weak form:
 - ``\\int v u``
 
 # Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
+- `basis`: basis to use of all operator fields
+- `mesh`:  mesh for operator
 
 # Returns:
-- Mass matrix operator of order p on mesh
+- Mass matrix operator with basis on mesh
 
 # Example:
 ```jldoctest
 # mass operator
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 3, 4, mesh);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
+mass = LFAToolkit.massoperator(basis, mesh);
 
 # verify
 println(mass)
@@ -184,9 +431,8 @@ operator field:
     interpolation
 ```
 """
-function massoperator(p1d::Int, q1d::Int, mesh::Mesh)
+function massoperator(basis::AbstractBasis, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
     function massweakform(u::Array{Float64}, w::Array{Float64})
         v = u * w[1]
         return [v]
@@ -206,109 +452,27 @@ end
 
 """
 ```julia
-GalleryOperator("vectormass", p1d, q1d, mesh)
+diffusionoperator(basis, mesh)
 ```
 
-Convenience constructor for vector mass operator in three components
-
-# Weak form:
-- ``\\int \\mathbf{v} \\mathbf{u}``
-
-# Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
-
-# Returns:
-- Vector mass matrix operator of order p on mesh
-
-# Example:
-```jldoctest
-# mass operator
-mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("vectormass", 3, 4, mesh);
-
-# verify
-println(mass)
-
-# output
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    interpolation
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    interpolation
-```
-"""
-function vectormassoperator(p1d::Int, q1d::Int, mesh::Mesh)
-    # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
-    function massweakform(u::Array{Float64}, w::Array{Float64})
-        v = u * w[1]
-        return [v]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.interpolation]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.interpolation])]
-
-    # operator
-    mass = Operator(massweakform, mesh, inputs, outputs)
-    return mass
-end
-
-"""
-```julia
-GalleryOperator("diffusion", p1d, q1d, mesh)
-```
-
-Convenience constructor for scalar diffusion operator
+Convenience constructor for diffusion operator
 
 # Weak form:
 - ``\\int \\nabla v \\nabla u``
 
 # Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
+- `basis`: basis for all operator fields to use
+- `mesh`:  mesh for operator
 
 # Returns:
-- Diffusion operator of order p on mesh
+- Diffusion operator with basis on mesh
 
 # Example:
 ```jldoctest
-# mass operator
+# diffusion operator
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 3, 4, mesh);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
+diffusion = LFAToolkit.diffusionoperator(basis, mesh);
 
 # verify
 println(diffusion)
@@ -349,94 +513,8 @@ operator field:
     gradient
 ```
 """
-function diffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
+function diffusionoperator(basis::AbstractBasis, mesh::Mesh)
     # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
-    function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-        dv = du * w[1]
-        return [dv]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
-
-    # operator
-    diffusion = Operator(diffusionweakform, mesh, inputs, outputs)
-    return diffusion
-end
-
-
-
-"""
-```julia
-GalleryOperator("vectordiffusion", p1d, q1d, mesh)
-```
-
-Convenience constructor for vector diffusion operator in three components
-
-# Weak form:
-- ``\\int \\nabla \\mathbf{v} \\nabla \\mathbf{u}``
-
-# Arguments:
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
-
-# Returns:
-- Vector diffusion operator of order p on mesh
-
-# Example:
-```jldoctest
-# mass operator
-mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("vectordiffusion", 3, 4, mesh);
-
-# verify
-println(diffusion)
-
-# output
-
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    gradient
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    gradient
-```
-"""
-function vectordiffusionoperator(p1d::Int, q1d::Int, mesh::Mesh)
-    # setup
-    basis = TensorH1LagrangeBasis(p1d, q1d, 3, mesh.dimension)
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
         dv = du * w[1]
         return [dv]
@@ -458,11 +536,6 @@ end
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
 
-operatorgallery = Dict(
-    "mass" => massoperator,
-    "vectormass" => vectormassoperator,
-    "diffusion" => diffusionoperator,
-    "vectordiffusion" => vectordiffusionoperator,
-)
+operatorgallery = Dict("mass" => massoperator, "diffusion" => diffusionoperator)
 
 # ------------------------------------------------------------------------------

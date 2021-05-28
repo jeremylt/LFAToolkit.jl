@@ -1,7 +1,7 @@
 name = "LFAToolkit"
 uuid = "3f92b583-c0aa-4596-8bdf-f02f6c0a52df"
 authors = ["Jeremy L Thompson <thompson.jeremy.luke@gmail.com>"]
-version = "0.2.2"
+version = "0.3.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"

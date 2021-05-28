@@ -1,5 +1,19 @@
 # Release Notes
 
+## Current Development
+
+## v0.3.0
+
+This release include updated functionality and an interface change.
+
+Breaking change:
+
+* Refactor `GalleryOperator`; now `GalleryVectorOperator` and `GalleryMacroElementOperator` included
+
+Functionalty improvement:
+
+* Initial implementations of lumped and Dirichlet BDDC preconditioners added
+
 ## v0.2.2
 
 Relax compatibility requirement to Julia 1.3 - 1.6.

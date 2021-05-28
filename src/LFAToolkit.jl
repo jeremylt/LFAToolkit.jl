@@ -37,7 +37,8 @@ export TensorBasis,
 # operato oields
 export OperatorField
 # operators
-export Operator, GalleryOperator, computesymbols
+export Operator,
+    GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, computesymbols
 # preconditioners
 export IdentityPC
 export Jacobi

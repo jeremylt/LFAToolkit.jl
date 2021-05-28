@@ -9,4 +9,6 @@ LFAToolkit.getcolumnmodemap(::Operator)
 LFAToolkit.getinputcoordinates
 LFAToolkit.getoutputcoordinates
 LFAToolkit.getnodecoordinatedifferences(::Operator)
+LFAToolkit.massoperator
+LFAToolkit.diffusionoperator
 ```

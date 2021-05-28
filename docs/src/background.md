@@ -78,10 +78,10 @@ where ``P`` represents the element assembly operator, ``B`` is a basis operator 
 We can thus compute the symbol matrix as
 
 ```math
-\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_i - x_j \right) \theta / h} \right] \right) Q
+\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) Q
 ```
 
-where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
+where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element, and ``i, j \in \left\lbrace 0, 1, \dots, p \right\rbrace``.
 ``Q`` is a ``p + 1 \times p`` matrix that localizes Fourier modes on an element.
 
 ```math
@@ -129,10 +129,10 @@ Therefore, the symbol matrix for a PDE with arbitrary dimension, order and numbe
 
 
 ```math
-\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_i - \mathbf{x}_j \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q
+\tilde{A}_h = Q^T \left( A_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) Q
 ```
 
-where ``\odot`` represents pointwise multiplication of the elements, ``h`` is the length of the element in each dimension, and ``i, j \in \left[ 0, 1, \dots, p \right]``.
+where ``\odot`` represents pointwise multiplication of the elements, ``\mathbf{h}`` is the length of the element in each dimension, and ``i, j \in \left\lbrace 0, 1, \dots, n \cdot p^d \right\rbrace``.
 ``Q`` is a ``p - 1 \times p`` matrix that localizes the Fourier modes on the element.
 
 ## Multigrid
@@ -179,7 +179,7 @@ In the specific case of Jacobi smoothing, ``M`` is given by ``M = diag \left( A 
 The symbol of the error propagation operator is given by
 
 ```math
-\tilde{S}_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \left( \omega \right) \tilde{A}_h \left( \theta \right)
+\tilde{S}_h \left( \omega, \theta \right) = I - \tilde{M}_h^{-1} \left( \omega \right) \tilde{A}_h \left( \boldsymbol{\theta} \right)
 ```
 
 where ``\omega`` is a relaxation parameter.
@@ -187,7 +187,7 @@ where ``\omega`` is a relaxation parameter.
 Specifically, for Jacobi we have
 
 ```math
-\tilde{S}_h \left( \omega, \theta \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right)
+\tilde{S}_h \left( \omega, \boldsymbol{\theta} \right) = I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \boldsymbol{\theta} \right)
 ```
 
 where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
@@ -199,7 +199,7 @@ where ``\omega`` is the weighting factor and ``\tilde{M}_h`` is given by
 If multiple pre or post-smoothing passes are used, we have
 
 ```math
-\tilde{S}_h \left( \omega, \nu, \theta \right) = \left( I - \omega \tilde{M}_h^{-1} \tilde{A}_h \left( \theta \right) \right)^{\nu}
+\tilde{S}_h \left( \omega, \nu, \boldsymbol{\theta} \right) = \left( I - \tilde{M}_h^{-1} \left \omega, \boldsymbol{\theta} \right) \tilde{A}_h \left( \boldsymbol{\theta} \right) \right)^{\nu}
 ```
 
 where ``\nu`` is the number of smoothing passes.
@@ -225,13 +225,13 @@ Restriction from the fine grid to the coarse grid is given by the transpose, ``R
 Thus, the symbol of ``P_{ctof}`` is given by
 
 ```math
-\tilde{P}_{ctof} \left( \theta \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, f} - \mathbf{x}_{j, c} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_c
+\tilde{P}_{ctof} \left( \boldsymbol{\theta} \right) = Q_f^T \left( \left( D_{scale} B_{ctof} \right) \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) Q_c
 ```
 
 and ``\tilde{R}_{ftoc}`` is given by the analogous computation
 
 ```math
-\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) Q_f.
+\tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \boldsymbol{\theta} / \mathbf{h}} \right] \right) Q_f.
 ```
 
 The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro-elements that consist of multiple micro elements of the same polynomial order as the coarse grid elements.
@@ -241,7 +241,7 @@ The grid transfer operators for h-multgrid can be represented in a similar fashi
 Combining these elements, the symbol of the error propagation operator for p-multigrid is given by
 
 ```math
-\tilde{E}_{TMG} \left( \omega, \nu, \theta \right) = \tilde{S}_f \left( \omega, \nu, \theta \right) \left[ I - \tilde{P}_{ctof} \left( \theta \right) \tilde{A}_c^{-1} \left( \theta \right) \tilde{R}_{ftoc} \left( \theta \right) \tilde{A}_f \left( \theta \right) \right] \tilde{S}_f \left( \omega, \nu, \theta \right)
+\tilde{E}_{TMG} \left( \omega, \nu, \boldsymbol{\theta} \right) = \tilde{S}_f \left( \omega, \nu, \boldsymbol{\theta} \right) \left[ I - \tilde{P}_{ctof} \left( \boldsymbol{\theta} \right) \tilde{A}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{R}_{ftoc} \left( \boldsymbol{\theta} \right) \tilde{A}_f \left( \boldsymbol{\theta} \right) \right] \tilde{S}_f \left( \omega, \nu, \boldsymbol{\theta} \right)
 ```
 
 where ``\tilde{P}_{ctof}`` and ``\tilde{R}_{ftoc}`` are given above, ``\tilde{S}_f`` is given by the smoothing operator, and ``\tilde{A}_c`` and ``\tilde{A}_f`` are derived from the PDE being analyzed.

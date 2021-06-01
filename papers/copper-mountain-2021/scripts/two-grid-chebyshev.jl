@@ -37,7 +37,7 @@ for fineP = 1:4
 
         # compute smoothing factor
         # -- setup
-        numberruns = 200
+        numberruns = 100
         maxeigenvalue = 0
         θ_min = -π/2
         θ_max = 3π/2

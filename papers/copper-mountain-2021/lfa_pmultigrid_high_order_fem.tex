@@ -108,6 +108,14 @@ In Section \ref{sec:lfa} we develop the notation for LFA of second-order PDEs wi
 Section \ref{sec:results} contains numerical results investigating the performance of Jacobi smoothing for p-multigrid on the one and two dimensional Laplacian and three dimensional Neo-Hookean hyperelasticity, and Section \ref{sec:conclusion} contains concluding remarks. 
 
 % -----------------------------------------------------------------------------
+\subsection{Reproducibility}\label{sec:reproducibility}
+% -----------------------------------------------------------------------------
+
+The numerical results in this paper were generated using the Julia package LFAToolkit.jl \cite{thompson2021toolkit}.
+This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
+This repository contains Julia scripts and interactive Jupyter notebooks that can replicate the tables and plots in this paper.
+
+% -----------------------------------------------------------------------------
 \section{Definitions and Notation}\label{sec:notation}
 % -----------------------------------------------------------------------------
 
@@ -558,14 +566,6 @@ In Figures \ref{fig:multi_grid_spectral_radius_9_2_2d} and \ref{fig:multi_grid_9
 % -----------------------------------------------------------------------------
 \subsection{Neo-Hookean Hyperelasticity - 3D Convergence Factors}\label{sec:3dresults}
 % -----------------------------------------------------------------------------
-
-% -----------------------------------------------------------------------------
-\subsection{Reproducibility}\label{sec:reproducibility}
-% -----------------------------------------------------------------------------
-
-The numerical results in this paper were generated using the Julia package LFAToolkit.jl \cite{thompson2021toolkit}.
-This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
-This repository contains interactive Jupyter notebooks that can replicate the plots in this paper.
 
 % -----------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusion}

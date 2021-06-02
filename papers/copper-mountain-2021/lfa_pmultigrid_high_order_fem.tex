@@ -511,6 +511,17 @@ Optimal parameter estimation is an open question for high-order p-multigrid, but
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
+\begin{figure}[!tbp]
+  \centering
+    \subfloat[Convergence for $p = 4$ to $p = 2$, $\nu = 1$]{\includegraphics[width=0.48\textwidth]{img/two_grid_converge_5_to_3_chebyshev}\label{fig:two_grid_5_3_chebyshev}}
+    \subfloat[Convergence for $p = 4$ to $p = 1$, $\nu = 1$]{\includegraphics[width=0.48\textwidth]{img/two_grid_converge_5_to_2_chebyshev}\label{fig:two_grid_5_2_chebyshev}}
+  \caption{Two-grid analysis for Chebyshev smoothing for high-order finite elements}
+\end{figure}
+
+In Figures \ref{fig:two_grid_5_3_chebyshev} and \ref{fig:two_grid_5_2_chebyshev} we plot the two-grid convergence factor for p-multigrid with Chebyshev pre and post-smoothing for the one dimensional Laplacian as a function of the Chebyshev order, $\omega$.
+On the left we show conservative coarsening from quartic to quadratic elements and on the right we show more aggressive coarsening from quartic to linear elements.
+As expected, the two-grid convergence factor decreases as we coarsen more rapidly, however this effect is not as pronounced as we saw with Jacobi smoothing.
+
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 2D Convergence Factors}\label{sec:2dresults}
 % -----------------------------------------------------------------------------

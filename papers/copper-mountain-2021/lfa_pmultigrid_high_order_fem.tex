@@ -403,7 +403,7 @@ The symbol of the p-prolongation is given by
 \begin{equation}
 \tilde{\mathbf{P}}_{\text{ctof}} \left( \theta \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, f} - \mathbf{x}_{j, c} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
 \end{equation}
-where $i \in \left[ 0, 1, \dots, p_{\text{fine}} \right]$, $h$ is the length of the element, and $j \in \left[ 0, 1, \dots, p_{\text{coarse}} \right]$.
+where $i \in \left[ 0, 1, \dots, p_{\text{fine}} \right]$, $\mathbf{h}$ is the length of the element, and $j \in \left[ 0, 1, \dots, p_{\text{coarse}} \right]$.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-prolongation operator is given by $\mathbf{P}_e = \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
 \end{definition}\label{def:prolongation_symbol}
 
@@ -412,7 +412,7 @@ The symbol of p-restriction is given by the expression
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \theta \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{i, c} - \mathbf{x}_{j, f} \right) \mathbf{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
-where $i \in \left[ 0, 1, \dots, p_{\text{coarse}} \right]$, $h$ is the length of the element, and $j \in \left[ 0, 1, \dots, p_{\text{fine}} \right]$.
+where $i \in \left[ 0, 1, \dots, p_{\text{coarse}} \right]$, $\mathbf{h}$ is the length of the element, and $j \in \left[ 0, 1, \dots, p_{\text{fine}} \right]$.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}}$.
 \end{definition}\label{def:restriction_symbol}
 

@@ -17,7 +17,9 @@ maxeigenvalues = DataFrame()
 
 # test range
 for fineP = 1:4
+    println("fine_p = ", 2^fineP)
     for coarseP = 0:fineP-1
+        println("  coarse_p = ", 2^coarseP)
         # setup
         # -- bases
         coarsep = 2^coarseP
@@ -45,6 +47,7 @@ for fineP = 1:4
 
         # -- compute
         for v = 1:3
+            println("    v = ", v)
             mineigenvalue = 1.0
             ω_minegenvalue = -1
             θ_minegenvalue = -1

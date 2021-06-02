@@ -271,7 +271,7 @@ The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{
 
 Following the derivation from Section \ref{sec:highorder}, the symbol of the Jacobi error propagation operator is given by
 \begin{equation}
-\tilde{\mathbf{S}} \left( \omega, \theta \right) = \mathbf{I} - \tilde{\mathbf{M}}^{-1} \left( \theta \right) \tilde{\mathbf{A}} \left( \theta \right) = \mathbf{I} - \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right)^{-1} \mathbf{Q} \right) \tilde{\mathbf{A}} \left( \theta \right),
+\tilde{\mathbf{S}} \left( \omega, \theta \right) = \mathbf{I} - \tilde{\mathbf{M}}^{-1} \left( \theta \right) \tilde{\mathbf{A}} \left( \theta \right) = \mathbf{I} - \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right) \mathbf{Q} \right)^{-1} \tilde{\mathbf{A}} \left( \theta \right),
 \end{equation}
 where this expression has been simplified by the fact that $e^{\imath \left( x_i - x_i \right) \theta / h} = 1$.
 
@@ -280,7 +280,7 @@ If multiple pre or post-smoothing passes are used by our multigrid algorithm, we
 \begin{definition}
 The symbol of the error propagation operator for Jacobi smoothing is given by
 \begin{equation}
-\tilde{\mathbf{S}} \left( \nu, \omega, \theta \right) = \left( \mathbf{I} - \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right)^{-1} \mathbf{Q} \right) \tilde{\mathbf{A}} \left( \theta \right) \right)^\nu,
+\tilde{\mathbf{S}} \left( \nu, \omega, \theta \right) = \left( \mathbf{I} - \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right) \mathbf{Q} \right)^{-1} \tilde{\mathbf{A}} \left( \theta \right) \right)^\nu,
 \end{equation}
 where $\nu$ is the number of smoothing passes.
 \end{definition}\label{def:jacobi_symbol}
@@ -346,12 +346,13 @@ where $\nu$ is the number of smoothing passes and $\tilde{\mathbf{E}}_n \left( \
 \begin{equation}
 \begin{tabular}{c}
 $\tilde{\mathbf{E}}_0 \left( \mathbf{\theta} \right) = \mathbf{I}$\\
-$\tilde{\mathbf{E}}_1 \left( \mathbf{\theta} \right) = \mathbf{I} - \alpha \left( \diag \tilde{\mathbf{A}} \right)^{-1} \tilde{\mathbf{A}} \left( \mathbf{\theta} \right)$\\
-$\tilde{\mathbf{E}}_n \left( \mathbf{\theta} \right) = \left( \alpha \tilde{\mathbf{E}}_{n - 1} \left( \mathbf{\theta} \right) + \beta_{n - 2} \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) - \left( \diag \tilde{\mathbf{A}} \right)^{-1} \tilde{\mathbf{A}} \left( \mathbf{\theta} \right) \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) \right) / \gamma_{n - 1}$
+$\tilde{\mathbf{E}}_1 \left( \mathbf{\theta} \right) = \mathbf{I} - \alpha \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \mathbf{\theta} \right)$\\
+$\tilde{\mathbf{E}}_n \left( \mathbf{\theta} \right) = \left( \alpha \tilde{\mathbf{E}}_{n - 1} \left( \mathbf{\theta} \right) + \beta_{n - 2} \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) - \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \mathbf{\theta} \right) \tilde{\mathbf{E}}_{n - 2} \left( \mathbf{\theta} \right) \right) / \gamma_{n - 1}$
 \end{tabular}
 \end{equation}
 \label{def:chebyshev_symbol}
 \end{definition}
+with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right) \mathbf{Q} \right)^{-1}$ giving the symbol of the Jacobi smoother.
 
 \begin{figure}[!tbp]
   \centering
@@ -376,7 +377,7 @@ The total multigrid error propagation operator is given by
 \end{equation}
 where $\mathbf{S}_f$ represents the smoother error propagation operator, while $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
-This derivation of LFA for p-multigrid allows independently setting these parameters; however we omit this in teh notation for simplicity.
+This derivation of LFA for p-multigrid allows independently setting these parameters; however we omit this in the notation for simplicity.
 
 This error propagation operator can represent both h-multigrid and p-multigrid, depending upon the grid transfer operators and coarse grid representation chosen, but we focus on p-multigrid grid transfer operators in this paper.
 

@@ -617,6 +617,11 @@ The results in Table \ref{table:two_grid_2d} provide the minimal LFA smoothing f
 \label{table:two_grid_2d_chebyshev}
 \end{table}
 
+% TODO: CHECK WHAT'S GOING ON WITH P=8!!!
+
+The results in Table \ref{table:two_grid_2d_chebyshev} provide the minimal LFA smoothing factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
+From this table, we can see that the effect of rapid coarsening is again much less severe for p-multigrid with Chebyshev smoothing in 2D, but at least a third order Chebyshev method must be used, which requires substantially more computation than Jacobi smoothing.
+
 % -----------------------------------------------------------------------------
 \subsection{Neo-Hookean Hyperelasticity - 3D Convergence Factors}\label{sec:3dresults}
 % -----------------------------------------------------------------------------

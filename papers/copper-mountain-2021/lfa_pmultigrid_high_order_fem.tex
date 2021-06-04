@@ -385,7 +385,8 @@ The total multigrid error propagation operator is given by
 \begin{equation}
 \mathbf{E}_{\text{TMG}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f
 \end{equation}
-where $\mathbf{S}_f$ represents the smoother error propagation operator, while $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
+where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the course grid solve, which may be another multgrid cycle.
+$\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
 This derivation of LFA for p-multigrid allows independently setting these parameters; however we omit this in the notation for simplicity.
 
@@ -411,7 +412,7 @@ Following the derivation from \cref{sec:highorder}, we can derive the symbols of
 \begin{definition}
 The symbol of the p-prolongation is given by
 \begin{equation}
-\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
+\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
 \end{equation}
 where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-prolongation operator is given by $\mathbf{P}_e = \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
@@ -420,7 +421,7 @@ The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for
 \begin{definition}
 The symbol of p-restriction is given by the expression
 \begin{equation}
-\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \sum_d \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
+\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
 where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis..
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}}$.
@@ -435,8 +436,10 @@ We can combine these expressions to give the symbol of the error propagation ope
 \begin{definition}
 The symbol for the p-multgrid error propagation operator is given by
 \begin{equation}
-\tilde{\mathbf{E}}_{\text{TMG}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right).
+\tilde{\mathbf{E}}_{\text{TMG}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)
 \end{equation}
+where $\tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)$ is the symbol of the smoother and $\tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right)$ is the symbol of the course grid solve.
+$\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right)$ and $\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right)$ represent the symbol of the grid prolongation and restriction operators, respectively. 
 \end{definition}\label{def:pmultigrid_symbol}
 
 Note again that this derivation is applicable for any PDE with a weak form that can be represented by \cref{efficienthighorder}.

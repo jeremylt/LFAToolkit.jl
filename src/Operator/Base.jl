@@ -794,7 +794,7 @@ nodedifferences = mass.nodecoordinatedifferences;
 # verify
 truenodes = LFAToolkit.lobattoquadrature(4, false);
 truenodedifferences = [
-    (truenodes[i] - truenodes[j])/2.0 for i in 1:4, j in 1:4
+    (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
 ];
 @assert nodedifferences ≈ truenodedifferences
 
@@ -819,7 +819,7 @@ function getnodecoordinatedifferences(operator::Operator)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
-                (outputcoordinates[i, k] - inputcoordinates[j, k]) / lengths[k]
+                (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
         end
 
         # store

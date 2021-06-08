@@ -111,7 +111,7 @@ function getnodecoordinatedifferences(multigrid::Multigrid)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
-                (outputcoordinates[i, k] - inputcoordinates[j, k]) / lengths[k]
+                (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]
         end
 
         # store

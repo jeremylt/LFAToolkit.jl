@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/private/pc/bddc/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../">Introduction</a></li><li><a class="tocitem" href="../../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../../examples/">Examples</a></li><li><a class="tocitem" href="../../../public/">Public API</a></li><li><a class="tocitem" href="../../">Private API</a></li><li><a class="tocitem" href="../../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/private/pc/bddc.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Preconditioner:-BDDC"><a class="docs-heading-anchor" href="#Preconditioner:-BDDC">Preconditioner: BDDC</a><a id="Preconditioner:-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Preconditioner:-BDDC" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.BDDC" href="#LFAToolkit.BDDC"><code>LFAToolkit.BDDC</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia">BDDC(operator, coarseoperator, smoother, prolongation)</code></pre><p>BDDC preconditioner for finite element operators</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:      finite element operator to precondition</li><li><code>injectiontype</code>: type of injection into subassembled space to use</li></ul><p><strong>Returns:</strong></p><ul><li>BDDC preconditioner object</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L5-L18">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getprimalnodes-Tuple{BDDC}" href="#LFAToolkit.getprimalnodes-Tuple{BDDC}"><code>LFAToolkit.getprimalnodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getprimalnodes(bddc)</code></pre><p>Compute or retrieve the primal nodes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of primal nodes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+primalnodes = LFAToolkit.getprimalnodes(bddc);
+primalnodes = bddc.primalnodes;
+
+# verify
+@assert primalnodes == [1, p, p^2 - p + 1, p^2]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L73-L101">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getsubassemblednodes-Tuple{BDDC}" href="#LFAToolkit.getsubassemblednodes-Tuple{BDDC}"><code>LFAToolkit.getsubassemblednodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getsubassemblednodes(bddc)</code></pre><p>Compute or retrieve the subassembled nodes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of subassembled nodes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+subassemblednodes = LFAToolkit.getsubassemblednodes(bddc);
+subassemblednodes = bddc.subassemblednodes;
+
+# verify
+@assert subassemblednodes == setdiff(1:p^2, [1, p, p^2-p+1, p^2])
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L124-L152">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterfacenodes-Tuple{BDDC}" href="#LFAToolkit.getinterfacenodes-Tuple{BDDC}"><code>LFAToolkit.getinterfacenodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getinterfacenodes(bddc)</code></pre><p>Compute or retrieve the interface nodes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of interface nodes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interfacenodes = LFAToolkit.getinterfacenodes(bddc);
+interfacenodes = bddc.interfacenodes;
+
+# verify
+trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
+for i = 1:p-2
+    push!(trueinterfacenodes, i*p+1)
+    push!(trueinterfacenodes, (i+1)*p)
+end
+trueinterfacenodes = sort(trueinterfacenodes)
+@assert interfacenodes == trueinterfacenodes
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L166-L200">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinteriornodes-Tuple{BDDC}" href="#LFAToolkit.getinteriornodes-Tuple{BDDC}"><code>LFAToolkit.getinteriornodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getinteriornodes(bddc)</code></pre><p>Compute or retrieve the interior nodes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of interior nodes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiornodes = LFAToolkit.getinteriornodes(bddc);
+interiornodes = bddc.interiornodes;
+
+# verify
+trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
+for i = 1:p-2
+    push!(trueinterfacenodes, i*p+1)
+    push!(trueinterfacenodes, (i+1)*p)
+end
+trueinterfacenodes = sort(trueinterfacenodes)
+@assert interiornodes == setdiff(1:p^2, trueinterfacenodes)
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L223-L257">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getprimalmodes" href="#LFAToolkit.getprimalmodes"><code>LFAToolkit.getprimalmodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getprimalmodes(bddc)</code></pre><p>Compute or retrieve the primal modes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of primal modes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+primalmodes = LFAToolkit.getprimalmodes(bddc);
+primalmodes = bddc.primalmodes;
+
+# verify
+@assert primalmodes == [1]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L271-L299">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getsubassembledmodes" href="#LFAToolkit.getsubassembledmodes"><code>LFAToolkit.getsubassembledmodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getsubassembledmodes(bddc)</code></pre><p>Compute or retrieve the subassembled modes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of subassembled modes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+subassembledmodes = LFAToolkit.getsubassembledmodes(bddc);
+subassembledmodes = bddc.subassembledmodes;
+
+# verify
+@assert subassembledmodes == setdiff(1:(p-1)^2, [1])
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L321-L349">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterfacemodes" href="#LFAToolkit.getinterfacemodes"><code>LFAToolkit.getinterfacemodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinterfacemodes(bddc)</code></pre><p>Compute or retrieve the interface modes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of interface modes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interfacemodes = LFAToolkit.getinterfacemodes(bddc);
+interfacemodes = bddc.interfacemodes;
+
+# verify
+trueinterfacemodes = [1:p-1...]
+for i = 1:p-2
+    push!(trueinterfacemodes, i*(p-1)+1)
+end
+trueinterfacemodes = sort(trueinterfacemodes)
+@assert interfacemodes == trueinterfacemodes
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L363-L396">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinteriormodes" href="#LFAToolkit.getinteriormodes"><code>LFAToolkit.getinteriormodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinteriormodes(bddc)</code></pre><p>Compute or retrieve the interior modes for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Vector of interior modes for BDDC preconditioner</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiormodes = LFAToolkit.getinteriormodes(bddc);
+interiormodes = bddc.interiormodes;
+
+# verify
+@assert interiormodes == setdiff(1:(p-1)^2, bddc.interfacemodes)
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L419-L447">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getsubassembledinverse" href="#LFAToolkit.getsubassembledinverse"><code>LFAToolkit.getsubassembledinverse</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getsubassembledinverse(bddc)</code></pre><p>Compute or retrieve the solver for subdomain for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Solver for subdomain</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+subassembledinverse = LFAToolkit.getsubassembledinverse(bddc);
+subassembledinverse = bddc.subassembledinverse;
+
+# verify
+@assert subassembledinverse ≈ Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L461-L489">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinteriorinverse" href="#LFAToolkit.getinteriorinverse"><code>LFAToolkit.getinteriorinverse</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinteriorinverse(bddc)</code></pre><p>Compute or retrieve the solver for subdomain interior for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Solver for subdomain interior</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+interiorinverse = LFAToolkit.getinteriorinverse(bddc);
+interiorinverse = bddc.interiorinverse;
+
+# verify
+@assert interiorinverse ≈ Matrix(diffusion.elementmatrix[bddc.interiornodes, bddc.interiornodes])^-1
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L505-L533">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getschur" href="#LFAToolkit.getschur"><code>LFAToolkit.getschur</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getschur(bddc)</code></pre><p>Compute or retrieve the Schur complement matrix for a BDDC preconditioner</p><p><strong>Returns:</strong></p><ul><li>Matrix for Schur complement</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+p = 4
+diffusion = GalleryOperator(&quot;diffusion&quot;, p, p, mesh);
+bddc = LumpedBDDC(diffusion)
+
+# note: either syntax works
+schur = LFAToolkit.getschur(bddc);
+schur = bddc.schur;
+
+# verify
+@assert schur ≈ diffusion.elementmatrix[bddc.primalnodes, bddc.primalnodes] -
+    diffusion.elementmatrix[bddc.primalnodes, bddc.subassemblednodes] *
+    Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1 *
+    diffusion.elementmatrix[bddc.subassemblednodes, bddc.primalnodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L548-L579">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getprimalrowmodemap" href="#LFAToolkit.getprimalrowmodemap"><code>LFAToolkit.getprimalrowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getprimalrowmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the rows of the primal BDDC matrix to the primal symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of primal BDDC matrix to primal symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+primalmodemap = LFAToolkit.getprimalrowmodemap(bddc);
+primalmodemap = bddc.primalrowmodemap;
+
+# verify
+@assert primalmodemap ≈ [1 1 1 1]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L597-L624">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getprimalcolumnmodemap" href="#LFAToolkit.getprimalcolumnmodemap"><code>LFAToolkit.getprimalcolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getprimalcolumnmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the columns of the primal BDDC matrix to the primal symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of primal BDDC matrix to primal symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+primalmodemap = LFAToolkit.getprimalcolumnmodemap(bddc);
+primalmodemap = bddc.primalcolumnmodemap;
+
+# verify
+@assert primalmodemap ≈ [1; 1; 1; 1]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L638-L666">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getsubassembledrowmodemap" href="#LFAToolkit.getsubassembledrowmodemap"><code>LFAToolkit.getsubassembledrowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getsubassembledrowmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix to the subassembled symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of subassembled BDDC matrix to subassembled symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+subassembledmodemap = LFAToolkit.getsubassembledrowmodemap(bddc);
+subassembledmodemap = bddc.subassembledrowmodemap;
+
+# verify
+@assert subassembledmodemap ≈ bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L681-L709">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getsubassembledcolumnmodemap" href="#LFAToolkit.getsubassembledcolumnmodemap"><code>LFAToolkit.getsubassembledcolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getsubassembledcolumnmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the columns of the subassembled BDDC matrix to the subassembled symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of subassembled BDDC matrix to subassembled symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+subassembledmodemap = LFAToolkit.getsubassembledcolumnmodemap(bddc);
+subassembledmodemap = bddc.subassembledcolumnmodemap;
+
+# verify
+@assert subassembledmodemap ≈ bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L724-L752">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterfacerowmodemap" href="#LFAToolkit.getinterfacerowmodemap"><code>LFAToolkit.getinterfacerowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinterfacerowmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the rows of the interface BDDC matrix to the interface symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of interface BDDC matrix to interface symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interfacemodemap = LFAToolkit.getinterfacerowmodemap(bddc);
+interfacemodemap = bddc.interfacerowmodemap;
+
+# verify
+@assert interfacemodemap ≈ bddc.operator.rowmodemap[bddc.interfacemodes, bddc.interfacenodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L767-L795">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterfacecolumnmodemap" href="#LFAToolkit.getinterfacecolumnmodemap"><code>LFAToolkit.getinterfacecolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinterfacecolumnmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the columns of the interface BDDC matrix to the interface symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of interface BDDC matrix to interface symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interfacemodemap = LFAToolkit.getinterfacecolumnmodemap(bddc);
+interfacemodemap = bddc.interfacecolumnmodemap;
+
+# verify
+@assert interfacemodemap ≈ bddc.operator.columnmodemap[bddc.interfacenodes, bddc.interfacemodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L810-L838">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinteriorrowmodemap" href="#LFAToolkit.getinteriorrowmodemap"><code>LFAToolkit.getinteriorrowmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinteriorrowmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the rows of the interior BDDC matrix to the interior symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping rows of interior BDDC matrix to interior symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interiormodemap = LFAToolkit.getinteriorrowmodemap(bddc);
+interiormodemap = bddc.interiorrowmodemap;
+
+# verify
+@assert interiormodemap ≈ bddc.operator.rowmodemap[bddc.interiormodes, bddc.interiornodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L853-L881">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinteriorcolumnmodemap" href="#LFAToolkit.getinteriorcolumnmodemap"><code>LFAToolkit.getinteriorcolumnmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinteriorcolumnmodemap(bddc)</code></pre><p>Compute or retrieve the matrix mapping the columns of the interior BDDC matrix to the interior symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix mapping columns of interior BDDC matrix to interior symbol matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh2D(1.0, 1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+bddc = LumpedBDDC(diffusion);
+
+# note: either syntax works
+interiormodemap = LFAToolkit.getinteriorcolumnmodemap(bddc);
+interiormodemap = bddc.interiorcolumnmodemap;
+
+# verify
+@assert interiormodemap ≈ bddc.operator.columnmodemap[bddc.interiornodes, bddc.interiormodes]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L896-L924">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsrestriction-Tuple{BDDC, Array}" href="#LFAToolkit.computesymbolsrestriction-Tuple{BDDC, Array}"><code>LFAToolkit.computesymbolsrestriction</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbolsrestriction(bddc)</code></pre><p>Compute or retrieve the restriction operator for the BDDC symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix providing the restriction operator of BDDC symbol matrix</li></ul><p><strong>Example:</strong></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L943-L954">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsinjection-Tuple{BDDC, Array}" href="#LFAToolkit.computesymbolsinjection-Tuple{BDDC, Array}"><code>LFAToolkit.computesymbolsinjection</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbolsinjection(bddc)</code></pre><p>Compute or retrieve the injection operator for the BDDC symbol matrix</p><p><strong>Returns:</strong></p><ul><li>Matrix providing the injection operator of BDDC symbol matrix</li></ul><p><strong>Example:</strong></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4efe1012fe1841e8f557804f319fb5c43aab1ac4/src/PC/BDDC/Base.jl#L1079-L1090">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 9 June 2021 22:22">Wednesday 9 June 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

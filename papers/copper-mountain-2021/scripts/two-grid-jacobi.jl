@@ -29,7 +29,6 @@ for fineP = 1:4
 
         # -- diffusion operators
         finediffusion = GalleryOperator("diffusion", finep+1, finep+1, mesh)
-
         coarsediffusion = GalleryOperator("diffusion", coarsep+1, finep+1, mesh)
 
         # -- Jacobi smoother

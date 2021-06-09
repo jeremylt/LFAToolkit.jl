@@ -152,7 +152,7 @@ This definition can be extended to a $p \times p$ linear system of operators by
 where $\tilde{L}_h^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
 
 For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines now rapidly the scheme decreases error at a target frequency.
-Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right) \setminus T^{\text{low}}$. % TODO: or be honest and call it [-\pi, \pi) \setminus T^{\text{low}}
+Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right) \setminus T^{\text{low}}$.
 
 % -----------------------------------------------------------------------------
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
@@ -192,11 +192,11 @@ Selecting a finite element basis, we can discretize this weak form and produce
 Using the algebraic representation of PDE operators given in \cite{brown2010efficient}, the PDE operator $\mathbf{A}$ is of the form
 \begin{equation}\label{efficienthighorder}
 \begin{split}
-\mathbf{A} = \mathbf{P}^T \mathbf{A}_e \mathbf{P}\\
+\mathbf{A} = \mathbf{G}^T \mathbf{A}_e \mathbf{G}\\
 \mathbf{A}_e = \mathbf{B}^T \mathbf{D} \mathbf{B}
 \end{split}
 \end{equation}
-where $\mathbf{P}$ represents the element assembly operator, $\mathbf{B}$ is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and $\mathbf{D}$ is a block diagonal operator which provides the pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
+where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and $\mathbf{D}$ is a block diagonal operator which provides the pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
 Consider the specific case of a Topeliz operator representing an arbitrary second order scalar PDE in 1D with basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity, so we can compute the symbol matrix as
@@ -265,9 +265,13 @@ We omit this optimization in LFAToolkit in favor of supporting second-order PDEs
 % -----------------------------------------------------------------------------
 
 Multigrid methods require a fine grid smoother, typically applied both before and after the coarse grid correction is computed.
-In this section, we compute the error propegation operator for two polynomial smoothers, Jacobi and Chebyshev.
+In this section, we compute the error propegation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
+The LFA predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
+\begin{equation}
+\mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \left\lvert \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right\rvert.
+\end{equation}
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoother}\label{sec:jacobi}
@@ -297,11 +301,6 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
   \subfloat[Smoothing Factor of Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5}\label{fig:jacobi_smooth_factor}}
   \caption{Jacobi smoothing for high-order finite elements}
 \end{figure}
-
-The LFA predicted smoothing factor is given by the maximum spectral radius of the symbol across all frequencies
-\begin{equation}
-\mu = \max_{\boldsymbol{\theta} \in T} \left\lvert \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right\rvert.
-\end{equation}
 
 Using Definition \ref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
 In \cref{fig:jacobi_smooth_factor} we plot the LFA predicted smoothing factor for Jacobi smoothing as a function of the smoothing parameter $\omega$.
@@ -531,7 +530,6 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
   \toprule
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $\omega = 1$   &  $\omega = 2$   &  $\omega = 3$   &  $\omega = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-                                            &  $\rho_{\min}$  &  $\rho_{\min}$  &  $\rho_{\min}$  &  $\rho_{\min}$  \\
   \midrule
   $p = 2$ to $p = 1$          &  1.679  &  1.317  &  0.434  &  0.022  \\
   %\midrule
@@ -608,7 +606,6 @@ The results in \cref{table:two_grid_2d} provide the minimal LFA smoothing factor
   \toprule
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $\omega = 1$   &  $\omega = 2$   &  $\omega = 3$   &  $\omega = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-                                            &  $\rho_{\min}$  &  $\rho_{\min}$  &  $\rho_{\min}$  &  $\rho_{\min}$  \\
   \midrule
   $p = 2$ to $p = 1$          &  0.330  &  0.363  &  0.194  &  0.026  \\
   %\midrule

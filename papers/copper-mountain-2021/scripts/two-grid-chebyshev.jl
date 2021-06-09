@@ -9,9 +9,9 @@ dimension = 1
 numbercomponents = 1
 mesh = []
 if dimension == 1
-   mesh = Mesh1D(1.0)
+    mesh = Mesh1D(1.0)
 elseif dimension == 2
-   mesh = Mesh2D(1.0, 1.0)
+    mesh = Mesh2D(1.0, 1.0)
 end
 maxeigenvalues = DataFrame()
 
@@ -25,11 +25,16 @@ for fineP = 1:4
         coarsep = 2^coarseP
         finep = 2^fineP
 
-        ctofbasis = TensorH1LagrangePProlongationBasis(coarsep+1, finep+1, numbercomponents, dimension)
+        ctofbasis = TensorH1LagrangePProlongationBasis(
+            coarsep + 1,
+            finep + 1,
+            numbercomponents,
+            dimension,
+        )
 
         # -- diffusion operators
-        finediffusion = GalleryOperator("diffusion", finep+1, finep+1, mesh)
-        coarsediffusion = GalleryOperator("diffusion", coarsep+1, finep+1, mesh)
+        finediffusion = GalleryOperator("diffusion", finep + 1, finep + 1, mesh)
+        coarsediffusion = GalleryOperator("diffusion", coarsep + 1, finep + 1, mesh)
 
         # -- Chebyshev smoother
         chebyshev = Chebyshev(finediffusion)
@@ -41,8 +46,8 @@ for fineP = 1:4
         # -- setup
         numberruns = 100
         maxeigenvalue = 0
-        θ_min = -π/2
-        θ_max = 3π/2
+        θ_min = -π / 2
+        θ_max = 3π / 2
 
         # -- compute
         for ω = 1:4
@@ -52,9 +57,9 @@ for fineP = 1:4
             θ_maxegenvalue = -1
             # -- 1D --
             if dimension == 1
-                for i in 1:numberruns
-                   θ = [θ_min + (θ_max - θ_min)*i/numberruns]
-                    if abs(θ[1] % 2π) > π/128
+                for i = 1:numberruns
+                    θ = [θ_min + (θ_max - θ_min) * i / numberruns]
+                    if abs(θ[1] % 2π) > π / 128
                         A = computesymbols(multigrid, [ω], [1, 1], θ)
                         eigenvalues = [abs(val) for val in eigvals(A)]
                         currentmaxeigenvalue = max(eigenvalues...)
@@ -65,14 +70,14 @@ for fineP = 1:4
                         end
                     end
                 end
-            # -- 2D --
+                # -- 2D --
             elseif dimension == 2
-                for i in 1:numberruns, j in 1:numberruns
+                for i = 1:numberruns, j = 1:numberruns
                     θ = [
-                        θ_min + (θ_max - θ_min)*i/numberruns,
-                        θ_min + (θ_max - θ_min)*j/numberruns
+                        θ_min + (θ_max - θ_min) * i / numberruns,
+                        θ_min + (θ_max - θ_min) * j / numberruns,
                     ]
-                    if sqrt(abs(θ[1] % 2π)^2 + abs(θ[2] % 2π)^2) > π/128
+                    if sqrt(abs(θ[1] % 2π)^2 + abs(θ[2] % 2π)^2) > π / 128
                         A = computesymbols(multigrid, [ω], [1, 1], θ)
                         eigenvalues = [abs(val) for val in eigvals(A)]
                         currentmaxeigenvalue = max(eigenvalues...)
@@ -84,7 +89,16 @@ for fineP = 1:4
                     end
                 end
             end
-            append!(maxeigenvalues, DataFrame(finep=finep, coarsep=coarsep, ω=ω, θ=θ_maxegenvalue, rho=maxeigenvalue))
+            append!(
+                maxeigenvalues,
+                DataFrame(
+                    finep = finep,
+                    coarsep = coarsep,
+                    ω = ω,
+                    θ = θ_maxegenvalue,
+                    rho = maxeigenvalue,
+                ),
+            )
         end
     end
 end

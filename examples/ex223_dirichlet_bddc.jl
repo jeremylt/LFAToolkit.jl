@@ -15,7 +15,7 @@ diffusion = GalleryOperator("diffusion", p, p, mesh)
 bddc = DirichletBDDC(diffusion)
 
 # compute operator symbols
-A = computesymbols(bddc, [π, π])
+A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

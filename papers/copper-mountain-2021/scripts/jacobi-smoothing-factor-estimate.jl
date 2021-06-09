@@ -55,7 +55,7 @@ for P = 1:4
                 λ_max = max(λ_max, eigenvalues...)
             end
         end
-    # -- 2D --
+        # -- 2D --
     elseif dimension == 2
         for i = 1:numberruns, j = 1:numberruns
             θ = [

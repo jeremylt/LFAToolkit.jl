@@ -257,8 +257,8 @@ $\mathbf{A}_e$ is the finite element operator for the element and $\mathbf{Q}$ i
 Note that this LFA notation is applicable to any second-order PDE with a weak form that can be represented by \cref{efficienthighorder}.
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $\mathbf{B}$, the node to mode mapping $\mathbf{Q}$, and the pointwise representation of the weak form $\mathbf{D}$, and the software can provide the LFA of the PDE with various preconditioners.
 
-If the pointwise representation of the weak form $\mathbf{D}$, and therefore the element operator $\mathbf{A}_e$, then the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown is \cite{he2020two}.
-We omit this optimization in LFAToolkit in favor of supporting second-order PDE that do not produce product decomposition.
+If the pointwise representation of the weak form $\mathbf{D}$ has a tensor product structure, then the element operator $\mathbf{A}_e$ and therefore the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown in \cite{he2020two}.
+We omit this optimization in LFAToolkit in favor of supporting second-order PDEs that do not have a tensor product decomposition.
 
 % -----------------------------------------------------------------------------
 \subsection{Polynomial Smoothers}\label{sec:smooth}

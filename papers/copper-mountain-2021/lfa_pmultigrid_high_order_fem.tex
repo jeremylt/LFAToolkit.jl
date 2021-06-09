@@ -382,7 +382,7 @@ With this representation of the symbol of high-order PDE operators, we can deriv
 
 The total multigrid error propagation operator is given by
 \begin{equation}
-\mathbf{E}_{\text{TMG}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f
+\mathbf{E}_{\text{2mg}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f
 \end{equation}
 where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the course grid solve, which may be another multgrid cycle.
 $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
@@ -435,14 +435,14 @@ We can combine these expressions to give the symbol of the error propagation ope
 \begin{definition}
 The symbol for the p-multgrid error propagation operator is given by
 \begin{equation}
-\tilde{\mathbf{E}}_{\text{TMG}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)
+\tilde{\mathbf{E}}_{\text{2mg}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)
 \end{equation}
 where $\tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)$ is the symbol of the smoother and $\tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right)$ is the symbol of the course grid solve.
 $\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right)$ and $\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right)$ represent the symbol of the grid prolongation and restriction operators, respectively. 
 \end{definition}\label{def:pmultigrid_symbol}
 
 Note again that this derivation is applicable for any PDE with a weak form that can be represented by \cref{efficienthighorder}.
-This expression can be extended to represent multi-level schemes by recursively applying $\tilde{\mathbf{E}}_{\text{TMG}}$ until the coarsest grid is reached.
+This expression can be extended to represent multi-level schemes by recursively applying $\tilde{\mathbf{E}}_{\text{2mg}}$ until the coarsest grid is reached.
 
 % -----------------------------------------------------------------------------
 \section{Numerical Results}\label{sec:results}

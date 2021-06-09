@@ -88,7 +88,7 @@ Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited t
 \section{Introduction}\label{sec:intro}
 % -----------------------------------------------------------------------------
 
-Multigrid methods \cite{brandt1982guide, briggs2000multigrid, stuben1982multigrid} are popular for solving linear systems derived from descretizing PDEs.
+Multigrid methods \cite{brandt1982guide, briggs2000multigrid, stuben1982multigrid} are popular for solving linear systems derived from discretizing PDEs.
 Local Fourier Analysis (LFA) \cite{brandt1977multi, wienands2004practical} is a powerful tool for investigating and tuning multigrid methods.
 
 High-order finite element methods offer advantages over low-order finite elements \cite{demkowicz1989toward, oden1989toward, rachowicz1989toward}; however, high-order finite elements are less common because a linear operator or the Jacobian of a non-linear operator rapidly loses sparsity in a sparse matrix representation.
@@ -198,7 +198,7 @@ Using the algebraic representation of PDE operators given in \cite{brown2010effi
 \end{equation}
 where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and $\mathbf{D}$ is a block diagonal operator which provides the pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
-Consider the specific case of a Topeliz operator representing an arbitrary second order scalar PDE in 1D with basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
+Consider the specific case of a Toeplitz operator representing an arbitrary second order scalar PDE in 1D with basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity, so we can compute the symbol matrix as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q}
@@ -265,7 +265,7 @@ We omit this optimization in LFAToolkit in favor of supporting second-order PDEs
 % -----------------------------------------------------------------------------
 
 Multigrid methods require a fine grid smoother, typically applied both before and after the coarse grid correction is computed.
-In this section, we compute the error propegation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
+In this section, we compute the error propagation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
 The LFA predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
@@ -384,7 +384,7 @@ The total multigrid error propagation operator is given by
 \begin{equation}
 \mathbf{E}_{\text{2mg}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f
 \end{equation}
-where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the course grid solve, which may be another multgrid cycle.
+where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the course grid solve, which may be another multigrid cycle.
 $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
 This derivation of LFA for p-multigrid allows independently setting these parameters; however we omit this in the notation for simplicity.
@@ -433,7 +433,7 @@ The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for
 We can combine these expressions to give the symbol of the error propagation operator.
 
 \begin{definition}
-The symbol for the p-multgrid error propagation operator is given by
+The symbol for the p-multigrid error propagation operator is given by
 \begin{equation}
 \tilde{\mathbf{E}}_{\text{2mg}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)
 \end{equation}
@@ -451,7 +451,7 @@ This expression can be extended to represent multi-level schemes by recursively 
 In this section, we present numerical results for this analysis for the scalar Laplacian in one and two dimensions and Neo-Hookean hyperelasticity in three dimensions with H1 Lagrange bases on Gauss-Lobatto points with Gauss-Legendre quadrature.
 
 % -----------------------------------------------------------------------------
-\subsection{Scalar Lapalcian - 1D Convergence Factors}\label{sec:1dresults}
+\subsection{Scalar Laplacian - 1D Convergence Factors}\label{sec:1dresults}
 % -----------------------------------------------------------------------------
 
 \subsubsection{Jacobi Smoothing}

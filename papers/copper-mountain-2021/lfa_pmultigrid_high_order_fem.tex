@@ -422,7 +422,7 @@ The symbol of p-restriction is given by the expression
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
-where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis..
+where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}}$.
 \end{definition}\label{def:restriction_symbol}
 
@@ -499,16 +499,16 @@ In contrast to the previous work on h-multigrid for high-order finite elements, 
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  \multicolumn{2}{c}{$\nu = 1$}  &  \multicolumn{2}{c}{$\nu = 2$}  &  \multicolumn{2}{c}{$\nu = 3$}  \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
                        &  $\rho_{\min}$ & $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  \\
-  \midrule
+  \toprule
   $p = 2$ to $p = 1$   &  0.137 & 0.63  &  0.060 & 0.69  &  0.041 & 0.72   \\
-  %\midrule
+  \midrule
   $p = 4$ to $p = 2$   &  0.204 & 0.62  &  0.059 & 0.64  &  0.045 & 0.70   \\
   $p = 4$ to $p = 1$   &  0.591 & 0.77  &  0.350 & 0.77  &  0.207 & 0.77   \\
-  %\midrule
+  \midrule
   $p = 8$ to $p = 4$   &  0.250 & 0.60  &  0.068 & 0.60  &  0.033 & 0.63   \\
   $p = 8$ to $p = 2$   &  0.668 & 0.73  &  0.446 & 0.73  &  0.298 & 0.73   \\
   $p = 8$ to $p = 1$   &  0.874 & 0.78  &  0.764 & 0.78  &  0.668 & 0.78   \\
-  %\midrule
+  \midrule
   $p = 16$ to $p = 8$  &  0.300 & 0.57  &  0.090 & 0.57  &  0.035 & 0.58   \\
   $p = 16$ to $p = 4$  &  0.718 & 0.69  &  0.517 & 0.69  &  0.371 & 0.69   \\
   $p = 16$ to $p = 2$  &  0.906 & 0.73  &  0.820 & 0.73  &  0.743 & 0.73   \\
@@ -521,7 +521,7 @@ In contrast to the previous work on h-multigrid for high-order finite elements, 
 \end{table}
 
 The results in \cref{table:two_grid_1d} provide the minimal LFA smoothing factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
-Comparing the optimal Jacobi smoothing factor in \cref{table:smoothing_factor_1d_jacobi} and the true value of $\omega$ that results in the lowest two-grid smoothing factor, we see that the Jacobi smoothing factor is a poor predictor of the two-grid smoothing factor.
+Comparing the optimal Jacobi smoothing factor in \cref{table:smoothing_factor_1d_jacobi} and the true value of $\omega$ that results in the lowest two-grid smoothing factor, we see that the Jacobi smoothing factor is a poor predictor of the two-grid smoothing factor in general, though it is an increasingly accurate over-estimate of the optimal value of $\omega$ as the polynomial order of the basis and the aggressiveness of the coarsening increase.
 
 For low order h-multigrid, the classical estimate of the optimal Jacobi smoothing parameter is given by $\omega = 2 / \left( \lambda_{\text{max, high}} + \lambda_{\text{min, high}} \right)$, where $\lambda_{\text{max, high}}$ and $\lambda_{\text{min, high}}$ are the maximum and minimum eigenvalues of $\tilde{S}_f \left( \boldsymbol{\theta} \right)$ for $\boldsymbol{\theta} \in T^{\text{high}}$.
 The modified estimate from \cite{he2020two} for h-multigrid for high-order finite elements is given by $\omega = 2 / \left( \lambda_{\text{max}} + \lambda_{\text{min, high}} \right)$, where $\lambda_{\text{max}}$ is the maximum eigenvalue of $\tilde{S}_f \left( \boldsymbol{\theta} \right)$ for $\boldsymbol{\theta} \in T^{\text{low}} \cup T^{\text{high}}$.
@@ -549,16 +549,16 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
   \toprule
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-  \midrule
+  \toprule
   $p = 2$ to $p = 1$   &  1.679  &  1.317  &  0.434  &  0.022  \\
-  %\midrule
+  \midrule
   $p = 4$ to $p = 2$   &  2.333  &  1.552  &  0.465  &  0.030  \\
   $p = 4$ to $p = 1$   &  2.640  &  1.722  &  0.525  &  0.030  \\
-  %\midrule
+  \midrule
   $p = 8$ to $p = 4$   &  4.047  &  2.246  &  0.631  &  0.043  \\
   $p = 8$ to $p = 2$   &  4.159  &  2.306  &  0.650  &  0.043  \\
   $p = 8$ to $p = 1$   &  4.199  &  2.324  &  0.656  &  0.044  \\
-  %\midrule
+  \midrule
   $p = 16$ to $p = 8$  &  6.537  &  3.158  &  0.828  &  0.063  \\
   $p = 16$ to $p = 4$  &  6.562  &  3.171  &  0.832  &  0.063  \\
   $p = 16$ to $p = 2$  &  6.569  &  3.174  &  0.833  &  0.063  \\
@@ -581,7 +581,7 @@ From this table, we can see that the effect of rapid coarsening is much less sev
 % -----------------------------------------------------------------------------
 
 \Cref{fig:jacobi_smooth_factor_2d} and \cref{fig:two_grid_5_to_3_2d} show the Jacobi smoothing factor and two-grid convergence factor for p-multigrid with one iteration of Jacobi smoothing for the two dimensional Laplacian as a function of the Jacobi smoothing parameter $\omega$, while \cref{table:smoothing_factor_2d_jacobi} shows optimal the Jacobi smoothing factor.
-Again, the Jacobi smoothing factor is a poor predictor for the two-grid convergence factor.
+Again, the Jacobi smoothing factor is a poor predictor for the two-grid convergence factor, but it remains an increasingly accurate over-estimate of the optimal value of $\omega$ as the polynomial order of the basis and the aggressiveness of the coarsening increase.
 
 \begin{figure}[!tbp]
   \centering
@@ -615,12 +615,12 @@ Again, the Jacobi smoothing factor is a poor predictor for the two-grid converge
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  \multicolumn{2}{c}{$\nu = 1$}  &  \multicolumn{2}{c}{$\nu = 2$}  &  \multicolumn{2}{c}{$\nu = 3$}  \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
                       &  $\rho_{\min}$  &  $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  \\
-  \midrule
+  \toprule
   $p = 2$ to $p = 1$  &  0.230 & 0.95  &  0.091 & 0.95  &  0.061 & 0.99   \\
-  %\midrule
+  \midrule
   $p = 4$ to $p = 2$  &  0.388 & 0.82  &  0.150 & 0.82  &  0.078 & 0.83   \\
   $p = 4$ to $p = 1$  &  0.763 & 0.95  &  0.582 & 0.95  &  0.444 & 0.95   \\
-  %\midrule
+  \midrule
   $p = 8$ to $p = 4$  &  0.646 & 0.79  &  0.418 & 0.79  &  0.272 & 0.79   \\
   $p = 8$ to $p = 2$  &  0.858 & 0.84  &  0.737 & 0.84  &  0.633 & 0.84   \\
   $p = 8$ to $p = 1$  &  0.952 & 0.87  &  0.907 & 0.87  &  0.864 & 0.87   \\
@@ -642,16 +642,16 @@ The results in \cref{table:two_grid_2d} provide the minimal LFA smoothing factor
   \toprule
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
-  \midrule
+  \toprule
   $p = 2$ to $p = 1$   &  0.330  &  0.363  &  0.194  &  0.026  \\
-  %\midrule
+  \midrule
   $p = 4$ to $p = 2$   &  0.583  &  0.891  &  0.529  &  0.115  \\
   $p = 4$ to $p = 1$   &  0.775  &  0.891  &  0.529  &  0.115  \\
-  %\midrule
+  \midrule
   $p = 8$ to $p = 4$   &  1.729  &  1.700  &  1.025  &  0.262  \\
   $p = 8$ to $p = 2$   &  1.729  &  1.700  &  1.025  &  0.262  \\
   $p = 8$ to $p = 1$   &  1.729  &  1.700  &  1.025  &  0.262  \\
-  %\midrule
+  \midrule
   $p = 16$ to $p = 8$  &  3.869  &  2.441  &  0.916  &  0.085  \\
   $p = 16$ to $p = 4$  &  3.869  &  2.441  &  0.916  &  0.085  \\
   $p = 16$ to $p = 2$  &  3.869  &  2.441  &  0.916  &  0.085  \\

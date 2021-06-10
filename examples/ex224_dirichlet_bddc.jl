@@ -30,7 +30,7 @@ finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
 bddc = DirichletBDDC(finediffusion)
 
 # compute operator symbols
-A = computesymbols(bddc, [π, π])
+A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------

@@ -248,7 +248,7 @@ As with tensor product bases, an analogous computation can be done in higher dim
 \begin{definition}
 The symbol matrix of a finite element operator for an arbitrary second order PDE with any basis order, dimension, and number of components is given by
 \begin{equation}\label{symbolhighorder}
-\tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_i - \mathbf{x}_j \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}
+\tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}
 \end{equation}
 where $\odot$ represents pointwise multiplication of the elements, $\mathbf{h}$ is the length of the element in each dimension, $\boldsymbol{\theta}$ is the target frequency in each dimension, and $i, j \in \lbrace 0, 1, \dots, n \cdot p^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
 $\mathbf{A}_e$ is the finite element operator for the element and $\mathbf{Q}$ is the localization of Fourier modes on an element.

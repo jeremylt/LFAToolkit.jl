@@ -14,8 +14,12 @@ Identity preconditioner to investigate multigrid without smoother
 
 # Example:
 ```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryOperator("mass", 4, 4, mesh);
+
 # preconditioner
-identity = IdentityPC();
+identity = IdentityPC(mass);
 
 # verify
 println(identity)
@@ -25,15 +29,26 @@ identity preconditioner
 ```
 """
 struct IdentityPC <: AbstractPreconditioner
-    # no internal data
+    # data never changes
+    operator::Operator
 
     # inner constructor
-    IdentityPC() = new()
+    IdentityPC(operator) = new(operator)
 end
 
 # printing
 # COV_EXCL_START
 Base.show(io::IO, preconditioner::IdentityPC) = print(io, "identity preconditioner")
+# COV_EXCL_STOP
+
+# COV_EXCL_START
+function Base.setproperty!(pc::IdentityPC, f::Symbol, value)
+    if f == :operator
+        throw(ReadOnlyMemoryError())
+    else
+        return setfield!(operator, f, value)
+    end
+end
 # COV_EXCL_STOP
 
 # ------------------------------------------------------------------------------
@@ -45,7 +60,7 @@ Base.show(io::IO, preconditioner::IdentityPC) = print(io, "identity precondition
 computesymbols(preconditioner, ω, θ)
 ```
 
-Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
+Compute or retrieve the symbol matrix for a identity preconditioned operator
 
 # Arguments:
 - `preconditioner`: Identity preconditioner to compute symbol matrix for
@@ -59,8 +74,12 @@ Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 ```jldoctest
 using LinearAlgebra
 
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mass = GalleryOperator("mass", 4, 4, mesh);
+
 # preconditioner
-identity = IdentityPC();
+identity = IdentityPC(mass);
 
 # compute symbols
 A = computesymbols(identity, [], []);
@@ -73,7 +92,6 @@ A = computesymbols(identity, [], []);
 ```
 """
 function computesymbols(preconditioner::IdentityPC, ω::Array, θ::Array)
-
     # return
     return I
 end

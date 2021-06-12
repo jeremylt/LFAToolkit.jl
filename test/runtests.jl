@@ -104,8 +104,8 @@ end
 @testset "  ex221: lumped BDDC example                 " begin
     include("../examples/ex221_lumped_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.9999999999999992
-    @test max(eigenvalues...) ≈ 5.999999999999997
+    @test min(eigenvalues...) ≈ -0.19999999999999862
+    @test max(eigenvalues...) ≈ 0.8000000000000009
 end
 
 # ------------------------------------------------------------------------------
@@ -115,8 +115,8 @@ end
 @testset "  ex222: lumped BDDC macro element example   " begin
     include("../examples/ex222_lumped_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.9999999999999989
-    @test max(eigenvalues...) ≈ 4.443546705148796
+    @test min(eigenvalues...) ≈ 0.11129065897024093
+    @test max(eigenvalues...) ≈ 0.8000000000000005
 end
 
 # ------------------------------------------------------------------------------
@@ -126,8 +126,8 @@ end
 @testset "  ex223: Dirichlet BDDC example              " begin
     include("../examples/ex223_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.9999999997897949
-    @test max(eigenvalues...) ≈ 5.999999999999993
+    @test min(eigenvalues...) ≈ -0.19999999999999862
+    @test max(eigenvalues...) ≈ 0.8000000010201185
 end
 
 # ------------------------------------------------------------------------------
@@ -137,8 +137,8 @@ end
 @testset "  ex224: Dirichlet BDDC macro element example" begin
     include("../examples/ex224_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.9999999911836086
-    @test max(eigenvalues...) ≈ 4.443546705148796
+    @test min(eigenvalues...) ≈ 0.1112906589702409
+    @test max(eigenvalues...) ≈ 0.8000000003853934
 end
 
 # ------------------------------------------------------------------------------

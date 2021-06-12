@@ -2,6 +2,16 @@
 
 ## Current Development
 
+Current development includes improved functionality and bugfixes:
+
+* Added relaxation parameter for application of BDDC preconditioners
+
+* Minor spelling and notation errors corrected
+
+* Newton tolerance for quadrature point computation relaxed
+
+* Identity preconditioner modified for compatibility with multigrid
+
 ## v0.3.0
 
 This release include updated functionality and an interface change.

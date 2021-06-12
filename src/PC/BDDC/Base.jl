@@ -41,6 +41,7 @@ mutable struct BDDC <: AbstractPreconditioner
     interfacecolumnmodemap::AbstractArray{Float64,2}
     interiorrowmodemap::AbstractArray{Float64,2}
     interiorcolumnmodemap::AbstractArray{Float64,2}
+    jacobi::Jacobi
 
     # inner constructor
     BDDC(operator::Operator, injectiontype::BDDCInjectionType.BDDCInjectType) = (
@@ -1302,16 +1303,16 @@ for dimension in 2:3
     bddc = LumpedBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π*ones(dimension));
 
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 2
-        @assert min(eigenvalues...) ≈ 1.0
-        @assert max(eigenvalues...) ≈ 2.8
+        @assert min(eigenvalues...) ≈ 0.43999999999999995
+        @assert max(eigenvalues...) ≈ 0.8
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ 0.9999999999999996
-        @assert max(eigenvalues...) ≈ 8.159999999999982
+        @assert min(eigenvalues...) ≈ -0.6319999999999972
+        @assert max(eigenvalues...) ≈ 0.8
     end
 end
 
@@ -1335,16 +1336,16 @@ for dimension in 2:3
     bddc = DirichletBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π*ones(dimension));
 
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 2
-        @assert min(eigenvalues...) ≈ 1.0
-        @assert max(eigenvalues...) ≈ 2.8
+        @assert min(eigenvalues...) ≈ 0.43999999999999995
+        @assert max(eigenvalues...) ≈ 0.8
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ 0.9999999999999994
-        @assert max(eigenvalues...) ≈ 8.159999999999986
+        @assert min(eigenvalues...) ≈ -0.6319999999999972
+        @assert max(eigenvalues...) ≈ 0.8000000000000012
     end
 end
 
@@ -1352,8 +1353,11 @@ end
 
 ```
 """
-function computesymbols(bddc::BDDC, θ::Array)
+function computesymbols(bddc::BDDC, ω::Array, θ::Array)
     # validity check
+    if length(ω) != 1
+        Throw(error("exactly one parameter required for BDDC smoothing")) # COV_EXCL_LINE
+    end
     dimension = length(θ)
     if dimension != bddc.operator.inputs[1].basis.dimension
         throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
@@ -1485,7 +1489,7 @@ function computesymbols(bddc::BDDC, θ::Array)
         computesymbolsrestriction(bddc, θ) * Â_inv_modes * computesymbolsinjection(bddc, θ)
 
     # return
-    return R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)
+    return I - ω[1] * R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)
 end
 
 # ------------------------------------------------------------------------------

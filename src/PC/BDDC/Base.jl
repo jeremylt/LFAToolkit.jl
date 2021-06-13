@@ -994,64 +994,32 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
         nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
         A_IΓ = bddc.operator.elementmatrix[bddc.interiornodes, bddc.interfacenodes]
         A_IΓ_nodes = zeros(ComplexF64, numberinteriornodes, numberinterfacenodes)
-        if dimension == 2
-            for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interfacenodes[j]
-                A_IΓ_nodes[i, j] =
-                    A_IΓ[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                        )
-                    )
-            end
-        elseif dimension == 3
-            for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interfacenodes[j]
-                A_IΓ_nodes[i, j] =
-                    A_IΓ[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                        )
-                    )
-            end
+        for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
+            indxi = bddc.interiornodes[i]
+            indxj = bddc.interfacenodes[j]
+            A_IΓ_nodes[i, j] =
+                A_IΓ[i, j] *
+                ℯ^(
+                    im * sum([
+                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
+                        k = 1:dimension
+                    ])
+                )
         end
 
         A_II_inv = bddc.interiorinverse
         A_II_inv_nodes = zeros(ComplexF64, numberinteriornodes, numberinteriornodes)
-        if dimension == 2
-            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interiornodes[j]
-                A_II_inv_nodes[i, j] =
-                    A_II_inv[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                        )
-                    )
-            end
-        elseif dimension == 3
-            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interiornodes[j]
-                A_II_inv_nodes[i, j] =
-                    A_II_inv[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                        )
-                    )
-            end
+        for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+            indxi = bddc.interiornodes[i]
+            indxj = bddc.interiornodes[j]
+            A_II_inv_nodes[i, j] =
+                A_II_inv[i, j] *
+                ℯ^(
+                    im * sum([
+                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
+                        k = 1:dimension
+                    ])
+                )
         end
 
         # -- jump mapping
@@ -1130,64 +1098,32 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
         A_ΓI = bddc.operator.elementmatrix[bddc.interfacenodes, bddc.interiornodes]
         A_ΓI_nodes = zeros(ComplexF64, numberinterfacenodes, numberinteriornodes)
-        if dimension == 2
-            for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
-                indxi = bddc.interfacenodes[i]
-                indxj = bddc.interiornodes[j]
-                A_ΓI_nodes[i, j] =
-                    A_ΓI[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                        )
-                    )
-            end
-        elseif dimension == 3
-            for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
-                indxi = bddc.interfacenodes[i]
-                indxj = bddc.interiornodes[j]
-                A_ΓI_nodes[i, j] =
-                    A_ΓI[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                        )
-                    )
-            end
+        for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
+            indxi = bddc.interfacenodes[i]
+            indxj = bddc.interiornodes[j]
+            A_ΓI_nodes[i, j] =
+                A_ΓI[i, j] *
+                ℯ^(
+                    im * sum([
+                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
+                        k = 1:dimension
+                    ])
+                )
         end
 
         A_II_inv = bddc.interiorinverse
         A_II_inv_nodes = zeros(ComplexF64, numberinteriornodes, numberinteriornodes)
-        if dimension == 2
-            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interiornodes[j]
-                A_II_inv_nodes[i, j] =
-                    A_II_inv[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                        )
-                    )
-            end
-        elseif dimension == 3
-            for i = 1:numberinteriornodes, j = 1:numberinteriornodes
-                indxi = bddc.interiornodes[i]
-                indxj = bddc.interiornodes[j]
-                A_II_inv_nodes[i, j] =
-                    A_II_inv[i, j] *
-                    ℯ^(
-                        im * (
-                            θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                            θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                            θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                        )
-                    )
-            end
+        for i = 1:numberinteriornodes, j = 1:numberinteriornodes
+            indxi = bddc.interiornodes[i]
+            indxj = bddc.interiornodes[j]
+            A_II_inv_nodes[i, j] =
+                A_II_inv[i, j] *
+                ℯ^(
+                    im * sum([
+                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
+                        k = 1:dimension
+                    ])
+                )
         end
 
         # -- jump mapping
@@ -1374,97 +1310,46 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
     # subdomain solver
     A_rr_inv = bddc.subassembledinverse
     A_rr_inv_nodes = zeros(ComplexF64, numbersubassemblednodes, numbersubassemblednodes)
-    if dimension == 2
-        for i = 1:numbersubassemblednodes, j = 1:numbersubassemblednodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.subassemblednodes[j]
-            A_rr_inv_nodes[i, j] =
-                A_rr_inv[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numbersubassemblednodes, j = 1:numbersubassemblednodes
-            indxi = bddc.subassemblednodes[i]
-            indxj = bddc.subassemblednodes[j]
-            A_rr_inv_nodes[i, j] =
-                A_rr_inv[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                        θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                    )
-                )
-        end
+    for i = 1:numbersubassemblednodes, j = 1:numbersubassemblednodes
+        indxi = bddc.subassemblednodes[i]
+        indxj = bddc.subassemblednodes[j]
+        A_rr_inv_nodes[i, j] =
+            A_rr_inv[i, j] *
+            ℯ^(
+                im * sum([
+                    θ[k] * nodecoordinatedifferences[indxi, indxj, k] for k = 1:dimension
+                ])
+            )
     end
 
     # mixed subassembled primal matrices
     Â_Πr_nodes = zeros(ComplexF64, numberprimalnodes, numbersubassemblednodes)
-    if dimension == 2
-        for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.subassemblednodes[j]
-            Â_Πr_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.subassemblednodes[j]
-            Â_Πr_nodes[i, j] =
-                elementmatrix[indxi, indxj] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                        θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                    )
-                )
-        end
+    for i = 1:numberprimalnodes, j = 1:numbersubassemblednodes
+        indxi = bddc.primalnodes[i]
+        indxj = bddc.subassemblednodes[j]
+        Â_Πr_nodes[i, j] =
+            elementmatrix[indxi, indxj] *
+            ℯ^(
+                im * sum([
+                    θ[k] * nodecoordinatedifferences[indxi, indxj, k] for k = 1:dimension
+                ])
+            )
     end
     Â_Πr_modes = bddc.primalrowmodemap * Â_Πr_nodes
 
     # Schur complement
     Ŝ_Π = bddc.schur
     Ŝ_Π_nodes = zeros(ComplexF64, numberprimalnodes, numberprimalnodes)
-    if dimension == 2
-        for i = 1:numberprimalnodes, j = 1:numberprimalnodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.primalnodes[j]
-            Ŝ_Π_nodes[i, j] =
-                Ŝ_Π[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numberprimalnodes, j = 1:numberprimalnodes
-            indxi = bddc.primalnodes[i]
-            indxj = bddc.primalnodes[j]
-            Ŝ_Π_nodes[i, j] =
-                Ŝ_Π[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[indxi, indxj, 1] +
-                        θ[2] * nodecoordinatedifferences[indxi, indxj, 2] +
-                        θ[3] * nodecoordinatedifferences[indxi, indxj, 3]
-                    )
-                )
-        end
+    for i = 1:numberprimalnodes, j = 1:numberprimalnodes
+        indxi = bddc.primalnodes[i]
+        indxj = bddc.primalnodes[j]
+        Ŝ_Π_nodes[i, j] =
+            Ŝ_Π[i, j] *
+            ℯ^(
+                im * sum([
+                    θ[k] * nodecoordinatedifferences[indxi, indxj, k] for k = 1:dimension
+                ])
+            )
     end
     Ŝ_Π_inv_modes = (bddc.primalrowmodemap * Ŝ_Π_nodes * bddc.primalcolumnmodemap)^-1
 

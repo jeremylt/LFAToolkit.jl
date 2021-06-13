@@ -221,35 +221,10 @@ function computesymbolsprolongation(multigrid::Multigrid, θ::Array)
     symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
-    if dimension == 1
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(im * θ[1] * nodecoordinatedifferences[i, j, 1])
-        end
-    elseif dimension == 2
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        θ[2] * nodecoordinatedifferences[i, j, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        θ[2] * nodecoordinatedifferences[i, j, 2] +
-                        θ[3] * nodecoordinatedifferences[i, j, 3]
-                    )
-                )
-        end
+    for i = 1:numberrows, j = 1:numbercolumns
+        symbolmatrixnodes[i, j] =
+            prolongationmatrix[i, j] *
+            ℯ^(im * sum([θ[k] * nodecoordinatedifferences[i, j, k] for k = 1:dimension]))
     end
     symbolmatrixmodes = rowmodemap * symbolmatrixnodes * columnmodemap
 
@@ -282,37 +257,12 @@ function computesymbolsrestriction(multigrid::Multigrid, θ::Array)
     symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
 
     # compute
-    if dimension == 1
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(-im * θ[1] * nodecoordinatedifferences[i, j, 1])
-        end
-    elseif dimension == 2
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        -θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        -θ[2] * nodecoordinatedifferences[i, j, 2]
-                    )
-                )
-        end
-    elseif dimension == 3
-        for i = 1:numberrows, j = 1:numbercolumns
-            symbolmatrixnodes[i, j] =
-                prolongationmatrix[i, j] *
-                ℯ^(
-                    im * (
-                        -θ[1] * nodecoordinatedifferences[i, j, 1] +
-                        -θ[2] * nodecoordinatedifferences[i, j, 2] +
-                        -θ[3] * nodecoordinatedifferences[i, j, 3]
-                    )
-                )
-        end
+    for i = 1:numberrows, j = 1:numbercolumns
+        symbolmatrixnodes[i, j] =
+            prolongationmatrix[i, j] *
+            ℯ^(im * sum([θ[k] * nodecoordinatedifferences[i, j, k] for k = 1:dimension]))
     end
-    symbolmatrixmodes = rowmodemap * transpose(symbolmatrixnodes) * columnmodemap
+    symbolmatrixmodes = rowmodemap * symbolmatrixnodes' * columnmodemap
 
     # return
     return symbolmatrixmodes

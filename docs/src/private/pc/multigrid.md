@@ -5,5 +5,4 @@ Multigrid
 LFAToolkit.getnodecoordinatedifferences(::Multigrid)
 LFAToolkit.getprolongationmatrix
 LFAToolkit.computesymbolsprolongation(::Multigrid, ::Array)
-LFAToolkit.computesymbolsrestriction(::Multigrid, ::Array)
 ```

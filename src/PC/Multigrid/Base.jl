@@ -232,42 +232,6 @@ function computesymbolsprolongation(multigrid::Multigrid, θ::Array)
     return symbolmatrixmodes
 end
 
-"""
-```julia
-computesymbolsrestriction(multigrid, θ)
-```
-
-Compute the symbol matrix for a multigrid restriction operator
-
-# Arguments:
-- `multigrid`: Multigrid operator to compute restriction symbol matrix for
-- `θ`:         Fourier mode frequency array (one frequency per dimension)
-
-# Returns:
-- Symbol matrix for the multigrid restriction operator
-"""
-function computesymbolsrestriction(multigrid::Multigrid, θ::Array)
-    # setup
-    dimension = multigrid.fineoperator.dimension
-    rowmodemap = multigrid.coarseoperator.rowmodemap
-    columnmodemap = multigrid.fineoperator.columnmodemap
-    prolongationmatrix = multigrid.prolongationmatrix
-    numberrows, numbercolumns = size(prolongationmatrix)
-    nodecoordinatedifferences = multigrid.nodecoordinatedifferences
-    symbolmatrixnodes = zeros(ComplexF64, numberrows, numbercolumns)
-
-    # compute
-    for i = 1:numberrows, j = 1:numbercolumns
-        symbolmatrixnodes[i, j] =
-            prolongationmatrix[i, j] *
-            ℯ^(im * sum([θ[k] * nodecoordinatedifferences[i, j, k] for k = 1:dimension]))
-    end
-    symbolmatrixmodes = rowmodemap * symbolmatrixnodes' * columnmodemap
-
-    # return
-    return symbolmatrixmodes
-end
-
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
@@ -375,8 +339,8 @@ function computesymbols(multigrid::Multigrid, p::Array, v::Array{Int}, θ::Array
     # compute component symbols
     S_f = computesymbols(multigrid.smoother, p, θ)
 
-    R_ftoc = computesymbolsrestriction(multigrid, θ)
     P_ctof = computesymbolsprolongation(multigrid, θ)
+    R_ftoc = P_ctof'
 
     A_f = computesymbols(multigrid.fineoperator, θ)
     A_c_inv = []

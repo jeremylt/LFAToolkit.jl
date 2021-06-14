@@ -192,7 +192,6 @@ function getprolongationmatrix(multigrid::Multigrid)
         dropzeros!(prolongationmatrix)
         multigrid.prolongationmatrix =
             Diagonal(multigrid.fineoperator.multiplicity)^-1 * prolongationmatrix
-
     end
 
     # return

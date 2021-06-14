@@ -188,8 +188,11 @@ function getprolongationmatrix(multigrid::Multigrid)
         end
 
         # store
+        prolongationmatrix[abs.(prolongationmatrix).<10*eps()] .= 0
+        dropzeros!(prolongationmatrix)
         multigrid.prolongationmatrix =
             Diagonal(multigrid.fineoperator.multiplicity)^-1 * prolongationmatrix
+
     end
 
     # return

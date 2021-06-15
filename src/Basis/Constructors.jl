@@ -97,6 +97,7 @@ function gaussquadrature(q::Int)
         quadratureweights[i+1] = wi
         quadratureweights[q-i] = wi
     end
+    quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
     # return
     return quadraturepoints, quadratureweights
@@ -199,6 +200,7 @@ function lobattoquadrature(q::Int, weights::Bool)
             quadratureweights[q-i] = wi
         end
     end
+    quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
     # return
     if weights

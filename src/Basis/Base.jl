@@ -1173,7 +1173,7 @@ Get gradient adjusted for mesh stretching
 
 # Example:
 ```jldoctest
-for dimension in 1:3
+for dimension = 1:3
     # mesh
     mesh = []
     if dimension == 1
@@ -1195,16 +1195,16 @@ for dimension in 1:3
     linearfunction = [];
     truegradient = [];
     if dimension == 1
-        linearfunction = nodes/2;
+        linearfunction = nodes;
         truegradient = [1/2*ones(basis.numberquadraturepoints)...]
     elseif dimension == 2
-        linearfunction = (nodes[:, 1] + nodes[:, 2])/2;
+        linearfunction = (nodes[:, 1] + nodes[:, 2]);
         truegradient = [
             1/2*ones(basis.numberquadraturepoints)...
             1/3*ones(basis.numberquadraturepoints)...
         ]
     elseif dimension == 3
-        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3])/2;
+        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3]);
         truegradient = [
             1/2*ones(basis.numberquadraturepoints)...
             1/3*ones(basis.numberquadraturepoints)...
@@ -1228,20 +1228,18 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
         error("mesh dimension must match basis dimension") # COV_EXCL_LINE
     end
 
-    # get gradient
+    # coordinate transformation
     gradient = basis.gradient
-
-    # length of reference element
-    lengthreference = (max(basis.nodes1d...) - min(basis.nodes1d...))
+    dxdX = (basis.gradient1d*basis.nodes1d)[1]
 
     # adjust for mesh
     if dimension == 1
         # 1D
-        return gradient * lengthreference / mesh.dx
+        return gradient / (dxdX * mesh.dx)
     elseif dimension == 2
         # 2D
-        scalex = lengthreference / mesh.dx
-        scaley = lengthreference / mesh.dy
+        scalex = 1 / (dxdX * mesh.dx)
+        scaley = 1 / (dxdX * mesh.dy)
         numberquadraturepoints = basis.numberquadraturepoints
         return [
             gradient[1:numberquadraturepoints, :] * scalex
@@ -1249,9 +1247,9 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
         ]
     elseif dimension == 3
         # 3D
-        scalex = lengthreference / mesh.dx
-        scaley = lengthreference / mesh.dy
-        scalez = lengthreference / mesh.dz
+        scalex = 1 / (dxdX * mesh.dx)
+        scaley = 1 / (dxdX * mesh.dy)
+        scalez = 1 / (dxdX * mesh.dz)
         numberquadraturepoints = basis.numberquadraturepoints
         return [
             gradient[1:numberquadraturepoints, :] * scalex
@@ -1263,6 +1261,63 @@ end
 
 function getdXdxgradient(basis::NonTensorBasis, mesh::Mesh)
     throw(error("dXdxgradient unimplemented for non-tensor bases"))
+end
+
+"""
+```julia
+getdxdXquadratureweights(basis, mesh)
+```
+
+Get quadrature weights adjusted for mesh stretching
+
+# Arguments:
+- `basis`: basis to compute quadratureweights
+- `mesh`:  mesh to compute quadratureweights
+
+# Returns:
+- quadrature weights multiplied by change of coordinates adjoint
+
+# Example:
+```jldoctest
+mesh = Mesh1D(2.0)
+
+# basis
+basis = TensorH1LagrangeBasis(4, 3, 1, 1);
+
+# get gradient on mesh
+weights = LFAToolkit.getdxdXquadratureweights(basis, mesh);
+
+# verify
+@assert basis.quadratureweights / 2 ≈ weights
+
+# output
+
+```
+"""
+function getdxdXquadratureweights(basis::TensorBasis, mesh::Mesh)
+    # check compatibility
+    dimension = basis.dimension
+    if (dimension == 1 && typeof(mesh) != Mesh1D) ||
+       (dimension == 2 && typeof(mesh) != Mesh2D) ||
+       (dimension == 3 && typeof(mesh) != Mesh3D)
+        error("mesh dimension must match basis dimension") # COV_EXCL_LINE
+    end
+
+    # coordinate transformation
+    dxdX = (basis.gradient1d*basis.nodes1d)[1]
+
+    # adjust for mesh
+    if dimension == 1
+        return dxdX * basis.quadratureweights / mesh.dx
+    elseif dimension == 2
+        return dxdX^2 * basis.quadratureweights / (mesh.dx * mesh.dy)
+    elseif dimension == 3
+        return dxdX^3 * basis.quadratureweights / (mesh.dx * mesh.dy * mesh.dz)
+    end
+end
+
+function getdxdXquadratureweights(basis::NonTensorBasis, mesh::Mesh)
+    throw(error("dxdXquadratureweights unimplemented for non-tensor bases"))
 end
 
 # ------------------------------------------------------------------------------

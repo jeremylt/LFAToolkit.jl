@@ -359,8 +359,10 @@ function getelementmatrix(operator::Operator)
         # quadrature weight input index
         weightscale = 1.0
         if weightinputindex != 0
-            quadratureweights =
-                getquadratureweights(operator.inputs[weightinputindex].basis)
+            quadratureweights = getdxdXquadratureweights(
+                operator.inputs[weightinputindex].basis,
+                operator.mesh,
+            )
             weightscale =
                 operator.mesh.volume / operator.inputs[weightinputindex].basis.volume
         end
@@ -477,7 +479,7 @@ diagonal = LFAToolkit.getdiagonal(diffusion);
 diagonal = diffusion.diagonal;
 
 # verify
-@assert diagonal ≈ [14/3 0; 0 16/3]
+@assert diagonal ≈ [7/6 0; 0 4/3]
 
 # output
 
@@ -528,16 +530,16 @@ for dimension in 1:3
     diffusion = GalleryOperator("diffusion", 5, 5, mesh);
 
     # compute multiplicity
-    mult = diffusion.multiplicity;
+    multiplicity = diffusion.multiplicity;
 
     # verify
-    mult1D = [2. 1. 1. 1. 2.];
+    multiplicity1D = [2. 1. 1. 1. 2.]';
     if dimension == 1
-        @assert mult ≈ mult1D
+        @assert multiplicity ≈ multiplicity1D
     elseif dimension == 2
-        @assert mult ≈ kron(mult1D, mult1D)
+        @assert multiplicity ≈ kron(multiplicity1D, multiplicity1D)
     elseif dimension == 3
-        @assert mult ≈ kron(mult1D, mult1D, mult1D)
+        @assert multiplicity ≈ kron(multiplicity1D, multiplicity1D, multiplicity1D)
     end
 end
 """
@@ -906,14 +908,14 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 1
-        @assert min(eigenvalues...) ≈ 4
-        @assert max(eigenvalues...) ≈ 16/3
+        @assert min(eigenvalues...) ≈ 1
+        @assert max(eigenvalues...) ≈ 4/3
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ 8/3
-        @assert max(eigenvalues...) ≈ 256/45
+        @assert min(eigenvalues...) ≈ 2/3
+        @assert max(eigenvalues...) ≈ 64/45
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ 4/3
-        @assert max(eigenvalues...) ≈ 1024/225
+        @assert min(eigenvalues...) ≈ 1/3
+        @assert max(eigenvalues...) ≈ 256/225
     end
 end
 

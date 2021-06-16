@@ -12,6 +12,8 @@ Current development includes improved functionality and bugfixes:
 
 * Identity preconditioner modified for compatibility with multigrid
 
+* Fix computation of change of coordinates for gradient and quadrature weights
+
 ## v0.3.0
 
 This release include updated functionality and an interface change.
@@ -20,7 +22,7 @@ Breaking change:
 
 * Refactor `GalleryOperator`; now `GalleryVectorOperator` and `GalleryMacroElementOperator` included
 
-Functionalty improvement:
+Functionality improvement:
 
 * Initial implementations of lumped and Dirichlet BDDC preconditioners added
 
@@ -50,7 +52,7 @@ Interface improvements include:
 
 * Multi-component basis support simplified
 
-Additonal changes include:
+Additional changes include:
 
 * Improved documentation
 * Expanded examples, to include Neo-Hookean hyperelasticity
@@ -67,7 +69,7 @@ This release includes initial basic functionality of LFAToolkit.jl.
 Functionality includes:
 
 * User defined second order PDEs
-* Abritrary basis order, dimension, and number of components
+* Arbitrary basis order, dimension, and number of components
 * Independent mesh scaling in each dimension
 * Jacobi preconditioning analysis
 * P-multigrid analysis

@@ -31,8 +31,8 @@ end
 @testset "  ex002: diffusion example                   " begin
     include("../examples/ex002_diffusion.jl")
 
-    @test min(eigenvalues...) ≈ 1.3284547608834352
-    @test max(eigenvalues...) ≈ 8.524474960788456
+    @test min(eigenvalues...) ≈ 0.3321136902208588
+    @test max(eigenvalues...) ≈ 2.131118740197114
 end
 
 # ------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ end
 @testset "  ex201: p-multigrid example                 " begin
     include("../examples/ex201_pmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.023313871226588227
+    @test max(eigenvalues...) ≈ 0.023313871226588234
 end
 
 # ------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ end
 @testset "  ex202: p-multigrid multilevel example      " begin
     include("../examples/ex202_pmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.5292890335817175
+    @test max(eigenvalues...) ≈ 0.529289033581712
 end
 
 # ------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ end
 @testset "  ex211: h-multigrid example                 " begin
     include("../examples/ex211_hmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.029660493827160444
+    @test max(eigenvalues...) ≈ 0.02966049382716044
 end
 
 # ------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ end
 @testset "  ex212: h-multigrid multilevel example      " begin
     include("../examples/ex212_hmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.07185378086419703
+    @test max(eigenvalues...) ≈ 0.07185378086419701
 end
 
 # ------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ end
 @testset "  ex301: solid mechanics example             " begin
     include("../examples/ex301_solid_mechanics.jl")
 
-    @test max(eigenvalues...) ≈ 0.2851697038981916
+    @test max(eigenvalues...) ≈ 0.2851697038981784
 end
 
 # ------------------------------------------------------------------------------

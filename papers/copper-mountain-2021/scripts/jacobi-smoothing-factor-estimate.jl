@@ -12,6 +12,8 @@ if dimension == 1
     mesh = Mesh1D(1.0)
 elseif dimension == 2
     mesh = Mesh2D(1.0, 1.0)
+elseif dimension == 3
+    mesh = Mesh3D(1.0, 1.0, 1.0)
 end
 smoothingparameters = DataFrame()
 
@@ -45,7 +47,7 @@ for P = 1:4
     if dimension == 1
         for i = 1:numberruns
             θ = [θ_min + (θ_max - θ_min) * i / numberruns]
-            if abs(θ[1] % 2π) > π / 128
+            if abs(θ[1]) > π / 128
                 A = computesymbols(jacobi, [ω], θ)
                 eigenvalues = [abs(val) for val in eigvals(I - A)]
                 if (θ[1] > θ_min_high)
@@ -63,6 +65,24 @@ for P = 1:4
                 θ_min + (θ_max - θ_min) * j / numberruns,
             ]
             if sqrt(abs(θ[1] % 2π)^2 + abs(θ[2] % 2π)^2) > π / 128
+                A = computesymbols(jacobi, [ω], θ)
+                eigenvalues = [abs(val) for val in eigvals(I - A)]
+                if (θ[1] > θ_min_high || θ[2] > θ_min_high)
+                    λ_minhigh = min(λ_minhigh, eigenvalues...)
+                    λ_maxhigh = max(λ_maxhigh, eigenvalues...)
+                end
+                λ_max = max(λ_max, eigenvalues...)
+            end
+        end
+        # -- 3D --
+    elseif dimension == 3
+        for i = 1:numberruns, j = 1:numberruns, k = 1:numberruns
+            θ = [
+                θ_min + (θ_max - θ_min) * i / numberruns,
+                θ_min + (θ_max - θ_min) * j / numberruns,
+                θ_min + (θ_max - θ_min) * k / numberruns,
+            ]
+            if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
                 A = computesymbols(jacobi, [ω], θ)
                 eigenvalues = [abs(val) for val in eigvals(I - A)]
                 if (θ[1] > θ_min_high || θ[2] > θ_min_high)

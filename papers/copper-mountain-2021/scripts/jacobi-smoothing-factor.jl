@@ -8,12 +8,14 @@ using DataFrames
 dimension = 1
 numbercomponents = 1
 mesh = []
-if dimension == 2
+if dimension == 1
     mesh = Mesh1D(1.0)
 elseif dimension == 2
     mesh = Mesh2D(1.0, 1.0)
+elseif dimension == 3
+    mesh = Mesh3D(1.0, 1.0, 1.0)
 end
-maxeigenvalues = DataFrame()
+smoothingfactors = DataFrame()
 
 # test range
 for P = 1:4
@@ -35,60 +37,80 @@ for P = 1:4
     θ_min = -π / 2
     θ_min_high = π / 2
     θ_max = 3π / 2
+    ω_range = 0.50:0.01:1.05
+    num_ω = max(size(ω_range)...)
 
     # -- compute
-    mineigenvalue = 1.0
-    ω_minegenvalue = -1
-    θ_minegenvalue = -1
-    for ω = 0.50:0.01:1.05
-        maxeigenvalue = 0
-        ω_maxegenvalue = -1
-        θ_maxegenvalue = -1
-        # -- 1D --
-        if dimension == 1
-            for i = 1:numberruns
-                θ = [θ_min + (θ_max - θ_min) * i / numberruns]
-                if abs(θ[1] % 2π) > π / 128 && θ[1] > θ_min_high
-                    A = computesymbols(jacobi, [ω], θ)
-                    eigenvalues = [abs(val) for val in eigvals(A)]
+    maxeigenvalue = zeros(num_ω)
+    θ_maxegenvalue = ones(num_ω, dimension)
+    # -- 1D --
+    if dimension == 1
+        for i = 1:numberruns
+            θ = [θ_min + (θ_max - θ_min) * i / numberruns]
+            if abs(θ[1]) > π / 128 && θ[1] > θ_min_high
+                A = computesymbols(jacobi, [1.0], θ)
+                for w = 1:num_ω
+                    eigenvalues = [abs(val) for val in eigvals(I - ω_range[w] * (I - A))]
                     currentmaxeigenvalue = max(eigenvalues...)
-                    if (currentmaxeigenvalue > maxeigenvalue)
-                        maxeigenvalue = currentmaxeigenvalue
-                        ω_maxegenvalue = ω
-                        θ_maxegenvalue = θ
-                    end
-                end
-            end
-            # -- 2D --
-        elseif dimension == 2
-            for i = 1:numberruns, j = 1:numberruns
-                θ = [
-                    θ_min + (θ_max - θ_min) * i / numberruns,
-                    θ_min + (θ_max - θ_min) * j / numberruns,
-                ]
-                if sqrt(abs(θ[1] % 2π)^2 + abs(θ[2] % 2π)^2) > π / 128 &&
-                   (θ[1] > θ_min_high || θ[2] > θ_min_high)
-                    A = computesymbols(jacobi, [ω], θ)
-                    eigenvalues = [abs(val) for val in eigvals(A)]
-                    currentmaxeigenvalue = max(eigenvalues...)
-                    if (currentmaxeigenvalue > maxeigenvalue)
-                        maxeigenvalue = currentmaxeigenvalue
-                        ω_maxegenvalue = ω
-                        θ_maxegenvalue = θ
+                    if (currentmaxeigenvalue > maxeigenvalue[w])
+                        maxeigenvalue[w] = currentmaxeigenvalue
+                        θ_maxegenvalue[w, :] = θ / π
                     end
                 end
             end
         end
-        if (maxeigenvalue < mineigenvalue)
-            mineigenvalue = maxeigenvalue
-            ω_minegenvalue = ω_maxegenvalue
-            θ_minegenvalue = θ_maxegenvalue / π
+        # -- 2D --
+    elseif dimension == 2
+        for i = 1:numberruns, j = 1:numberruns
+            θ = [
+                θ_min + (θ_max - θ_min) * i / numberruns,
+                θ_min + (θ_max - θ_min) * j / numberruns,
+            ]
+            if sqrt(abs(θ[1])^2 + abs(θ[2])^2) > π / 128 &&
+               (θ[1] > θ_min_high || θ[2] > θ_min_high)
+                A = computesymbols(jacobi, [1.0], θ)
+                for w = 1:num_ω
+                    eigenvalues = [abs(val) for val in eigvals(I - ω_range[w] * (I - A))]
+                    currentmaxeigenvalue = max(eigenvalues...)
+                    if (currentmaxeigenvalue > maxeigenvalue[w])
+                        maxeigenvalue[w] = currentmaxeigenvalue
+                        θ_maxegenvalue[w, :] = θ / π
+                    end
+                end
+            end
+        end
+        # -- 3D --
+    elseif dimension == 3
+        for i = 1:numberruns, j = 1:numberruns, k = 1:numberruns
+            θ = [
+                θ_min + (θ_max - θ_min) * i / numberruns,
+                θ_min + (θ_max - θ_min) * j / numberruns,
+                θ_min + (θ_max - θ_min) * k / numberruns,
+            ]
+            if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128 &&
+               (θ[1] > θ_min_high || θ[2] > θ_min_high || θ[3] > θ_min_high)
+                A = computesymbols(jacobi, [1.0], θ)
+                for w = 1:num_ω
+                    eigenvalues = [abs(val) for val in eigvals(I - ω_range[w] * (I - A))]
+                    currentmaxeigenvalue = max(eigenvalues...)
+                    if (currentmaxeigenvalue > maxeigenvalue[w])
+                        maxeigenvalue[w] = currentmaxeigenvalue
+                        θ_maxegenvalue[w, :] = θ / π
+                    end
+                end
+            end
         end
     end
+    (_, ω_index) = findmin(maxeigenvalue)
     append!(
-        maxeigenvalues,
-        DataFrame(p = p, ω = ω_minegenvalue, θ = θ_minegenvalue, ρ = mineigenvalue),
+        smoothingfactors,
+        DataFrame(
+            p = p,
+            ω = ω_range[ω_index],
+            θ = θ_maxegenvalue[ω_index],
+            ρ = maxeigenvalue[ω_index],
+        ),
     )
 end
 
-CSV.write("jacobi-smoothing-factor.csv", maxeigenvalues)
+CSV.write("jacobi-smoothing-factor.csv", smoothingfactors)

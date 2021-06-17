@@ -124,8 +124,8 @@ for runoption in runoptions
         for i = 1:numberruns
             θ = [θ_min + (θ_max - θ_min) * i / numberruns]
             if abs(θ[1]) > π / 128
-                A = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
-                eigenvalues = [abs(val) for val in eigvals(A)]
+                M = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
+                eigenvalues = [abs(val) for val in eigvals(M)]
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue
@@ -141,8 +141,8 @@ for runoption in runoptions
                 θ_min + (θ_max - θ_min) * j / numberruns,
             ]
             if sqrt(abs(θ[1])^2 + abs(θ[2])^2) > π / 128
-                A = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
-                eigenvalues = [abs(val) for val in eigvals(A)]
+                M = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
+                eigenvalues = [abs(val) for val in eigvals(M)]
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue

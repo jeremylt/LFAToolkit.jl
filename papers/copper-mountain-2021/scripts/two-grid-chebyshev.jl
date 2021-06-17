@@ -15,7 +15,7 @@ elseif dimension == 2
 elseif dimension == 3
     mesh = Mesh3D(1.0, 1.0, 1.0)
 end
-maxeigenvalues = DataFrame()
+convergencefactors = DataFrame()
 
 # test range
 for fineP = 1:4
@@ -115,7 +115,7 @@ for fineP = 1:4
         end
         for k = 1:4
             append!(
-                maxeigenvalues,
+                convergencefactors,
                 DataFrame(
                     finep = finep,
                     coarsep = coarsep,
@@ -128,4 +128,4 @@ for fineP = 1:4
     end
 end
 
-CSV.write("two-grid-chebyshev.csv", maxeigenvalues)
+CSV.write("two-grid-chebyshev.csv", convergencefactors)

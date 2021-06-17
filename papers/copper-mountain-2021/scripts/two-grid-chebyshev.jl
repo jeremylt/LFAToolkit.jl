@@ -96,7 +96,7 @@ for fineP = 1:4
                     coarsep = coarsep,
                     ω = ω,
                     θ = θ_maxegenvalue,
-                    rho = maxeigenvalue,
+                    ρ = maxeigenvalue,
                 ),
             )
         end

@@ -107,7 +107,7 @@ for fineP = 1:4
                     ω = ω_minegenvalue,
                     θ = θ_minegenvalue,
                     v = v,
-                    rho = mineigenvalue,
+                    ρ = mineigenvalue,
                 ),
             )
         end

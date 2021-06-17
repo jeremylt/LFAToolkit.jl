@@ -8,7 +8,7 @@ using DataFrames
 dimension = 1
 numbercomponents = 1
 mesh = []
-if dimension == 1
+if dimension == 2
     mesh = Mesh1D(1.0)
 elseif dimension == 2
     mesh = Mesh2D(1.0, 1.0)
@@ -87,7 +87,7 @@ for P = 1:4
     end
     append!(
         maxeigenvalues,
-        DataFrame(p = p, ω = ω_minegenvalue, θ = θ_minegenvalue, rho = mineigenvalue),
+        DataFrame(p = p, ω = ω_minegenvalue, θ = θ_minegenvalue, ρ = mineigenvalue),
     )
 end
 

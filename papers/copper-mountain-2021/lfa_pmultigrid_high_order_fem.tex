@@ -485,7 +485,7 @@ In contrast to the previous work on h-multigrid for high-order finite elements, 
   \midrule
   $p = 2$   &  1.00  &  0.756  & 1.000  &  0.838  \\
   $p = 4$   &  0.91  &  0.955  & 0.911  &  0.855  \\
-  $p = 8$   &  0.82  &  0.992  & 0.842  &  0.807  \\
+  $p = 8$   &  0.82  &  0.992  & 0.824  &  0.807  \\
   $p = 16$  &  0.75  &  0.998  & 0.752  &  0.749  \\
   \bottomrule
 \end{tabular}
@@ -553,13 +553,13 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
   \toprule
-  $p = 2$ to $p = 1$   &  1.679  &  1.317  &  0.434  &  0.022  \\
+  $p = 2$ to $p = 1$   &  1.677  &  1.316  &  0.433  &  0.022  \\
   \midrule
-  $p = 4$ to $p = 2$   &  2.333  &  1.552  &  0.465  &  0.030  \\
+  $p = 4$ to $p = 2$   &  2.332  &  1.551  &  0.465  &  0.030  \\
   $p = 4$ to $p = 1$   &  2.640  &  1.722  &  0.525  &  0.030  \\
   \midrule
-  $p = 8$ to $p = 4$   &  4.047  &  2.246  &  0.631  &  0.043  \\
-  $p = 8$ to $p = 2$   &  4.159  &  2.306  &  0.650  &  0.043  \\
+  $p = 8$ to $p = 4$   &  4.047  &  2.245  &  0.631  &  0.043  \\
+  $p = 8$ to $p = 2$   &  4.158  &  2.305  &  0.650  &  0.043  \\
   $p = 8$ to $p = 1$   &  4.199  &  2.324  &  0.656  &  0.044  \\
   \midrule
   $p = 16$ to $p = 8$  &  6.537  &  3.158  &  0.828  &  0.063  \\
@@ -621,9 +621,9 @@ The high-order h-multigrid estimate performs better, while $\omega_{\min}$ is a 
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
                       &  $\rho_{\min}$  &  $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  &  $\rho_{\min}$ & $\omega_{\text{opt}}$  \\
   \toprule
-  $p = 2$ to $p = 1$  &  0.230 & 0.95  &  0.091 & 0.95  &  0.061 & 0.99   \\
+  $p = 2$ to $p = 1$  &  0.230 & 0.95  &  0.091 & 0.99  &  0.061 & 1.03   \\
   \midrule
-  $p = 4$ to $p = 2$  &  0.388 & 0.82  &  0.150 & 0.82  &  0.078 & 0.83   \\
+  $p = 4$ to $p = 2$  &  0.388 & 0.82  &  0.151 & 0.82  &  0.078 & 0.83   \\
   $p = 4$ to $p = 1$  &  0.763 & 0.95  &  0.582 & 0.95  &  0.444 & 0.95   \\
   \midrule
   $p = 8$ to $p = 4$  &  0.646 & 0.79  &  0.418 & 0.79  &  0.272 & 0.79   \\

@@ -129,7 +129,7 @@ for runoption in runoptions
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue
-                    θ_maxegenvalue = θ
+                    θ_maxegenvalue = θ / π
                 end
             end
         end
@@ -146,7 +146,7 @@ for runoption in runoptions
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue
-                    θ_maxegenvalue = θ
+                    θ_maxegenvalue = θ / π
                 end
             end
         end
@@ -156,7 +156,7 @@ for runoption in runoptions
         DataFrame(
             p = runoption.p,
             ω = runoption.ω,
-            θ = θ_maxegenvalue / π,
+            θ = θ_maxegenvalue,
             v = (10 * runoption.v[1] + runoption.v[2]),
             ρ = maxeigenvalue,
         ),

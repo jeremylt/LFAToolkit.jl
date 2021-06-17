@@ -107,7 +107,7 @@ for P = 1:4
         DataFrame(
             p = p,
             ω = ω_range[ω_index],
-            θ = θ_maxegenvalue[ω_index],
+            θ = θ_maxegenvalue[ω_index, :],
             ρ = maxeigenvalue[ω_index],
         ),
     )

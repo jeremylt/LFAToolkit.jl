@@ -16,7 +16,7 @@ function quoted_echo()
 function run_tests()
 {
   local mpi_run=($PETSC_DIR/$PETSC_ARCH/bin/mpiexec -n 8)
-  local common_args="-ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev"
+  local common_args="-ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3"
 
   local max_p=6
   local max_v=4
@@ -40,7 +40,11 @@ function run_tests()
       for ((v = 1; v <= max_v; v++)); do
         echo
         echo "    v:      " $v
-        local all_args=($common_args -degree $fine_p -coarse_degree $coarse_p -num_smooths $v -cells $num_cells_1d,$num_cells_1d,$num_cells_1d)
+        local smoothing="chebyshev"
+        if ((v == 1)); then
+          smoothing="jacobi"
+        fi
+        local all_args=($common_args -smoothing $smoothing -degree $fine_p -coarse_degree $coarse_p -num_smooths $v -cells $num_cells_1d,$num_cells_1d,$num_cells_1d)
 
         # run test
         echo 

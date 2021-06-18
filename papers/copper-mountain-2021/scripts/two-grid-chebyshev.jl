@@ -102,7 +102,9 @@ for fineP = 1:4
                 if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
                     M = computesymbols(multigrid, [0], [0, 0], θ)
                     for k = 1:4
-                        S = computesymbols(chebyshev, [k], θ)
+                        eigenvalueestimates = [0.0, 1.3330, 1.9893, 1.6202, 2.2932, 1.8643]
+                        eigenvalue = eigenvalueestimates[finep]
+                        S = computesymbols(chebyshev, [k, eigenvalue / 10.0, eigenvalue], θ)
                         eigenvalues = [abs(val) for val in eigvals(S * M * S)]
                         currentmaxeigenvalue = max(eigenvalues...)
                         if (currentmaxeigenvalue > maxeigenvalue[k])

@@ -40,7 +40,7 @@ function run_tests()
       for ((v = 1; v <= max_v; v++)); do
         echo
         echo "    v:      " $v
-        local all_args=("${common_args}" -degree $fine_p -coarse_degree $coarse_p -num_smooths $v -cells $num_cells_1d,$num_cells_1d,$num_cells_1d)
+        local all_args=($common_args -degree $fine_p -coarse_degree $coarse_p -num_smooths $v -cells $num_cells_1d,$num_cells_1d,$num_cells_1d)
 
         # run test
         echo 

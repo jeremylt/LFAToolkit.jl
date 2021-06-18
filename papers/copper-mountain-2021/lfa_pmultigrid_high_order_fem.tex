@@ -450,6 +450,49 @@ This expression can be extended to represent multi-level schemes by recursively 
 \subsubsection{Connections to Previous Work}\label{sec:previouswork}
 % -----------------------------------------------------------------------------
 
+By using macro-elements, \cite{kumar2019local} \cite{brown2019local}, this LFA of p-multigrid can be extended to LFA of h-multigrid.
+For 1D analysis, a macro-element is single element comprising of a pair of sub-elements with separate quadrature spaces, which is equivelent to partially assembling the finite element operator on two element subdomains.
+Prolongation between a coarse grid element and a fine grid macro-element is given by evaluating the coarse grid basis functions on the fine grid macro-element nodes with the multiplicity correction, as shown in \cref{sec:grids}.
+LFA in higher dimensions is given by tensor-products of 1D basis operations, as before.
+By representing the fine grid with macro-elements and the prolongation operator with this interpolation, this LFA of p-multigrid exactly reproduces the results of He and Maclachlan \cite{he2020two} for LFA of high-order h-multigrid.
+
+On uniform rectangular meshes, linear finite elements produce the same discetized operator as finite differencing.
+The nine-point stencil for the Laplace operator in 2D is given by
+
+\begin{equation}
+\begin{bmatrix}
+-1  &  -1  &  -1   \\
+-1  &   8  &  -1   \\
+-1  &  -1  &  -1  \\
+\end{bmatrix}
+\end{equation}
+
+with a corresponding local Fourier analysis symbol given by
+
+\begin{equation}
+\tilde{A} \left( \theta_1, \theta_2 \right) = 8 - 2 \cos \left( \theta_1 \right) - 2 \cos \left( \theta_2 \right) - 4 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right)
+\end{equation}
+
+The assembled matrix for a single linear element is given by
+
+\begin{equation}
+\mathbf{A}_e =
+\begin{bmatrix}
+ 2    &  -1/2  &  -1/2  &  -1    \\
+-1/2  &   2    &  -1    &  -1/2  \\
+-1/2  &  -1    &   2    &  -1/2  \\
+-1    &  -1/2  &  -1/2  &   2    \\
+\end{bmatrix}
+\end{equation}
+
+with a corresponding local Fourier analysis symbol given by
+
+\begin{equation}
+\tilde{A} \left( \theta_1, \theta_2 \right) = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta}} \right] \right) \mathbf{Q} = 8 - 2 \cos \left( \theta_1 \right) - 2 \cos \left( \theta_2 \right) - 4 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right).
+\end{equation}
+
+This LFA of arbitrary second-order PDEs with high-order finite element discretizations agrees with previous work on LFA of PDE operators derived with finite differencing with analogus stencils.
+
 % -----------------------------------------------------------------------------
 \section{Numerical Results}\label{sec:results}
 % -----------------------------------------------------------------------------

@@ -497,7 +497,7 @@ This LFA of arbitrary second-order PDEs with high-order finite element discretiz
 \section{Numerical Results}\label{sec:results}
 % -----------------------------------------------------------------------------
 
-In this section, we present numerical results for this analysis for the scalar Laplacian in one and two dimensions and Neo-Hookean hyperelasticity in three dimensions with H1 Lagrange bases on Gauss-Lobatto points with Gauss-Legendre quadrature.
+In this section, we present numerical results for this analysis for the scalar Laplacian in one, two, and three dimensions and Neo-Hookean hyperelasticity in three dimensions with H1 Lagrange bases on Gauss-Lobatto points with Gauss-Legendre quadrature.
 
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 1D Convergence Factors}\label{sec:1dresults}
@@ -634,7 +634,6 @@ From this table, we can see that the effect of rapid coarsening is much less sev
 In this case, the classical estimate for $\omega$ poorly predicts the true optimal value of $\omega$ that minimizes the two-grid convergence factor.
 The high-order h-multigrid estimate performs better, while $\omega_{\min}$ is a reasonable over-estimate of the optimal value of $\omega$ for the two-grid convergence factor and is increasingly accurate as the polynomial order of the basis and the aggressiveness of the coarsening increase.
 
-
 \begin{figure}[!tbp]
   \centering
   \subfloat[Smoothing Factor of 2D Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5_2d}\label{fig:jacobi_smooth_factor_2d}}
@@ -720,7 +719,11 @@ From this table, we can see that the effect of rapid coarsening is again much le
 Third order Chebyshev smoothing requires substantially more computation than Jacobi smoothing.
 
 % -----------------------------------------------------------------------------
-\subsection{Neo-Hookean Hyperelasticity - 3D Convergence Factors}\label{sec:3dresults}
+\subsection{Scalar Laplacian - 3D Convergence Factors}\label{sec:3dresults}
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+\subsection{Neo-Hookean Hyperelasticity - 3D Convergence Factors}\label{sec:solidsresults}
 % -----------------------------------------------------------------------------
 
 % -----------------------------------------------------------------------------

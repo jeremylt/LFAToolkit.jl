@@ -27,7 +27,7 @@ function run_tests()
   for ((fine_p = 2; fine_p <= max_p; fine_p++)); do
     echo
     echo "fine p:     " $fine_p
-    local num_cells_1d=$((num_dofs_1d/(fine_p-1)+1))
+    local num_cells_1d=$((num_dofs_1d/fine_p+1))
 
     # coarse grid
     local coarse_p=

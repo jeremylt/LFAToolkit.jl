@@ -73,7 +73,7 @@ P-multigrid is popular for high-order or spectral finite element methods, especi
 In this paper we introduce LFAToolkit.jl, a new Julia package for LFA of high-order finite element methods.
 LFAToolkit.jl analyzes preconditioning techniques for arbitrary systems of second order PDEs and supports mixed finite element methods.
 Specifically, in this paper we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate tuning Jacobi and Chebyshev smoothing for two-grid schemes.
-Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements.
+This formulation can reproduce previous work on LFA of h-multigrid for finite elements or finite difference methods with appropriate stencils.
 \end{abstract}
 % -----------------------------------------------------------------------------
 
@@ -98,8 +98,10 @@ LFA of h-multigrid with high-order finite elements was developed in \cite{he2020
 P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh. While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
 In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes with LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
+There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}, and LFA of p-multigrid for discontinuous Galerkin methods \cite{van2011discrete}, but LFA of p-multigrid for continuous Galerkin methods is novel.
+This LFA formulation for p-multigrid with high-order finite element discretizations can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.
 
-We investigate tuning Jacobi and Chebyshev smoothing on the one and two dimensional Laplacian and three dimensional Neo-Hookean hyperelasticity.
+We investigate tuning Jacobi and Chebyshev smoothing for p-multigrid with aggressive coarsening for the Laplacian in one, two and three dimensions to validate this LFA formulation before investigating LFA of p-multigrid for three dimensional Neo-Hookean hyperelasticity.
 Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements.
 
 This paper is organized as follows.
@@ -121,7 +123,7 @@ This repository contains Julia scripts and interactive Jupyter notebooks that ca
 
 In this section, we introduce the notation required to describe LFA.
 
-Consider a scalar Toeplitz operator $L_h$ on an infinite one dimensional uniform grid $G_h$,
+Consider a scalar Toeplitz operator $L_h$ on an infinite one dimensional uniform nodal grid $G_h$,
 \begin{equation}
 \begin{split}
 L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right)\\
@@ -142,17 +144,18 @@ then we define $\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa
 
 This definition can be extended to a $p \times p$ linear system of operators by
 \begin{equation}
-\tilde{\mathbf{L}}_h =
+\mathbf{L} =
 \begin{bmatrix}
-    \tilde{L}_h^{1, 1} && \cdots && \tilde{L}_h^{1, p} \\
-    \vdots             && \vdots && \vdots             \\
-    \tilde{L}_h^{p, 1} && \cdots && \tilde{L}_h^{p, p} \\
+    L^{1, 1} && \cdots && L^{1, p}          \\
+    \vdots             && \vdots && \vdots  \\
+    L^{p, 1} && \cdots && L^{p, p}          \\
 \end{bmatrix}
 \end{equation}
-where $\tilde{L}_h^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
-
+where $L^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
+The symbol of $\mathbf{L}$, denoted $\tilde{\mathbf{L}}_h$, is a $p \times p$ matrix valued function of $\theta$ given by $\left[ \tilde{\mathbf{L}}_h \right]_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
 For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines now rapidly the scheme decreases error at a target frequency.
-Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right) \setminus T^{\text{low}}$.
+
+Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right) \setminus T^{\text{low}}$ in one dimension, and in higher dimensions $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$, where $d$ is the dimension.
 
 % -----------------------------------------------------------------------------
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
@@ -199,11 +202,13 @@ Using the algebraic representation of PDE operators given in \cite{brown2010effi
 where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and $\mathbf{D}$ is a block diagonal operator which provides the pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
 Consider the specific case of a Toeplitz operator representing an arbitrary second order scalar PDE in 1D with basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
+The basis $\mathbf{B}$ is defined on the mesh grid with points given by $x_i$, for $i \in \left\lbrace 0, 1, \dots, p \right\rbrace$, where $p$ is the polynomial order of the basis.
 The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity, so we can compute the symbol matrix as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q}
 \end{equation}
 where $\odot$ represents pointwise multiplication of the elements, $h$ is the length of the element, and $i, j \in \lbrace 0, 1, \dots, p \rbrace$.
+In the pointwise product $\mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right]$, the $\left( i, j \right)$ entry is given by $\left[ \mathbf{A}_e \right]_{i, j} e^{\imath \left( x_j - x_i \right) \theta / h}$.
 $\mathbf{Q}$ is a $\left( p + 1 \right) \times p$ matrix that localizes Fourier modes to each element.
 \begin{equation}
 \mathbf{Q} =
@@ -222,7 +227,7 @@ $\mathbf{Q}$ is a $\left( p + 1 \right) \times p$ matrix that localizes Fourier 
 
 The computation of this symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
-Multiple components are supported by extending the $p \times p$ system of Toeplitz operators in \cref{symbolscalar1d} to a $\left( n \cdot p \right) \times \left( n \cdot p \right)$ system of operators, where $n$ is the number of components.
+Multiple components are supported by extending the $p \times p$ system of Toeplitz operators in \cref{symbolscalar1d} to a $\left( n \cdot p \right) \times \left( n \cdot p \right)$ system of operators, where $n$ is the number of components in the PDE.
 
 The infinite uniform grid $G_h$ is extended into higher dimensions by taking the direct sum of the one dimensional grid.
 Tensor products are used to extend the one dimensional bases into higher dimensions.
@@ -250,7 +255,7 @@ The symbol matrix of a finite element operator for an arbitrary second order PDE
 \begin{equation}\label{symbolhighorder}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}
 \end{equation}
-where $\odot$ represents pointwise multiplication of the elements, $\mathbf{h}$ is the length of the element in each dimension, $\boldsymbol{\theta}$ is the target frequency in each dimension, and $i, j \in \lbrace 0, 1, \dots, n \cdot p^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
+where $\odot$ represents pointwise multiplication of the elements, $\mathbf{h}$ is the length of the element in each dimension, $\boldsymbol{\theta}$ is the target frequency in each dimension, and $i, j \in \lbrace 0, 1, \dots, n \cdot \left( p + 1 \right)^d - 1 \rbrace$, $n$ is the number of components, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 $\mathbf{A}_e$ is the finite element operator for the element and $\mathbf{Q}$ is the localization of Fourier modes on an element.
 \end{definition}\label{def:high_order_symbol}
 
@@ -270,8 +275,9 @@ In this section, we compute the error propagation operator and smoothing factor 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
 The LFA predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
 \begin{equation}
-\mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \left\lvert \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right\rvert.
+\mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right)
 \end{equation}
+where $\rho$ denotes the spectral radius of the matrix symbol $\tilde{\mathbf{S}}$.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoother}\label{sec:jacobi}
@@ -302,7 +308,7 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
   \caption{Jacobi smoothing for high-order finite elements}
 \end{figure}
 
-Using Definition \ref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
+Using Definition \ref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left( - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
 In \cref{fig:jacobi_smooth_factor} we plot the LFA predicted smoothing factor for Jacobi smoothing as a function of the smoothing parameter $\omega$.
 The Jacobi smoothing factor is not an accurate predictor of the two-grid performance, as we will see below.
 
@@ -374,7 +380,7 @@ with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \righ
 Using Definition \ref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
 In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor for Chebyshev smoothing as a function of the polynomial order, $k$.
 
-First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = \alpha$, so the poor smoothing factor in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
+First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = \alpha$, so the poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
 
 % -----------------------------------------------------------------------------
 \subsection{P-Multigrid}\label{sec:multigrid}
@@ -398,6 +404,17 @@ This error propagation operator can represent both h-multigrid and p-multigrid, 
 % -----------------------------------------------------------------------------
 
 In p-multigrid, grid transfer operators can be represented elementwise and can thus be easily represented in the form of \cref{efficienthighorder}.
+
+The prolongation operator from the coarse to the fine grid interpolates low-order basis functions at the nodes for the high-order basis functions.
+\Cref{fig:p_prolongation} shows the evaluation of second order basis function on the Gauss-Lobatto nodes for a fourth order basis.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.48\textwidth]{img/pProlongation}
+  \caption{P-Prolongation from Coarse Basis to Fine Basis Points}
+  \label{fig:p_prolongation}
+\end{figure}
+
 The prolongation operator from the coarse to the fine grid can be represented by
 \begin{equation}
 \begin{split}
@@ -415,8 +432,9 @@ The symbol of the p-prolongation is given by
 \begin{equation}
 \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
 \end{equation}
-where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element in each dimension, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
+where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} + 1 \right)^d - 1 \rbrace$, $\mathbf{h}$ is the length of the element in each dimension, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} + 1 \right)^d - 1 \rbrace$, $n$ is the number of components, $p_{\text{fine}}$ and $p_{\text{coarse}}$ are the polynomial orders of the fine and coarse grid discretizations, respectively, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-prolongation operator is given by $\mathbf{P}_e = \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
+The nodes $x_{j, c}$ and are $x_{i, f}$ are on the coarse and fine grids, respectively.
 \end{definition}\label{def:prolongation_symbol}
 
 \begin{definition}
@@ -424,8 +442,9 @@ The symbol of p-restriction is given by the expression
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
-where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} \right)^d \rbrace$, $\mathbf{h}$ is the length of the element in each dimension, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} \right)^d \rbrace$, $n$ is the number of components, and $d$ is the dimension of the finite element basis.
+where $i \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{coarse}} + 1 \right)^d - 1 \rbrace$, $\mathbf{h}$ is the length of the element in each dimension, $j \in \lbrace 0, 1, \dots, n \cdot \left( p_{\text{fine}} + 1 \right)^d - 1 \rbrace$, $n$ is the number of components, $p_{\text{fine}}$ and $p_{\text{coarse}}$ are the polynomial orders of the fine and coarse grid discretizations, respectively, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the element p-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}}$.
+The nodes $x_{j, f}$ and are $x_{i, c}$ are on the fine and coarse grids, respectively.
 \end{definition}\label{def:restriction_symbol}
 
 % -----------------------------------------------------------------------------
@@ -454,29 +473,65 @@ By using macro-elements, \cite{kumar2019local} \cite{brown2019local}, this LFA o
 For 1D analysis, a macro-element is single element comprising of a pair of sub-elements with separate quadrature spaces, which is equivelent to partially assembling the finite element operator on two element subdomains.
 Prolongation between a coarse grid element and a fine grid macro-element is given by evaluating the coarse grid basis functions on the fine grid macro-element nodes with the multiplicity correction, as shown in \cref{sec:grids}.
 LFA in higher dimensions is given by tensor-products of 1D basis operations, as before.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.48\textwidth]{img/hProlongation}
+  \caption{H-Prolongation from Coarse Basis to Fine Basis Points}
+  \label{fig:h_prolongation}
+\end{figure}
+
+In \cref{fig:h_prolongation}, we see an example of interpolation from a coarse grid basis to a fine grid macro-element basis.
+The linear shape functions are evaluated at the nodes of the fine grid macro-element, which is a pair of linear micro-elements.
+On the left linear micro-element, there are two basis functions which are zero over the domain of the right micro-element, and the reverse is also true.
+The element level operator, $\mathbf{A}_e$, on the fine grid macro-element assembles the element level operator for each micro-element into the action of the PDE operator on the full macro-element.
+
+Following the derivation from \cref{sec:grids}, we can derive the symbols of grid transfer operators for h-multigrid.
+
+\begin{definition}
+The symbol of the h-prolongation operator is given by
+\begin{equation}
+\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \mathbf{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
+\end{equation}
+where $i \in \left\lbrace 0, 1, \dots, n \left( m \left( p - 1 \right) + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-prolongation operator is given by $\mathbf{P}_e = \mathbf{I} \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
+\label{def:h_prolongation_symbol}
+\end{definition}
+
+\begin{definition}
+The symbol of h-restriction operator is given by the expression
+\begin{equation}
+\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
+\end{equation}
+where $i \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( m \left( p - 1 \right) + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}} \mathbf{I}$.
+\label{def:h_restriction_symbol}
+\end{definition}
+
 By representing the fine grid with macro-elements and the prolongation operator with this interpolation, this LFA of p-multigrid exactly reproduces the results of He and Maclachlan \cite{he2020two} for LFA of high-order h-multigrid.
 
 On uniform rectangular meshes, linear finite elements produce the same discetized operator as finite differencing.
 The nine-point stencil for the Laplace operator in 2D is given by
 
 \begin{equation}
+\frac{1}{3}
 \begin{bmatrix}
 -1  &  -1  &  -1   \\
 -1  &   8  &  -1   \\
 -1  &  -1  &  -1  \\
 \end{bmatrix}
 \end{equation}
-
 with a corresponding local Fourier analysis symbol given by
 
 \begin{equation}
-\tilde{A} \left( \theta_1, \theta_2 \right) = 8 - 2 \cos \left( \theta_1 \right) - 2 \cos \left( \theta_2 \right) - 4 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right)
+\tilde{A} \left( \theta_1, \theta_2 \right) = \frac{8}{3} - \frac{2}{3} \cos \left( \theta_1 \right) - \frac{2}{3} \cos \left( \theta_2 \right) - \frac{4}{3} \cos \left( \theta_1 \right) \cos \left( \theta_2 \right)
 \end{equation}
 
 The assembled matrix for a single linear element is given by
 
 \begin{equation}
 \mathbf{A}_e =
+\frac{1}{3}
 \begin{bmatrix}
  2    &  -1/2  &  -1/2  &  -1    \\
 -1/2  &   2    &  -1    &  -1/2  \\
@@ -484,11 +539,12 @@ The assembled matrix for a single linear element is given by
 -1    &  -1/2  &  -1/2  &   2    \\
 \end{bmatrix}
 \end{equation}
-
 with a corresponding local Fourier analysis symbol given by
 
 \begin{equation}
-\tilde{A} \left( \theta_1, \theta_2 \right) = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta}} \right] \right) \mathbf{Q} = 8 - 2 \cos \left( \theta_1 \right) - 2 \cos \left( \theta_2 \right) - 4 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right).
+\begin{split}
+\tilde{A} \left( \theta_1, \theta_2 \right) & = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta}} \right] \right) \mathbf{Q}\\ & = \frac{8}{3} - \frac{2}{3} \cos \left( \theta_1 \right) - \frac{2}{3} \cos \left( \theta_2 \right) - \frac{4}{3} \cos \left( \theta_1 \right) \cos \left( \theta_2 \right).
+\end{split}
 \end{equation}
 
 This LFA of arbitrary second-order PDEs with high-order finite element discretizations agrees with previous work on LFA of PDE operators derived with finite differencing with analogus stencils.
@@ -636,7 +692,7 @@ The high-order h-multigrid estimate performs better, while $\omega_{\min}$ is a 
 
 \begin{figure}[!tbp]
   \centering
-  \subfloat[Smoothing Factor of 2D Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5_2d}\label{fig:jacobi_smooth_factor_2d}}
+  \subfloat[Smoothing Factor of 2D Jacobi for $p = 4$, $\nu = 1$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5_2d}\label{fig:jacobi_smooth_factor_2d}}
   \hfill
   \subfloat[Convergence for $p = 4$ to $p = 2$, $\nu = 1$]{\includegraphics[width=0.48\textwidth]{img/two_grid_converge_5_to_3_2d}\label{fig:two_grid_5_to_3_2d}}
   \caption{Convergence for high-order finite elements for the 2D Laplacian}

@@ -493,7 +493,7 @@ The symbol of the h-prolongation operator is given by
 \begin{equation}
 \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \mathbf{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
 \end{equation}
-where $i \in \left\lbrace 0, 1, \dots, n \left( m \left( p - 1 \right) + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+where $i \in \left\lbrace 0, 1, \dots, n \left( m p + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-prolongation operator is given by $\mathbf{P}_e = \mathbf{I} \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
 \label{def:h_prolongation_symbol}
 \end{definition}
@@ -503,7 +503,7 @@ The symbol of h-restriction operator is given by the expression
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
-where $i \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( m \left( p - 1 \right) + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+where $i \in \left\lbrace 0, 1, \dots, n \left( p + 1 \right)^d - 1 \right\rbrace$, $j \in \left\lbrace 0, 1, \dots, n \left( m p + 1 \right)^d - 1 \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}} \mathbf{I}$.
 \label{def:h_restriction_symbol}
 \end{definition}

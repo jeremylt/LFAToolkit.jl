@@ -32,11 +32,13 @@ for P = 1:4
 
     # compute smoothing factor
     # -- setup
-    numberruns = 100
+    numbersteps = 100
     maxeigenvalue = 0
     θ_min = -π / 2
     θ_min_high = π / 2
     θ_max = 3π / 2
+    θ_step = 2π/numbersteps
+    θ_range = θ_min:θ_step:(θ_max-θ_step)
     ω = 1.0
 
     # -- compute
@@ -45,8 +47,8 @@ for P = 1:4
     λ_max = -100
     # -- 1D --
     if dimension == 1
-        for i = 1:numberruns
-            θ = [θ_min + (θ_max - θ_min) * i / numberruns]
+        for i = 1:numbersteps
+            θ = [θ_range[i]]
             if abs(θ[1]) > π / 128
                 A = computesymbols(jacobi, [ω], θ)
                 eigenvalues = [abs(val) for val in eigvals(I - A)]
@@ -59,11 +61,8 @@ for P = 1:4
         end
         # -- 2D --
     elseif dimension == 2
-        for i = 1:numberruns, j = 1:numberruns
-            θ = [
-                θ_min + (θ_max - θ_min) * i / numberruns,
-                θ_min + (θ_max - θ_min) * j / numberruns,
-            ]
+        for i = 1:numbersteps, j = 1:numbersteps
+            θ = [θ_range[i], θ_range[j]]
             if sqrt(abs(θ[1] % 2π)^2 + abs(θ[2] % 2π)^2) > π / 128
                 A = computesymbols(jacobi, [ω], θ)
                 eigenvalues = [abs(val) for val in eigvals(I - A)]
@@ -76,12 +75,8 @@ for P = 1:4
         end
         # -- 3D --
     elseif dimension == 3
-        for i = 1:numberruns, j = 1:numberruns, k = 1:numberruns
-            θ = [
-                θ_min + (θ_max - θ_min) * i / numberruns,
-                θ_min + (θ_max - θ_min) * j / numberruns,
-                θ_min + (θ_max - θ_min) * k / numberruns,
-            ]
+        for i = 1:numbersteps, j = 1:numbersteps, k = 1:numbersteps
+            θ = [θ_range[i], θ_range[j], θ_range[k]]
             if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
                 A = computesymbols(jacobi, [ω], θ)
                 eigenvalues = [abs(val) for val in eigvals(I - A)]

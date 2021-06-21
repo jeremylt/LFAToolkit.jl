@@ -113,16 +113,18 @@ for runoption in runoptions
 
     # compute smoothing factor
     # -- setup
-    numberruns = 100
+    numbersteps = 100
     maxeigenvalue = 0
     θ_min = -π / 2
     θ_max = 3π / 2
+    θ_step = 2π/numbersteps
+    θ_range = θ_min:θ_step:(θ_max-θ_step)
 
     θ_maxegenvalue = -10
     # -- 1D --
     if runoption.dimension == 1
-        for i = 1:numberruns
-            θ = [θ_min + (θ_max - θ_min) * i / numberruns]
+        for i = 1:numbersteps
+            θ = [θ_range[i]]
             if abs(θ[1]) > π / 128
                 M = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
                 eigenvalues = [abs(val) for val in eigvals(M)]
@@ -135,11 +137,8 @@ for runoption in runoptions
         end
         # -- 2D --
     elseif runoption.dimension == 2
-        for i = 1:numberruns, j = 1:numberruns
-            θ = [
-                θ_min + (θ_max - θ_min) * i / numberruns,
-                θ_min + (θ_max - θ_min) * j / numberruns,
-            ]
+        for i = 1:numbersteps, j = 1:numbersteps
+            θ = [θ_range[i], θ_range[j]]
             if sqrt(abs(θ[1])^2 + abs(θ[2])^2) > π / 128
                 M = computesymbols(multigrid, [runoption.ω], runoption.v, θ)
                 eigenvalues = [abs(val) for val in eigvals(M)]

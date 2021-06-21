@@ -18,20 +18,20 @@ function run_tests()
   local mpi_run=($PETSC_DIR/$PETSC_ARCH/bin/mpiexec -n 8)
   local common_args="-ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3"
 
-  local max_p=6
+  local max_p=8
   local max_v=4
   local num_dofs_1d=200
 
   # fine grid
   local fine_p=
-  for ((fine_p = 2; fine_p <= max_p; fine_p++)); do
+  for ((fine_p = 2; fine_p <= max_p; fine_p=fine_p*2)); do
     echo
     echo "fine p:     " $fine_p
     local num_cells_1d=$((num_dofs_1d/fine_p+1))
 
     # coarse grid
     local coarse_p=
-    for ((coarse_p = 1; coarse_p < fine_p; coarse_p++)); do
+    for ((coarse_p = 1; coarse_p < fine_p; coarse_p=coarse_p*2)); do
       echo
       echo "  coarse p: " $coarse_p
 

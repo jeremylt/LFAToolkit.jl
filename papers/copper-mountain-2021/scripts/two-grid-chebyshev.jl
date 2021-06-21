@@ -5,7 +5,7 @@ using CSV
 using DataFrames
 
 # setup
-dimension = 1
+dimension = 3
 numbercomponents = 1
 mesh = []
 if dimension == 1
@@ -40,6 +40,7 @@ for fineP = 1:4
 
         # -- smoothers
         identity = IdentityPC(finediffusion)
+        jacobi = Jacobi(finediffusion)
         chebyshev = Chebyshev(finediffusion)
 
         # -- p-multigrid preconditioner
@@ -47,11 +48,16 @@ for fineP = 1:4
 
         # compute smoothing factor
         # -- setup
-        numbersteps = 100
+        numbersteps = 8
         θ_min = -π / 2
         θ_max = 3π / 2
-        θ_step = 2π/numbersteps
+        θ_step = 2π / numbersteps
         θ_range = θ_min:θ_step:(θ_max-θ_step)
+        if dimension == 3
+            numbersteps = 8
+            θ_step = 2π / numbersteps
+            θ_range = θ_min:θ_step:(θ_max-θ_step)
+        end
 
         # -- compute
         maxeigenvalue = zeros(4)
@@ -97,9 +103,19 @@ for fineP = 1:4
                 if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
                     M = computesymbols(multigrid, [0], [0, 0], θ)
                     for k = 1:4
-                        eigenvalueestimates = [0.0, 1.3393, 1.9893, 2.1993, 2.2932, 2.3463]
+                        eigenvalueestimates =
+                            [0.0, 1.3393, 1.9893, 2.1993, 2.2932, 2.3463, 2.3823, 2.4102]
                         eigenvalue = eigenvalueestimates[finep]
-                        S = computesymbols(chebyshev, [k, eigenvalue / 10.0, eigenvalue], θ)
+                        S = []
+                        if k == 1
+                            S = computesymbols(jacobi, [1.0], θ)
+                        else
+                            S = computesymbols(
+                                chebyshev,
+                                [k, eigenvalue / 10.0, eigenvalue],
+                                θ,
+                            )
+                        end
                         eigenvalues = [abs(val) for val in eigvals(S * M * S)]
                         currentmaxeigenvalue = max(eigenvalues...)
                         if (currentmaxeigenvalue > maxeigenvalue[k])

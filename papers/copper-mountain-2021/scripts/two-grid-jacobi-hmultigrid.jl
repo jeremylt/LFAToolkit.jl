@@ -117,7 +117,7 @@ for runoption in runoptions
     maxeigenvalue = 0
     θ_min = -π / 2
     θ_max = 3π / 2
-    θ_step = 2π/numbersteps
+    θ_step = 2π / numbersteps
     θ_range = θ_min:θ_step:(θ_max-θ_step)
 
     θ_maxegenvalue = -10

@@ -32,7 +32,7 @@ println(chebyshev)
 # output
 chebyshev preconditioner:
 eigenvalue estimates:
-  estimated minimum 0.6944
+  estimated minimum 0.2500
   estimated maximum 1.3611
 estimate scaling:
   λ_min = a * estimated min + b * estimated max
@@ -158,16 +158,38 @@ eigenvalueestimates = LFAToolkit.geteigenvalueestimates(chebyshev);
 function geteigenvalueestimates(preconditioner::Chebyshev)
     # assemble if needed
     if !isdefined(preconditioner, :eigenvalueestimates)
+        dimension = preconditioner.operator.dimension
+        λ_min = 1
+        λ_max = 0
+        θ_step = 2π / 4
+        θ_range = -π/2:θ_step:3π/2-θ_step
+
         # compute eigenvalues
-        A = computesymbols(
-            preconditioner.operator,
-            zeros(preconditioner.operator.mesh.dimension),
-        )
-        eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
-        eigenvalueestimates = [min(eigenvalues...), max(eigenvalues...)]
+        if dimension == 1
+            for θ_x in θ_range
+                A = computesymbols(preconditioner.operator, [θ_x])
+                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                λ_min = min(λ_min, eigenvalues...)
+                λ_max = max(λ_max, eigenvalues...)
+            end
+        elseif dimension == 2
+            for θ_x in θ_range, θ_y in θ_range
+                A = computesymbols(preconditioner.operator, [θ_x, θ_y])
+                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                λ_min = min(λ_min, eigenvalues...)
+                λ_max = max(λ_max, eigenvalues...)
+            end
+        elseif dimension == 3
+            for θ_x in θ_range, θ_y in θ_range, θ_z in θ_range
+                A = computesymbols(preconditioner.operator, [θ_x, θ_y, θ_z])
+                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                λ_min = min(λ_min, eigenvalues...)
+                λ_max = max(λ_max, eigenvalues...)
+            end
+        end
 
         # store
-        preconditioner.eigenvalueestimates = eigenvalueestimates
+        preconditioner.eigenvalueestimates = [λ_min, λ_max]
     end
 
     # return
@@ -315,8 +337,8 @@ for dimension in 1:3
         ]
     elseif dimension == 3
         @assert minmax ≈ [
-            0.10734492838301535,
-            0.333484213192652,
+            0.10315688775510112,
+            0.33035714285714246,
         ]
     end
 end

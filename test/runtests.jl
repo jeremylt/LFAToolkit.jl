@@ -53,8 +53,8 @@ end
 @testset "  ex111: Chebyshev example                   " begin
     include("../examples/ex111_chebyshev.jl")
 
-    @test min(eigenvalues...) ≈ -0.4154429715651581
-    @test max(eigenvalues...) ≈ 0.1854866859631604
+    @test min(eigenvalues...) ≈ -0.4128239482928335
+    @test max(eigenvalues...) ≈ 0.18624133505318474
 end
 
 # ------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ end
 @testset "  ex202: p-multigrid multilevel example      " begin
     include("../examples/ex202_pmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.529289033581712
+    @test max(eigenvalues...) ≈ 0.33590955477092255
 end
 
 # ------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ end
 @testset "  ex301: solid mechanics example             " begin
     include("../examples/ex301_solid_mechanics.jl")
 
-    @test max(eigenvalues...) ≈ 0.2851697038981784
+    @test max(eigenvalues...) ≈ 0.32720320564946115
 end
 
 # ------------------------------------------------------------------------------

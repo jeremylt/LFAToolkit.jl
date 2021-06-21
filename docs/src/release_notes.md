@@ -14,6 +14,8 @@ Current development includes improved functionality and bugfixes:
 
 * Fix computation of change of coordinates for gradient and quadrature weights
 
+* Fix computation of eigenvalue estimates for Chebyshev smoother
+
 ## v0.3.0
 
 This release include updated functionality and an interface change.

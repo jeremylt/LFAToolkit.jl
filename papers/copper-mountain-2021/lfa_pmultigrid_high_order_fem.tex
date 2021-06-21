@@ -482,9 +482,9 @@ LFA in higher dimensions is given by tensor-products of 1D basis operations, as 
 \end{figure}
 
 In \cref{fig:h_prolongation}, we see an example of interpolation from a coarse grid basis to a fine grid macro-element basis.
-The linear shape functions are evaluated at the nodes of the fine grid macro-element, which is a pair of linear micro-elements.
-On the left linear micro-element, there are two basis functions which are zero over the domain of the right micro-element, and the reverse is also true.
-The element level operator, $\mathbf{A}_e$, on the fine grid macro-element assembles the element level operator for each micro-element into the action of the PDE operator on the full macro-element.
+The linear shape functions are evaluated at the nodes of the fine grid macro-element, which is a pair of linear sub-elements.
+On the left linear micro-element, there are two basis functions which are zero over the domain of the right sub-element, and the reverse is also true.
+The element level operator, $\mathbf{A}_e$, on the fine grid macro-element assembles the element level operator for each sub-element into the action of the PDE operator on the full macro-element.
 
 Following the derivation from \cref{sec:grids}, we can derive the symbols of grid transfer operators for h-multigrid.
 

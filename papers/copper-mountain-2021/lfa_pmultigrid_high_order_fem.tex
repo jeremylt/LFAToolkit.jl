@@ -386,7 +386,7 @@ First order Chebyshev is equivalent to Jacobi smoothing with the classical choic
 \subsection{P-Multigrid}\label{sec:multigrid}
 % -----------------------------------------------------------------------------
 
-With this representation of the symbol of high-order PDE operators, we can derive the symbol of the p-multigrid two grid error propagation operator.
+With this representation of the symbol of high-order PDE operators, we can derive the symbol of the p-multigrid two-grid error propagation operator.
 
 The two-grid multigrid error propagation operator is given by
 \begin{equation}
@@ -628,7 +628,7 @@ In contrast to the previous work on h-multigrid for high-order finite elements, 
 \label{table:two_grid_1d}
 \end{table}
 
-The results in \cref{table:two_grid_1d} provide the minimal LFA smoothing factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
+The results in \cref{table:two_grid_1d} provide the LFA convergence factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
 
 For low order h-multigrid, the classical estimate of the optimal Jacobi smoothing parameter is given by $\omega = 2 / \left( \lambda_{\text{max, high}} + \lambda_{\text{min, high}} \right)$, where $\lambda_{\text{max, high}}$ and $\lambda_{\text{min, high}}$ are the maximum and minimum eigenvalues of $\tilde{S}_f \left( \boldsymbol{\theta} \right)$ for $\boldsymbol{\theta} \in T^{\text{high}}$.
 The modified estimate from \cite{he2020two} for h-multigrid for high-order finite elements is given by $\omega = 2 / \left( \lambda_{\text{max}} + \lambda_{\text{min, high}} \right)$, where $\lambda_{\text{max}}$ is the maximum eigenvalue of $\tilde{S}_f \left( \boldsymbol{\theta} \right)$ for $\boldsymbol{\theta} \in T^{\text{low}} \cup T^{\text{high}}$.
@@ -681,7 +681,7 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
 \label{table:two_grid_1d_chebyshev}
 \end{table}
 
-The results in \cref{table:two_grid_1d_chebyshev} provide the two grid convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+The results in \cref{table:two_grid_1d_chebyshev} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
 From this table, we can see that the effectiveness of higher order Chebyshev smoothers degrades as we coarsen more aggressively, but Chebyshev smoothing still provides better two-grid convergence than multiple pre and post-smoothing Jacobi iterations.
 
 % -----------------------------------------------------------------------------
@@ -692,8 +692,7 @@ From this table, we can see that the effectiveness of higher order Chebyshev smo
 % -----------------------------------------------------------------------------
 
 \Cref{fig:jacobi_smooth_factor_2d} and \cref{fig:two_grid_5_to_3_2d} show the Jacobi smoothing factor and two-grid convergence factor for p-multigrid with one iteration of Jacobi smoothing for the two dimensional Laplacian as a function of the Jacobi smoothing parameter $\omega$, while \cref{table:smoothing_factor_2d_jacobi} shows estimates of optimal the Jacobi smoothing factor for two-grid convergence.
-In this case, the classical estimate for $\omega$ poorly predicts the true optimal value of $\omega$ that minimizes the two-grid convergence factor.
-The high-order h-multigrid estimate performs better, while $\omega_{\min}$ is a reasonable over-estimate of the optimal value of $\omega$ for the two-grid convergence factor and is increasingly accurate as the polynomial order of the basis and the aggressiveness of the coarsening increase.
+These values generally fail to accurately estimate the true optimal smoothing parameter value, again providing over-estimates to the true optimal smoothing parameter in most cases.
 
 \begin{figure}[!tbp]
   \centering
@@ -743,7 +742,7 @@ The high-order h-multigrid estimate performs better, while $\omega_{\min}$ is a 
 \label{table:two_grid_2d}
 \end{table}
 
-The results in \cref{table:two_grid_2d} provide the minimal LFA smoothing factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
+The results in \cref{table:two_grid_2d} provide the LFA convergence factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
 
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
@@ -775,12 +774,20 @@ The results in \cref{table:two_grid_2d} provide the minimal LFA smoothing factor
 \label{table:two_grid_2d_chebyshev}
 \end{table}
 
-The results in \cref{table:two_grid_2d_chebyshev} provide the minimal LFA smoothing factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
-From this table, we can see that the effect of rapid coarsening is again much less severe for p-multigrid with Chebyshev smoothing in 2D, but at least a third order Chebyshev method must be used in order to use p-multigrid with Chebyshev smoothing as a solver.
-Third order Chebyshev smoothing requires substantially more computation than Jacobi smoothing.
+The results in \cref{table:two_grid_2d_chebyshev} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+The two-grid convergence factor still degrades and the effectiveness of higher order Chebyshev smoothers is again reduced as we coarsen more aggressively.
 
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 3D Convergence Factors}\label{sec:3dresults}
+% -----------------------------------------------------------------------------
+
+In this section, we compare the LFA two-grid convergence factors to numerical results.
+Our numerical experiments are conducted using PETSc \cite{petsc-user-ref} and libCEED.
+
+\subsubsection{Jacobi Smoothing}
+% -----------------------------------------------------------------------------
+
+\subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
 % -----------------------------------------------------------------------------

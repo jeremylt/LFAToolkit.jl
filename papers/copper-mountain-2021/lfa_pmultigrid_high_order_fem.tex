@@ -337,7 +337,7 @@ In this equation, $T_i \left( \zeta \right) = 2 \zeta T_{i - 1} \left( \zeta \ri
 
 The residual in the Chebyshev semi-iterative method can therefore be modeled by the three term recurrence
 \begin{equation}
-\mathbf{r}_{k + 1} = \left( \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{r}_k - \alpha \mathbf{r}_k - \beta_{k - 1} \mathbf{r}_{k - 1} \right) / \gamma_{k - 1}.
+\mathbf{r}_k = \left( \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{r}_{k - 1} - \alpha \mathbf{r}_{k - 1} - \beta_{k - 2} \mathbf{r}_{k - 2} \right) / \gamma_{k - 1}.
 \label{eq:chebyshev_error_recursive}
 \end{equation}
 
@@ -345,8 +345,8 @@ Using the recurrence relation given in \cref{eq:chebyshev_error_recursive}, we c
 \begin{equation}
 \begin{tabular}{c}
 $\mathbf{E}_0 = \mathbf{I}$\\
-$\mathbf{E}_1 = \mathbf{I} - \alpha \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}}$\\
-$\mathbf{E}_k = \left( \alpha \mathbf{E}_{k - 1} + \beta_{k - 2} \mathbf{E}_{k - 2} - \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{E}_{k - 2} \right) / \gamma_{k - 1}$
+$\mathbf{E}_1 = \mathbf{I} - \frac{1}{\alpha} \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}}$\\
+$\mathbf{E}_k = \left(\left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{E}_{k - 2} - \alpha \mathbf{E}_{k - 1} - \beta_{k - 2} \mathbf{E}_{k - 2} \right) / \gamma_{k - 1}$
 \end{tabular}
 \label{eq:chebyshev_error_propagation}
 \end{equation}
@@ -361,8 +361,8 @@ where $\nu$ is the number of smoothing passes and $\tilde{\mathbf{E}}_k \left( \
 \begin{equation}
 \begin{tabular}{c}
 $\tilde{\mathbf{E}}_0 \left( \boldsymbol{\theta} \right) = \mathbf{I}$\\
-$\tilde{\mathbf{E}}_1 \left( \boldsymbol{\theta} \right) = \mathbf{I} - \alpha \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \mathbf{\theta} \right)$\\
-$\tilde{\mathbf{E}}_k \left( \boldsymbol{\theta} \right) = \left( \alpha \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) + \beta_{k - 2} \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) - \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) \right) / \gamma_{k - 1}$
+$\tilde{\mathbf{E}}_1 \left( \boldsymbol{\theta} \right) = \mathbf{I} - \frac{1}{\alpha} \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \mathbf{\theta} \right)$\\
+$\tilde{\mathbf{E}}_k \left( \boldsymbol{\theta} \right) = \left( \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) - \alpha \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \beta_{k - 2} \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) \right) / \gamma_{k - 1}$
 \end{tabular}
 \end{equation}
 \label{def:chebyshev_symbol}
@@ -616,7 +616,7 @@ In contrast to the previous work on h-multigrid for high-order finite elements, 
   $p = 8$ to $p = 1$   &  0.874 & 0.78  &  0.764 & 0.78  &  0.668 & 0.78   \\
   \midrule
   $p = 16$ to $p = 8$  &  0.300 & 0.57  &  0.090 & 0.57  &  0.035 & 0.58   \\
-  $p = 16$ to $p = 4$  &  0.718 & 0.69  &  0.517 & 0.69  &  0.371 & 0.69   \\
+  $p = 16$ to $p = 4$  &  0.719 & 0.69  &  0.517 & 0.69  &  0.371 & 0.69   \\
   $p = 16$ to $p = 2$  &  0.906 & 0.73  &  0.820 & 0.73  &  0.743 & 0.73   \\
   $p = 16$ to $p = 1$  &  0.968 & 0.74  &  0.936 & 0.74  &  0.906 & 0.74   \\
   \bottomrule
@@ -657,19 +657,19 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
   \toprule
-  $p = 2$ to $p = 1$   &  1.677  &  1.316  &  0.433  &  0.022  \\
+  $p = 2$ to $p = 1$   &  0.284  &  0.088  &  0.059  &  0.046  \\
   \midrule
-  $p = 4$ to $p = 2$   &  2.332  &  1.551  &  0.465  &  0.030  \\
-  $p = 4$ to $p = 1$   &  2.640  &  1.722  &  0.525  &  0.030  \\
+  $p = 4$ to $p = 2$   &  0.337  &  0.126  &  0.058  &  0.051  \\
+  $p = 4$ to $p = 1$   &  0.755  &  0.570  &  0.431  &  0.325  \\
   \midrule
-  $p = 8$ to $p = 4$   &  4.047  &  2.245  &  0.631  &  0.043  \\
-  $p = 8$ to $p = 2$   &  4.158  &  2.305  &  0.650  &  0.043  \\
-  $p = 8$ to $p = 1$   &  4.199  &  2.324  &  0.656  &  0.044  \\
+  $p = 8$ to $p = 4$   &  0.424  &  0.184  &  0.083  &  0.046  \\
+  $p = 8$ to $p = 2$   &  0.795  &  0.633  &  0.505  &  0.403  \\
+  $p = 8$ to $p = 1$   &  0.934  &  0.872  &  0.814  &  0.760  \\
   \midrule
-  $p = 16$ to $p = 8$  &  6.537  &  3.158  &  0.828  &  0.063  \\
-  $p = 16$ to $p = 4$  &  6.562  &  3.171  &  0.832  &  0.063  \\
-  $p = 16$ to $p = 2$  &  6.569  &  3.174  &  0.833  &  0.063  \\
-  $p = 16$ to $p = 1$  &  6.572  &  3.175  &  0.833  &  0.063  \\
+  $p = 16$ to $p = 8$  &  0.487  &  0.239  &  0.118  &  0.059  \\
+  $p = 16$ to $p = 4$  &  0.837  &  0.701  &  0.587  &  0.491  \\
+  $p = 16$ to $p = 2$  &  0.949  &  0.900  &  0.853  &  0.810  \\
+  $p = 16$ to $p = 1$  &  0.984  &  0.967  &  0.951  &  0.936  \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -751,19 +751,19 @@ The results in \cref{table:two_grid_2d} provide the minimal LFA smoothing factor
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
   \toprule
-  $p = 2$ to $p = 1$   &  0.330  &  0.363  &  0.194  &  0.026  \\
+  $p = 2$ to $p = 1$   &  0.419  &  0.175  &  0.090  &  0.072  \\
   \midrule
-  $p = 4$ to $p = 2$   &  0.828  &  0.910  &  0.336  &  0.021  \\
-  $p = 4$ to $p = 1$   &  0.828  &  0.910  &  0.336  &  0.021  \\
+  $p = 4$ to $p = 2$   &  0.581  &  0.338  &  0.196  &  0.114  \\
+  $p = 4$ to $p = 1$   &  0.869  &  0.754  &  0.655  &  0.569  \\
   \midrule
-  $p = 8$ to $p = 4$   &  2.473  &  1.654  &  0.510  &  0.030  \\
-  $p = 8$ to $p = 2$   &  2.474  &  1.655  &  0.511  &  0.030  \\
-  $p = 8$ to $p = 1$   &  2.474  &  1.655  &  0.511  &  0.030  \\
+  $p = 8$ to $p = 4$   &  0.793  &  0.629  &  0.499  &  0.397  \\
+  $p = 8$ to $p = 2$   &  0.924  &  0.854  &  0.789  &  0.729  \\
+  $p = 8$ to $p = 1$   &  0.976  &  0.952  &  0.929  &  0.907  \\
   \midrule
-  $p = 16$ to $p = 8$  &  4.352  &  2.381  &  0.668  &  0.045  \\
-  $p = 16$ to $p = 4$  &  4.352  &  2.381  &  0.668  &  0.045  \\
-  $p = 16$ to $p = 2$  &  4.352  &  2.381  &  0.668  &  0.045  \\
-  $p = 16$ to $p = 1$  &  4.352  &  2.381  &  0.668  &  0.045  \\
+  $p = 16$ to $p = 8$  &  0.919  &  0.844  &  0.776  &  0.714  \\
+  $p = 16$ to $p = 4$  &  0.966  &  0.932  &  0.900  &  0.869  \\
+  $p = 16$ to $p = 2$  &  0.987  &  0.973  &  0.960  &  0.947  \\
+  $p = 16$ to $p = 1$  &  0.995  &  0.991  &  0.986  &  0.982  \\
   \bottomrule
 \end{tabular}
 \end{center}

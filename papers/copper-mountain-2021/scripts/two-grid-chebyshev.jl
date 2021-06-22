@@ -5,7 +5,7 @@ using CSV
 using DataFrames
 
 # setup
-dimension = 3
+dimension = 1
 numbercomponents = 1
 mesh = []
 if dimension == 1
@@ -18,7 +18,7 @@ end
 convergencefactors = DataFrame()
 
 # test range
-for fineP = 1:4
+for fineP = 1:3
     println("fine_p = ", 2^fineP)
     for coarseP = 0:fineP-1
         println("  coarse_p = ", 2^coarseP)

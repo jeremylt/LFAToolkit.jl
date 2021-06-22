@@ -38,7 +38,7 @@ estimate scaling:
   λ_min = a * estimated min + b * estimated max
   λ_max = c * estimated min + d * estimated max
   a = 0.0000
-  b = 1.0000
+  b = 0.1000
   c = 0.0000
   d = 1.0000
 ```
@@ -53,7 +53,7 @@ mutable struct Chebyshev <: AbstractPreconditioner
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    Chebyshev(operator::Operator) = new(operator, [0.0, 1.0, 0.0, 1.0])
+    Chebyshev(operator::Operator) = new(operator, [0.0, 0.1, 0.0, 1.0])
 end
 
 # printing
@@ -325,13 +325,14 @@ for dimension in 1:3
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
     if dimension == 1
-        @assert min(eigenvalues...) ≈ 0.5333333333333331
-        @assert max(eigenvalues...) ≈ 0.5999999999999998
+        @assert min(eigenvalues...) ≈ 0.15151515151515105
+        @assert max(eigenvalues...) ≈ 0.27272727272727226
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ 0.309776959162259
-        @assert max(eigenvalues...) ≈ 0.3557918285514419
+        @assert min(eigenvalues...) ≈ -0.25495098334134725
+        @assert max(eigenvalues...) ≈ -0.17128758445192374
     elseif dimension == 3
-        @assert max(eigenvalues...) ≈ 0.2533333333333336
+        @assert min(eigenvalues...) ≈ -0.8181818181818181
+        @assert max(eigenvalues...) ≈ -0.357575757575757
     end
 end
 

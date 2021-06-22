@@ -37,8 +37,8 @@ eigenvalue estimates:
 estimate scaling:
   λ_min = a * estimated min + b * estimated max
   λ_max = c * estimated min + d * estimated max
-  a = 1.0000
-  b = 0.0000
+  a = 0.0000
+  b = 1.0000
   c = 0.0000
   d = 1.0000
 ```
@@ -53,7 +53,7 @@ mutable struct Chebyshev <: AbstractPreconditioner
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    Chebyshev(operator::Operator) = new(operator, [1.0, 0.0, 0.0, 1.0])
+    Chebyshev(operator::Operator) = new(operator, [0.0, 1.0, 0.0, 1.0])
 end
 
 # printing
@@ -324,22 +324,14 @@ for dimension in 1:3
     # verify
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
-    minmax = [min(eigenvalues...), max(eigenvalues...)]
     if dimension == 1
-        @assert minmax ≈ [
-            -0.07142857142857095,
-            0.0816326530612248,
-        ]
+        @assert min(eigenvalues...) ≈ 0.5333333333333331
+        @assert max(eigenvalues...) ≈ 0.5999999999999998
     elseif dimension == 2
-        @assert minmax ≈ [
-            0.16841432714259774,
-            0.22385337199975813,
-        ]
+        @assert min(eigenvalues...) ≈ 0.309776959162259
+        @assert max(eigenvalues...) ≈ 0.3557918285514419
     elseif dimension == 3
-        @assert minmax ≈ [
-            0.10315688775510112,
-            0.33035714285714246,
-        ]
+        @assert max(eigenvalues...) ≈ 0.2533333333333336
     end
 end
 
@@ -386,16 +378,15 @@ function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
     k = ω[1] # degree of Chebyshev smoother
     α = (upper + lower) / 2
     c = (upper - lower) / 2
-    η = -α / c
-    β = -c^2 / (2 * α)
-    γ = -(α + β)
+    β_0 = -c^2 / (2 * α)
+    γ_1 = -(α + β_0)
     E_0 = I
-    E_1 = I - α * D_inv_A
+    E_1 = I - (1 / α) * D_inv_A * E_0
     E_n = I
-    for i = 2:k
-        β = -c^2 / (2 * γ)
-        γ = -(α + β)
-        E_n = (α * E_1 + β * E_0 - D_inv_A * E_1) / γ
+    for _ = 2:k
+        E_n = (D_inv_A * E_1 - α * E_1 - β_0 * E_0) / γ_1
+        β_0 = (c / 2)^2 / γ_1
+        γ_1 = -(α + β_0)
         E_0 = E_1
         E_1 = E_n
     end

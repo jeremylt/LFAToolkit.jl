@@ -323,7 +323,7 @@ We use the Jacobi preconditioned operator, $\left( \diag {\mathbf{A}} \right)^{-
 
 The terms in the Chebyshev semi-iterative method can be modeled by the three term recurrence relation given by
 \begin{equation}
-\mathbf{u}_{k + 1} = - \left( \mathbf{r}_k + \alpha \mathbf{u}_k + \beta_{k - 1} \mathbf{u}_{k - 1} \right) / \gamma_{k - 1}
+\mathbf{u}_k = - \left( \mathbf{r}_{k - 1} + \alpha \mathbf{u}_{k - 1} + \beta_{k - 2} \mathbf{u}_{k - 2} \right) / \gamma_{k - 1}
 \label{eq:chebyshev_recursive}
 \end{equation}
 where the spectrum of $\left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}}$ lies on the line segment $\left[ \alpha - c, \alpha + c \right]$ and the parameters $\beta$ and $\gamma$ are given by the recurrence
@@ -346,7 +346,7 @@ Using the recurrence relation given in \cref{eq:chebyshev_error_recursive}, we c
 \begin{tabular}{c}
 $\mathbf{E}_0 = \mathbf{I}$\\
 $\mathbf{E}_1 = \mathbf{I} - \frac{1}{\alpha} \left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}}$\\
-$\mathbf{E}_k = \left(\left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{E}_{k - 2} - \alpha \mathbf{E}_{k - 1} - \beta_{k - 2} \mathbf{E}_{k - 2} \right) / \gamma_{k - 1}$
+$\mathbf{E}_k = \left(\left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}} \mathbf{E}_{k - 1} - \alpha \mathbf{E}_{k - 1} - \beta_{k - 2} \mathbf{E}_{k - 2} \right) / \gamma_{k - 1}$
 \end{tabular}
 \label{eq:chebyshev_error_propagation}
 \end{equation}
@@ -362,7 +362,7 @@ where $\nu$ is the number of smoothing passes and $\tilde{\mathbf{E}}_k \left( \
 \begin{tabular}{c}
 $\tilde{\mathbf{E}}_0 \left( \boldsymbol{\theta} \right) = \mathbf{I}$\\
 $\tilde{\mathbf{E}}_1 \left( \boldsymbol{\theta} \right) = \mathbf{I} - \frac{1}{\alpha} \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \mathbf{\theta} \right)$\\
-$\tilde{\mathbf{E}}_k \left( \boldsymbol{\theta} \right) = \left( \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) - \alpha \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \beta_{k - 2} \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) \right) / \gamma_{k - 1}$
+$\tilde{\mathbf{E}}_k \left( \boldsymbol{\theta} \right) = \left( \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \alpha \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \beta_{k - 2} \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) \right) / \gamma_{k - 1}$
 \end{tabular}
 \end{equation}
 \label{def:chebyshev_symbol}
@@ -380,7 +380,7 @@ with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \righ
 Using Definition \ref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
 In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor for Chebyshev smoothing as a function of the polynomial order, $k$.
 
-First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = \alpha$, so the poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
+First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = 1 / \alpha$, so the relatively poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
 
 % -----------------------------------------------------------------------------
 \subsection{P-Multigrid}\label{sec:multigrid}
@@ -392,10 +392,10 @@ The two-grid multigrid error propagation operator is given by
 \begin{equation}
 \mathbf{E}_{\text{2mg}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f
 \end{equation}
-where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the course grid solve, which may be another multigrid cycle.
+where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the coarse grid solve, which may be another multigrid cycle.
 $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
-This derivation of LFA for p-multigrid allows independently setting these parameters; however we omit this in the notation for simplicity.
+This derivation of LFA for p-multigrid allows independently setting these parameters; however, we omit this option in the notation for simplicity.
 
 This error propagation operator can represent both h-multigrid and p-multigrid, depending upon the grid transfer operators and coarse grid representation chosen, but we focus on p-multigrid grid transfer operators in this paper.
 
@@ -458,7 +458,7 @@ The symbol for the p-multigrid error propagation operator is given by
 \begin{equation}
 \tilde{\mathbf{E}}_{\text{2mg}} \left( \nu, \omega, \boldsymbol{\theta} \right) = \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right) \left[ \mathbf{I} - \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{A}}_f \left( \boldsymbol{\theta} \right) \right] \tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)
 \end{equation}
-where $\tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)$ is the symbol of the smoother and $\tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right)$ is the symbol of the course grid solve.
+where $\tilde{\mathbf{S}}_f \left( \nu, \omega, \boldsymbol{\theta} \right)$ is the symbol of the smoother and $\tilde{\mathbf{A}}_c^{-1} \left( \boldsymbol{\theta} \right)$ is the symbol of the coarse grid solve.
 $\tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right)$ and $\tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right)$ represent the symbol of the grid prolongation and restriction operators, respectively. 
 \end{definition}\label{def:pmultigrid_symbol}
 
@@ -554,7 +554,9 @@ This LFA of arbitrary second-order PDEs with high-order finite element discretiz
 \section{Numerical Results}\label{sec:results}
 % -----------------------------------------------------------------------------
 
-In this section, we present numerical results for this analysis for the scalar Laplacian in one, two, and three dimensions and Neo-Hookean hyperelasticity in three dimensions with H1 Lagrange bases on Gauss-Lobatto points with Gauss-Legendre quadrature.
+In this section, we present numerical results for this analysis for the scalar Laplacian in one and two dimensions with H1 Lagrange bases on Gauss-Lobatto points with Gauss-Legendre quadrature.
+We validate these results with numerical experiments for the scalar Laplacian in three dimensions.
+Lastly, we consider Neo-Hookean hyperelasticity in three dimensions.
 
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 1D Convergence Factors}\label{sec:1dresults}
@@ -632,7 +634,9 @@ For low order h-multigrid, the classical estimate of the optimal Jacobi smoothin
 The modified estimate from \cite{he2020two} for h-multigrid for high-order finite elements is given by $\omega = 2 / \left( \lambda_{\text{max}} + \lambda_{\text{min, high}} \right)$, where $\lambda_{\text{max}}$ is the maximum eigenvalue of $\tilde{S}_f \left( \boldsymbol{\theta} \right)$ for $\boldsymbol{\theta} \in T^{\text{low}} \cup T^{\text{high}}$.
 
 In \cref{table:smoothing_factor_1d_jacobi} we compare the value of $\omega$ that results in the smallest Jacobi smoothing factor, $\omega_{\min}$, the value given by the classical estimate $\omega_{\text{classical}}$, and the high-order h-multigrid value given by \cite{he2020two}, $\omega_{\text{highorder}}$.
-The high-order h-multigrid estimate for $\omega$ provides the best estimate of the optimal value of $\omega$ for two-grid convergence, and it is increasingly accurate as the polynomial order of the basis and the aggressiveness of the coarsening increase.
+The classical and high-order h-multigrid estimates of the optimal smoothing parameter closely agree as $p$ increases, however these values all overestimate the true optimal smoothing parameter value.
+
+The high-order h-multigrid estimate for $\omega$ provides the best estimate of the optimal value of $\omega$ for two-grid convergence; however, this estimate still overestimates the true optimal smoothing parameter and the quality of this estimate degrades as $p$ increases.
 
 Optimal parameter estimation is an open question for high-order p-multigrid, but optimization techniques, such as those discussed in \cite{brown2021tuning}, can be used to tune these parameters, especially for more complex PDEs.
 
@@ -648,7 +652,7 @@ Optimal parameter estimation is an open question for high-order p-multigrid, but
 
 In \cref{fig:two_grid_5_3_chebyshev} and \cref{fig:two_grid_5_2_chebyshev} we plot the two-grid convergence factor for p-multigrid with Chebyshev pre and post-smoothing for the one dimensional Laplacian as a function of the Chebyshev order, $k$.
 On the left we show conservative coarsening from quartic to quadratic elements and on the right we show more aggressive coarsening from quartic to linear elements.
-As expected, the two-grid convergence factor decreases as we coarsen more rapidly, however this effect is not as pronounced as we saw with Jacobi smoothing.
+As expected, the two-grid convergence factor decreases as we coarsen more rapidly.
 
 \begin{table}[ht!]
 \begin{center}
@@ -677,8 +681,8 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
 \label{table:two_grid_1d_chebyshev}
 \end{table}
 
-The results in \cref{table:two_grid_1d_chebyshev} provide the minimal LFA smoothing factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
-From this table, we can see that the effect of rapid coarsening is much less severe for p-multigrid with Chebyshev smoothing, but at least a third order Chebyshev method must be used, which requires substantially more computation than Jacobi smoothing.
+The results in \cref{table:two_grid_1d_chebyshev} provide the two grid convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+From this table, we can see that the effectiveness of higher order Chebyshev smoothers degrades as we coarsen more aggressively, but Chebyshev smoothing still provides better two-grid convergence than multiple pre and post-smoothing Jacobi iterations.
 
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 2D Convergence Factors}\label{sec:2dresults}

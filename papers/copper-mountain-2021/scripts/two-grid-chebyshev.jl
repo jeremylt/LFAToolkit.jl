@@ -18,7 +18,7 @@ end
 convergencefactors = DataFrame()
 
 # test range
-for fineP = 1:3
+for fineP = 1:4
     println("fine_p = ", 2^fineP)
     for coarseP = 0:fineP-1
         println("  coarse_p = ", 2^coarseP)

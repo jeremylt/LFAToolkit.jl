@@ -384,6 +384,8 @@ In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor
 
 First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = 1 / \alpha$, so the relatively poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
 
+The Chebyshev semi-iterative method is known to be sensitive to the quality of the estimates of the extremal eigenvalues $\lambda_{\text{min}}$ and $\lambda_{\text{max}}$.
+
 % -----------------------------------------------------------------------------
 \subsection{P-Multigrid}\label{sec:multigrid}
 % -----------------------------------------------------------------------------
@@ -795,6 +797,7 @@ Although LFA is define on infinite grids, which most naturally translate to peri
 \subsubsection{Jacobi Smoothing}
 % -----------------------------------------------------------------------------
 
+Since the Chebyshev smoothing is based upon the Jacobi preconditioned operator, it is important to validate the LFA of the Jacobi smoothing before considering Chebyshev smoothing.
 We use simple Jacobi smoothing with a weight of $\omega = 1.0$ to validate the LFA.
 
 \begin{table}[ht!]
@@ -815,12 +818,17 @@ We use simple Jacobi smoothing with a weight of $\omega = 1.0$ to validate the L
   \bottomrule
 \end{tabular}
 \end{center}
-\caption{LFA and experimental two-grid convergence factor with Jacobi smoothing for 3D Laplacian}
+\caption{LFA and experimental two-grid convergence factor with Jacobi smoothing for 3D Laplacian with $\omega = 1$}
 \label{table:two_grid_3d_jacobi}
 \end{table}
 
+The results in \cref{table:two_grid_3d_jacobi} provide the LFA and experimental convergence factors for the test problem.
+As expected, the high-order fine grid problems diverge with a smoothing factor of $\omega = 1$; however, the LFA provides reasonable upper bounds on the true convergence factor seen in the experimental results.
+
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
+
+
 
 \begin{table}[ht!]
 \begin{center}

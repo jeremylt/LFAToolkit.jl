@@ -385,6 +385,11 @@ In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor
 First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = 1 / \alpha$, so the relatively poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
 
 The Chebyshev semi-iterative method is known to be sensitive to the quality of the estimates of the extremal eigenvalues $\lambda_{\text{min}}$ and $\lambda_{\text{max}}$.
+PETSc \cite{petsc-user-ref} estimates the eigenvalues of the preconditioned operator via Krylov iterations, yielding an estimate of the maximal eigenvalue, $\hat{\lambda}_{\text{max}}$.
+This estimate is used to target the upper part of the spectrum of the error, with $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.1 \hat{\lambda}_{\text{max}}$.
+
+In LFAToolkit, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to compute $\hat{\lambda}_{\text{max}}$.
+We then take $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.0 \hat{\lambda}_{\text{max}}$.
 
 % -----------------------------------------------------------------------------
 \subsection{P-Multigrid}\label{sec:multigrid}
@@ -828,7 +833,7 @@ As expected, the high-order fine grid problems diverge with a smoothing factor o
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
-
+We used the LFA estimates of the maximal eigenvalue to set the extremal eigenvalues used the Chebyshev iteration in PETSc, using $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.0 \hat{\lambda}_{\text{max}}$, where $\hat{\lambda}_{\text{max}}$ is the estimated maximal eigenvalue of the symbol of the Jacobi preconditioned operator.
 
 \begin{table}[ht!]
 \begin{center}
@@ -852,6 +857,9 @@ As expected, the high-order fine grid problems diverge with a smoothing factor o
 \caption{LFA and experimental two-grid convergence factor with Chebyshev smoothing for 3D Laplacian}
 \label{table:two_grid_3d_chebyshev}
 \end{table}
+
+The LFA provides reasonable upper bounds on the true convergence factor seen in the experimental results.
+As with the one and two dimensional results, rapid coarsening of the polynomial order of the bases decreases the effectiveness of higher order Chebyshev smoothing.
 
 % -----------------------------------------------------------------------------
 \subsection{Neo-Hookean Hyperelasticity - 3D Convergence Factors}\label{sec:solidsresults}

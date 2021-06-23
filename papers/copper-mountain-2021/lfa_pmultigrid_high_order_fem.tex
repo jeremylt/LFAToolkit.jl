@@ -114,9 +114,11 @@ In \cref{sec:lfa} we develop the notation for LFA of second-order PDEs with arbi
 \subsection{Reproducibility}\label{sec:reproducibility}
 % -----------------------------------------------------------------------------
 
-The numerical results in this paper were generated using the Julia package LFAToolkit.jl \cite{thompson2021toolkit}.
+The numerical results for LFA in this paper were generated using the Julia package LFAToolkit.jl \cite{thompson2021toolkit}.
 This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
 This repository contains Julia scripts and interactive Jupyter notebooks that can replicate the tables and plots in this paper.
+
+Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
 
 % -----------------------------------------------------------------------------
 \section{Definitions and Notation}\label{sec:notation}
@@ -780,7 +782,7 @@ The two-grid convergence factor still degrades and the effectiveness of higher o
 % -----------------------------------------------------------------------------
 
 In this section, we compare the LFA two-grid convergence factors to numerical results.
-Our numerical experiments were conducted using the libCEED with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
+Our numerical experiments were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
 PETSc provides the mesh management, linear solvers, and multigrid preconditioner while libCEED provides the matrix-free operator evaluation.
 
 We recover the manufactured solution given by

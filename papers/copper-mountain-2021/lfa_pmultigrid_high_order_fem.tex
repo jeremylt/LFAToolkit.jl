@@ -148,15 +148,15 @@ then we define $\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa
 
 This definition can be extended to a $p \times p$ linear system of operators by
 \begin{equation}
-\mathbf{L} =
+\mathbf{L}_h =
 \begin{bmatrix}
-    L^{1, 1} && \cdots && L^{1, p}          \\
-    \vdots             && \vdots && \vdots  \\
-    L^{p, 1} && \cdots && L^{p, p}          \\
+    L_h^{1, 1} && \cdots && L_h^{1, p}        \\
+    \vdots               && \vdots && \vdots  \\
+    L_h^{p, 1} && \cdots && L_h^{p, p}        \\
 \end{bmatrix}
 \end{equation}
-where $L^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
-The symbol of $\mathbf{L}$, denoted $\tilde{\mathbf{L}}_h$, is a $p \times p$ matrix valued function of $\theta$ given by $\left[ \tilde{\mathbf{L}}_h \right]_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
+where $L_h^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
+The symbol of $\mathbf{L}_h$, denoted $\tilde{\mathbf{L}}_h$, is a $p \times p$ matrix valued function of $\theta$ given by $\left[ \tilde{\mathbf{L}}_h \right]_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
 For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines now rapidly the scheme decreases error at a target frequency.
 
 Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$, where $d$ is the dimension.

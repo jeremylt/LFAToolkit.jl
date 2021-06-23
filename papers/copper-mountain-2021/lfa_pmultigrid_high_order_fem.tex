@@ -60,6 +60,8 @@ J. L. Thompson, J. Brown, and Y. He
 \title{{\TheTitle}\thanks{\TheFunding}}
 \headers{\TheShortTitle}{\TheShortAuthors}
 
+
+\newcommand{\yh}[1]{{\color{red}#1}}
 \begin{document}
 
 \maketitle
@@ -99,8 +101,7 @@ LFA of h-multigrid with high-order finite elements was developed in \cite{he2020
 P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh. While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
 In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes with LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
-There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}, and LFA of p-multigrid for discontinuous Galerkin methods \cite{van2011discrete}, but LFA of p-multigrid for continuous Galerkin methods is novel.
-This LFA formulation for p-multigrid with high-order finite element discretizations can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.
+There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}. However, to the best of our knowledge,  there is a lack of package of LFA of p-multigrid method.  Although \cite{van2011discrete} discussed LFA of p-multigrid for discontinuous Galerkin method, it cannot be extended to continuous Galerkin method. Our LFA of p-multigrid for continuous Galerkin methods is novel, which is not limited on finite element discretization. This LFA formulation for p-multigrid with high-order finite element discretizations can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.
 
 We investigate tuning Jacobi and Chebyshev smoothing for p-multigrid with aggressive coarsening for the Laplacian in one, two and three dimensions to validate this LFA formulation before investigating LFA of p-multigrid for three dimensional Neo-Hookean hyperelasticity.
 Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements.
@@ -158,7 +159,7 @@ where $L^{i, j}$, $i, j \in \lbrace 1, 2, \dots, p \rbrace$ are given by scalar 
 The symbol of $\mathbf{L}$, denoted $\tilde{\mathbf{L}}_h$, is a $p \times p$ matrix valued function of $\theta$ given by $\left[ \tilde{\mathbf{L}}_h \right]_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
 For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines now rapidly the scheme decreases error at a target frequency.
 
-Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$, where $d$ is the dimension.  
+Low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$, where $d$ is the dimension.
 
 % -----------------------------------------------------------------------------
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
@@ -470,10 +471,11 @@ Note again that this derivation is applicable for any PDE with a weak form that 
 This expression can be extended to represent multi-level schemes by recursively applying $\tilde{\mathbf{E}}_{\text{2mg}}$ until the coarsest grid is reached.
 
 % -----------------------------------------------------------------------------
-\subsubsection{Connections to Previous Work}\label{sec:previouswork}
+%% Connections to Previous Work
+\subsection{Extension to h-multigrid}\label{sec:previouswork}
 % -----------------------------------------------------------------------------
 
-By using macro-elements, \cite{kumar2019local} \cite{brown2019local}, this LFA of p-multigrid can be extended to LFA of h-multigrid.
+By using macro-elements, \cite{kumar2019local} \cite{brown2019local}, our LFA of p-multigrid can be extended to LFA of h-multigrid.
 For 1D analysis, a macro-element is single element comprising of a pair of sub-elements with separate quadrature spaces, which is equivelent to partially assembling the finite element operator on two element subdomains.
 Prolongation between a coarse grid element and a fine grid macro-element is given by evaluating the coarse grid basis functions on the fine grid macro-element nodes with the multiplicity correction, as shown in \cref{sec:grids}.
 LFA in higher dimensions is given by tensor-products of 1D basis operations, as before.
@@ -493,20 +495,20 @@ The element level operator, $\mathbf{A}_e$, on the fine grid macro-element assem
 Following the derivation from \cref{sec:grids}, we can derive the symbols of grid transfer operators for h-multigrid.
 
 \begin{definition}\label{def:h_prolongation_symbol}
-The symbol of the h-prolongation operator is given by
+The symbol of the h-prolongation operator with aggressive coarsening is given by
 \begin{equation}
 \tilde{\mathbf{P}}_{\text{ctof}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_f^T \left( \mathbf{P}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, c} - \mathbf{x}_{i, f} \right) \cdot \mathbf{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_c
 \end{equation}
-where $i \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+where $i \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the coarsening factor or the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-prolongation operator is given by $\mathbf{P}_e = \mathbf{I} \mathbf{D}_{\text{scale}} \mathbf{B}_{\text{ctof}}$.
 \end{definition}
 
 \begin{definition}\label{def:h_restriction_symbol}
-The symbol of h-restriction operator is given by the expression
+The symbol of h-restriction operator with aggressive coarsening is given by the expression
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f
 \end{equation}
-where $i \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+where $i \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the coarsening factor or  the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}} \mathbf{I}$.
 \end{definition}
 
@@ -549,9 +551,14 @@ with a corresponding local Fourier analysis symbol given by
 \end{split}
 \end{equation}
 
-We can use the LFA of multigrid given by  \cref{def:pmultigrid_symbol} with the prolongation and restriction symbols given by \cref{def:h_prolongation_symbol} and  \cref{def:h_restriction_symbol} to reproduce LFA of h-multigrid methods for finite differencing where the stencil can be represented by finite elements.
+We can use the LFA of multigrid given by  \cref{def:pmultigrid_symbol} with the prolongation and restriction symbols given by \cref{def:h_prolongation_symbol} and  \cref{def:h_restriction_symbol} to reproduce LFA of h-multigrid methods for finite differencing where the stencil can be represented by finite elements \yh{Do you mean finite element discretization?}.
 This LFA of arbitrary second-order PDEs with high-order finite element discretizations agrees with previous work on LFA of PDE operators derived with finite differencing with analogus stencils.
 
+
+Our LFA of h-multigrid presented here is based on a specific basis of the Fourier space used in \cite{kumar2019local} rather than the commonly used Fourier modes, see \cite{MR1807961,wienands2004practical}, where the symbol of each component in multigrid methods are formed based on different harmonic frequencies. The symbols of grid-transfer operators described in \cref{def:h_prolongation_symbol} and  \cref{def:h_restriction_symbol} give a general way for multigrid coarsening with factor $m$, and this framework is simpler, especially for high-order discretizations described in \cite{he2020two}. Another advantage of our LFA for h-multigrid is suitable to  finite element discretizations without requiring the bases with uniformly spaced nodes, and finite difference discretizations for systems.
+
+As mentioned before, our focus of this work is p-multigrid,  so we do not expand the discussion of h-multigrid method here.  Applying the framework of LFA for h-multigrid or hp-multigrid methods will be our future work.
+  
 % -----------------------------------------------------------------------------
 \section{Numerical Results}\label{sec:results}
 % -----------------------------------------------------------------------------

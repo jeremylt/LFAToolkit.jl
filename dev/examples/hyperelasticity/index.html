@@ -22,11 +22,11 @@ ctofbasis = TensorH1LagrangeBasis(
 )
 
 # constants
-e = 1E6                             # Young&#39;s modulus
+E = 1E6                             # Young&#39;s modulus
 ν = 0.3                             # Poisson&#39;s ratio
-K = e / (3 * (1 - 2 * ν))           # bulk modulus
-λ = e * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
-μ = e / (2 * (1 + ν))
+K = E / (3 * (1 - 2 * ν))           # bulk modulus
+λ = E * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
+μ = E / (2 * (1 + ν))
 
 # state
 gradu = [1; 2; 3] * ones(1, 3);
@@ -88,4 +88,4 @@ A = computesymbols(multigrid, [3], [1, 1], [π, π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 24 June 2021 16:56">Thursday 24 June 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 24 June 2021 17:25">Thursday 24 June 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

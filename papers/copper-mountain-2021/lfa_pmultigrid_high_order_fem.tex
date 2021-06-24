@@ -583,6 +583,7 @@ Lastly, we consider linear elasticity in three dimensions.
 \subsection{Scalar Laplacian - 1D Convergence Factors}\label{sec:1dresults}
 % -----------------------------------------------------------------------------
 
+% -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -661,6 +662,7 @@ The high-order h-multigrid estimate for $\omega$ provides the best estimate of t
 
 Optimal parameter estimation is an open question for high-order p-multigrid, but optimization techniques, such as those discussed in \cite{brown2021tuning}, can be used to tune these parameters, especially for more complex PDEs.
 
+% -----------------------------------------------------------------------------
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -709,6 +711,7 @@ From this table, we can see that the effectiveness of higher order Chebyshev smo
 \subsection{Scalar Laplacian - 2D Convergence Factors}\label{sec:2dresults}
 % -----------------------------------------------------------------------------
 
+% -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -765,6 +768,7 @@ These values generally fail to accurately estimate the true optimal smoothing pa
 
 The results in \cref{table:two_grid_2d} provide the LFA convergence factor and optimal values of $\omega$ for two-grid high-order p-multigrid for a variety of polynomial orders and coarsening factors.
 
+% -----------------------------------------------------------------------------
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -813,6 +817,7 @@ f \left( x, y, z \right) = x y z \sin \left( \pi x \right) \sin \left( \pi \left
 on the domain $\left[ -3, 3 \right]^3$ with approximately 8 million degrees of freedom for a variety of test cases.
 Although LFA is define on infinite grids, which most naturally translate to periodic problems, LFA predicted convergence factors are also accurate for appropriate problems with other boundary conditions on finite grids \cite{rodrigo2019validity}.
 
+% -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -844,6 +849,7 @@ We use simple Jacobi smoothing with a weight of $\omega = 1.0$ to validate the L
 The results in \cref{table:two_grid_3d_jacobi} provide the LFA and experimental convergence factors for the test problem.
 As expected, the high-order fine grid problems diverge with a smoothing factor of $\omega = 1$; however, the LFA provides reasonable upper bounds on the true convergence factor seen in the experimental results.
 
+% -----------------------------------------------------------------------------
 \subsubsection{Chebyshev Smoothing}
 % -----------------------------------------------------------------------------
 
@@ -945,8 +951,8 @@ The results in \cref{table:two_grid_3d_linear_elasticity} provide the LFA conver
 \section{Conclusions}\label{sec:conclusion}
 % -----------------------------------------------------------------------------
 
-In this paper we introduced LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
-Specifically, we developed LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigated Jacobi smoothing for p-multigrid with LFAToolkit.jl.
+In this paper we developed LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations.
+We introduced LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods, and used LFAToolkit.jl to investigate LFAToolkit.jl with Jacobi and Chebyshev semi-iterative method smoothing and aggressive coarsening strategies.
 
 Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements, and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
 

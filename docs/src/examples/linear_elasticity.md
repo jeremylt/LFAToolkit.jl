@@ -15,7 +15,7 @@ where ``\boldsymbol{\sigma}`` and ``\bold{g}`` are the stress and forcing functi
 We have the weak form
 
 ```math
-\int_{\Omega} \nabla \bold{v} : \boldsymbol{\sigma} - \int_{\partial \Omega} v \cdot \left( \boldsymbol{\sigma} \cdot \hat{\bold{n}} \right) - \int_{\Omega} \bold{v} \cdot \bold{g} = \bold{r}
+\int_{\Omega} \nabla \bold{v} : \boldsymbol{\sigma} - \int_{\partial \Omega} v \cdot \left( \boldsymbol{\sigma} \cdot \hat{\bold{n}} \right) - \int_{\Omega} \bold{v} \cdot \bold{g} = 0.
 ```
 
 The constitutive law (stress-strain relationship) can be written as
@@ -43,6 +43,14 @@ and the elasticity tensor ``\bold{C}`` is given by
    & & & & & \mu
    \end{pmatrix}.
 ```
+
+``\lambda`` and ``\mu`` are the Lamé parameters, given by
+
+```math
+\lambda = \frac{E \nu}{\left( 1 + \nu \right) \left( 1 - 2 \nu \right)} \\
+\mu = \frac{E}{2 \left( 1 + \nu \right)}
+```
+where ``E`` is the Young's modulus and ``\nu`` is the Poisson's ratio for the materiel.
 
 For a full discussion of the formulation of the linear elasticity problem, see the [libCEED documentation](https://libceed.readthedocs.io/en/latest/examples/solids/).
 

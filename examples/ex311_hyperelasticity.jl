@@ -21,11 +21,11 @@ ctofbasis = TensorH1LagrangeBasis(
 )
 
 # constants
-e = 1E6                             # Young's modulus
+E = 1E6                             # Young's modulus
 ν = 0.3                             # Poisson's ratio
-K = e / (3 * (1 - 2 * ν))           # bulk modulus
-λ = e * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
-μ = e / (2 * (1 + ν))
+K = E / (3 * (1 - 2 * ν))           # bulk modulus
+λ = E * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
+μ = E / (2 * (1 + ν))
 
 # state
 gradu = [1; 2; 3] * ones(1, 3);

@@ -238,6 +238,8 @@ $\mathbf{Q}$ is a $\left( p + 1 \right) \times p$ matrix that localizes Fourier 
 The computation of this symbol matrix extends to more complex PDE with multiple components and in higher dimensions.
 
 Multiple components are supported by extending the $p \times p$ system of Toeplitz operators in \cref{symbolscalar1d} to a $\left( n \cdot p \right) \times \left( n \cdot p \right)$ system of operators, where $n$ is the number of components in the PDE.
+The localization operator $\mathbf{Q}$ for a multi-component PDE is given by $\mathbf{Q}_n = \mathbf{I}_n \otimes \mathbf{Q}$.
+In general, we omit the subscript indicating the number of components for the localization operator.
 
 The infinite uniform grid $G_h$ is extended into higher dimensions by taking the direct sum of the one dimensional grid.
 Tensor products are used to extend the one dimensional bases into higher dimensions.

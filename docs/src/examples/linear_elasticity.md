@@ -15,7 +15,7 @@ where ``\boldsymbol{\sigma}`` and ``\bold{g}`` are the stress and forcing functi
 We have the weak form
 
 ```math
-\int_{\Omega} \nabla \bold{v} : \boldsymbol{\sigma} - \int_{\partial \Omega} v \cdot \left( \boldsymbol{\sigma} \cdot \hat{\bold{n}} \right) - \int_{\Omega} \bold{v} \cdot \bold{g} = \bold{r}
+\int_{\Omega} \nabla \bold{v} : \boldsymbol{\sigma} - \int_{\partial \Omega} v \cdot \left( \boldsymbol{\sigma} \cdot \hat{\bold{n}} \right) - \int_{\Omega} \bold{v} \cdot \bold{g} = 0.
 ```
 
 The constitutive law (stress-strain relationship) can be written as

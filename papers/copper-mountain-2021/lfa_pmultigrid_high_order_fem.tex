@@ -27,16 +27,8 @@
 
 % Short title for running heads (if needed)
 \newcommand{\TheShortTitle}{%
-  LFA of P-Multigrid for High-Order
+  LFA of P-Multigrid for High-Order FEM
 }
-
-% Optional PDF information
-\ifpdf
-\hypersetup{
-  pdftitle={\TheTitle},
-  pdfauthor={}
-}
-\fi
 
 % Acknowledge funding or other resources
 \newcommand{\TheFunding}{%
@@ -56,10 +48,18 @@ University of Waterloo, 200 University Ave W, Waterloo, ON N2L 3G1, Canada
 \newcommand{\TheShortAuthors}{
 J. L. Thompson, J. Brown, and Y. He
 }
+
 % Title and funding information on page
 \title{{\TheTitle}\thanks{\TheFunding}}
 \headers{\TheShortTitle}{\TheShortAuthors}
 
+% Optional PDF information
+\ifpdf
+\hypersetup{
+  pdftitle={\TheTitle},
+  pdfauthor={\TheShortAuthors}
+}
+\fi
 
 \newcommand{\yh}[1]{{\color{red}#1}}
 \begin{document}

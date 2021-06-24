@@ -7,6 +7,7 @@ This section documents the LFAToolkit examples.
 ```@contents
 Pages = [
     "examples/diffusion.md",
-    "examples/solidmechanics.md",
+    "examples/linear_elasticity.md",
+    "examples/hyperelasticity.md",
 ]
 ```

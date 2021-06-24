@@ -25,12 +25,11 @@ For a full discussion of the formulation of the 3D Neo-Hookean hyperelasticity p
 
 ### LFAToolkit code
 
-
 ````@eval
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex301_solid_mechanics.jl", String))
+$(read("../../../examples/ex311_hyperelasticity.jl", String))
 ```
 """)
 ````

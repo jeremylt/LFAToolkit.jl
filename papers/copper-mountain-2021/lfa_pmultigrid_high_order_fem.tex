@@ -261,6 +261,7 @@ In a similar fashion, the localization operator for Fourier modes in two dimensi
 \mathbf{Q}_{\text{2d}} = \mathbf{Q} \otimes \mathbf{Q}.
 \end{equation}
 As with tensor product bases, an analogous computation can be done in higher dimensions.
+Again, we generally omit the subscript indicating the dimension of the Fourier mode localization operator.
 
 \begin{definition}
 The symbol matrix of a finite element operator for an arbitrary second order PDE with any basis order, dimension, and number of components is given by
@@ -275,7 +276,7 @@ Note that this LFA notation is applicable to any second-order PDE with a weak fo
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $\mathbf{B}$, the node to mode mapping $\mathbf{Q}$, and the pointwise representation of the weak form $\mathbf{D}$, and the software can provide the LFA of the PDE with various preconditioners.
 
 If the pointwise representation of the weak form $\mathbf{D}$ has a tensor product structure, then the element operator $\mathbf{A}_e$ and therefore the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown in \cite{he2020two}.
-We omit this optimization in LFAToolkit in favor of supporting second-order PDEs that do not have a tensor product decomposition.
+We omit this optimization in LFAToolkit.jl in favor of supporting second-order PDEs that do not have a tensor product decomposition.
 
 % -----------------------------------------------------------------------------
 \subsection{Polynomial Smoothers}\label{sec:smooth}
@@ -397,7 +398,7 @@ The Chebyshev semi-iterative method is known to be sensitive to the quality of t
 PETSc \cite{petsc-user-ref} estimates the eigenvalues of the preconditioned operator via Krylov iterations, yielding an estimate of the maximal eigenvalue, $\hat{\lambda}_{\text{max}}$.
 This estimate is used to target the upper part of the spectrum of the error, with $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.1 \hat{\lambda}_{\text{max}}$.
 
-In LFAToolkit, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to compute $\hat{\lambda}_{\text{max}}$.
+In LFAToolkit.jl, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to compute $\hat{\lambda}_{\text{max}}$.
 We then take $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.0 \hat{\lambda}_{\text{max}}$.
 
 % -----------------------------------------------------------------------------
@@ -958,7 +959,7 @@ We introduced LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for 
 
 Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements, and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
 
-The LFA formulation in LFAToolkit accurately predicts the performance of two-grid p-multigrid with polynomial smoothers for the scalar Laplacian in three dimensions and can provide two-grid convergence factors for more complex PDE, such as linear elasticity in three dimensions.
+The LFA formulation in LFAToolkit.jl accurately predicts the performance of two-grid p-multigrid with polynomial smoothers for the scalar Laplacian in three dimensions and can provide two-grid convergence factors for more complex PDE, such as linear elasticity in three dimensions.
 
 % -----------------------------------------------------------------------------
 \bibliographystyle{siamplain}

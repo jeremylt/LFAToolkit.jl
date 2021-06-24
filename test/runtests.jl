@@ -142,13 +142,23 @@ end
 end
 
 # ------------------------------------------------------------------------------
-# solid mechanics example
+# linear elasticity example
 # ------------------------------------------------------------------------------
 
-@testset "  ex301: solid mechanics example             " begin
-    include("../examples/ex301_solid_mechanics.jl")
+@testset "  ex301: linear elasticity example           " begin
+    include("../examples/ex301_linear_elasticity.jl")
 
-    @test max(eigenvalues...) ≈ 0.08005028398918787
+    @test max(eigenvalues...) ≈ 0.07359884745780573
+end
+
+# ------------------------------------------------------------------------------
+# hyperelasticity example
+# ------------------------------------------------------------------------------
+
+@testset "  ex311: hyperelasticity example             " begin
+    include("../examples/ex311_hyperelasticity.jl")
+
+    @test max(eigenvalues...) ≈ 0.07818657329883297
 end
 
 # ------------------------------------------------------------------------------

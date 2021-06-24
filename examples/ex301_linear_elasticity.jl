@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# solid mechanics example
+# linear elasticity example
 # ------------------------------------------------------------------------------
 
 using LinearAlgebra
@@ -21,44 +21,30 @@ ctofbasis = TensorH1LagrangeBasis(
 )
 
 # constants
-e = 1E6                     # Young's modulus
-ν = 0.3                     # Poisson's ratio
-K = e / (3 * (1 - 2 * ν))         # bulk modulus
+e = 1E6                             # Young's modulus
+ν = 0.3                             # Poisson's ratio
 λ = e * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
 μ = e / (2 * (1 + ν))
 
-# state
-gradu = [1; 2; 3] * ones(1, 3);
+function linearelasticityweakform(deltadu::Array{Float64}, w::Array{Float64})
+    # strain
+    dϵ = (deltadu + deltadu') / 2
+    # strain energy
+    dσ_11 = (λ + 2μ) * dϵ[1, 1] + λ * dϵ[2, 2] + λ * dϵ[3, 3]
+    dσ_22 = λ * dϵ[1, 1] + (λ + 2μ) * dϵ[2, 2] + λ * dϵ[3, 3]
+    dσ_33 = λ * dϵ[1, 1] + λ * dϵ[2, 2] + (λ + 2μ) * dϵ[3, 3]
+    dσ_12 = μ * dϵ[1, 2]
+    dσ_13 = μ * dϵ[1, 3]
+    dσ_23 = μ * dϵ[2, 3]
+    dσ = [dσ_11 dσ_12 dσ_13; dσ_12 dσ_22 dσ_23; dσ_13 dσ_23 dσ_33]
 
-function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
-    # dP = dF S + F dS
+    # delta dv
+    deltadv = dσ * w[1]
 
-    # deformation gradient
-    F = gradu + I
-    J = det(F)
-    # Green-Lagrange strain tensor
-    E = (gradu * gradu' + gradu' * gradu) / 2
-    # right Cauchy-Green tensor
-    C = 2 * E + I
-    C_inv = C^-1
-    # second Piola-Kirchhoff
-    S = λ * log(J) * C_inv + 2 * μ * C_inv * E
-
-    # delta du
-    deltadu = deltadu'
-    # dF
-    dF = deltadu + I
-    # deltaE
-    deltaE = (deltadu * deltadu' + deltadu' * deltadu) / 2
-    # dS
-    dS = λ * sum(C_inv .* deltaE) * C_inv + 2 * (μ - λ * log(J)) * C_inv * deltaE * C_inv
-    # dP
-    dP = dF * S + F * dS
-
-    return [dP']
+    return [deltadv']
 end
 
-# linearized Neo-Hookean operators
+# linear elasticity operators
 function makeoperator(basis::TensorBasis)
     inputs = [
         OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation"),
@@ -71,7 +57,7 @@ function makeoperator(basis::TensorBasis)
             "test function gradient of deformation",
         ),
     ]
-    return Operator(neohookeanweakform, mesh, inputs, outputs)
+    return Operator(linearelasticityweakform, mesh, inputs, outputs)
 end
 fineoperator = makeoperator(finebasis)
 coarseoperator = makeoperator(coarsebasis)

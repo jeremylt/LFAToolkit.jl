@@ -102,7 +102,7 @@ P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is
 While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
 In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes and introduce LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
-There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}.
+There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{rittich2018extending,kahl2020automated}.
 However, to the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
 Although \cite{van2011discrete} discussed LFA of p-multigrid for discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
 Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.

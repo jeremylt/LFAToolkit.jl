@@ -876,6 +876,64 @@ As with the one and two dimensional results, rapid coarsening of the polynomial 
 \subsection{Linear Elasticity - 3D Convergence Factors}\label{sec:solidsresults}
 % -----------------------------------------------------------------------------
 
+To demonstrate the capability of this LFA formulation for more complex PDE, we consider linear elasticity in three dimensions.
+The strong form of the static balance of linear momentum at small strain for the three dimensional linear elasticity problem is given by \cite{hughes2012finite} as
+\begin{equation}
+\nabla \cdot \boldsymbol{\sigma} + \boldsymbol{g} = \boldsymbol{0}
+\end{equation}
+where $\boldsymbol{\sigma}$ is the stress function and $\boldsymbol{g}$ is the forcing function.
+This strong form has the corresponding weak form
+\begin{equation}
+\int_{\Omega} \nabla \mathbf{v} : \boldsymbol{\sigma} dV - \int_{\partial \Omega} \mathbf{v} \cdot \left( \boldsymbol{\sigma} \cdot \hat{\mathbf{n}} \right) dS - \int_{\Omega} \mathbf{v} \cdot \mathbf{g} dV = 0, \forall \mathbf{v} \in \mathcal{V}
+\end{equation}
+for some $\mathbf{u} \in \mathcal{V} \subset H^1 \left( \Omega \right)$, where $:$ denotes contraction over both indices.
+
+In the linear elasticity constitutive model, the symmetric strain tensor is given by
+\begin{equation}
+\boldsymbol{\epsilon} = \frac{1}{2} \left( \nabla \mathbf{u} + \nabla \mathbf{u}^T \right).
+\end{equation}
+The linear elasticity constitutive law is given by $\boldsymbol{\sigma} = \mathsf{C} : \boldsymbol{\epsilon}$ where
+\begin{equation}
+\mathsf{C} =
+\begin{bmatrix}
+   \lambda + 2\mu & \lambda & \lambda & & & \\
+   \lambda & \lambda + 2\mu & \lambda & & & \\
+   \lambda & \lambda & \lambda + 2\mu & & & \\
+   & & & \mu & & \\
+   & & & & \mu & \\
+   & & & & & \mu
+\end{bmatrix}.
+\end{equation}
+
+\begin{table}[ht!]
+\begin{center}
+\begin{tabular}{l c c c c}
+  \toprule
+  $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
+  %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+  \toprule
+  $p = 2$ to $p = 1$   &  0.621  &  0.252  &  0.075  &  0.039  \\
+  \midrule
+  $p = 4$ to $p = 2$   &  0.607  &  0.281  &  0.085  &  0.047  \\
+  $p = 4$ to $p = 1$   &  0.768  &  0.424  &  0.219  &  0.127  \\
+  \midrule
+  $p = 8$ to $p = 4$   &  0.669  &  0.278  &  0.110  &  0.055  \\
+  $p = 8$ to $p = 2$   &  0.864  &  0.633  &  0.456  &  0.336  \\
+  $p = 8$ to $p = 1$   &  0.956  &  0.873  &  0.795  &  0.730  \\
+  \midrule
+  $p = 16$ to $p = 8$  &  0.855  &  0.613  &  0.435  &  0.319  \\
+  $p = 16$ to $p = 4$  &  0.938  &  0.822  &  0.719  &  0.634  \\
+  $p = 16$ to $p = 2$  &  0.976  &  0.928  &  0.882  &  0.842  \\
+  $p = 16$ to $p = 1$  &  0.992  &  0.975  &  0.959  &  0.944  \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Two-grid convergence factor with Chebyshev smoothing for 3D linear elasticity}
+\label{table:two_grid_3d_linear_elasticity}
+\end{table}
+
+The results in \cref{table:two_grid_3d_linear_elasticity} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+
 % -----------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusion}
 % -----------------------------------------------------------------------------

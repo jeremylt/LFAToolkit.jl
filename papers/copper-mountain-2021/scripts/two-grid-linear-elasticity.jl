@@ -11,7 +11,7 @@ mesh = Mesh3D(1.0, 1.0, 1.0)
 convergencefactors = DataFrame()
 
 # test range
-for fineP = 1:4
+for fineP = 1:3
     println("fine_p = ", 2^fineP)
     for coarseP = 0:fineP-1
         println("  coarse_p = ", 2^coarseP)
@@ -78,7 +78,6 @@ for fineP = 1:4
 
         # -- smoothers
         identity = IdentityPC(fineoperator)
-        jacobi = Jacobi(fineoperator)
         chebyshev = Chebyshev(fineoperator)
 
         # -- p-multigrid preconditioner
@@ -105,12 +104,7 @@ for fineP = 1:4
             if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
                 M = computesymbols(multigrid, [0], [0, 0], θ)
                 for k = 1:4
-                    S = []
-                    if k == 1
-                        S = computesymbols(jacobi, [1.0], θ)
-                    else
-                        S = computesymbols(chebyshev, [k], θ)
-                    end
+                    S = computesymbols(chebyshev, [k], θ)
                     eigenvalues = [abs(val) for val in eigvals(S * M * S)]
                     currentmaxeigenvalue = max(eigenvalues...)
                     if (currentmaxeigenvalue > maxeigenvalue[k])

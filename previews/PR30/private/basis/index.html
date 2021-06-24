@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/private/basis/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../examples/">Examples</a></li><li><a class="tocitem" href="../../public/">Public API</a></li><li><a class="tocitem" href="../">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/private/basis.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Finite-Element-Basis"><a class="docs-heading-anchor" href="#Finite-Element-Basis">Finite Element Basis</a><a id="Finite-Element-Basis-1"></a><a class="docs-heading-anchor-permalink" href="#Finite-Element-Basis" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.AbstractBasis" href="#LFAToolkit.AbstractBasis"><code>LFAToolkit.AbstractBasis</code></a> — <span class="docstring-category">Type</span></header><section><div><p>Finite element basis for function spaces and test spaces</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L5-L7">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.gaussquadrature" href="#LFAToolkit.gaussquadrature"><code>LFAToolkit.gaussquadrature</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">gaussquadrature(q)</code></pre><p>Construct a Gauss-Legendre quadrature</p><p><strong>Arguments:</strong></p><ul><li><code>q</code>: number of Gauss-Legendre points</li></ul><p><strong>Returns:</strong></p><ul><li>Gauss-Legendre quadrature points and weights</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># generate Gauss-Legendre points and weights
+quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
+
+# verify
+truepoints = [
+    -√(5 + 2*√(10/7))/3,
+    -√(5 - 2*√(10/7))/3,
+    0.0,
+    √(5 - 2*√(10/7))/3,
+    √(5 + 2*√(10/7))/3
+];
+@assert truepoints ≈ quadraturepoints
+
+trueweights = [
+    (322-13*√70)/900,
+    (322+13*√70)/900,
+    128/225,
+    (322+13*√70)/900,
+    (322-13*√70)/900
+];
+@assert trueweights ≈ quadratureweights
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Constructors.jl#L9-L49">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.lobattoquadrature" href="#LFAToolkit.lobattoquadrature"><code>LFAToolkit.lobattoquadrature</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">lobattoquadrature(q, weights)</code></pre><p>Construct a Gauss-Lobatto quadrature</p><p><strong>Arguments:</strong></p><ul><li><code>q</code>:       number of Gauss-Lobatto points</li><li><code>weights</code>: boolean flag indicating if quadrature weights are desired</li></ul><p><strong>Returns:</strong></p><ul><li>Gauss-Lobatto quadrature points or points and weights</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># generate Gauss-Lobatto points
+quadraturepoints = LFAToolkit.lobattoquadrature(5, false);
+
+# verify
+truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
+@assert truepoints ≈ quadraturepoints
+
+# generate Gauss-Lobatto points and weights
+quadraturepoints, quadratureweights = LFAToolkit.lobattoquadrature(5, true);
+
+# verify
+trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
+@assert trueweights ≈ quadratureweights
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Constructors.jl#L106-L139">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.TensorMacroElementBasisFrom1D" href="#LFAToolkit.TensorMacroElementBasisFrom1D"><code>LFAToolkit.TensorMacroElementBasisFrom1D</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">TensorMacroElementBasisFrom1D(
+    numbernodes1d,
+    numberquadraturepoints1d,
+    numbercomponents,
+    dimension,
+    numberelements1d,
+    basis1dmicro,
+    overlapquadraturepoints = false,
+)</code></pre><p>Tensor product macro-element basis from 1d single element tensor product basis</p><p><strong>Arguments:</strong></p><ul><li><code>numbernodes1d</code>:            number of basis nodes</li><li><code>numberquadraturepoints1d</code>: number of quadrature points</li><li><code>numbercomponents</code>:         number of components</li><li><code>dimension</code>:                dimension of basis</li><li><code>numberelements1d</code>:         number of elements in macro-element</li><li><code>basis1dmicro</code>:             1d micro element basis to replicate </li></ul><p><strong>Returns:</strong></p><ul><li>Tensor product macro-element basis object</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Constructors.jl#L503-L528">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.TensorHProlongationBasis" href="#LFAToolkit.TensorHProlongationBasis"><code>LFAToolkit.TensorHProlongationBasis</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">TensorHProlongationBasis(
+    coarsenodes1d,
+    finenodes1d,
+    numbercomponents,
+    dimension,
+    numberfineelements1d,
+)</code></pre><p>Tensor product h prolongation basis</p><p><strong>Arguments:</strong></p><ul><li><code>coarsenodes1d</code>:        coarse grid node coordinates in 1d</li><li><code>finenodes1d</code>:          fine grid node coordinates in 1d</li><li><code>numbercomponents</code>:     number of components</li><li><code>dimension</code>:            dimension of basis</li><li><code>numberfineelements1d</code>: number of fine grid elements</li></ul><p><strong>Returns:</strong></p><ul><li>H1 tensor product h prolongation basis object</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Constructors.jl#L800-L822">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.buildinterpolationandgradient" href="#LFAToolkit.buildinterpolationandgradient"><code>LFAToolkit.buildinterpolationandgradient</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">buildinterpolationandgradient(
+    nodes,
+    quadraturepoints,
+)</code></pre><p>Build one dimensional interpolation and gradient matrices, from Fornberg 1998</p><p><strong>Arguments:</strong></p><ul><li><code>nodes</code>:            1d basis nodes</li><li><code>quadraturepoints</code>: 1d basis quadrature points</li></ul><p><strong>Returns:</strong></p><ul><li>One dimensional interpolation and gradient matrices</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># get nodes, quadrature points, and weights
+numbernodes = 3;
+numberquadraturepoints = 4;
+nodes = LFAToolkit.lobattoquadrature(numbernodes, false);
+quadraturepoints, quadratureweights1d = LFAToolkit.gaussquadrature(numberquadraturepoints);
+
+# build interpolation, gradient matrices
+interpolation, gradient = LFAToolkit.buildinterpolationandgradient(nodes, quadraturepoints);
+
+# verify
+for i in 1:numberquadraturepoints
+    total = sum(interpolation[i, :]);
+    @assert total ≈ 1.0
+
+    total = sum(gradient[i, :]);
+    @assert abs(total) &lt; 1e-14
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Constructors.jl#L213-L253">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnumbernodes" href="#LFAToolkit.getnumbernodes"><code>LFAToolkit.getnumbernodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnumbernodes(basis)</code></pre><p>Get the number of nodes for the basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute number of nodes</li></ul><p><strong>Returns:</strong></p><ul><li>Integer number of basis nodes</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># get number of nodes for basis
+basis = TensorH1LagrangeBasis(4, 3, 2, 2);
+
+# note: either syntax works
+numbernodes = LFAToolkit.getnumbernodes(basis);
+numbernodes = basis.numbernodes;
+
+# verify
+@assert numbernodes == 4^2
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L309-L337">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnodes" href="#LFAToolkit.getnodes"><code>LFAToolkit.getnodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnodes(basis)</code></pre><p>Get nodes for basis</p><p><strong>Returns:</strong></p><ul><li>Basis nodes array</li></ul><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute nodes</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get basis quadrature weights
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    nodes = LFAToolkit.getnodes(basis);
+    nodes = basis.nodes;
+
+    # verify
+    truenodes1d = [-1, -√(1/5), √(1/5), 1];
+    truenodes = [];
+    if dimension == 1
+        truenodes = truenodes1d;
+    elseif dimension == 2
+        truenodes =
+            transpose(hcat([[[x, y] for x in truenodes1d, y in truenodes1d]...]...));
+    elseif dimension == 3
+        truenodes = transpose(hcat([[
+            [x, y, z] for x in truenodes1d, y in truenodes1d, z in truenodes1d
+        ]...]...));
+    end
+
+    @assert truenodes ≈ nodes
+end
+    
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L342-L386">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnumberquadraturepoints" href="#LFAToolkit.getnumberquadraturepoints"><code>LFAToolkit.getnumberquadraturepoints</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnumberquadraturepoints(basis)</code></pre><p>Get the number of quadrature points for the basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute number of quadrature points</li></ul><p><strong>Returns:</strong></p><ul><li>Integer number of basis quadrature points</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># get number of quadrature points for basis
+basis = TensorH1LagrangeBasis(4, 3, 2, 2);
+
+# note: either syntax works
+numberquadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
+numberquadraturepoints = basis.numberquadraturepoints;
+    
+# verify
+@assert numberquadraturepoints == 3^2
+    
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L420-L448">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getquadraturepoints" href="#LFAToolkit.getquadraturepoints"><code>LFAToolkit.getquadraturepoints</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getquadraturepoints(basis)</code></pre><p>Get quadrature points for basis</p><p><strong>Returns:</strong></p><ul><li>Basis quadrature points array</li></ul><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute quadrature points</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get basis quadrature weights
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    quadraturepoints = LFAToolkit.getquadraturepoints(basis);
+    quadraturepoints = basis.quadraturepoints;
+
+    # verify
+    truequadraturepoints1d = [-√(3/5), 0, √(3/5)];
+    truequadraturepoints = [];
+    if dimension == 1
+        truequadraturepoints = truequadraturepoints1d;
+    elseif dimension == 2
+        truequadraturepoints = transpose(hcat([[
+            [x, y] for x in truequadraturepoints1d, y in truequadraturepoints1d
+        ]...]...));
+    elseif dimension == 3
+        truequadraturepoints = transpose(hcat([[
+            [x, y, z]
+            for
+            x in truequadraturepoints1d,
+            y in truequadraturepoints1d, z in truequadraturepoints1d
+        ]...]...));
+    end
+
+    @assert truequadraturepoints ≈ quadraturepoints
+end
+    
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L453-L501">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getquadratureweights" href="#LFAToolkit.getquadratureweights"><code>LFAToolkit.getquadratureweights</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getquadratureweights(basis)</code></pre><p>Get full quadrature weights vector for basis</p><p><strong>Returns:</strong></p><ul><li>Basis quadrature weights vector</li></ul><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute quadrature weights</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get basis quadrature weights
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    quadratureweights = LFAToolkit.getquadratureweights(basis);
+    quadratureweights = basis.quadratureweights;
+
+    # verify
+    trueweights1d = [5/9, 8/9, 5/9];
+    trueweights = [];
+    if dimension == 1
+        trueweights = trueweights1d;
+    elseif dimension == 2
+        trueweights = kron(trueweights1d, trueweights1d);
+    elseif dimension == 3
+        trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
+    end
+
+    @assert trueweights ≈ quadratureweights
+end
+    
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L543-L584">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterpolation" href="#LFAToolkit.getinterpolation"><code>LFAToolkit.getinterpolation</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getinterpolation(basis)</code></pre><p>Get full interpolation matrix for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute interpolation matrix</li></ul><p><strong>Returns:</strong></p><ul><li>Basis interpolation matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get basis interpolation matrix
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    interpolation = LFAToolkit.getinterpolation(basis);
+    interpolation = basis.interpolation;
+
+    # verify
+    for i in 1:3^dimension
+        total = sum(interpolation[i, :]);
+        @assert total ≈ 1.0
+    end
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L612-L646">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getgradient" href="#LFAToolkit.getgradient"><code>LFAToolkit.getgradient</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getgradient(basis)</code></pre><p>Get full gradient matrix for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute gradient matrix</li></ul><p><strong>Returns:</strong></p><ul><li>Basis gradient matrix</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get basis gradient matrix
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    gradient = LFAToolkit.getgradient(basis);
+    gradient = basis.gradient;
+
+    # verify
+    for i in 1:dimension*3^dimension
+        total = sum(gradient[i, :]);
+        @assert abs(total) &lt; 1e-14
+    end
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L679-L713">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnumbermodes" href="#LFAToolkit.getnumbermodes"><code>LFAToolkit.getnumbermodes</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnumbermodes(basis)</code></pre><p>Get number of modes for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute number of modes</li></ul><p><strong>Returns:</strong></p><ul><li>Number of modes for basis</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get number of basis modes
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+
+    # note: either syntax works
+    numbermodes = LFAToolkit.getnumbermodes(basis);
+    numbermodes = basis.numbermodes;
+
+    # verify
+    @assert numbermodes == 2*3^dimension
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L750-L781">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getmodemap" href="#LFAToolkit.getmodemap"><code>LFAToolkit.getmodemap</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getmodemap(basis)</code></pre><p>Get mode mapping vector for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute mode map vector</li></ul><p><strong>Returns:</strong></p><ul><li>Basis mode map vector</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
+
+    # note: either syntax works
+    modemap = LFAToolkit.getmodemap(basis);
+    modemap = basis.modemap;
+
+    # verify
+    truemodemap1d = [1, 2, 3, 1];
+    truemodemap = [];
+    if dimension == 1
+        truemodemap = truemodemap1d;
+    elseif dimension == 2
+        truemodemap = [[
+            i + (j - 1)*3 for i in truemodemap1d, j in truemodemap1d
+        ]...];
+    elseif dimension == 3
+        truemodemap = [[
+            i +
+            (j - 1)*3 +
+            (k - 1)*3^2
+            for i in truemodemap1d, j in truemodemap1d, k in truemodemap1d
+        ]...];
+    end
+
+    @assert truemodemap == modemap
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L792-L840">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getnumberelements" href="#LFAToolkit.getnumberelements"><code>LFAToolkit.getnumberelements</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getnumberelements(basis)</code></pre><p>Get the number of elements for the basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute number of micro-elements</li></ul><p><strong>Returns:</strong></p><ul><li>Integer number of basis micro-elements</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># get number of nodes for basis
+basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2);
+
+# note: either syntax works
+numbernodes = LFAToolkit.getnumberelements(basis);
+numbernodes = basis.numberelements;
+
+# verify
+@assert numbernodes == 2^2
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L1053-L1081">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getdiagonal" href="#LFAToolkit.getdiagonal"><code>LFAToolkit.getdiagonal</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getdiagonal(operator)</code></pre><p>Compute or retrieve the symbol matrix diagonal for an operator</p><p><strong>Returns:</strong></p><ul><li>Symbol matrix diagonal for the operator</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+mesh = Mesh1D(1.0);
+diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+
+# note: either syntax works
+diagonal = LFAToolkit.getdiagonal(diffusion);
+diagonal = diffusion.diagonal;
+
+# verify
+@assert diagonal ≈ [7/6 0; 0 4/3]
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Operator/Base.jl#L461-L487">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getdXdxgradient" href="#LFAToolkit.getdXdxgradient"><code>LFAToolkit.getdXdxgradient</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getdXdxgradient(basis, mesh)</code></pre><p>Get gradient adjusted for mesh stretching</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute gradient</li><li><code>mesh</code>:  mesh to compute gradient</li></ul><p><strong>Returns:</strong></p><ul><li>gradient matrix multiplied by change of coordinates adjoint</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">for dimension = 1:3
+    # mesh
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(2.0)
+    elseif dimension == 2
+        mesh = Mesh2D(2.0, 3.0)
+    elseif dimension == 3
+        mesh = Mesh3D(2.0, 3.0, 4.0)
+    end
+
+    # basis
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
+
+    # get gradient on mesh
+    gradient = LFAToolkit.getdXdxgradient(basis, mesh);
+
+    # verify
+    nodes = basis.nodes;
+    linearfunction = [];
+    truegradient = [];
+    if dimension == 1
+        linearfunction = nodes;
+        truegradient = [1/2*ones(basis.numberquadraturepoints)...]
+    elseif dimension == 2
+        linearfunction = (nodes[:, 1] + nodes[:, 2]);
+        truegradient = [
+            1/2*ones(basis.numberquadraturepoints)...
+            1/3*ones(basis.numberquadraturepoints)...
+        ]
+    elseif dimension == 3
+        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3]);
+        truegradient = [
+            1/2*ones(basis.numberquadraturepoints)...
+            1/3*ones(basis.numberquadraturepoints)...
+            1/4*ones(basis.numberquadraturepoints)...
+        ]
+    end
+
+    @assert gradient*linearfunction ≈ truegradient
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L1160-L1221">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getdxdXquadratureweights" href="#LFAToolkit.getdxdXquadratureweights"><code>LFAToolkit.getdxdXquadratureweights</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">getdxdXquadratureweights(basis, mesh)</code></pre><p>Get quadrature weights adjusted for mesh stretching</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute quadratureweights</li><li><code>mesh</code>:  mesh to compute quadratureweights</li></ul><p><strong>Returns:</strong></p><ul><li>quadrature weights multiplied by change of coordinates adjoint</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">mesh = Mesh1D(2.0)
+
+# basis
+basis = TensorH1LagrangeBasis(4, 3, 1, 1);
+
+# get gradient on mesh
+weights = LFAToolkit.getdxdXquadratureweights(basis, mesh);
+
+# verify
+@assert basis.quadratureweights / 2 ≈ weights
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L1266-L1296">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getprimalnodes-Tuple{TensorBasis}" href="#LFAToolkit.getprimalnodes-Tuple{TensorBasis}"><code>LFAToolkit.getprimalnodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getprimalnodes(basis)</code></pre><p>Get primal nodes for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute primal nodes</li></ul><p><strong>Returns:</strong></p><ul><li>Basis primal nodes vector</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    p = 4
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+
+    # note: either syntax works
+    primalnodes = LFAToolkit.getprimalnodes(basis);
+    primalnodes = basis.primalnodes;
+
+    # verify
+    trueprimalnodes = []
+    if dimension == 1
+        trueprimalnodes = [1, p];
+    elseif dimension == 2
+        trueprimalnodes = [1, p, p^2-p+1, p^2]
+    elseif dimension == 3
+        trueprimalnodes = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
+    end
+
+    @assert trueprimalnodes == primalnodes
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L886-L927">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.getinterfacenodes-Tuple{TensorBasis}" href="#LFAToolkit.getinterfacenodes-Tuple{TensorBasis}"><code>LFAToolkit.getinterfacenodes</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">getinterfacenodes(basis)</code></pre><p>Get interface nodes for basis</p><p><strong>Arguments:</strong></p><ul><li><code>basis</code>: basis to compute primal nodes</li></ul><p><strong>Returns:</strong></p><ul><li>Basis primal nodes vector</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># test for all supported dimensions
+for dimension in 1:3
+    # get mode map vector
+    p = 4
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+
+    # note: either syntax works
+    interfacenodes = LFAToolkit.getinterfacenodes(basis);
+    interfacenodes = basis.interfacenodes;
+
+    # verify
+    trueinterfacenodes = []
+    if dimension == 1
+        trueinterfacenodes = [1, p];
+    elseif dimension == 2
+        trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
+        for i = 1:p-2
+            push!(trueinterfacenodes, i*p+1)
+            push!(trueinterfacenodes, (i+1)*p)
+        end
+    elseif dimension == 3
+        trueinterfacenodes = [1:p^2..., p^3-p^2+1:p^3...]
+        for i = 1:p-2
+            push!(trueinterfacenodes, i*p^2+1:i*p^2+p...)
+            push!(trueinterfacenodes, (i+1)*p^2-p+1:(i+1)*p^2...)
+            push!(trueinterfacenodes, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
+            push!(trueinterfacenodes, i*p^2+2*p:p:(i+1)*p^2-p...)
+        end
+    end
+    trueinterfacenodes = sort(trueinterfacenodes)
+
+    @assert trueinterfacenodes == interfacenodes
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/26efe7804780d3416aa23ea36d410486162528d2/src/Basis/Base.jl#L959-L1011">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 24 June 2021 15:46">Thursday 24 June 2021</span>. Using Julia version 1.6.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

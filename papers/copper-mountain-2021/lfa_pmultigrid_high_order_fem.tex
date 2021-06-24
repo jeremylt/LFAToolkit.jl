@@ -98,19 +98,23 @@ High-order finite element methods offer advantages over low-order finite element
 Matrix-free formulations of these methods, such as described in \cite{brown2010efficient, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-user-manual, fischer2020scalability}.
 LFA of h-multigrid with high-order finite elements was developed in \cite{he2020two} for Lagrange bases with uniformly spaced nodes.
 
-P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh. While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
+P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh.
+While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
-In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes with LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
-There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}. However, to the best of our knowledge,  there is a lack of package of LFA of p-multigrid method.  Although \cite{van2011discrete} discussed LFA of p-multigrid for discontinuous Galerkin method, it cannot be extended to continuous Galerkin method. Our LFA of p-multigrid for continuous Galerkin methods is novel, which is not limited on finite element discretization. This LFA formulation for p-multigrid with high-order finite element discretizations can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.
+In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes and introduce LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
+There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{kahl2020automated}.
+However, to the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
+Although \cite{van2011discrete} discussed LFA of p-multigrid for discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
+Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and reproduces for LFA of finite difference discretizations with appropriate stencils.
 
-We investigate the performance of Jacobi and Chebyshev semi-iterative method smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions and validate this LFA formulation with the scalar Laplacian in three dimensions.
+We investigate the performance of Jacobi and Chebyshev semi-iterative method smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions and validate our LFA formulation with the scalar Laplacian in three dimensions.
 Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements, and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
-Finally, we investigate LFA of p-multigrid for three dimensional linear elasticity.
+Finally, we investigate LFA of p-multigrid with a Chebyshev smoother for three dimensional linear elasticity.
 
 This paper is organized as follows.
 In \cref{sec:notation} we outline the notation for LFA used in this paper.
 In \cref{sec:lfa} we develop the notation for LFA of second-order PDEs with arbitrary order bases, dimension, and number of components used in LFAToolkit.jl and we use this notation to develop LFA of p-multigrid as well as Jacobi and Chebyshev smoothers.
-\Cref{sec:results} contains numerical results investigating the performance of Jacobi smoothing for p-multigrid on the one, two, and three dimensional scalar Laplacian and three dimensional linear elasticity.
+\Cref{sec:results} contains numerical results investigating the performance of Jacobi and Chebyshev smoothing for p-multigrid on the one, two, and three dimensional scalar Laplacian and three dimensional linear elasticity.
 Finally, \cref{sec:conclusion} contains concluding remarks.
 
 % -----------------------------------------------------------------------------

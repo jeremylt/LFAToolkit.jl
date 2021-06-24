@@ -2,9 +2,13 @@
 
 ## Current Development
 
-Current development includes improved functionality and bugfixes:
+Current development includes improved functionality and bugfixes.
+
+Enhancements:
 
 * Added relaxation parameter for application of BDDC preconditioners
+
+Bugfixes:
 
 * Minor spelling and notation errors corrected
 
@@ -15,6 +19,10 @@ Current development includes improved functionality and bugfixes:
 * Fix computation of change of coordinates for gradient and quadrature weights
 
 * Fix computation of eigenvalue estimates and error iteration for Chebyshev smoother
+
+Examples:
+
+* Added linear elasticity example, renumbered Neo-Hookean hyperelasticity example
 
 ## v0.3.0
 

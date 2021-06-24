@@ -478,7 +478,6 @@ Note again that this derivation is applicable for any PDE with a weak form that 
 This expression can be extended to represent multi-level schemes by recursively applying $\tilde{\mathbf{E}}_{\text{2mg}}$ until the coarsest grid is reached.
 
 % -----------------------------------------------------------------------------
-%% Connections to Previous Work
 \subsection{Extension to h-multigrid}\label{sec:previouswork}
 % -----------------------------------------------------------------------------
 
@@ -892,6 +891,15 @@ In the linear elasticity constitutive model, the symmetric strain tensor is give
 \begin{equation}
 \boldsymbol{\epsilon} = \frac{1}{2} \left( \nabla \mathbf{u} + \nabla \mathbf{u}^T \right).
 \end{equation}
+Linear elasticity constitutive modeling is based upon the Lamé parameters,
+\begin{equation}
+\begin{split}
+\lambda & = \frac{E \nu}{\left( 1 + \nu \right) \left( 1 - 2 \nu \right)} \\
+\mu & = \frac{E}{2 \left( 1 + \nu \right)}
+\end{split}
+\end{equation}
+where $E$ is the Young's modulus and $\nu$ is the Poisson's ratio for the materiel.
+
 The linear elasticity constitutive law is given by $\boldsymbol{\sigma} = \mathsf{C} : \boldsymbol{\epsilon}$ where
 \begin{equation}
 \mathsf{C} =

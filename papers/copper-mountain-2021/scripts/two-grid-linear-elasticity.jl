@@ -90,11 +90,6 @@ for fineP = 1:3
         θ_max = 3π / 2
         θ_step = 2π / numbersteps
         θ_range = θ_min:θ_step:(θ_max-θ_step)
-        if dimension == 3
-            numbersteps = 8
-            θ_step = 2π / numbersteps
-            θ_range = θ_min:θ_step:(θ_max-θ_step)
-        end
 
         # -- compute
         maxeigenvalue = zeros(4)

@@ -44,6 +44,14 @@ and the elasticity tensor ``\bold{C}`` is given by
    \end{pmatrix}.
 ```
 
+``\lambda`` and ``\mu`` are the Lamé parameters, given by
+
+```math
+\lambda = \frac{E \nu}{\left( 1 + \nu \right) \left( 1 - 2 \nu \right)} \\
+\mu = \frac{E}{2 \left( 1 + \nu \right)}
+```
+where ``E`` is the Young's modulus and ``\nu`` is the Poisson's ratio for the materiel.
+
 For a full discussion of the formulation of the linear elasticity problem, see the [libCEED documentation](https://libceed.readthedocs.io/en/latest/examples/solids/).
 
 ### LFAToolkit code

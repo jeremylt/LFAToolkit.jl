@@ -21,10 +21,10 @@ ctofbasis = TensorH1LagrangeBasis(
 )
 
 # constants
-e = 1E6                             # Young's modulus
+E = 1E6                             # Young's modulus
 ν = 0.3                             # Poisson's ratio
-λ = e * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
-μ = e / (2 * (1 + ν))
+λ = E * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
+μ = E / (2 * (1 + ν))
 
 function linearelasticityweakform(deltadu::Array{Float64}, w::Array{Float64})
     # strain

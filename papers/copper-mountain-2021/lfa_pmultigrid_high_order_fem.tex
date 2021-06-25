@@ -196,7 +196,7 @@ We will use the representation of the weak form of linear second-order PDEs desc
   u                   \\
   \nabla u            \\
 \end{bmatrix}
-= \int_{\Omega} f v,\quad  \forall v \in V
+= \int_{\Omega} f v,\quad \forall v \in V
 \end{equation}
 for some suitable $V \subseteq H_0^1 \left( \Omega \right)$.
 In this equation, $f_{i, j}$ may come from a linear PDE or the linearization of a non-linear problem.
@@ -524,7 +524,7 @@ The symbol of h-restriction operator with aggressive coarsening is given by the 
 \begin{equation}
 \tilde{\mathbf{R}}_{\text{ftoc}} \left( \boldsymbol{\theta} \right) = \mathbf{Q}_c^T \left( \mathbf{R}_e \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right] \right) \mathbf{Q}_f,
 \end{equation}
-where $i \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the coarsening factor or  the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
+where $i \in \left\lbrace 1, 2, \dots, n \left( p + 1 \right)^d \right\rbrace$, $j \in \left\lbrace 1, 2, \dots, n \left( m p + 1 \right)^d \right\rbrace$, $\mathbf{h}$ is the length of the macro-element, $d$ is the dimension of the finite element bases, $n$ is the number of components, $m$ is the coarsening factor or the number of micro-elements in each fine grid macro-element, $p$ is the polynomial order of the discretization, and $d$ is the dimension of the finite element basis.
 The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for the fine and coarse grid, respectively, and the macro-element h-restriction operator is given by $\mathbf{R}_e = \mathbf{P}_e^T = \mathbf{B}_{\text{ctof}}^T \mathbf{D}_{\text{scale}} \mathbf{I}$.
 \end{definition}
 
@@ -906,7 +906,7 @@ for some displacement $\mathbf{u} \in \mathcal{V} \subset H^1 \left( \Omega \rig
 
 Linear elasticity constitutive modeling is based upon the Lamé parameters,
 \begin{equation}
-\lambda  = \frac{E \nu}{\left( 1 + \nu \right) \left( 1 - 2 \nu \right)},\quad  \mu  = \frac{E}{2 \left( 1 + \nu \right)},
+\lambda = \frac{E \nu}{\left( 1 + \nu \right) \left( 1 - 2 \nu \right)},\quad \mu = \frac{E}{2 \left( 1 + \nu \right)},
 \end{equation}
 where $E$ is the Young's modulus and $\nu$ is the Poisson's ratio for the materiel.
 

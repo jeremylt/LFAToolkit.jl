@@ -934,14 +934,14 @@ and the linear elasticity constitutive law is given by $\boldsymbol{\sigma} = \m
   $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
   %\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
   \toprule
-  $p = 2$ to $p = 1$   &  0.621  &  0.252  &  0.075  &  0.039  \\
+  $p = 2$ to $p = 1$   &  0.815  &  0.521  &  0.321  &  0.204  \\
   \midrule
-  $p = 4$ to $p = 2$   &  0.607  &  0.281  &  0.085  &  0.047  \\
-  $p = 4$ to $p = 1$   &  0.768  &  0.424  &  0.219  &  0.127  \\
+  $p = 4$ to $p = 2$   &  0.878  &  0.666  &  0.499  &  0.382  \\
+  $p = 4$ to $p = 1$   &  0.969  &  0.908  &  0.850  &  0.800  \\
   \midrule
-  $p = 8$ to $p = 4$   &  0.669  &  0.278  &  0.110  &  0.055  \\
-  $p = 8$ to $p = 2$   &  0.864  &  0.633  &  0.456  &  0.336  \\
-  $p = 8$ to $p = 1$   &  0.956  &  0.873  &  0.795  &  0.730  \\
+  $p = 8$ to $p = 4$   &  0.939  &  0.826  &  0.725  &  0.643  \\
+  $p = 8$ to $p = 2$   &  0.981  &  0.943  &  0.906  &  0.873  \\
+  $p = 8$ to $p = 1$   &  0.995  &  0.984  &  0.973  &  0.963  \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -950,6 +950,7 @@ and the linear elasticity constitutive law is given by $\boldsymbol{\sigma} = \m
 \end{table}
 
 The results in \cref{table:two_grid_3d_linear_elasticity} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+The LFA two-grid convergence factor for three dimensional linear elasticity is much poorer than the LFA two-grid convergence factor for the three dimensional scalar Laplacian, and the effect of rapid coarsening in the polynomial order is far more pronounced for linear elasticity.
 
 % -----------------------------------------------------------------------------
 \section{Conclusions}\label{sec:conclusion}

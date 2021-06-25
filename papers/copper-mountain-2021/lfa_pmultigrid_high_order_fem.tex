@@ -511,7 +511,7 @@ The element level operator, $\mathbf{A}_e$, on the fine grid macro-element assem
 For example, the fine and coarse grid element operators for the one dimensional scalar Laplacian on quadratic elements are given by
 \begin{equation}
 \mathbf{A}_{e, f} =
-\frac{2}{3}
+\frac{2}{3h}
 \begin{bmatrix}
  7  &  -8  &   1  &   0  &   0  \\
 -8  &  16  &  -8  &   0  &   0  \\
@@ -523,7 +523,7 @@ For example, the fine and coarse grid element operators for the one dimensional 
 and
 \begin{equation}
 \mathbf{A}_{e, c} =
-\frac{1}{3}
+\frac{1}{3h}
 \begin{bmatrix}
  7  &  -8  &   1  \\
 -8  &  16  &  -8  \\
@@ -562,7 +562,7 @@ On uniform rectangular meshes, linear finite elements produce the same discetize
 The nine-point stencil for the Laplace operator in two dimensions is given by
 
 \begin{equation}
-\frac{1}{3}
+\frac{1}{3h}
 \begin{bmatrix}
 -1  &  -1  &  -1  \\
 -1  &   8  &  -1  \\
@@ -572,14 +572,14 @@ The nine-point stencil for the Laplace operator in two dimensions is given by
 with a corresponding local Fourier analysis symbol given by
 
 \begin{equation}
-\tilde{A} \left( \theta_1, \theta_2 \right) = \frac{8}{3} - \frac{2}{3} \cos \left( \theta_1 \right) - \frac{2}{3} \cos \left( \theta_2 \right) - \frac{4}{3} \cos \left( \theta_1 \right) \cos \left( \theta_2 \right).
+\tilde{A} \left( \theta_1, \theta_2 \right) = \frac{2}{3} \left( 4 - \cos \left( \theta_1 \right) - \cos \left( \theta_2 \right) - 2 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right) \right).
 \end{equation}
 
 The assembled matrix for a single linear element is given by
 
 \begin{equation}
 \mathbf{A}_e =
-\frac{1}{3}
+\frac{1}{3h}
 \begin{bmatrix}
  2    &  -1/2  &  -1/2  &  -1    \\
 -1/2  &   2    &  -1    &  -1/2  \\
@@ -591,7 +591,7 @@ with a corresponding local Fourier analysis symbol given by
 
 \begin{equation}
 \begin{split}
-\tilde{A} \left( \theta_1, \theta_2 \right) & = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta}} \right] \right) \mathbf{Q}\\ & = \frac{8}{3} - \frac{2}{3} \cos \left( \theta_1 \right) - \frac{2}{3} \cos \left( \theta_2 \right) - \frac{4}{3} \cos \left( \theta_1 \right) \cos \left( \theta_2 \right),
+\tilde{A} \left( \theta_1, \theta_2 \right) & = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta}} \right] \right) \mathbf{Q}\\ & = \frac{2}{3} \left( 4 - \cos \left( \theta_1 \right) - \cos \left( \theta_2 \right) - 2 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right) \right),
 \end{split}
 \end{equation}
 where $\mathbf{Q} = \begin{bmatrix} 1 & 1 & 1 & 1 \end{bmatrix}^T$.

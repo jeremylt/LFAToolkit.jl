@@ -127,7 +127,7 @@ end
     include("../examples/ex223_dirichlet_bddc.jl")
 
     @test min(eigenvalues...) ≈ -0.19999999999999862
-    @test max(eigenvalues...) ≈ 0.8000000010201185
+    @test max(eigenvalues...) ≈ 0.8773670277303465
 end
 
 # ------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ end
     include("../examples/ex224_dirichlet_bddc.jl")
 
     @test min(eigenvalues...) ≈ 0.1112906589702409
-    @test max(eigenvalues...) ≈ 0.8000000003853934
+    @test max(eigenvalues...) ≈ 0.8800453840840861
 end
 
 # ------------------------------------------------------------------------------

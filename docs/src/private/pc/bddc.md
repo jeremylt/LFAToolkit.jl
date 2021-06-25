@@ -22,6 +22,7 @@ LFAToolkit.getinterfacerowmodemap
 LFAToolkit.getinterfacecolumnmodemap
 LFAToolkit.getinteriorrowmodemap
 LFAToolkit.getinteriorcolumnmodemap
-LFAToolkit.computesymbolsrestriction(::BDDC, ::Array)
+LFAToolkit.getmixedrowmodemap
+LFAToolkit.getmixedcolumnmodemap
 LFAToolkit.computesymbolsinjection(::BDDC, ::Array)
 ```

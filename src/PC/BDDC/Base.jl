@@ -42,6 +42,8 @@ mutable struct BDDC <: AbstractPreconditioner
     interfacecolumnmodemap::AbstractArray{Float64,2}
     interiorrowmodemap::AbstractArray{Float64,2}
     interiorcolumnmodemap::AbstractArray{Float64,2}
+    mixedrowmodemap::AbstractArray{Float64,2}
+    mixedcolumnmodemap::AbstractArray{Float64,2}
     jacobi::Jacobi
 
     # inner constructor
@@ -940,11 +942,72 @@ end
 
 """
 ```julia
+getmixedrowmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the rows of the mixed BDDC matrix to the
+symbol matrix
+
+# Returns:
+- Matrix mapping rows of mixed BDDC matrix to symbol matrix
+"""
+function getmixedrowmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :mixedrowmodemap)
+        numberprimalmodes = max(size(bddc.primalmodes)...)
+        numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
+        numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+        mixedrowmodemap = [
+            I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
+            zeros(numbersubassembledmodes, numberprimalmodes) bddc.subassembledrowmodemap
+        ]
+
+        # store
+        bddc.mixedrowmodemap = mixedrowmodemap
+    end
+
+    # return
+    return getfield(bddc, :mixedrowmodemap)
+end
+
+"""
+```julia
+getmixedcolumnmodemap(bddc)
+```
+
+Compute or retrieve the matrix mapping the columns of the mixed BDDC matrix to the
+symbol matrix
+
+# Returns:
+- Matrix mapping columns of mixed BDDC matrix to symbol matrix
+"""
+function getmixedcolumnmodemap(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :mixedcolumnmodemap)
+        numberprimalmodes = max(size(bddc.primalmodes)...)
+        numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
+        numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+        mixedcolumnmodemap = [
+            I(numberprimalmodes) zeros((numberprimalmodes, numbersubassembledmodes))
+            zeros(numbersubassemblednodes, numberprimalmodes) bddc.subassembledcolumnmodemap
+        ]
+
+        # store
+        bddc.mixedcolumnmodemap = mixedcolumnmodemap
+    end
+
+    # return
+    return getfield(bddc, :mixedcolumnmodemap)
+
+end
+
+"""
+```julia
 getmixedmultiplicity(bddc)
 ```
 
 Compute or retrieve the vector of mixed interface node and primal mode multiplicity
-  for the BDDC preconditioner
+for the BDDC preconditioner
 
 # Returns:
 - Vector of mixed multiplicity for the BDDC preconditioner
@@ -977,102 +1040,6 @@ end
 
 """
 ```julia
-computesymbolsrestriction(bddc)
-```
-
-Compute or retrieve the restriction operator for the BDDC symbol matrix
-
-# Returns:
-- Matrix providing the restriction operator of BDDC symbol matrix
-
-# Example:
-"""
-function computesymbolsrestriction(bddc::BDDC, θ::Array)
-    numberprimalmodes = max(size(bddc.primalmodes)...)
-    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
-    numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
-    mixedcolumnmodemap = [
-        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
-        zeros(numbersubassembledmodes, numberprimalmodes) bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
-    ]
-    scaled = bddc.mixedmultiplicity
-    if (bddc.injectiontype == BDDCInjectionType.scaled)
-        # lumped BDDC
-        return scaled * mixedcolumnmodemap
-    elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
-        # Dirichlet BDDC
-        # -- validity check
-        dimension = length(θ)
-        if dimension != bddc.operator.inputs[1].basis.dimension
-            # COV_EXCL_START
-            throw(
-                ArgumentError(
-                    "Must provide as many values of θ as the mesh has dimensions",
-                ),
-            )
-            # COV_EXCL_STOP
-        end
-
-        # -- harmonic operator
-        numbermodes, _ = size(bddc.operator.rowmodemap)
-        numberinteriornodes = max(size(bddc.interiornodes)...)
-        numberinterfacenodes = max(size(bddc.interfacenodes)...)
-        nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
-        A_IΓ = bddc.operator.elementmatrix[bddc.interiornodes, bddc.interfacenodes]
-        A_IΓ_nodes = zeros(ComplexF64, numberinteriornodes, numberinterfacenodes)
-        for i = 1:numberinteriornodes, j = 1:numberinterfacenodes
-            indxi = bddc.interiornodes[i]
-            indxj = bddc.interfacenodes[j]
-            A_IΓ_nodes[i, j] =
-                A_IΓ[i, j] *
-                ℯ^(
-                    im * sum([
-                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
-                        k = 1:dimension
-                    ])
-                )
-        end
-
-        A_II_inv = bddc.interiorinverse
-        A_II_inv_nodes = zeros(ComplexF64, numberinteriornodes, numberinteriornodes)
-        for i = 1:numberinteriornodes, j = 1:numberinteriornodes
-            indxi = bddc.interiornodes[i]
-            indxj = bddc.interiornodes[j]
-            A_II_inv_nodes[i, j] =
-                A_II_inv[i, j] *
-                ℯ^(
-                    im * sum([
-                        θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
-                        k = 1:dimension
-                    ])
-                )
-        end
-
-        # -- jump mapping
-        J = Diagonal(
-            vcat(
-                zeros((numberprimalmodes, 1))...,
-                -(
-                    bddc.operator.multiplicity[bddc.subassemblednodes]' *
-                    bddc.subassembledcolumnmodemap
-                ) .^ (-1 / 2) .+ 1...,
-            ),
-        ) # ToDo: Need to fix scaling
-
-        # -- injection mapping
-        rowmodemap = zeros((numbermodes, numberinteriornodes))
-        rowmodemap[bddc.interiormodes, :] = bddc.interiorrowmodemap
-        columnmodemap = zeros((numberinterfacenodes, numbermodes))
-        columnmodemap[:, bddc.interfacemodes] = bddc.interfacecolumnmodemap
-        return (scaled + J * rowmodemap * A_II_inv_nodes * A_IΓ_nodes * columnmodemap) *
-               mixedcolumnmodemap
-    else
-        throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
-    end
-end
-
-"""
-```julia
 computesymbolsinjection(bddc)
 ```
 
@@ -1081,20 +1048,13 @@ Compute or retrieve the injection operator for the BDDC symbol matrix
 # Returns:
 - Matrix providing the injection operator of BDDC symbol matrix
 
-# Example:
 """
 function computesymbolsinjection(bddc::BDDC, θ::Array)
     numberprimalmodes = max(size(bddc.primalmodes)...)
-    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
-    numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
-    mixedrowmodemap = [
-        I(numberprimalmodes) zeros((numberprimalmodes, numbersubassembledmodes))
-        zeros(numbersubassemblednodes, numberprimalmodes) bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
-    ]
-    scaled = bddc.mixedmultiplicity
+
     if (bddc.injectiontype == BDDCInjectionType.scaled)
         # lumped BDDC
-        return mixedrowmodemap * scaled
+        return bddc.mixedmultiplicity
     elseif (bddc.injectiontype == BDDCInjectionType.harmonic)
         # Dirichlet BDDC
         # -- validity check
@@ -1114,13 +1074,13 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         numberinteriornodes = max(size(bddc.interiornodes)...)
         numberinterfacenodes = max(size(bddc.interfacenodes)...)
         nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
-        A_ΓI = bddc.operator.elementmatrix[bddc.interfacenodes, bddc.interiornodes]
+        elementmatrix = bddc.operator.elementmatrix
         A_ΓI_nodes = zeros(ComplexF64, numberinterfacenodes, numberinteriornodes)
         for i = 1:numberinterfacenodes, j = 1:numberinteriornodes
             indxi = bddc.interfacenodes[i]
             indxj = bddc.interiornodes[j]
             A_ΓI_nodes[i, j] =
-                A_ΓI[i, j] *
+                elementmatrix[indxi, indxj] *
                 ℯ^(
                     im * sum([
                         θ[k] * nodecoordinatedifferences[indxi, indxj, k] for
@@ -1160,8 +1120,8 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         rowmodemap[bddc.interfacemodes, :] = bddc.interfacerowmodemap
         columnmodemap = zeros((numberinteriornodes, numbermodes))
         columnmodemap[:, bddc.interiormodes] = bddc.interiorcolumnmodemap
-        return mixedrowmodemap *
-               (scaled + J * rowmodemap * A_ΓI_nodes * A_II_inv_nodes * columnmodemap)
+        return bddc.mixedmultiplicity +
+               J * rowmodemap * A_ΓI_nodes * A_II_inv_nodes * columnmodemap
     else
         throw(ArgumentError("Injection type unknown")) # COV_EXCL_LINE
     end
@@ -1212,6 +1172,10 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getinteriorrowmodemap(bddc)
     elseif f == :interiorcolumnmodemap
         return getinteriorcolumnmodemap(bddc)
+    elseif f == :mixedrowmodemap
+        return getmixedrowmodemap(bddc)
+    elseif f == :mixedcolumnmodemap
+        return getmixedcolumnmodemap(bddc)
     else
         return getfield(bddc, f)
     end
@@ -1382,11 +1346,12 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
         Ŝ_Π_inv_modes Ø
         Ø' A_rr_inv_nodes
     ]
-    Â_inv_modes = K_u_inv * P_inv * K_u_inv'
+    Â_inv_modes =
+        bddc.mixedrowmodemap * K_u_inv * P_inv * K_u_inv' * bddc.mixedcolumnmodemap
 
     # injection
-    R_T_Â_inv_R_modes =
-        computesymbolsrestriction(bddc, θ) * Â_inv_modes * computesymbolsinjection(bddc, θ)
+    R = computesymbolsinjection(bddc, θ)
+    R_T_Â_inv_R_modes = R' * Â_inv_modes * R
 
     # return
     return I - ω[1] * R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)

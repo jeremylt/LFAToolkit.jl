@@ -33,6 +33,7 @@ mutable struct BDDC <: AbstractPreconditioner
     subassembledinverse::AbstractArray{Float64,2}
     interiorinverse::AbstractArray{Float64,2}
     schur::AbstractArray{Float64,2}
+    mixedmultiplicity::AbstractArray{Float64}
     primalrowmodemap::AbstractArray{Float64,2}
     primalcolumnmodemap::AbstractArray{Float64,2}
     subassembledrowmodemap::AbstractArray{Float64,2}
@@ -937,6 +938,39 @@ function getinteriorcolumnmodemap(bddc::BDDC)
     return getfield(bddc, :interiorcolumnmodemap)
 end
 
+"""
+```julia
+getmixedmultiplicity(bddc)
+```
+
+Compute or retrieve the vector of mixed interface node and primal mode multiplicity
+  for the BDDC preconditioner
+
+# Returns:
+- Vector of mixed multiplicity for the BDDC preconditioner
+"""
+function getmixedmultiplicity(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :mixedmultiplicity)
+        numberprimalmodes = max(size(bddc.primalmodes)...)
+        mixedmultiplicity = Diagonal(
+            vcat(
+                ones(numberprimalmodes, 1)...,
+                (
+                    bddc.operator.multiplicity[bddc.subassemblednodes]' *
+                    bddc.subassembledcolumnmodemap
+                ) .^ (-1 / 2)...,
+            ),
+        )
+
+        # store
+        bddc.mixedmultiplicity = mixedmultiplicity
+    end
+
+    # return
+    return getfield(bddc, :mixedmultiplicity)
+end
+
 # ------------------------------------------------------------------------------
 # data for computing symbols
 # ------------------------------------------------------------------------------
@@ -961,15 +995,7 @@ function computesymbolsrestriction(bddc::BDDC, θ::Array)
         I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
         zeros(numbersubassembledmodes, numberprimalmodes) bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
     ]
-    scaled = Diagonal(
-        vcat(
-            ones(numberprimalmodes, 1)...,
-            (
-                bddc.operator.multiplicity[bddc.subassemblednodes]' *
-                bddc.subassembledcolumnmodemap
-            ) .^ (-1 / 2)...,
-        ),
-    )
+    scaled = bddc.mixedmultiplicity
     if (bddc.injectiontype == BDDCInjectionType.scaled)
         # lumped BDDC
         return scaled * mixedcolumnmodemap
@@ -1065,15 +1091,7 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         I(numberprimalmodes) zeros((numberprimalmodes, numbersubassembledmodes))
         zeros(numbersubassemblednodes, numberprimalmodes) bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
     ]
-    scaled = Diagonal(
-        vcat(
-            ones(numberprimalmodes, 1)...,
-            (
-                bddc.operator.multiplicity[bddc.subassemblednodes]' *
-                bddc.subassembledcolumnmodemap
-            ) .^ (-1 / 2)...,
-        ),
-    )
+    scaled = bddc.mixedmultiplicity
     if (bddc.injectiontype == BDDCInjectionType.scaled)
         # lumped BDDC
         return mixedrowmodemap * scaled
@@ -1176,6 +1194,8 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getinteriorinverse(bddc)
     elseif f == :schur
         return getschur(bddc)
+    elseif f == :mixedmultiplicity
+        return getmixedmultiplicity(bddc)
     elseif f == :primalrowmodemap
         return getprimalrowmodemap(bddc)
     elseif f == :primalcolumnmodemap
@@ -1304,7 +1324,6 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
     numberprimalnodes = max(size(bddc.primalnodes)...)
     numberprimalmodes = max(size(bddc.primalmodes)...)
     numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
-    numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
     nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
 
     # subdomain solver
@@ -1363,11 +1382,7 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
         Ŝ_Π_inv_modes Ø
         Ø' A_rr_inv_nodes
     ]
-    K_u_T_inv = [
-        I(numberprimalmodes) -Â_Πr_modes*A_rr_inv_nodes
-        Ø' I(numbersubassemblednodes)
-    ]
-    Â_inv_modes = K_u_inv * P_inv * K_u_T_inv
+    Â_inv_modes = K_u_inv * P_inv * K_u_inv'
 
     # injection
     R_T_Â_inv_R_modes =

@@ -13,6 +13,7 @@ LFAToolkit.getinteriormodes
 LFAToolkit.getsubassembledinverse
 LFAToolkit.getinteriorinverse
 LFAToolkit.getschur
+LFAToolkit.getmixedmultiplicity
 LFAToolkit.getprimalrowmodemap
 LFAToolkit.getprimalcolumnmodemap
 LFAToolkit.getsubassembledrowmodemap

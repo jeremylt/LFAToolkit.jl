@@ -120,7 +120,7 @@ for runoption in runoptions
     θ_step = 2π / numbersteps
     θ_range = θ_min:θ_step:(θ_max-θ_step)
 
-    θ_maxegenvalue = -10
+    θ_maxeigenvalue = -1
     # -- 1D --
     if runoption.dimension == 1
         for i = 1:numbersteps
@@ -131,7 +131,7 @@ for runoption in runoptions
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue
-                    θ_maxegenvalue = θ / π
+                    θ_maxeigenvalue = θ / π
                 end
             end
         end
@@ -145,7 +145,7 @@ for runoption in runoptions
                 currentmaxeigenvalue = max(eigenvalues...)
                 if (currentmaxeigenvalue > maxeigenvalue)
                     maxeigenvalue = currentmaxeigenvalue
-                    θ_maxegenvalue = θ / π
+                    θ_maxeigenvalue = θ / π
                 end
             end
         end
@@ -155,7 +155,7 @@ for runoption in runoptions
         DataFrame(
             p = runoption.p,
             ω = runoption.ω,
-            θ = θ_maxegenvalue,
+            θ = θ_maxeigenvalue,
             v = (10 * runoption.v[1] + runoption.v[2]),
             ρ = maxeigenvalue,
         ),

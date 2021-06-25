@@ -93,7 +93,7 @@ for fineP = 1:3
 
         # -- compute
         maxeigenvalue = zeros(4)
-        θ_maxegenvalue = -1 * ones(4, dimension)
+        θ_maxeigenvalue = -1 * ones(4, dimension)
         for i = 1:numbersteps, j = 1:numbersteps, k = 1:numbersteps
             θ = [θ_range[i], θ_range[j], θ_range[k]]
             if sqrt(abs(θ[1])^2 + abs(θ[2])^2 + abs(θ[3])^2) > π / 128
@@ -104,7 +104,7 @@ for fineP = 1:3
                     currentmaxeigenvalue = max(eigenvalues...)
                     if (currentmaxeigenvalue > maxeigenvalue[k])
                         maxeigenvalue[k] = currentmaxeigenvalue
-                        θ_maxegenvalue[k, :] = θ / π
+                        θ_maxeigenvalue[k, :] = θ / π
                     end
                 end
             end
@@ -116,7 +116,7 @@ for fineP = 1:3
                     finep = finep,
                     coarsep = coarsep,
                     k = k,
-                    θ = θ_maxegenvalue[k, :],
+                    θ = θ_maxeigenvalue[k, :],
                     ρ = maxeigenvalue[k],
                 ),
             )

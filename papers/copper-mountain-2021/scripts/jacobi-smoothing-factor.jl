@@ -44,7 +44,7 @@ for P = 1:4
 
     # -- compute
     maxeigenvalue = zeros(num_ω)
-    θ_maxegenvalue = ones(num_ω, dimension)
+    θ_maxeigenvalue = -1 * ones(num_ω, dimension)
     # -- 1D --
     if dimension == 1
         for i = 1:numbersteps
@@ -56,7 +56,7 @@ for P = 1:4
                     currentmaxeigenvalue = max(eigenvalues...)
                     if (currentmaxeigenvalue > maxeigenvalue[w])
                         maxeigenvalue[w] = currentmaxeigenvalue
-                        θ_maxegenvalue[w, :] = θ / π
+                        θ_maxeigenvalue[w, :] = θ / π
                     end
                 end
             end
@@ -73,7 +73,7 @@ for P = 1:4
                     currentmaxeigenvalue = max(eigenvalues...)
                     if (currentmaxeigenvalue > maxeigenvalue[w])
                         maxeigenvalue[w] = currentmaxeigenvalue
-                        θ_maxegenvalue[w, :] = θ / π
+                        θ_maxeigenvalue[w, :] = θ / π
                     end
                 end
             end
@@ -90,7 +90,7 @@ for P = 1:4
                     currentmaxeigenvalue = max(eigenvalues...)
                     if (currentmaxeigenvalue > maxeigenvalue[w])
                         maxeigenvalue[w] = currentmaxeigenvalue
-                        θ_maxegenvalue[w, :] = θ / π
+                        θ_maxeigenvalue[w, :] = θ / π
                     end
                 end
             end
@@ -102,7 +102,7 @@ for P = 1:4
         DataFrame(
             p = p,
             ω = ω_range[ω_index],
-            θ = θ_maxegenvalue[ω_index, :],
+            θ = θ_maxeigenvalue[ω_index, :],
             ρ = maxeigenvalue[ω_index],
         ),
     )

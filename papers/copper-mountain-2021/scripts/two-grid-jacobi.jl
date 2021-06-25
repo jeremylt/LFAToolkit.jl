@@ -61,7 +61,7 @@ for fineP = 1:4
 
         # -- compute
         maxeigenvalue = zeros(num_ω, num_v)
-        θ_maxegenvalue = ones(num_ω, num_v, dimension)
+        θ_maxeigenvalue = -1 * ones(num_ω, num_v, dimension)
         # -- 1D --
         if dimension == 1
             for i = 1:numbersteps
@@ -75,7 +75,7 @@ for fineP = 1:4
                         currentmaxeigenvalue = max(eigenvalues...)
                         if (currentmaxeigenvalue > maxeigenvalue[w, v])
                             maxeigenvalue[w, v] = currentmaxeigenvalue
-                            θ_maxegenvalue[w, v, :] = θ / π
+                            θ_maxeigenvalue[w, v, :] = θ / π
                         end
                     end
                 end
@@ -93,7 +93,7 @@ for fineP = 1:4
                         currentmaxeigenvalue = max(eigenvalues...)
                         if (currentmaxeigenvalue > maxeigenvalue[w, v])
                             maxeigenvalue[w, v] = currentmaxeigenvalue
-                            θ_maxegenvalue[w, v, :] = θ / π
+                            θ_maxeigenvalue[w, v, :] = θ / π
                         end
                     end
                 end
@@ -111,7 +111,7 @@ for fineP = 1:4
                         currentmaxeigenvalue = max(eigenvalues...)
                         if (currentmaxeigenvalue > maxeigenvalue[w, v])
                             maxeigenvalue[w, v] = currentmaxeigenvalue
-                            θ_maxegenvalue[w, v, :] = θ / π
+                            θ_maxeigenvalue[w, v, :] = θ / π
                         end
                     end
                 end
@@ -125,7 +125,7 @@ for fineP = 1:4
                     finep = finep,
                     coarsep = coarsep,
                     ω = ω_range[ω_index],
-                    θ = θ_maxegenvalue[ω_index, v, :],
+                    θ = θ_maxeigenvalue[ω_index, v, :],
                     v = v,
                     ρ = maxeigenvalue[ω_index, v],
                 ),

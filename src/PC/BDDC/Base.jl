@@ -196,6 +196,7 @@ for i = 1:p-2
     push!(trueinterfacenodes, (i+1)*p)
 end
 trueinterfacenodes = sort(trueinterfacenodes)
+trueinterfacenodes = setdiff(trueinterfacenodes, bddc.primalnodes)
 @assert interfacenodes == trueinterfacenodes
 
 # output
@@ -215,6 +216,7 @@ function getinterfacenodes(bddc::BDDC)
                 numbernodes += input.basis.numbernodes
             end
         end
+        interfacenodes = setdiff(interfacenodes, bddc.primalnodes)
 
         # store
         bddc.interfacenodes = interfacenodes
@@ -253,7 +255,8 @@ for i = 1:p-2
     push!(trueinterfacenodes, (i+1)*p)
 end
 trueinterfacenodes = sort(trueinterfacenodes)
-@assert interiornodes == setdiff(1:p^2, trueinterfacenodes)
+trueinteriornodes = setdiff(bddc.subassemblednodes, trueinterfacenodes)
+@assert interiornodes == trueinteriornodes
 
 # output
 
@@ -262,10 +265,8 @@ trueinterfacenodes = sort(trueinterfacenodes)
 function getinteriornodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interiornodes)
-        numbernodes, _ = size(bddc.operator.elementmatrix)
-
         # store
-        bddc.interiornodes = setdiff(1:numbernodes, bddc.interfacenodes)
+        bddc.interiornodes = setdiff(bddc.subassemblednodes, bddc.interfacenodes)
     end
 
     # return
@@ -392,6 +393,7 @@ for i = 1:p-2
     push!(trueinterfacemodes, i*(p-1)+1)
 end
 trueinterfacemodes = sort(trueinterfacemodes)
+trueinterfacemodes = setdiff(trueinterfacemodes, bddc.primalmodes)
 @assert interfacemodes == trueinterfacemodes
 
 # output
@@ -411,6 +413,7 @@ function getinterfacemodes(bddc::BDDC)
                 push!(interfacemodes, i)
             end
         end
+        interfacemodes = setdiff(interfacemodes, bddc.primalmodes)
 
         # store
         bddc.interfacemodes = interfacemodes
@@ -443,7 +446,7 @@ interiormodes = LFAToolkit.getinteriormodes(bddc);
 interiormodes = bddc.interiormodes;
 
 # verify
-@assert interiormodes == setdiff(1:(p-1)^2, bddc.interfacemodes)
+@assert interiormodes == setdiff(bddc.subassembledmodes, bddc.interfacemodes)
 
 # output
 
@@ -452,10 +455,8 @@ interiormodes = bddc.interiormodes;
 function getinteriormodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interiormodes)
-        numbermodes, _ = size(bddc.operator.rowmodemap)
-
         # store
-        bddc.interiormodes = setdiff(1:numbermodes, bddc.interfacemodes)
+        bddc.interiormodes = setdiff(bddc.subassembledmodes, bddc.interfacemodes)
     end
 
     # return

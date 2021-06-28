@@ -20,6 +20,8 @@ Bugfixes:
 
 * Fix computation of eigenvalue estimates and error iteration for Chebyshev smoother
 
+* Fix injection operator for Dirichlet BDDC
+
 Examples:
 
 * Added linear elasticity example, renumbered Neo-Hookean hyperelasticity example

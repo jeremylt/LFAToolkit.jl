@@ -126,8 +126,8 @@ end
 @testset "  ex223: Dirichlet BDDC example              " begin
     include("../examples/ex223_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ -0.19999999999999862
-    @test max(eigenvalues...) ≈ 0.8773670277303465
+    @test min(eigenvalues...) ≈ 0.7690030364372471
+    @test max(eigenvalues...) ≈ 0.8000000000000004
 end
 
 # ------------------------------------------------------------------------------
@@ -137,8 +137,8 @@ end
 @testset "  ex224: Dirichlet BDDC macro element example" begin
     include("../examples/ex224_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.1112906589702409
-    @test max(eigenvalues...) ≈ 0.8800453840840861
+    @test min(eigenvalues...) ≈ 0.771335238873009
+    @test max(eigenvalues...) ≈ 0.8000000000000009
 end
 
 # ------------------------------------------------------------------------------

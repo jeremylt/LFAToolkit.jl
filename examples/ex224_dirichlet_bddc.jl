@@ -7,27 +7,13 @@ using LinearAlgebra
 # setup
 mesh = Mesh2D(1.0, 1.0)
 p = 2
-numberfineelements1d = 4
-numbercomponents = 1
-dimension = 2
+numberelements1d = 4
 
-# operators
-function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du * w[1]
-    return [dv]
-end
-# -- fine
-basis =
-    TensorH1LagrangeMacroBasis(p, p + 1, numbercomponents, dimension, numberfineelements1d);
-inputs = [
-    OperatorField(basis, [EvaluationMode.gradient]),
-    OperatorField(basis, [EvaluationMode.quadratureweights]),
-];
-outputs = [OperatorField(basis, [EvaluationMode.gradient])];
-finediffusion = Operator(diffusionweakform, mesh, inputs, outputs);
+# operator
+diffusion = GalleryMacroElementOperator("diffusion", p, p + 1, numberelements1d, mesh)
 
 # BDDC smoother
-bddc = DirichletBDDC(finediffusion)
+bddc = DirichletBDDC(diffusion)
 
 # compute operator symbols
 A = computesymbols(bddc, [0.2], [π, π])

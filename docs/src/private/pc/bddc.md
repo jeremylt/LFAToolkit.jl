@@ -13,14 +13,13 @@ LFAToolkit.getinteriormodes
 LFAToolkit.getsubassembledinverse
 LFAToolkit.getinteriorinverse
 LFAToolkit.getschur
+LFAToolkit.getmixedmultiplicity
+LFAToolkit.getJDT
 LFAToolkit.getprimalrowmodemap
 LFAToolkit.getprimalcolumnmodemap
 LFAToolkit.getsubassembledrowmodemap
 LFAToolkit.getsubassembledcolumnmodemap
-LFAToolkit.getinterfacerowmodemap
-LFAToolkit.getinterfacecolumnmodemap
-LFAToolkit.getinteriorrowmodemap
-LFAToolkit.getinteriorcolumnmodemap
-LFAToolkit.computesymbolsrestriction(::BDDC, ::Array)
+LFAToolkit.getmixedrowmodemap
+LFAToolkit.getmixedcolumnmodemap
 LFAToolkit.computesymbolsinjection(::BDDC, ::Array)
 ```

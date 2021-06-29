@@ -1,7 +1,6 @@
 \documentclass[review]{siamart190516}
 
 % -----------------------------------------------------------------------------
-
 % 1. Preamble and packages
 \usepackage{lipsum}
 \usepackage{amsfonts}
@@ -37,16 +36,18 @@
 
 % Authors: full names plus addresses.
 \author{
-Jeremy L Thompson\thanks{Department of Applied Mathematics, University of Colorado, Boulder, CO
-  (\email{jeremy@jeremylt.org}).}
-\and Jed Brown\thanks{Department of Computer Science, University of Colorado, Boulder, CO
-  (\email{jed@jedbrown.org}).}
-\and Yunhui He\thanks{Department of Applied Mathematics,
-University of Waterloo, 200 University Ave W, Waterloo, ON N2L 3G1, Canada
-  (\email{yunhui.he@uwaterloo.ca}).}
+  Jeremy L Thompson
+    \thanks{Department of Applied Mathematics, University of Colorado, Boulder, CO
+    (\email{jeremy@jeremylt.org}).}
+  \and Jed Brown
+    \thanks{Department of Computer Science, University of Colorado, Boulder, CO
+    (\email{jed@jedbrown.org}).}
+  \and Yunhui He
+    \thanks{Department of Applied Mathematics, University of Waterloo, 200 University Ave W, Waterloo, ON N2L 3G1, Canada
+    (\email{yunhui.he@uwaterloo.ca}).}
 }
 \newcommand{\TheShortAuthors}{
-J. L. Thompson, J. Brown, and Y. He
+  J. L. Thompson, J. Brown, and Y. He
 }
 
 % Title and funding information on page
@@ -60,9 +61,7 @@ J. L. Thompson, J. Brown, and Y. He
   pdfauthor={\TheShortAuthors}
 }
 \fi
-
-\newcommand{\yh}[1]{\textcolor{magenta}{(\textbf{Yunhui: }#1)}}
-
+% -----------------------------------------------------------------------------
 
 \begin{document}
 
@@ -124,8 +123,6 @@ Finally, \cref{sec:conclusion} contains concluding remarks.
 % -----------------------------------------------------------------------------
 \subsection{Reproducibility}\label{sec:reproducibility}
 % -----------------------------------------------------------------------------
-
-%\yh{remove this subsection to Numerical section?}
 
 The numerical results for LFA in this paper were generated using the Julia package LFAToolkit.jl \cite{thompson2021toolkit}.
 This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.

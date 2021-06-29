@@ -415,7 +415,7 @@ The two-grid multigrid error propagation operator is given by
 \begin{equation}
 \mathbf{E}_{\text{2mg}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f,
 \end{equation}
-where $\mathbf{A}_f$ represents the action of PDE operator on the fine grid, $\mathbf{S}_f$ represents the fine grid smoother error propagation operator, and $\mathbf{A}_c^{-1}$ represents the coarse grid solve, which may be another multigrid cycle.
+where $\mathbf{A}_f$ represents the action of the PDE operator on the fine grid, $\mathbf{S}_f$ represents the fine grid smoother error propagation operator, and $\mathbf{A}_c^{-1}$ represents the coarse grid solve, which may be another multigrid cycle.
 $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
 
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
@@ -918,7 +918,7 @@ As with the one and two dimensional results, rapid coarsening of the polynomial 
 \subsection{Linear Elasticity - 3D Convergence Factors}\label{sec:solidsresults}
 % -----------------------------------------------------------------------------
 
-To demonstrate the suitability of this LFA formulation for more complex PDE, we consider linear elasticity in three dimensions.
+To demonstrate the suitability of this LFA formulation for more complex PDEs, we consider linear elasticity in three dimensions.
 The strong form of the static balance of linear momentum at small strain for the three dimensional linear elasticity problem is given by \cite{hughes2012finite} as
 \begin{equation}
 \nabla \cdot \boldsymbol{\sigma} + \boldsymbol{g} = \boldsymbol{0},

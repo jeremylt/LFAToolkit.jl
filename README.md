@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![Documentation](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)
 [![Documentation](https://img.shields.io/badge/docs-stable-blue)](https://jeremylt.github.io/LFAToolkit.jl/stable/)
+[![DOI](https://zenodo.org/badge/291842028.svg)](https://zenodo.org/badge/latestdoi/291842028)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/main?filepath=examples%2Fjupyter)
 [![Run on Repl.it](https://repl.it/badge/github/jeremylt/LFAToolkit.jl)](https://replit.com/@jeremylt/LFAToolkitjl)
 

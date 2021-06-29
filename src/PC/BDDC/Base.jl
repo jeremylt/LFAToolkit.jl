@@ -860,6 +860,7 @@ end
 """
 ```julia
 getJDT(bddc)
+```
 
 Compute or retrieve the matrix mapping the jump over subdomain interfacemodes
 

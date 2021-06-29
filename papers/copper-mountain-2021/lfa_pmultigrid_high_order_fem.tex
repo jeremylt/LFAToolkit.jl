@@ -78,7 +78,8 @@ P-multigrid is popular for high-order or spectral finite element methods, especi
 In this paper, we introduce LFAToolkit.jl, a new Julia package for LFA of high-order finite element methods.
 LFAToolkit.jl analyzes preconditioning techniques for arbitrary systems of second order PDEs and supports mixed finite element methods.
 Specifically, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and examine the performance of Jacobi and Chebyshev smoothing for two-grid schemes with aggressive p-coarsening.
-A natural extension of this LFA framework the analysis of h-multigrid with standard or aggressive coarsening strategies.
+A natural extension of this LFA framework is the analysis of h-multigrid for finite element discretizations or finite difference discretizations that can be represented with finite element discretizations.
+With this extension, we can replicate previous work on the LFA of h-multigrid.
 Examples in one, two, and three dimensions are presented to validate our LFA of p-multigrid.
 \end{abstract}
 % -----------------------------------------------------------------------------
@@ -99,24 +100,24 @@ Local Fourier Analysis (LFA) \cite{brandt1977multi, wienands2004practical} is a 
 
 High-order finite element methods offer advantages over low-order finite elements \cite{demkowicz1989toward, oden1989toward, rachowicz1989toward}; however, high-order finite elements are less common because a linear operator or the Jacobian of a non-linear operator rapidly loses sparsity in a sparse matrix representation.
 Matrix-free formulations of these methods, such as described in \cite{brown2010efficient, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-user-manual, fischer2020scalability}.
-LFA of h-multigrid with high-order finite elements was developed in \cite{he2020two} for Lagrange bases with uniformly spaced nodes.
 
+LFA of h-multigrid with high-order finite elements was developed in \cite{he2020two} for Lagrange bases with uniformly spaced nodes.
 P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh.
 While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
 In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes and introduce LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
 There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{rittich2018extending,kahl2020automated}.
-However, to the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
-Although \cite{van2011discrete} discussed LFA of p-multigrid for discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
+To the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
+Although \cite{van2011discrete} discussed LFA of p-multigrid for the discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
 Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and can be extended to LFA for h-multigrid of finite difference discretizations that can be represented with finite element discretizations.
 
-We investigate the performance of Jacobi and Chebyshev semi-iterative method smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions and validate our LFA formulation with the scalar Laplacian in three dimensions.
-Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements, and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
-Finally, to demonstrate capability of our LFA of p-multigrid, the performance of three dimensional linear elasticity with a Chebyshev smoother is presented.
+We investigate the performance of Jacobi and Chebyshev semi-iterative method smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions, and we validate our LFA of p-multigrid with the scalar Laplacian in three dimensions against numerical experiments.
+Our analysis demonstrates that traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements and the performance of p-multigrid with these two smoothers degrades as we coarsen more aggressively.
+Finally, we analize the performance of p-multigrid with a Chebyshev smoother for three dimensional linear elasticity to demonstrate ability of our LFA framework to handle more complex PDEs.
 
 This paper is organized as follows.
 In \cref{sec:notation} we outline the notation for LFA used in this paper.
-In \cref{sec:lfa} we develop the notation for LFA of second-order PDEs with arbitrary order bases, dimension, and number of components used in LFAToolkit.jl, and we use this notation to develop LFA of p-multigrid as well as Jacobi and Chebyshev smoothers.
+In \cref{sec:lfa} we develop the notation for LFA of second-order PDEs with arbitrary order bases, dimension, and number of components used in LFAToolkit.jl, and we use this notation to develop LFA of p-multigrid and the Jacobi and Chebyshev smoothers.
 \Cref{sec:results} contains numerical results investigating the performance of Jacobi and Chebyshev smoothing for p-multigrid on the one, two, and three dimensional scalar Laplacian and three dimensional linear elasticity.
 Finally, \cref{sec:conclusion} contains concluding remarks.
 
@@ -130,7 +131,7 @@ The numerical results for LFA in this paper were generated using the Julia packa
 This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
 This repository contains Julia scripts and interactive Jupyter notebooks that can replicate the tables and plots in this paper.
 
-Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
+Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} p-multigrid example found in the libCEED repository.
 
 % -----------------------------------------------------------------------------
 \section{Definitions and Notation}\label{sec:notation}
@@ -176,7 +177,7 @@ For standard coarsening, low frequencies are given by $\theta \in T^{\text{low}}
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
 % -----------------------------------------------------------------------------
 
-We now develop the LFA formulation used in LFAToolkit.jl, first in 1 dimension and then in multiple dimensions, followed by LFA of polynomial smoothers and LFA of p-multigrid with high-order finite elements.
+We now develop the LFA formulation used in LFAToolkit.jl, first in one dimension and then in multiple dimensions, followed by LFA of polynomial smoothers and LFA of p-multigrid with high-order finite elements.
 
 % -----------------------------------------------------------------------------
 \subsection{High-Order Finite Elements}\label{sec:highorder}
@@ -278,7 +279,7 @@ Note that this LFA notation is applicable to any second-order PDE with a weak fo
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $\mathbf{B}$, the node to mode mapping $\mathbf{Q}$, and the pointwise representation of the weak form $\mathbf{D}$, and the software can provide the LFA of the PDE with various preconditioners.
 
 If the pointwise representation of the weak form $\mathbf{D}$ has a tensor product structure, then the element operator $\mathbf{A}_e$ and therefore the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown in \cite{he2020two}.
-We omit this optimization in LFAToolkit.jl in favor of supporting second-order PDEs that do not have a tensor product decomposition.
+We omit this optimization in this analysis and LFAToolkit.jl in favor of supporting second-order PDEs that do not have a tensor product decomposition.
 
 % -----------------------------------------------------------------------------
 \subsection{Polynomial Smoothers}\label{sec:smooth}
@@ -293,7 +294,7 @@ The LFA predicted smoothing factor is given by the maximum spectral radius of th
 \mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
 \end{equation}
 where $ \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right)\right)$ denotes the spectral radius of the matrix symbol $\tilde{\mathbf{S}}$.
-Note that this LFA predicted smoothing factor is often used as a prediction of the two-grid convergence factor for multigrid methods with standard coarsening.
+Note that this LFA predicted smoothing factor is often used as a prediction of the two-grid convergence factor for multigrid methods with standard coarsening; however, this smoothing factor is not an accurate predictor of the two-grid convergence factor for p-multigrid, as we will see below.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoother}\label{sec:jacobi}
@@ -414,8 +415,9 @@ The two-grid multigrid error propagation operator is given by
 \begin{equation}
 \mathbf{E}_{\text{2mg}} = \mathbf{S}_f \left( \mathbf{I} - \mathbf{P}_{\text{ctof}} \mathbf{A}_c^{-1} \mathbf{R}_{\text{ftoc}} \mathbf{A}_f \right) \mathbf{S}_f,
 \end{equation}
-where $\mathbf{S}_f$ represents the smoother error propagation operator and $\mathbf{A}_c^{-1}$ represents the coarse grid solve, which may be another multigrid cycle.
+where $\mathbf{A}_f$ represents the action of PDE operator on the fine grid, $\mathbf{S}_f$ represents the fine grid smoother error propagation operator, and $\mathbf{A}_c^{-1}$ represents the coarse grid solve, which may be another multigrid cycle.
 $\mathbf{P}_{\text{ctof}}$ and $\mathbf{R}_{\text{ftoc}}$ represent the grid prolongation and restriction operators, respectively.
+
 Some multigrid implementations allow the number of pre and post smoothing passes to be set independently.
 This derivation of LFA for p-multigrid allows independently setting these parameters; however, we omit this option in the notation for simplicity.
 
@@ -575,7 +577,7 @@ with a corresponding local Fourier analysis symbol given by
 \tilde{A} \left( \theta_1, \theta_2 \right) = \frac{2}{3} \left( 4 - \cos \left( \theta_1 \right) - \cos \left( \theta_2 \right) - 2 \cos \left( \theta_1 \right) \cos \left( \theta_2 \right) \right).
 \end{equation}
 
-The assembled matrix for a single linear element is given by
+The assembled matrix for a single linear element in two dimensions is given by
 
 \begin{equation}
 \mathbf{A}_e =
@@ -951,6 +953,8 @@ and the linear elasticity constitutive law is given by $\boldsymbol{\sigma} = \m
 \end{bmatrix}.
 \end{equation}
 
+We can represent this PDE in the form given by \cref{efficienthighorder} and therefore investigate the LFA of p-multgrid for this PDE.
+
 \begin{table}[ht!]
 \begin{center}
 \begin{tabular}{l c c c c}
@@ -980,13 +984,13 @@ The LFA two-grid convergence factor for three dimensional linear elasticity is m
 \section{Conclusions}\label{sec:conclusion}
 % -----------------------------------------------------------------------------
 
-In this paper we developed LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations.
+In this paper we developed LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations by using an operator representation for efficient application of matrix-free implementations.
 We introduced LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods, and used LFAToolkit.jl to investigate p-multigrid method with Jacobi and Chebyshev semi-iterative method smoothing and aggressive coarsening strategies.
-The LFA of p-multigrid framework presented here can be extended to the LFA of h-multigrid methods.
+The LFA of p-multigrid framework presented here can be extended to the LFA of h-multigrid methods and reproduces previous work in this area.
 
-Traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements, and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
+We observed that traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements and the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
 
-The LFA formulation in LFAToolkit.jl accurately predicts the performance of two-grid p-multigrid with polynomial smoothers for the scalar Laplacian in three dimensions and can provide two-grid convergence factors for more complex PDE, such as linear elasticity in three dimensions.
+The LFA formulation in LFAToolkit.jl accurately predicts the performance of two-grid p-multigrid with polynomial smoothers for the scalar Laplacian in three dimensions and can provide two-grid convergence factors for more complex PDEs, such as linear elasticity in three dimensions.
 
 % -----------------------------------------------------------------------------
 \bibliographystyle{siamplain}

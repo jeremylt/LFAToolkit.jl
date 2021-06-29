@@ -141,14 +141,14 @@ $(read("../../../examples/ex221_lumped_bddc.jl", String))
 ````
 ![](../img/221_lumped_bddc_spectral_radius_4_2d.png)
 
-This is an example of a simple lumped BDDC preconditioner on a macro-element patch.
+This is an example of a simple Dirichlet BDDC preconditioner.
 
 ````@eval
 using Markdown
 Markdown.parse("""
 ```julia
-$(read("../../../examples/ex222_lumped_bddc.jl", String))
+$(read("../../../../examples/ex223_dirichlet_bddc.jl", String))
 ```
 """)
 ````
-![](../img/222_lumped_bddc_spectral_radius_4_elem_2d.png)
+![](../../img/223_dirichlet_bddc_spectral_radius_4_2d.png)

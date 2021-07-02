@@ -6,15 +6,15 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh3D(1.0, 1.0, 1.0)
-finep = 3
-coarsep = 2
+finep = 2
+coarsep = 1
 numbercomponents = 3
 dimension = 3
-finebasis = TensorH1LagrangeBasis(finep, finep, numbercomponents, dimension)
-coarsebasis = TensorH1LagrangeBasis(coarsep, finep, numbercomponents, dimension)
+finebasis = TensorH1LagrangeBasis(finep + 1, finep + 1, numbercomponents, dimension)
+coarsebasis = TensorH1LagrangeBasis(coarsep + 1, finep + 1, numbercomponents, dimension)
 ctofbasis = TensorH1LagrangeBasis(
-    coarsep,
-    finep,
+    coarsep + 1,
+    finep + 1,
     numbercomponents,
     dimension,
     lagrangequadrature = true,

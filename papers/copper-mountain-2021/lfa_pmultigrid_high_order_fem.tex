@@ -882,6 +882,39 @@ The results in \cref{table:two_grid_2d} provide the LFA convergence factor and o
 The results in \cref{table:two_grid_2d_chebyshev} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
 The two-grid convergence factor still degrades and the effectiveness of higher order Chebyshev smoothers is again reduced as we coarsen more aggressively.
 
+\begin{table}[ht!]
+\begin{center}
+\begin{tabular}{l c c c c}
+  \toprule
+  \multicolumn{5}{c}{$\lambda_{\min} = 0.2 \hat{\lambda}_{\max}$} \\
+  \toprule
+  $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
+  \toprule
+  $p = 4$ to $p = 2$   &  0.450  &  0.137  &  0.067  &  0.050  \\
+  $p = 4$ to $p = 1$   &  0.786  &  0.525  &  0.362  &  0.255  \\
+  \midrule
+  $p = 8$ to $p = 4$   &  0.668  &  0.330  &  0.172  &  0.106  \\
+  $p = 8$ to $p = 1$   &  0.960  &  0.899  &  0.848  &  0.801  \\
+  \toprule
+  \multicolumn{5}{c}{$\lambda_{\min} = 0.3 \hat{\lambda}_{\max}$} \\
+  \toprule
+  $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
+  \toprule
+  $p = 4$ to $p = 2$   &  0.407  &  0.106  &  0.073  &  0.059  \\
+  $p = 4$ to $p = 1$   &  0.803  &  0.590  &  0.447  &  0.341  \\
+  \midrule
+  $p = 8$ to $p = 4$   &  0.691  &  0.409  &  0.256  &  0.164  \\
+  $p = 8$ to $p = 1$   &  0.963  &  0.915  &  0.874  &  0.835  \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Two-grid convergence factor with Chebyshev smoothing for 2D Laplacian with modified lower eigenvalue bound}
+\label{table:two_grid_2d_chebyshev_eigenvalues}
+\end{table}
+
+The results in \cref{table:two_grid_2d_chebyshev_eigenvalues} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother with different scaling factors for the minimum eigenvalue estimate used in the Chebyshev iterations.
+As in one dimension, increasing the lower eigenvalue estimate results in better two-grid convergence when conventional coarsening by halving the polynomial order but results in worse two-grid convergence with aggressive coarsening.
+
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 3D Convergence Factors}\label{sec:3dresults}
 % -----------------------------------------------------------------------------

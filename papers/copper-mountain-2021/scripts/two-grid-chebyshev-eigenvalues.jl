@@ -86,7 +86,7 @@ for fineP = 1:4
                         S = computesymbols(chebyshev, [k], θ)
                         eigenvalues = [abs(val) for val in eigvals(S * M * S)]
                         currentmaxeigenvalue = max(eigenvalues...)
-                        if (currentmaxeigenvalue > maxeigenvalue[k])
+                        if (currentmaxeigenvalue > maxeigenvalue[l, k])
                             maxeigenvalue[l, k] = currentmaxeigenvalue
                             θ_maxeigenvalue[l, k, :] = θ / π
                         end

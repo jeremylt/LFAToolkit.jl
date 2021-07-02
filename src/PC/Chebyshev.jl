@@ -252,6 +252,7 @@ function seteigenvalueestimatescaling(
     preconditioner.eigenvaluebounds[2] = eigenvaluebounds[2]
     preconditioner.eigenvaluebounds[3] = eigenvaluebounds[3]
     preconditioner.eigenvaluebounds[4] = eigenvaluebounds[4]
+    preconditioner
 end
 
 # ------------------------------------------------------------------------------

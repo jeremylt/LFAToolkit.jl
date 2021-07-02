@@ -213,7 +213,7 @@ where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a b
 
 Consider the specific case of a block Toeplitz operator representing an arbitrary second order scalar PDE in one dimension with Lagrange basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The basis $\mathbf{B}$ is defined on the mesh grid with points given by $x_i$, for $i \in \left\lbrace 1, 2, \dots, p + 1 \right\rbrace$ on one element, where $p$ is the polynomial order of the basis.
-The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity between adjacent finite elements on the infinite grid $G_h$, so we can compute the symbol matrix of size $p \times p$ as
+The nodes on the left and right boundaries of the element map to the same Fourier mode when localized to a single finite element, so we can compute the symbol matrix of size $p \times p$ as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q},
 \end{equation}

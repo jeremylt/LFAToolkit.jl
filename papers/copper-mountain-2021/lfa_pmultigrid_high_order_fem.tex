@@ -739,12 +739,52 @@ As expected, the two-grid convergence factor decreases as we coarsen more rapidl
   \bottomrule
 \end{tabular}
 \end{center}
-\caption{Two-grid convergence factor with Chebyshev smoothing for 1D Laplacian}
+\caption{Two-grid convergence factor with Chebyshev smoothing for 1D Laplacian with modified lower eigenvalue bound}
 \label{table:two_grid_1d_chebyshev}
 \end{table}
 
 The results in \cref{table:two_grid_1d_chebyshev} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
 From this table, we can see that the effectiveness of higher order Chebyshev smoothers degrades as we coarsen more aggressively, but Chebyshev smoothing still provides better two-grid convergence than multiple pre and post-smoothing Jacobi iterations.
+
+\begin{table}[ht!]
+\begin{center}
+\begin{tabular}{l c c c c}
+  \toprule
+  \multicolumn{5}{c}{$\lambda_{\min} = 0.2 \hat{\lambda}_{\max}$} \\
+  \toprule
+  $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
+  \toprule
+  $p = 4$ to $p = 2$   &  0.410  &  0.093  &  0.043  &  0.024  \\
+  $p = 4$ to $p = 1$   &  0.611  &  0.250  &  0.106  &  0.071  \\
+  \midrule
+  $p = 8$ to $p = 4$   &  0.435  &  0.081  &  0.016  &  0.007  \\
+  $p = 8$ to $p = 1$   &  0.891  &  0.739  &  0.623  &  0.529  \\
+  \midrule
+  $p = 16$ to $p = 8$  &  0.443  &  0.081  &  0.015  &  0.006  \\
+  $p = 16$ to $p = 1$  &  0.973  &  0.931  &  0.894  &  0.861  \\
+  \toprule
+  \multicolumn{5}{c}{$\lambda_{\min} = 0.3 \hat{\lambda}_{\max}$} \\
+  \toprule
+  $p_{\text{fine}}$ to $p_{\text{coarse}}$  &  $k = 1$   &  $k = 2$   &  $k = 3$   &  $k = 4$   \\
+  \toprule
+  $p = 4$ to $p = 2$   &  0.279  &  0.070  &  0.042  &  0.031  \\
+  $p = 4$ to $p = 1$   &  0.638  &  0.332  &  0.184  &  0.104  \\
+  \midrule
+  $p = 8$ to $p = 4$   &  0.289  &  0.050  &  0.023  &  0.012  \\
+  $p = 8$ to $p = 1$   &  0.899  &  0.777  &  0.682  &  0.599  \\
+  \midrule
+  $p = 16$ to $p = 8$  &  0.294  &  0.055  &  0.020  &  0.010  \\
+  $p = 16$ to $p = 1$  &  0.975  &  0.942  &  0.913  &  0.885  \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\caption{Two-grid convergence factor with Chebyshev smoothing for 1D Laplacian}
+\label{table:two_grid_1d_chebyshev_eigenvalues}
+\end{table}
+
+The results in \cref{table:two_grid_1d_chebyshev_eigenvalues} provide the LFA convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother with different scaling factors for the minimum eigenvalue estimate used in the Chebyshev iterations.
+Increasing the lower eigenvalue estimate results in the Chebyshev method better targeting high frequency error modes, which results in improved two-grid convengence when halving the polynomial order of the basis functions.
+However, this approach results in worse convergence for agressive coarsening directly to linear elements.
 
 % -----------------------------------------------------------------------------
 \subsection{Scalar Laplacian - 2D Convergence Factors}\label{sec:2dresults}

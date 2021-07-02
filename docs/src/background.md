@@ -29,7 +29,7 @@ L_h \varphi \left( \theta, x \right) = \tilde{L}_h \left( \theta \right) \varphi
 
 then ``\tilde{L}_h \left( \theta \right) = \sum_{\kappa \in V} s_\kappa e^{\imath \theta \kappa}`` is the **symbol** of ``L_h``.
 
-We can extend this to a ``p \times p`` linear system of operators representing a scalar problem on a ``p`` order finite element
+We can extend this to a ``p \times p`` linear system of operators representing a scalar problem on a degree ``p`` finite element
 
 ```math
 \tilde{L}_h =
@@ -125,7 +125,7 @@ Q_{2d} = Q \otimes Q
 
 and an analogous computation can be done for 3D.
 
-Therefore, the symbol matrix for a PDE with arbitrary dimension, order and number of components is given by
+Therefore, the symbol matrix for a PDE with arbitrary dimension, polynomial degree of basis, and number of components is given by
 
 
 ```math
@@ -160,7 +160,7 @@ M_{TMG} = S_f \left( I - P_{ctof} A_c^{-1} R_{ftoc} A_f \right) S_f
 where ``S_f`` represents the error propagation operator for the smoother on the fine grid.
 
 This algorithm describes both h-multigrid and p-multigrid.
-While h-multigrid coarsens the mesh by increasing the size of each element, p-multigrid coarsens the mesh by decreasing the order of each element.
+While h-multigrid coarsens the mesh by increasing the size of each element, p-multigrid coarsens the mesh by decreasing the polynomial degree of the basis for each element.
 
 To explore the convergence of multigrid techniques, we need to analyze the symbol of the multigrid error propagation operator.
 We build the symbol of the p-multigrid error propagation operator in parts.
@@ -211,7 +211,7 @@ User defined smoothers are supported, where the user provides ``M^{-1}`` or a fu
 ### Grid Transfer Operators
 
 We consider grid transfer operators for p-type multigrid.
-The finite element operator for prolongation from the lower order coarse grid to the high order fine grid is given by 
+The finite element operator for prolongation from the lower degree basis on the coarse grid to the high degree basis on the fine grid is given by 
 
 ```math
 P_{ctof} = P_f^T P_e P_c\\
@@ -234,7 +234,7 @@ and ``\tilde{R}_{ftoc}`` is given by the analogous computation
 \tilde{R}_{ftoc} \left( \theta \right) = Q_c^T \left( \left( D_{scale} B_{ctof} \right)^T \odot \left[ e^{\imath \left( \mathbf{x}_{j, f} - \mathbf{x}_{i, c} \right) \boldsymbol{\theta} / \mathbf{h}} \right] \right) Q_f.
 ```
 
-The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro-elements that consist of multiple micro elements of the same polynomial order as the coarse grid elements.
+The grid transfer operators for h-multgrid can be represented in a similar fashion by representing the fine grid as consisting of macro-elements that consist of multiple micro elements of the same polynomial degree as the coarse grid elements.
 
 ### Multigrid Error Propagation Symbol
 

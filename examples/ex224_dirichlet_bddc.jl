@@ -6,11 +6,11 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
-p = 2
+p = 1
 numberelements1d = 4
 
 # operator
-diffusion = GalleryMacroElementOperator("diffusion", p, p + 1, numberelements1d, mesh)
+diffusion = GalleryMacroElementOperator("diffusion", p + 1, p + 2, numberelements1d, mesh)
 
 # BDDC smoother
 bddc = DirichletBDDC(diffusion)

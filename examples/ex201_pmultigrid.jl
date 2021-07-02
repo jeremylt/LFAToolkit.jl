@@ -6,21 +6,21 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
-finep = 3
-coarsep = 2
+finep = 2
+coarsep = 1
 numbercomponents = 1
 dimension = 2
 ctofbasis = TensorH1LagrangeBasis(
-    coarsep,
-    finep,
+    coarsep + 1,
+    finep + 1,
     numbercomponents,
     dimension,
     lagrangequadrature = true,
 )
 
 # diffusion operators
-finediffusion = GalleryOperator("diffusion", finep, finep, mesh)
-coarsediffusion = GalleryOperator("diffusion", coarsep, finep, mesh)
+finediffusion = GalleryOperator("diffusion", finep + 1, finep + 1, mesh)
+coarsediffusion = GalleryOperator("diffusion", coarsep + 1, finep + 1, mesh)
 
 # Chebyshev smoother
 chebyshev = Chebyshev(finediffusion)

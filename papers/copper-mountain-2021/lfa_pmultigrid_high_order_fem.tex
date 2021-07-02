@@ -19,6 +19,9 @@
 \DeclareMathOperator{\diag}{diag}
 \usepackage{booktabs}
 
+\usepackage{xcolor}
+\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+
 % Paper title
 \newcommand{\TheTitle}{%
   Local Fourier Analysis of P-Multigrid for High-Order Finite Element Operators
@@ -73,9 +76,9 @@ P-multigrid is popular for high-order or spectral finite element methods, especi
 In this paper, we introduce LFAToolkit.jl, a new Julia package for LFA of high-order finite element methods.
 LFAToolkit.jl analyzes preconditioning techniques for arbitrary systems of second order PDEs and supports mixed finite element methods.
 Specifically, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and examine the performance of Jacobi and Chebyshev smoothing for two-grid schemes with aggressive p-coarsening.
-A natural extension of this LFA framework is the analysis of h-multigrid for finite element discretizations or finite difference discretizations that can be represented with finite element discretizations.
-With this extension, we can replicate previous work on the LFA of h-multigrid.
-Examples in one, two, and three dimensions are presented to validate our LFA of p-multigrid.
+A natural extension of this LFA framework is the analysis of h-multigrid for finite element discretizations or finite difference discretizations that can be represented in the language of finite elements.
+With this extension, we can replicate previous work on the LFA of h-multigrid for arbitrary order discretizations using a convenient and extensible abstraction.
+Examples in one, two, and three dimensions are presented to validate our LFA of p-multigrid for the Laplacian and linear elasticity.
 \end{abstract}
 % -----------------------------------------------------------------------------
 
@@ -91,22 +94,21 @@ Examples in one, two, and three dimensions are presented to validate our LFA of 
 % -----------------------------------------------------------------------------
 
 Multigrid methods \cite{brandt1982guide, briggs2000multigrid, stuben1982multigrid} are popular for solving linear systems derived from discretizing PDEs.
-Local Fourier Analysis (LFA) \cite{brandt1977multi, wienands2004practical} is a powerful tool for predicting multigrid performance and tuning multigrid components, by examining the spectral radius of {\em{symbol}} of the underlying operator.
+Local Fourier Analysis (LFA) \cite{brandt1977multi, wienands2004practical} is a powerful tool for predicting multigrid performance and tuning of multigrid components by examining the spectral radius and/or condition number of the {\em{symbol}} of the underlying operator, which enables sharp predictions for large-scale problems.
 
-High-order finite element methods offer advantages over low-order finite elements \cite{demkowicz1989toward, oden1989toward, rachowicz1989toward}; however, high-order finite elements are less common because a linear operator or the Jacobian of a non-linear operator rapidly loses sparsity in a sparse matrix representation.
-Matrix-free formulations of these methods, such as described in \cite{brown2010efficient, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-user-manual, fischer2020scalability}.
+High-order finite element methods offer accuracy advantages over low-order finite elements \cite{demkowicz1989toward, oden1989toward, rachowicz1989toward}; however, high-order finite elements are less common because a linear operator or the Jacobian of a non-linear operator rapidly loses sparsity in a sparse matrix representation.
+Matrix-free formulations of these methods \cite{brown2010efficient, deville2002highorder, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-user-manual, fischer2020scalability, kronbichler2019multigrid}.
 
 LFA of h-multigrid with high-order finite elements was developed in \cite{he2020two} for Lagrange bases with uniformly spaced nodes.
 P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh.
 While it is possible \cite{davydov2019matrix} to use high-order finite element methods with matrix-free implementation of h-multigrid preconditioning on complex problems, p-multigrid can be a more natural fit for high-order methods on unstructured meshes.
 
-In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes and introduce LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
-There are multiple software packages that offer LFA of h-multigrid methods, such as \cite{rittich2018extending,kahl2020automated}.
-To the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
+In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations and investigate Jacobi and Chebyshev smoothing for two-grid schemes by way of LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods.
+Several software packages have been developed for LFA of h-multigrid methods \cite{rittich2018extending,kahl2020automated,wienands2004practical}, however, to the best of our knowledge, no packages support LFA of p-multigrid methods, especially with arbitrary PDEs.
 Although \cite{van2011discrete} discussed LFA of p-multigrid for the discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
-Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and can be extended to LFA for h-multigrid of finite difference discretizations that can be represented with finite element discretizations.
+Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and can be extended to LFA for h-multigrid of finite difference discretizations that can be represented via finite element discretizations as well as LFA of block smoothers \cite{maclachlan2011overlapping,brown2019local}
 
-We investigate the performance of Jacobi and Chebyshev semi-iterative method smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions, and we validate our LFA of p-multigrid with the scalar Laplacian in three dimensions against numerical experiments.
+We investigate the performance of Jacobi and Chebyshev semi-iterative smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions, and we validate our LFA of p-multigrid with the scalar Laplacian in three dimensions against numerical experiments.
 Our analysis demonstrates that traditional estimates of the optimal Jacobi smoothing parameter are ill-suited to p-multigrid for high-order elements and the performance of p-multigrid with these two smoothers degrades as we coarsen more aggressively.
 Finally, we analize the performance of p-multigrid with a Chebyshev smoother for three dimensional linear elasticity to demonstrate ability of our LFA framework to handle more complex PDEs.
 
@@ -130,7 +132,7 @@ Our numerical experiments demonstrating actual convergence rates of p-multigrid 
 \section{Definitions and Notation}\label{sec:notation}
 % -----------------------------------------------------------------------------
 
-In this section, we introduce the notation required to describe LFA.
+% In this section, we introduce the notation required to describe LFA. % section title seems sufficient
 
 Consider a scalar Toeplitz operator $L_h$ on an infinite one dimensional uniform nodal grid $G_h$,
 \begin{equation}
@@ -139,9 +141,9 @@ L_h \mathrel{\hat{=}} \left[ s_\kappa \right]_h \left( \kappa \in V \right);\\
 L_h w_h \left( x \right) = \sum_{\kappa \in V} s_\kappa w_h \left( x + \kappa h \right),
 \end{split}
 \end{equation}
-where $V \subset \mathbb{Z}$ is a finite index set, $s_\kappa \in \mathbb{R}$ are constant coefficients, and $w_h \left( x \right)$ is a $l^2$ function on $G_h$.
+where $V \subset \mathbb{Z}$ is a finite index set, $s_\kappa \in \mathbb{R}$ are constant coefficients, and $w_h \left( x \right)$ is a $l^2$ function on $G_h$. In the terminology of stencils, $s_{\kappa}$ are stencil weights that are nonzero on the neighborhood $\kappa \in V$.
 
-Since $L_h$ is Toeplitz, it can be diagonalized by the standard Fourier modes $\varphi \left( \theta, x \right) = e^{\imath \theta x / h}$.
+Since $L_h$ is Toeplitz, it can be diagonalized by the standard Fourier modes $\varphi \left( \theta, x \right) = e^{\imath \theta x / h}$, which alias according to $\varphi(\theta+ 2\pi/h, x) = \varphi(\theta, x)$ on all grid points $x \in h \mathbb Z$.
 
 \begin{definition}[Symbol of $L_h$]\label{def:symbol}
 If for all grid functions $\varphi \left( \theta, x \right)$ we have
@@ -161,10 +163,12 @@ This definition can be extended to a $q \times q$ linear system of operators by
 \end{bmatrix},
 \end{equation}
 where $L_h^{i, j}$, $i, j \in \lbrace 1, 2, \dots, q \rbrace$ are given by scalar Toeplitz operators describing how component $j$ appears in the equation for component $i$.
-The symbol of $\mathbf{L}_h$, denoted $\tilde{\mathbf{L}}_h$, is a $q \times q$ matrix valued function of $\theta$ given by $\left( \tilde{\mathbf{L}}_h \right)_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
-For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines now rapidly the scheme decreases error at a target frequency.
+The components here may represent different fields and/or nodes of a finite element basis.
+The symbol of $\mathbf{L}_h$, denoted $\tilde{\mathbf{L}}_h$, is a $q \times q$ matrix-valued function of $\theta$ given by $\left( \tilde{\mathbf{L}}_h \right)_{i, j} = \tilde{L}_h^{i, j} \left( \theta \right)$.
+For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines how rapidly the scheme decreases error at a target frequency.
 
-For standard coarsening, low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$, where $d$ is the dimension.
+These definitions are readily extended to $d$ dimensions by taking the neighborhood $V \subset \mathbb Z^d$ and letting $\theta \in [-\pi,\pi)^d$.
+For standard coarsening from fine $h=1$ to coarse $h=2$, low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in \left[-\pi, \pi \right)^d \setminus T^{\text{low}}$ or equivalently by periodicity, $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$.
 
 % -----------------------------------------------------------------------------
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
@@ -190,9 +194,9 @@ We will use the representation of the weak form of linear second-order PDEs desc
   u                   \\
   \nabla u            \\
 \end{bmatrix}
-= \int_{\Omega} f v,\quad \forall v \in V
+= \int_{\Omega} f v,\quad \forall v \in \mathcal V
 \end{equation}
-for some suitable $V \subseteq H_0^1 \left( \Omega \right)$.
+for some suitable $\mathcal V \subseteq H_0^1 \left( \Omega \right)$.
 In this equation, $f_{i, j}$ may come from a linear PDE or the linearization of a non-linear problem.
 Boundary terms have been omitted, as they are not present on the infinite uniform grid $G_h$.
 
@@ -207,9 +211,9 @@ Using the algebraic representation of PDE operators given in \cite{brown2010effi
 \end{equation}
 where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a basis operator which computes the values and derivatives of the basis functions at the quadrature points, and $\mathbf{D}$ is a block diagonal operator which provides the pointwise application of the bilinear form on the quadrature points, to include quadrature weights and the change in coordinates between the physical and reference space.
 
-Consider the specific case of a Toeplitz operator representing an arbitrary second order scalar PDE in one dimension with basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
+Consider the specific case of a block Toeplitz operator representing an arbitrary second order scalar PDE in one dimension with Lagrange basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The basis $\mathbf{B}$ is defined on the mesh grid with points given by $x_i$, for $i \in \left\lbrace 1, 2, \dots, p + 1 \right\rbrace$ on one element, where $p$ is the polynomial order of the basis.
-The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity, so we can compute the symbol matrix of size $p \times p$ as
+The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity\todo{Can we have a more accurate description, maybe in terms of ownership; the grid functions are not $h$-periodic as in $e^{\imath 0 \theta} \ne e^{\imath\theta}$, which is a straightforward interpretation of this statement.}, so we can compute the symbol matrix of size $p \times p$ as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q},
 \end{equation}
@@ -270,6 +274,7 @@ $\mathbf{A}_e$ is the finite element operator for the element and $\mathbf{Q}$ i
 
 Note that this LFA notation is applicable to any second-order PDE with a weak form that can be represented by \cref{efficienthighorder}.
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $\mathbf{B}$, the node to mode mapping $\mathbf{Q}$, and the pointwise representation of the weak form $\mathbf{D}$, and the software can provide the LFA of the PDE with various preconditioners.
+\todo{The nodes may be defined by points $\mathbf x_i$ or more generally, as dual basis functions that may be applied to the Fourier modes.}
 
 If the pointwise representation of the weak form $\mathbf{D}$ has a tensor product structure, then the element operator $\mathbf{A}_e$ and therefore the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown in \cite{he2020two}.
 We omit this optimization in this analysis and LFAToolkit.jl in favor of supporting second-order PDEs that do not have a tensor product decomposition.
@@ -282,12 +287,12 @@ Multigrid methods require a fine grid smoother, typically applied both before an
 In this section, we compute the error propagation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
-The LFA predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
+The LFA-predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
 \begin{equation}
 \mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
 \end{equation}
 where $ \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right)\right)$ denotes the spectral radius of the matrix symbol $\tilde{\mathbf{S}}$.
-Note that this LFA predicted smoothing factor is often used as a prediction of the two-grid convergence factor for multigrid methods with standard coarsening; however, this smoothing factor is not an accurate predictor of the two-grid convergence factor for p-multigrid, as we will see below.
+Note that this LFA-predicted smoothing factor is often used as a prediction of the two-grid convergence factor for multigrid methods with standard coarsening; however, this smoothing factor is not an accurate predictor of the two-grid convergence factor for p-multigrid, as we will see below.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoother}\label{sec:jacobi}
@@ -315,11 +320,11 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
   \subfloat[Spectrum of Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_spectrum_5}\label{fig:jacobi_spectrum}}
   \hfill
   \subfloat[Smoothing Factor of Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5}\label{fig:jacobi_smooth_factor}}
-  \caption{Jacobi smoothing for high-order finite elements for the 1D Laplacian}
+  \caption{Jacobi smoothing for high-order finite elements for the 1D Laplacian. \todo{Is the left $\omega=1$? That isn't consistent with the right, which is mislabeled: should be ''smoothing factor'', not ``spectral radius''. And the plot looks like it's taking a max over all frequencies, not just high frequencies.}}
 \end{figure}
 
 Using \cref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left( - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
-In \cref{fig:jacobi_smooth_factor} we plot the LFA predicted smoothing factor for Jacobi smoothing as a function of the smoothing parameter $\omega$.
+In \cref{fig:jacobi_smooth_factor} we plot the LFA-predicted smoothing factor for Jacobi smoothing as a function of the smoothing parameter $\omega$.
 The Jacobi smoothing factor is not an accurate predictor of the two-grid performance, as we will see below.
 
 % -----------------------------------------------------------------------------

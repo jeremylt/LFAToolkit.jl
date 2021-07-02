@@ -331,6 +331,10 @@ The Jacobi smoothing factor is not an accurate predictor of the two-grid perform
 \subsubsection{Chebyshev Smoother}\label{sec:chebyshev}
 % -----------------------------------------------------------------------------
 
+Damped Jacobi with parameter $\omega$ is based on the degree 1 monic polynomial with root at $\alpha = 1/\omega > 0$.
+For $\nu=1$ smoothing passes, this is the minimal degree 1 monic polynomial on the interval $[\alpha-c, \alpha+c]$ for any positive $c$.
+However, for $\nu \ge 2$, the Jacobi smoother is a degree $\nu$ monic polynomial that is not minimal on the interval (because it ``concentrates'' at the center $\alpha$).
+Chebyshev smoothers are based on a stable recurrence for the polynomial of any degree that is minimial on the specified target interval of the positive real axis, which should contain the eigenvalues of all modes the smoother is responsible for.
 It is well known that polynomial smoothers allow more aggressive coarsening than Jacobi \cite{brannick2015polynomial}.
 For further discussion of the error propagation properties of the Chebyshev semi-iterative method, see \cite{gutknecht2002revisited}.
 
@@ -341,7 +345,8 @@ The terms in the Chebyshev semi-iterative method can be modeled by the three ter
 \mathbf{u}_k = - \left( \mathbf{r}_{k - 1} + \alpha \mathbf{u}_{k - 1} + \beta_{k - 2} \mathbf{u}_{k - 2} \right) / \gamma_{k - 1},
 \label{eq:chebyshev_recursive}
 \end{equation}
-where the spectrum of $\left( \diag {\mathbf{A}} \right)^{-1} {\mathbf{A}}$ lies on the line segment $\left[ \alpha - c, \alpha + c \right]$ and the parameters $\beta$ and $\gamma$ are given by the recurrence
+with left-preconditioned residual $\mathbf r_{k-1} = \left( \diag {\mathbf{A}} \right)^{-1} \left( \mathbf b - \mathbf A \mathbf u_{k-1} \right)$.
+The parameters $\beta$ and $\gamma$ are given by the recurrence
 \begin{equation}
 \begin{tabular}{c c}
 $\beta_0 = - \frac{c^2}{2 \alpha}$ & $\gamma_0 = - \alpha$\\
@@ -380,7 +385,7 @@ $\tilde{\mathbf{E}}_1 \left( \boldsymbol{\theta} \right) = \mathbf{I} - \frac{1}
 $\tilde{\mathbf{E}}_k \left( \boldsymbol{\theta} \right) = \left( \tilde{\mathbf{A}}_J \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right) \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \alpha \tilde{\mathbf{E}}_{k - 1} \left( \boldsymbol{\theta} \right) - \beta_{k - 2} \tilde{\mathbf{E}}_{k - 2} \left( \boldsymbol{\theta} \right) \right) / \gamma_{k - 1}$
 \end{tabular}
 \end{equation}
-with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right) \mathbf{Q} \right)^{-1}$ giving the symbol of the Jacobi smoother.
+with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \right) \mathbf{Q} \right)^{-1}$ giving the symbol of the Jacobi operator.
 \end{definition}
 
 \begin{figure}[!tbp]
@@ -388,10 +393,10 @@ with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \righ
   \subfloat[Spectrum of Chebyshev for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/chebyshev_spectrum_5}\label{fig:chebyshev_spectrum}}
   \hfill
   \subfloat[Smoothing Factor of Chebyshev for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/chebyshev_smoothing_5}\label{fig:chebyshev_smooth_factor}}
-  \caption{Chebyshev smoothing for high-order finite elements for the 1D Laplacian}
+  \caption{Chebyshev smoothing for high-order finite elements for the 1D Laplacian. \todo{How was the target interval chosen?}}
 \end{figure}
 
-Using \cref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
+Using \cref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum} for the one dimensional Laplacian with a 4th order $H^1$ Lagrange basis on Gauss-Lobatto points.
 In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor for Chebyshev smoothing as a function of the polynomial order, $k$.
 
 First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = 1 / \alpha$, so the relatively poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.

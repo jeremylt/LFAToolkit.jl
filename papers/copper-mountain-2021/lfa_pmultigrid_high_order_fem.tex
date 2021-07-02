@@ -213,7 +213,7 @@ where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a b
 
 Consider the specific case of a block Toeplitz operator representing an arbitrary second order scalar PDE in one dimension with Lagrange basis of polynomial order $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The basis $\mathbf{B}$ is defined on the mesh grid with points given by $x_i$, for $i \in \left\lbrace 1, 2, \dots, p + 1 \right\rbrace$ on one element, where $p$ is the polynomial order of the basis.
-The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity\todo{Can we have a more accurate description, maybe in terms of ownership; the grid functions are not $h$-periodic as in $e^{\imath 0 \theta} \ne e^{\imath\theta}$, which is a straightforward interpretation of this statement.}, so we can compute the symbol matrix of size $p \times p$ as
+The nodes on the left and right boundaries of the element map to the same Fourier mode due to periodicity between adjacent finite elements on the infinite grid $G_h$, so we can compute the symbol matrix of size $p \times p$ as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q},
 \end{equation}
@@ -320,7 +320,7 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
   \subfloat[Spectrum of Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_spectrum_5}\label{fig:jacobi_spectrum}}
   \hfill
   \subfloat[Smoothing Factor of Jacobi for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/jacobi_smoothing_5}\label{fig:jacobi_smooth_factor}}
-  \caption{Jacobi smoothing for high-order finite elements for the 1D Laplacian. \todo{Is the left $\omega=1$? That isn't consistent with the right, which is mislabeled: should be ''smoothing factor'', not ``spectral radius''. And the plot looks like it's taking a max over all frequencies, not just high frequencies.}}
+  \caption{Jacobi smoothing for high-order finite elements for the 1D Laplacian. \todo{Is the left $\omega=1$? That isn't consistent with the right. And the plot looks like it's taking a max over all frequencies, not just high frequencies.}}
 \end{figure}
 
 Using \cref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left( - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum} for the one dimensional Laplacian with a 4th order H1 Lagrange basis on Gauss-Lobatto points.
@@ -408,7 +408,7 @@ Large eigenvalues are associated with higher frequencies for differential operat
 PETSc \cite{petsc-user-ref} estimates the eigenvalues of the preconditioned operator via Krylov iterations, yielding an estimate of the maximal eigenvalue, $\hat{\lambda}_{\text{max}}$, which is used to set the target interval according to $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.1 \hat{\lambda}_{\text{max}}$.
 This default lower bound was chosen empirically for rapid coarsening with smoothed aggregation AMG and the upper bound incorporates a safety due to $\hat{\lambda}_{\max}$ generally being an underestimate of the true maximum eigenvalue.
 
-In LFAToolkit.jl, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to compute $\hat{\lambda}_{\text{max}}$.
+In LFAToolkit.jl, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to estimate $\hat{\lambda}_{\text{max}}$.
 We then take $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.0 \hat{\lambda}_{\text{max}}$.
 
 % -----------------------------------------------------------------------------

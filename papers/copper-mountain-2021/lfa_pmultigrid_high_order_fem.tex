@@ -282,12 +282,12 @@ Multigrid methods require a fine grid smoother, typically applied both before an
 In this section, we compute the error propagation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
-The LFA-predicted smoothing factor is given by the maximum spectral radius of the symbol across high frequencies
+The LFA-predicted convergence factor is given by the maximum spectral radius of the symbol across all frequencies
 \begin{equation}
-\mu = \max_{\boldsymbol{\theta} \in T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
+\mu = \max_{\boldsymbol{\theta} \in T^{\text{low}}, T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
 \end{equation}
 where $ \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right)\right)$ denotes the spectral radius of the matrix symbol $\tilde{\mathbf{S}}$.
-Note that this LFA-predicted smoothing factor is often used as a prediction of the two-grid convergence factor for multigrid methods with standard coarsening; however, this smoothing factor is not an accurate predictor of the two-grid convergence factor for p-multigrid, as we will see below.
+Our goal is to select tuning parameters for the polynomial smoothers to minimize the LFA-predicted convergence factor of two-grid p-multigrid cycles with agressive coarsening.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoother}\label{sec:jacobi}
@@ -750,7 +750,7 @@ From this table, we can see that the effectiveness of higher order Chebyshev smo
 \label{table:two_grid_1d_chebyshev_eigenvalues}
 \end{table}
 
-The results in \cref{table:two_grid_1d_chebyshev_eigenvalues} provide the LFA-predicted convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother with different scaling factors for the minimum eigenvalue estimate used in the Chebyshev iterations.
+The results in \cref{table:two_grid_1d_chebyshev_eigenvalues} provide the LFA-predicted convergence factor for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother with different scaling factors for the minimum eigenvalue estimate used in the Chebyshev iterations.
 Increasing the lower eigenvalue estimate results in the Chebyshev method better targeting high frequency error modes, which results in improved two-grid convergence when halving the polynomial degree of the basis functions.
 However, increasing the lower eigenvalue estimate results in worse two-grid convergence for aggressive coarsening directly to linear elements.
 
@@ -828,7 +828,7 @@ The results in \cref{table:two_grid_2d} provide the LFA-predicted convergence fa
 \label{table:two_grid_2d_chebyshev}
 \end{table}
 
-The results in \cref{table:two_grid_2d_chebyshev} provide the LFA-predicted convergence factor and optimal values of $k$ for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
+The results in \cref{table:two_grid_2d_chebyshev} provide the LFA-predicted convergence factor for two-grid high-order p-multigrid for a variety of coarsening rates and orders of Chebyshev smoother.
 The two-grid convergence factor still degrades and the effectiveness of higher order Chebyshev smoothers is again reduced as we coarsen more aggressively.
 
 \begin{table}[ht!]

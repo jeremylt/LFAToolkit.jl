@@ -6,15 +6,19 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
-p = 2
+p = 1
 numberfineelements1d = 4
 numbermidelements1d = 2
 numbercomponents = 1
 dimension = 2
-ctombasis =
-    TensorH1LagrangeHProlongationBasis(p, numbercomponents, dimension, numbermidelements1d);
+ctombasis = TensorH1LagrangeHProlongationBasis(
+    p + 1,
+    numbercomponents,
+    dimension,
+    numbermidelements1d,
+);
 mtofbasis = TensorH1LagrangeHProlongationMacroBasis(
-    p,
+    p + 1,
     numbercomponents,
     dimension,
     numbermidelements1d,
@@ -23,9 +27,10 @@ mtofbasis = TensorH1LagrangeHProlongationMacroBasis(
 
 # operators
 finediffusion =
-    GalleryMacroElementOperator("diffusion", p, p + 1, numberfineelements1d, mesh);
-middiffusion = GalleryMacroElementOperator("diffusion", p, p + 1, numbermidelements1d, mesh);
-coarsediffusion = GalleryOperator("diffusion", p, p + 1, mesh);
+    GalleryMacroElementOperator("diffusion", p + 1, p + 2, numberfineelements1d, mesh);
+middiffusion =
+    GalleryMacroElementOperator("diffusion", p + 1, p + 2, numbermidelements1d, mesh);
+coarsediffusion = GalleryOperator("diffusion", p + 1, p + 2, mesh);
 
 # Chebyshev smoothers
 finechebyshev = Chebyshev(finediffusion)

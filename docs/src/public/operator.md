@@ -15,7 +15,7 @@ $(read("../../../examples/ex001_mass.jl", String))
 ```
 """)
 ````
-![](../img/001_mass_spectral_radius_3_2d.png)
+![](../img/001_mass_spectral_radius_2_2d.png)
 
 Plot for the symbol of the finite element operator for the 2D scalar mass problem with cubic basis.
 
@@ -29,7 +29,7 @@ $(read("../../../examples/ex002_diffusion.jl", String))
 ```
 """)
 ````
-![](../img/002_diffusion_spectral_radius_3_2d.png)
+![](../img/002_diffusion_spectral_radius_2_2d.png)
 
 Plot for the symbol of the finite element operator for the 2D scalar diffusion problem with cubic basis.
 

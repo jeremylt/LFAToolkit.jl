@@ -6,18 +6,20 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh2D(1.0, 1.0)
-finep = 5
-midp = 3
-coarsep = 2
+finep = 4
+midp = 2
+coarsep = 1
 numbercomponents = 1
 dimension = 2
-ctombasis = TensorH1LagrangePProlongationBasis(coarsep, midp, numbercomponents, dimension)
-mtofbasis = TensorH1LagrangePProlongationBasis(midp, finep, numbercomponents, dimension)
+ctombasis =
+    TensorH1LagrangePProlongationBasis(coarsep + 1, midp + 1, numbercomponents, dimension)
+mtofbasis =
+    TensorH1LagrangePProlongationBasis(midp + 1, finep + 1, numbercomponents, dimension)
 
 # diffusion operators
-finediffusion = GalleryOperator("diffusion", finep, finep, mesh)
-middiffusion = GalleryOperator("diffusion", midp, finep, mesh)
-coarsediffusion = GalleryOperator("diffusion", coarsep, finep, mesh)
+finediffusion = GalleryOperator("diffusion", finep + 1, finep + 1, mesh)
+middiffusion = GalleryOperator("diffusion", midp + 1, finep + 1, mesh)
+coarsediffusion = GalleryOperator("diffusion", coarsep + 1, finep + 1, mesh)
 
 # Chebyshev smoothers
 finechebyshev = Chebyshev(finediffusion)

@@ -11,7 +11,7 @@ This library provides a toolkit for analyzing the performance of preconditioners
 While this library focuses on the finite element discretizations, finite difference discretizations of PDEs can often be recovered from finite element formulations by using linear finite elements on a structured grid.
 This fact makes LFAToolkit.jl an extremely flexible tool for LFA.
 
-![](img/201_pmultigrid_spectral_radius_3_to_2_2d.png)
+![](img/201_pmultigrid_spectral_radius_2_to_1_2d.png)
 
 Example plot for the symbol of p-multigrid with a Jacobi smoother for the 2D scalar diffusion problem.
 

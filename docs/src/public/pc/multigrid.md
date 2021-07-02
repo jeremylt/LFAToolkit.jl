@@ -21,7 +21,7 @@ $(read("../../../../examples/ex201_pmultigrid.jl", String))
 """)
 ````
 
-![](../../img/201_pmultigrid_spectral_radius_3_to_2_2d.png)
+![](../../img/201_pmultigrid_spectral_radius_2_to_1_2d.png)
 
 Example plot for the symbol of p-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.
 
@@ -36,7 +36,7 @@ $(read("../../../../examples/ex202_pmultigrid_multilevel.jl", String))
 """)
 ````
 
-![](../../img/202_pmultigrid_spectral_radius_5_to_3_to_2_2d.png)
+![](../../img/202_pmultigrid_spectral_radius_4_to_2_to_1_2d.png)
 
 Example plot for the symbol of multilevel p-multigrid with a cubic Chebyshev smoother for the 2D scalar diffusion problem with cubic basis.
 

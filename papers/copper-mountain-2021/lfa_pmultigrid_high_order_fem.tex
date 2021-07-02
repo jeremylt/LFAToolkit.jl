@@ -346,6 +346,8 @@ The terms in the Chebyshev semi-iterative method can be modeled by the three ter
 \label{eq:chebyshev_recursive}
 \end{equation}
 with left-preconditioned residual $\mathbf r_{k-1} = \left( \diag {\mathbf{A}} \right)^{-1} \left( \mathbf b - \mathbf A \mathbf u_{k-1} \right)$.
+The target interval $[\lambda_{\min}, \lambda_{\max}] = [\alpha - c, \alpha + c]$ should be selected to be as narrow as possible while containing the eigenvalues of the preconditioned operator $\left( \diag {\mathbf{A}} \right)^{-1} \mathbf A$ that the smoother is responsible for.
+(Other polynomial methods should be used for operators that are not symmetric positive definite or nearly so.)
 The parameters $\beta$ and $\gamma$ are given by the recurrence
 \begin{equation}
 \begin{tabular}{c c}
@@ -402,8 +404,9 @@ In \cref{fig:chebyshev_smooth_factor} we plot the LFA predicted smoothing factor
 First order Chebyshev is equivalent to Jacobi smoothing with the classical choice of parameter value of $\omega = 1 / \alpha$, so the relatively poor smoothing factor for $k = 1$ in \cref{fig:chebyshev_smooth_factor} is consistent with \cref{fig:jacobi_smooth_factor}.
 
 The Chebyshev semi-iterative method is known to be sensitive to the quality of the estimates of the extremal eigenvalues $\lambda_{\text{min}}$ and $\lambda_{\text{max}}$.
-PETSc \cite{petsc-user-ref} estimates the eigenvalues of the preconditioned operator via Krylov iterations, yielding an estimate of the maximal eigenvalue, $\hat{\lambda}_{\text{max}}$.
-This estimate is used to target the upper part of the spectrum of the error, with $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.1 \hat{\lambda}_{\text{max}}$.
+Large eigenvalues are associated with higher frequencies for differential operators so $\lambda_{\min}$ for effective smoothing is not the minimal eigenvalue, which is hard to compute and goes to zero under grid refinement.
+PETSc \cite{petsc-user-ref} estimates the eigenvalues of the preconditioned operator via Krylov iterations, yielding an estimate of the maximal eigenvalue, $\hat{\lambda}_{\text{max}}$, which is used to set the target interval according to $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.1 \hat{\lambda}_{\text{max}}$.
+This default lower bound was chosen empirically for rapid coarsening with smoothed aggregation AMG and the upper bound incorporates a safety due to $\hat{\lambda}_{\max}$ generally being an underestimate of the true maximum eigenvalue.
 
 In LFAToolkit.jl, we also want to target the upper part of the spectrum of the error; we estimate the spectral radius of the symbol of the Jacobi preconditioned operator by sampling the the frequencies at a small number of values to compute $\hat{\lambda}_{\text{max}}$.
 We then take $\lambda_{\text{min}} = 0.1 \hat{\lambda}_{\text{max}}$ and $\lambda_{\text{max}} = 1.0 \hat{\lambda}_{\text{max}}$.

@@ -523,9 +523,9 @@ where $h$ is the length of the macro-element, and
  7  &  -8  &   1  \\
 -8  &  16  &  -8  \\
  1  &  -8  &   7  \\
-\end{bmatrix},
+\end{bmatrix}.
 \end{equation}
-and the corresponding symbols are computed as in \cref{def:high_order_symbol} above.
+The corresponding symbols are computed as in \cref{def:high_order_symbol} above.
 
 Following the derivation from \cref{sec:grids}, we can derive the symbols of grid transfer operators for h-multigrid.
 
@@ -550,7 +550,7 @@ The matrices $\mathbf{Q}_f$ and $\mathbf{Q}_c$ are the localization mappings for
 By representing the fine grid with macro-elements and the prolongation operator with this interpolation, this LFA of p-multigrid exactly reproduces the results of He and MacLachlan \cite{he2020two} for LFA of high-order h-multigrid.
 
 Our LFA of h-multigrid presented here is based on a specific basis of the Fourier space used in \cite{kumar2019local} rather than the commonly used Fourier modes, see \cite{MR1807961, wienands2004practical}, where the symbol of each component in multigrid methods is formed based on different harmonic frequencies.
-The symbols of grid-transfer operators described in \cref{def:h_prolongation_symbol} and \cref{def:h_restriction_symbol} give a general way for multigrid coarsening with factor $m$, and this framework is simpler, especially for the high-order discretizations described in \cite{he2020two}.
+The symbols of grid-transfer operators described in \cref{def:h_prolongation_symbol,def:h_restriction_symbol} give a general way for multigrid coarsening with factor $m$, and this framework is simpler, especially for the high-order discretizations described in \cite{he2020two}.
 Also, our LFA for h-multigrid is not restricted to finite element discretizations with uniformly spaced nodes.
 
 On uniform rectangular meshes, linear finite elements produce the same discetized operator as finite differencing.

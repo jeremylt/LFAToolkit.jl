@@ -1,0 +1,1982 @@
+
+fine p:      2
+
+  coarse p:  1
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 2 -coarse_degree 1 -num_smooths 1 -cells 101,101,101
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 3
+    Number of 1D Quadrature Points (q) : 4
+    Global Nodes                       : 8120601
+    Owned Nodes                        : 8120601
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 1000000
+      Owned Nodes                      : 1000000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 8120601
+      Owned Nodes                      : 8120601
+  0 KSP Residual norm 2.664448693195e+03 
+  1 KSP Residual norm 7.219762954536e+00 
+  2 KSP Residual norm 5.957165871187e-01 
+  3 KSP Residual norm 8.409657761652e-02 
+  4 KSP Residual norm 1.850892192467e-02 
+  5 KSP Residual norm 4.899959287897e-03 
+  6 KSP Residual norm 1.377200691499e-03 
+  7 KSP Residual norm 3.969138176239e-04 
+  8 KSP Residual norm 1.160236582405e-04 
+  9 KSP Residual norm 3.423627872337e-05 
+ 10 KSP Residual norm 1.017124426746e-05 
+ 11 KSP Residual norm 3.037307208402e-06 
+ 12 KSP Residual norm 9.106310862469e-07 
+ 13 KSP Residual norm 2.738982463575e-07 
+ 14 KSP Residual norm 8.259907886791e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 14
+    Final rnorm                        : 8.259908e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.873739e+01
+    CG Solve Time                      : 204.013 (204.013) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 2 -coarse_degree 1 -num_smooths 2 -cells 101,101,101
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 3
+    Number of 1D Quadrature Points (q) : 4
+    Global Nodes                       : 8120601
+    Owned Nodes                        : 8120601
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 1000000
+      Owned Nodes                      : 1000000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 8120601
+      Owned Nodes                      : 8120601
+  0 KSP Residual norm 2.664797431746e+03 
+  1 KSP Residual norm 6.242706968092e+00 
+  2 KSP Residual norm 7.724166401747e-01 
+  3 KSP Residual norm 1.612310906629e-01 
+  4 KSP Residual norm 3.503114226348e-02 
+  5 KSP Residual norm 7.661724296607e-03 
+  6 KSP Residual norm 1.682312210299e-03 
+  7 KSP Residual norm 3.705994159057e-04 
+  8 KSP Residual norm 8.187130834193e-05 
+  9 KSP Residual norm 1.813165486992e-05 
+ 10 KSP Residual norm 4.024374789069e-06 
+ 11 KSP Residual norm 8.949762790963e-07 
+ 12 KSP Residual norm 1.993836631894e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 12
+    Final rnorm                        : 1.993837e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.873739e+01
+    CG Solve Time                      : 230.916 (230.916) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 2 -coarse_degree 1 -num_smooths 3 -cells 101,101,101
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 3
+    Number of 1D Quadrature Points (q) : 4
+    Global Nodes                       : 8120601
+    Owned Nodes                        : 8120601
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 1000000
+      Owned Nodes                      : 1000000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 8120601
+      Owned Nodes                      : 8120601
+  0 KSP Residual norm 2.664812531594e+03 
+  1 KSP Residual norm 6.268438460860e+00 
+  2 KSP Residual norm 2.540035025247e-01 
+  3 KSP Residual norm 1.263829452021e-02 
+  4 KSP Residual norm 6.955961409505e-04 
+  5 KSP Residual norm 4.016214961518e-05 
+  6 KSP Residual norm 2.380039739372e-06 
+  7 KSP Residual norm 1.435420859234e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 7
+    Final rnorm                        : 1.435421e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.873739e+01
+    CG Solve Time                      : 158.092 (158.092) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 2 -coarse_degree 1 -num_smooths 4 -cells 101,101,101
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 3
+    Number of 1D Quadrature Points (q) : 4
+    Global Nodes                       : 8120601
+    Owned Nodes                        : 8120601
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 1000000
+      Owned Nodes                      : 1000000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 8120601
+      Owned Nodes                      : 8120601
+  0 KSP Residual norm 2.665101692280e+03 
+  1 KSP Residual norm 5.923502065508e+00 
+  2 KSP Residual norm 1.166444958468e-01 
+  3 KSP Residual norm 2.789910861537e-03 
+  4 KSP Residual norm 8.051060716520e-05 
+  5 KSP Residual norm 2.623231666558e-06 
+  6 KSP Residual norm 9.092882848440e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 6
+    Final rnorm                        : 9.092883e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.873739e+01
+    CG Solve Time                      : 155.566 (155.566) sec
+
+fine p:      4
+
+  coarse p:  1
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 4 -coarse_degree 1 -num_smooths 1 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 125000
+      Owned Nodes                      : 125000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.690068919117e+03 
+  1 KSP Residual norm 1.852667863635e+01 
+  2 KSP Residual norm 6.421815420611e+00 
+  3 KSP Residual norm 3.561985070222e+00 
+  4 KSP Residual norm 2.215430468238e+00 
+  5 KSP Residual norm 1.483719931512e+00 
+  6 KSP Residual norm 1.049412786839e+00 
+  7 KSP Residual norm 7.710547298075e-01 
+  8 KSP Residual norm 5.811070314487e-01 
+  9 KSP Residual norm 4.453771568255e-01 
+ 10 KSP Residual norm 3.452578642225e-01 
+ 11 KSP Residual norm 2.697989408538e-01 
+ 12 KSP Residual norm 2.120779076719e-01 
+ 13 KSP Residual norm 1.674583768976e-01 
+ 14 KSP Residual norm 1.326981106637e-01 
+ 15 KSP Residual norm 1.054578841596e-01 
+ 16 KSP Residual norm 8.401156201455e-02 
+ 17 KSP Residual norm 6.706443996436e-02 
+ 18 KSP Residual norm 5.363402872140e-02 
+ 19 KSP Residual norm 4.296941148384e-02 
+ 20 KSP Residual norm 3.449640599405e-02 
+ 21 KSP Residual norm 2.778226342684e-02 
+ 22 KSP Residual norm 2.251855845599e-02 
+ 23 KSP Residual norm 1.852532094722e-02 
+ 24 KSP Residual norm 1.577901217407e-02 
+ 25 KSP Residual norm 1.444048392100e-02 
+ 26 KSP Residual norm 1.479221762362e-02 
+ 27 KSP Residual norm 1.705438537379e-02 
+ 28 KSP Residual norm 2.133813838935e-02 
+ 29 KSP Residual norm 2.783749868596e-02 
+ 30 KSP Residual norm 3.699663536266e-02 
+ 31 KSP Residual norm 4.957737591364e-02 
+ 32 KSP Residual norm 6.671410970571e-02 
+ 33 KSP Residual norm 9.000693836759e-02 
+ 34 KSP Residual norm 1.216697253514e-01 
+ 35 KSP Residual norm 1.647460904524e-01 
+ 36 KSP Residual norm 2.234133283283e-01 
+ 37 KSP Residual norm 3.034044708836e-01 
+ 38 KSP Residual norm 4.125919050581e-01 
+ 39 KSP Residual norm 5.617934932652e-01 
+ 40 KSP Residual norm 7.658860512833e-01 
+ 41 KSP Residual norm 1.045344007376e+00 
+ 42 KSP Residual norm 1.428366742416e+00 
+ 43 KSP Residual norm 1.953821516196e+00 
+ 44 KSP Residual norm 2.675316988569e+00 
+ 45 KSP Residual norm 3.666844843383e+00 
+ 46 KSP Residual norm 5.030597430963e+00 
+ 47 KSP Residual norm 6.907806502940e+00 
+ 48 KSP Residual norm 9.493778305716e+00 
+ 49 KSP Residual norm 1.305876020716e+01 
+ 50 KSP Residual norm 1.797691486408e+01 
+ 51 KSP Residual norm 2.476657120991e+01 
+ 52 KSP Residual norm 3.414616715670e+01 
+ 53 KSP Residual norm 4.711203647127e+01 
+ 54 KSP Residual norm 6.504661695431e+01 
+ 55 KSP Residual norm 8.986904170255e+01 
+ 56 KSP Residual norm 1.242448015430e+02 
+ 57 KSP Residual norm 1.718777687027e+02 
+ 58 KSP Residual norm 2.379170967645e+02 
+ 59 KSP Residual norm 3.295244061713e+02 
+ 60 KSP Residual norm 4.566646929787e+02 
+ 61 KSP Residual norm 6.332096131761e+02 
+ 62 KSP Residual norm 8.784770705707e+02 
+ 63 KSP Residual norm 1.219380401750e+03 
+ 64 KSP Residual norm 1.693429554368e+03 
+ 65 KSP Residual norm 2.352923413035e+03 
+ 66 KSP Residual norm 3.270807945047e+03 
+ 67 KSP Residual norm 4.548864693199e+03 
+ 68 KSP Residual norm 6.329160191195e+03 
+ 69 KSP Residual norm 8.810059792043e+03 
+ 70 KSP Residual norm 1.226863223822e+04 
+ 71 KSP Residual norm 1.709200451823e+04 
+ 72 KSP Residual norm 2.382125504516e+04 
+ 73 KSP Residual norm 3.321287620997e+04 
+ 74 KSP Residual norm 4.632486244550e+04 
+ 75 KSP Residual norm 6.463732251675e+04 
+ 76 KSP Residual norm 9.022150572794e+04 
+ 77 KSP Residual norm 1.259767362785e+05 
+ 78 KSP Residual norm 1.759626221641e+05 
+ 79 KSP Residual norm 2.458649646201e+05 
+ 80 KSP Residual norm 3.436493349390e+05 
+ 81 KSP Residual norm 4.804781277309e+05 
+ 82 KSP Residual norm 6.719976045010e+05 
+ 83 KSP Residual norm 9.401446132277e+05 
+ 84 KSP Residual norm 1.315683382045e+06 
+ 85 KSP Residual norm 1.841768180960e+06 
+ 86 KSP Residual norm 2.578947782339e+06 
+ 87 KSP Residual norm 3.612196692916e+06 
+ 88 KSP Residual norm 5.060796028015e+06 
+ 89 KSP Residual norm 7.092221758626e+06 
+ 90 KSP Residual norm 9.941669484865e+06 
+ 91 KSP Residual norm 1.393950868114e+07 
+ 92 KSP Residual norm 1.954989417331e+07 
+ 93 KSP Residual norm 2.742507932016e+07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : DIVERGED_DTOL
+    Total KSP Iterations               : 93
+    Final rnorm                        : 2.742508e+07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 3.280522e+05
+    CG Solve Time                      : 218.287 (218.287) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 1 -num_smooths 2 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 125000
+      Owned Nodes                      : 125000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.689273157579e+03 
+  1 KSP Residual norm 2.246242314367e+01 
+  2 KSP Residual norm 4.888856914151e+00 
+  3 KSP Residual norm 1.739119338696e+00 
+  4 KSP Residual norm 8.109912054392e-01 
+  5 KSP Residual norm 4.207615799652e-01 
+  6 KSP Residual norm 2.280693052474e-01 
+  7 KSP Residual norm 1.264071578204e-01 
+  8 KSP Residual norm 7.101001271403e-02 
+  9 KSP Residual norm 4.025298512835e-02 
+ 10 KSP Residual norm 2.296730574757e-02 
+ 11 KSP Residual norm 1.316936284363e-02 
+ 12 KSP Residual norm 7.580505785523e-03 
+ 13 KSP Residual norm 4.377066898819e-03 
+ 14 KSP Residual norm 2.533847093118e-03 
+ 15 KSP Residual norm 1.469973110092e-03 
+ 16 KSP Residual norm 8.543399800783e-04 
+ 17 KSP Residual norm 4.973183420704e-04 
+ 18 KSP Residual norm 2.898894398996e-04 
+ 19 KSP Residual norm 1.691813927226e-04 
+ 20 KSP Residual norm 9.884068218899e-05 
+ 21 KSP Residual norm 5.780058715840e-05 
+ 22 KSP Residual norm 3.382986992557e-05 
+ 23 KSP Residual norm 1.981546924355e-05 
+ 24 KSP Residual norm 1.161485466686e-05 
+ 25 KSP Residual norm 6.812431406439e-06 
+ 26 KSP Residual norm 3.998033440120e-06 
+ 27 KSP Residual norm 2.347612664592e-06 
+ 28 KSP Residual norm 1.379191041730e-06 
+ 29 KSP Residual norm 8.106336500928e-07 
+ 30 KSP Residual norm 4.766647421905e-07 
+ 31 KSP Residual norm 2.803994150348e-07 
+ 32 KSP Residual norm 1.650082300146e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 32
+    Final rnorm                        : 1.650082e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 131.51 (131.51) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 1 -num_smooths 3 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 125000
+      Owned Nodes                      : 125000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.689210095272e+03 
+  1 KSP Residual norm 2.456340737461e+01 
+  2 KSP Residual norm 2.443816387869e+00 
+  3 KSP Residual norm 6.603031056972e-01 
+  4 KSP Residual norm 2.238840782876e-01 
+  5 KSP Residual norm 8.134939159309e-02 
+  6 KSP Residual norm 3.052518412548e-02 
+  7 KSP Residual norm 1.166662761206e-02 
+  8 KSP Residual norm 4.512074529387e-03 
+  9 KSP Residual norm 1.759519940839e-03 
+ 10 KSP Residual norm 6.903299198077e-04 
+ 11 KSP Residual norm 2.721142196602e-04 
+ 12 KSP Residual norm 1.076608439581e-04 
+ 13 KSP Residual norm 4.272440252254e-05 
+ 14 KSP Residual norm 1.699745200543e-05 
+ 15 KSP Residual norm 6.776609628649e-06 
+ 16 KSP Residual norm 2.706640992785e-06 
+ 17 KSP Residual norm 1.082765148224e-06 
+ 18 KSP Residual norm 4.337498551802e-07 
+ 19 KSP Residual norm 1.739711254792e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 19
+    Final rnorm                        : 1.739711e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 106.746 (106.746) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 1 -num_smooths 4 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 125000
+      Owned Nodes                      : 125000
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.689508220761e+03 
+  1 KSP Residual norm 2.426616339770e+01 
+  2 KSP Residual norm 1.529287061212e+00 
+  3 KSP Residual norm 2.897142188977e-01 
+  4 KSP Residual norm 6.799228673149e-02 
+  5 KSP Residual norm 1.717588172320e-02 
+  6 KSP Residual norm 4.496631721396e-03 
+  7 KSP Residual norm 1.201699459786e-03 
+  8 KSP Residual norm 3.254335412639e-04 
+  9 KSP Residual norm 8.894707880488e-05 
+ 10 KSP Residual norm 2.447613021335e-05 
+ 11 KSP Residual norm 6.770306147154e-06 
+ 12 KSP Residual norm 1.880439214769e-06 
+ 13 KSP Residual norm 5.240370115241e-07 
+ 14 KSP Residual norm 1.464436812002e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 14
+    Final rnorm                        : 1.464437e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 100.017 (100.017) sec
+
+  coarse p:  2
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 4 -coarse_degree 2 -num_smooths 1 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 1030301
+      Owned Nodes                      : 1030301
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.710044709701e+03 
+  1 KSP Residual norm 5.308167516806e-01 
+  2 KSP Residual norm 1.916546675464e-01 
+  3 KSP Residual norm 7.617097600041e-02 
+  4 KSP Residual norm 3.124604533972e-02 
+  5 KSP Residual norm 1.297728869603e-02 
+  6 KSP Residual norm 5.422348347431e-03 
+  7 KSP Residual norm 2.276165392677e-03 
+  8 KSP Residual norm 9.624572808004e-04 
+  9 KSP Residual norm 4.149884807114e-04 
+ 10 KSP Residual norm 1.912645560504e-04 
+ 11 KSP Residual norm 1.091516662456e-04 
+ 12 KSP Residual norm 9.103258630671e-05 
+ 13 KSP Residual norm 9.923568896220e-05 
+ 14 KSP Residual norm 1.195286505196e-04 
+ 15 KSP Residual norm 1.492026080664e-04 
+ 16 KSP Residual norm 1.892585214752e-04 
+ 17 KSP Residual norm 2.422735181410e-04 
+ 18 KSP Residual norm 3.121097959572e-04 
+ 19 KSP Residual norm 4.041092334955e-04 
+ 20 KSP Residual norm 5.255112783290e-04 
+ 21 KSP Residual norm 6.860725999888e-04 
+ 22 KSP Residual norm 8.989302104109e-04 
+ 23 KSP Residual norm 1.181784257608e-03 
+ 24 KSP Residual norm 1.558511584195e-03 
+ 25 KSP Residual norm 2.061365063773e-03 
+ 26 KSP Residual norm 2.733972504874e-03 
+ 27 KSP Residual norm 3.635429038889e-03 
+ 28 KSP Residual norm 4.845886842311e-03 
+ 29 KSP Residual norm 6.474197267118e-03 
+ 30 KSP Residual norm 8.668368754805e-03 
+ 31 KSP Residual norm 1.162989109249e-02 
+ 32 KSP Residual norm 1.563337279777e-02 
+ 33 KSP Residual norm 2.105348546202e-02 
+ 34 KSP Residual norm 2.840196461971e-02 
+ 35 KSP Residual norm 3.837846139170e-02 
+ 36 KSP Residual norm 5.194048409285e-02 
+ 37 KSP Residual norm 7.039966869028e-02 
+ 38 KSP Residual norm 9.555438596754e-02 
+ 39 KSP Residual norm 1.298725294843e-01 
+ 40 KSP Residual norm 1.767436460712e-01 
+ 41 KSP Residual norm 2.408269454841e-01 
+ 42 KSP Residual norm 3.285319589188e-01 
+ 43 KSP Residual norm 4.486828219198e-01 
+ 44 KSP Residual norm 6.134368874270e-01 
+ 45 KSP Residual norm 8.395557901609e-01 
+ 46 KSP Residual norm 1.150165194822e+00 
+ 47 KSP Residual norm 1.577192463588e+00 
+ 48 KSP Residual norm 2.164745223295e+00 
+ 49 KSP Residual norm 2.973796459005e+00 
+ 50 KSP Residual norm 4.088684692946e+00 
+ 51 KSP Residual norm 5.626136915685e+00 
+ 52 KSP Residual norm 7.747799404977e+00 
+ 53 KSP Residual norm 1.067764838192e+01 
+ 54 KSP Residual norm 1.472619190300e+01 
+ 55 KSP Residual norm 2.032412696878e+01 
+ 56 KSP Residual norm 2.806916612143e+01 
+ 57 KSP Residual norm 3.879121407335e+01 
+ 58 KSP Residual norm 5.364312259764e+01 
+ 59 KSP Residual norm 7.422711249903e+01 
+ 60 KSP Residual norm 1.027709489617e+02 
+ 61 KSP Residual norm 1.423735445174e+02 
+ 62 KSP Residual norm 1.973474774855e+02 
+ 63 KSP Residual norm 2.736968427450e+02 
+ 64 KSP Residual norm 3.797841427512e+02 
+ 65 KSP Residual norm 5.272613269283e+02 
+ 66 KSP Residual norm 7.323700461541e+02 
+ 67 KSP Residual norm 1.017758140168e+03 
+ 68 KSP Residual norm 1.415018135868e+03 
+ 69 KSP Residual norm 1.968235860378e+03 
+ 70 KSP Residual norm 2.738952645321e+03 
+ 71 KSP Residual norm 3.813106324273e+03 
+ 72 KSP Residual norm 5.310742983141e+03 
+ 73 KSP Residual norm 7.399609441255e+03 
+ 74 KSP Residual norm 1.031418255372e+04 
+ 75 KSP Residual norm 1.438231737513e+04 
+ 76 KSP Residual norm 2.006257470792e+04 
+ 77 KSP Residual norm 2.799652173612e+04 
+ 78 KSP Residual norm 3.908203090845e+04 
+ 79 KSP Residual norm 5.457603385311e+04 
+ 80 KSP Residual norm 7.623860272676e+04 
+ 81 KSP Residual norm 1.065350302227e+05 
+ 82 KSP Residual norm 1.489193230129e+05 
+ 83 KSP Residual norm 2.082320016885e+05 
+ 84 KSP Residual norm 2.912584249536e+05 
+ 85 KSP Residual norm 4.075125914702e+05 
+ 86 KSP Residual norm 5.703377216776e+05 
+ 87 KSP Residual norm 7.984519847302e+05 
+ 88 KSP Residual norm 1.118119878465e+06 
+ 89 KSP Residual norm 1.566203141935e+06 
+ 90 KSP Residual norm 2.194448341807e+06 
+ 91 KSP Residual norm 3.075513627820e+06 
+ 92 KSP Residual norm 4.311441791576e+06 
+ 93 KSP Residual norm 6.045574916384e+06 
+ 94 KSP Residual norm 8.479311723718e+06 
+ 95 KSP Residual norm 1.189568034468e+07 
+ 96 KSP Residual norm 1.669250454483e+07 
+ 97 KSP Residual norm 2.342907611373e+07 
+ 98 KSP Residual norm 3.289184516933e+07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : DIVERGED_DTOL
+    Total KSP Iterations               : 98
+    Final rnorm                        : 3.289185e+07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 3.863200e+05
+    CG Solve Time                      : 1106.18 (1106.18) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 2 -num_smooths 2 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 1030301
+      Owned Nodes                      : 1030301
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.709849471406e+03 
+  1 KSP Residual norm 4.427918359640e-01 
+  2 KSP Residual norm 5.311836773253e-02 
+  3 KSP Residual norm 1.059606314617e-02 
+  4 KSP Residual norm 2.424587174375e-03 
+  5 KSP Residual norm 5.829370469524e-04 
+  6 KSP Residual norm 1.435922171691e-04 
+  7 KSP Residual norm 3.589118124037e-05 
+  8 KSP Residual norm 9.062927511777e-06 
+  9 KSP Residual norm 2.306449487514e-06 
+ 10 KSP Residual norm 5.907298390657e-07 
+ 11 KSP Residual norm 1.521188449869e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 11
+    Final rnorm                        : 1.521188e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 437.406 (437.406) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 2 -num_smooths 3 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 1030301
+      Owned Nodes                      : 1030301
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.709692419449e+03 
+  1 KSP Residual norm 7.042150898198e-01 
+  2 KSP Residual norm 4.239449230993e-02 
+  3 KSP Residual norm 3.456253415683e-03 
+  4 KSP Residual norm 3.106282324185e-04 
+  5 KSP Residual norm 2.920405177675e-05 
+  6 KSP Residual norm 2.818417498052e-06 
+  7 KSP Residual norm 2.767940615980e-07 
+  8 KSP Residual norm 2.753244601942e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 8
+    Final rnorm                        : 2.753245e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 341.676 (341.676) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 4 -coarse_degree 2 -num_smooths 4 -cells 51,51,51
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 5
+    Number of 1D Quadrature Points (q) : 6
+    Global Nodes                       : 8365427
+    Owned Nodes                        : 8365427
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 1030301
+      Owned Nodes                      : 1030301
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 8365427
+      Owned Nodes                      : 8365427
+  0 KSP Residual norm 2.709709459544e+03 
+  1 KSP Residual norm 6.215540364589e-01 
+  2 KSP Residual norm 1.819109394362e-02 
+  3 KSP Residual norm 7.478909617983e-04 
+  4 KSP Residual norm 3.469450181659e-05 
+  5 KSP Residual norm 1.713351526024e-06 
+  6 KSP Residual norm 8.788458648041e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 6
+    Final rnorm                        : 8.788459e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.874601e+01
+    CG Solve Time                      : 277.898 (277.898) sec
+
+fine p:      8
+
+  coarse p:  1
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 8 -coarse_degree 1 -num_smooths 1 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 15625
+      Owned Nodes                      : 15625
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.720709850792e+03 
+  1 KSP Residual norm 2.445397955355e+01 
+  2 KSP Residual norm 1.375643601589e+01 
+  3 KSP Residual norm 1.056660895128e+01 
+  4 KSP Residual norm 8.782196430366e+00 
+  5 KSP Residual norm 7.593016971108e+00 
+  6 KSP Residual norm 6.716941983427e+00 
+  7 KSP Residual norm 6.027539137162e+00 
+  8 KSP Residual norm 5.460437176454e+00 
+  9 KSP Residual norm 4.979595683458e+00 
+ 10 KSP Residual norm 4.563203535579e+00 
+ 11 KSP Residual norm 4.197168588298e+00 
+ 12 KSP Residual norm 3.871870872023e+00 
+ 13 KSP Residual norm 3.580444036889e+00 
+ 14 KSP Residual norm 3.317840556169e+00 
+ 15 KSP Residual norm 3.080375353762e+00 
+ 16 KSP Residual norm 2.865725856606e+00 
+ 17 KSP Residual norm 2.673764525501e+00 
+ 18 KSP Residual norm 2.509577264874e+00 
+ 19 KSP Residual norm 2.392653774922e+00 
+ 20 KSP Residual norm 2.381833452738e+00 
+ 21 KSP Residual norm 2.626638279640e+00 
+ 22 KSP Residual norm 3.416684830344e+00 
+ 23 KSP Residual norm 5.177736004477e+00 
+ 24 KSP Residual norm 8.537820151596e+00 
+ 25 KSP Residual norm 1.458583536347e+01 
+ 26 KSP Residual norm 2.529602505353e+01 
+ 27 KSP Residual norm 4.423029590235e+01 
+ 28 KSP Residual norm 7.779850024568e+01 
+ 29 KSP Residual norm 1.375568243528e+02 
+ 30 KSP Residual norm 2.444130408048e+02 
+ 31 KSP Residual norm 4.363443718810e+02 
+ 32 KSP Residual norm 7.826102847290e+02 
+ 33 KSP Residual norm 1.410015491254e+03 
+ 34 KSP Residual norm 2.551599451302e+03 
+ 35 KSP Residual norm 4.637183653330e+03 
+ 36 KSP Residual norm 8.462252686288e+03 
+ 37 KSP Residual norm 1.550379446118e+04 
+ 38 KSP Residual norm 2.851247738024e+04 
+ 39 KSP Residual norm 5.262554345188e+04 
+ 40 KSP Residual norm 9.746283359613e+04 
+ 41 KSP Residual norm 1.810823575150e+05 
+ 42 KSP Residual norm 3.374589595976e+05 
+ 43 KSP Residual norm 6.306481195405e+05 
+ 44 KSP Residual norm 1.181652949821e+06 
+ 45 KSP Residual norm 2.219461771545e+06 
+ 46 KSP Residual norm 4.178131535950e+06 
+ 47 KSP Residual norm 7.881689636149e+06 
+ 48 KSP Residual norm 1.489669899624e+07 
+ 49 KSP Residual norm 2.820524127489e+07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : DIVERGED_DTOL
+    Total KSP Iterations               : 49
+    Final rnorm                        : 2.820524e+07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 3.619946e+05
+    CG Solve Time                      : 109.474 (109.474) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 1 -num_smooths 2 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 15625
+      Owned Nodes                      : 15625
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.721283118031e+03 
+  1 KSP Residual norm 3.806062915996e+01 
+  2 KSP Residual norm 1.933465444342e+01 
+  3 KSP Residual norm 1.408101810608e+01 
+  4 KSP Residual norm 1.119668046112e+01 
+  5 KSP Residual norm 9.192111749934e+00 
+  6 KSP Residual norm 7.669350980096e+00 
+  7 KSP Residual norm 6.465207163755e+00 
+  8 KSP Residual norm 5.492152973842e+00 
+  9 KSP Residual norm 4.695075118837e+00 
+ 10 KSP Residual norm 4.035805968033e+00 
+ 11 KSP Residual norm 3.486350185388e+00 
+ 12 KSP Residual norm 3.025431243661e+00 
+ 13 KSP Residual norm 2.636510931537e+00 
+ 14 KSP Residual norm 2.306543910048e+00 
+ 15 KSP Residual norm 2.025136604902e+00 
+ 16 KSP Residual norm 1.783948064025e+00 
+ 17 KSP Residual norm 1.576246555213e+00 
+ 18 KSP Residual norm 1.396572677643e+00 
+ 19 KSP Residual norm 1.240478885617e+00 
+ 20 KSP Residual norm 1.104325804367e+00 
+ 21 KSP Residual norm 9.851218116296e-01 
+ 22 KSP Residual norm 8.803961228187e-01 
+ 23 KSP Residual norm 7.880980862165e-01 
+ 24 KSP Residual norm 7.065171056339e-01 
+ 25 KSP Residual norm 6.342188502419e-01 
+ 26 KSP Residual norm 5.699943457294e-01 
+ 27 KSP Residual norm 5.128192612087e-01 
+ 28 KSP Residual norm 4.618212699558e-01 
+ 29 KSP Residual norm 4.162538068608e-01 
+ 30 KSP Residual norm 3.754748976828e-01 
+ 31 KSP Residual norm 3.389300143118e-01 
+ 32 KSP Residual norm 3.061381311590e-01 
+ 33 KSP Residual norm 2.766803323615e-01 
+ 34 KSP Residual norm 2.501904571171e-01 
+ 35 KSP Residual norm 2.263473787800e-01 
+ 36 KSP Residual norm 2.048685984460e-01 
+ 37 KSP Residual norm 1.855049005533e-01 
+ 38 KSP Residual norm 1.680358704062e-01 
+ 39 KSP Residual norm 1.522661146309e-01 
+ 40 KSP Residual norm 1.380220578194e-01 
+ 41 KSP Residual norm 1.251492139585e-01 
+ 42 KSP Residual norm 1.135098511891e-01 
+ 43 KSP Residual norm 1.029809841685e-01 
+ 44 KSP Residual norm 9.345264075344e-02 
+ 45 KSP Residual norm 8.482635959406e-02 
+ 46 KSP Residual norm 7.701388308781e-02 
+ 47 KSP Residual norm 6.993601642859e-02 
+ 48 KSP Residual norm 6.352162853028e-02 
+ 49 KSP Residual norm 5.770677467322e-02 
+ 50 KSP Residual norm 5.243392402013e-02 
+ 51 KSP Residual norm 4.765127783388e-02 
+ 52 KSP Residual norm 4.331216642779e-02 
+ 53 KSP Residual norm 3.937451468921e-02 
+ 54 KSP Residual norm 3.580036751314e-02 
+ 55 KSP Residual norm 3.255546772714e-02 
+ 56 KSP Residual norm 2.960888012866e-02 
+ 57 KSP Residual norm 2.693265612887e-02 
+ 58 KSP Residual norm 2.450153423393e-02 
+ 59 KSP Residual norm 2.229267221913e-02 
+ 60 KSP Residual norm 2.028540738304e-02 
+ 61 KSP Residual norm 1.846104172314e-02 
+ 62 KSP Residual norm 1.680264926495e-02 
+ 63 KSP Residual norm 1.529490311209e-02 
+ 64 KSP Residual norm 1.392392007594e-02 
+ 65 KSP Residual norm 1.267712099477e-02 
+ 66 KSP Residual norm 1.154310507190e-02 
+ 67 KSP Residual norm 1.051153675315e-02 
+ 68 KSP Residual norm 9.573043831217e-03 
+ 69 KSP Residual norm 8.719125611165e-03 
+ 70 KSP Residual norm 7.942070099656e-03 
+ 71 KSP Residual norm 7.234879294182e-03 
+ 72 KSP Residual norm 6.591201748389e-03 
+ 73 KSP Residual norm 6.005271677892e-03 
+ 74 KSP Residual norm 5.471853949193e-03 
+ 75 KSP Residual norm 4.986194363647e-03 
+ 76 KSP Residual norm 4.543974709898e-03 
+ 77 KSP Residual norm 4.141272112931e-03 
+ 78 KSP Residual norm 3.774522256523e-03 
+ 79 KSP Residual norm 3.440486099302e-03 
+ 80 KSP Residual norm 3.136219743260e-03 
+ 81 KSP Residual norm 2.859047148150e-03 
+ 82 KSP Residual norm 2.606535416027e-03 
+ 83 KSP Residual norm 2.376472397873e-03 
+ 84 KSP Residual norm 2.166846398931e-03 
+ 85 KSP Residual norm 1.975827781546e-03 
+ 86 KSP Residual norm 1.801752284168e-03 
+ 87 KSP Residual norm 1.643105893050e-03 
+ 88 KSP Residual norm 1.498511119102e-03 
+ 89 KSP Residual norm 1.366714546842e-03 
+ 90 KSP Residual norm 1.246575535224e-03 
+ 91 KSP Residual norm 1.137055961852e-03 
+ 92 KSP Residual norm 1.037210912481e-03 
+ 93 KSP Residual norm 9.461802271790e-04 
+ 94 KSP Residual norm 8.631808230126e-04 
+ 95 KSP Residual norm 7.874997207760e-04 
+ 96 KSP Residual norm 7.184877101795e-04 
+ 97 KSP Residual norm 6.555535941637e-04 
+ 98 KSP Residual norm 5.981589586048e-04 
+ 99 KSP Residual norm 5.458134187768e-04 
+100 KSP Residual norm 4.980702985109e-04 
+101 KSP Residual norm 4.545227021222e-04 
+102 KSP Residual norm 4.147999429558e-04 
+103 KSP Residual norm 3.785642957470e-04 
+104 KSP Residual norm 3.455080430827e-04 
+105 KSP Residual norm 3.153507890094e-04 
+106 KSP Residual norm 2.878370153481e-04 
+107 KSP Residual norm 2.627338585266e-04 
+108 KSP Residual norm 2.398290868279e-04 
+109 KSP Residual norm 2.189292597768e-04 
+110 KSP Residual norm 1.998580531028e-04 
+111 KSP Residual norm 1.824547342309e-04 
+112 KSP Residual norm 1.665727746335e-04 
+113 KSP Residual norm 1.520785866450e-04 
+114 KSP Residual norm 1.388503734651e-04 
+115 KSP Residual norm 1.267770821161e-04 
+116 KSP Residual norm 1.157574500554e-04 
+117 KSP Residual norm 1.056991369908e-04 
+118 KSP Residual norm 9.651793422334e-05 
+119 KSP Residual norm 8.813704452598e-05 
+120 KSP Residual norm 8.048642622567e-05 
+121 KSP Residual norm 7.350219571522e-05 
+122 KSP Residual norm 6.712608314269e-05 
+123 KSP Residual norm 6.130493652162e-05 
+124 KSP Residual norm 5.599026990682e-05 
+125 KSP Residual norm 5.113785170948e-05 
+126 KSP Residual norm 4.670732954120e-05 
+127 KSP Residual norm 4.266188833869e-05 
+128 KSP Residual norm 3.896793878802e-05 
+129 KSP Residual norm 3.559483334381e-05 
+130 KSP Residual norm 3.251460739318e-05 
+131 KSP Residual norm 2.970174330797e-05 
+132 KSP Residual norm 2.713295536621e-05 
+133 KSP Residual norm 2.478699366897e-05 
+134 KSP Residual norm 2.264446537659e-05 
+135 KSP Residual norm 2.068767172036e-05 
+136 KSP Residual norm 1.890045938944e-05 
+137 KSP Residual norm 1.726808501723e-05 
+138 KSP Residual norm 1.577709160855e-05 
+139 KSP Residual norm 1.441519585188e-05 
+140 KSP Residual norm 1.317118533826e-05 
+141 KSP Residual norm 1.203482483419e-05 
+142 KSP Residual norm 1.099677078905e-05 
+143 KSP Residual norm 1.004849335170e-05 
+144 KSP Residual norm 9.182205243400e-06 
+145 KSP Residual norm 8.390796871472e-06 
+146 KSP Residual norm 7.667777137468e-06 
+147 KSP Residual norm 7.007219436148e-06 
+148 KSP Residual norm 6.403712388062e-06 
+149 KSP Residual norm 5.852314893293e-06 
+150 KSP Residual norm 5.348515116634e-06 
+151 KSP Residual norm 4.888193068019e-06 
+152 KSP Residual norm 4.467586452828e-06 
+153 KSP Residual norm 4.083259516572e-06 
+154 KSP Residual norm 3.732074606777e-06 
+155 KSP Residual norm 3.411166223727e-06 
+156 KSP Residual norm 3.117917340290e-06 
+157 KSP Residual norm 2.849937784201e-06 
+158 KSP Residual norm 2.605044513661e-06 
+159 KSP Residual norm 2.381243610114e-06 
+160 KSP Residual norm 2.176713843054e-06 
+161 KSP Residual norm 1.989791671463e-06 
+162 KSP Residual norm 1.818957543016e-06 
+163 KSP Residual norm 1.662823399878e-06 
+164 KSP Residual norm 1.520121262629e-06 
+165 KSP Residual norm 1.389692812731e-06 
+166 KSP Residual norm 1.270479882134e-06 
+167 KSP Residual norm 1.161515767740e-06 
+168 KSP Residual norm 1.061917304627e-06 
+169 KSP Residual norm 9.708776251818e-07 
+170 KSP Residual norm 8.876595499569e-07 
+171 KSP Residual norm 8.115895541785e-07 
+172 KSP Residual norm 7.420522513493e-07 
+173 KSP Residual norm 6.784853675956e-07 
+174 KSP Residual norm 6.203751401281e-07 
+175 KSP Residual norm 5.672521234026e-07 
+176 KSP Residual norm 5.186873556486e-07 
+177 KSP Residual norm 4.742888594758e-07 
+178 KSP Residual norm 4.336984424754e-07 
+179 KSP Residual norm 3.965887814034e-07 
+180 KSP Residual norm 3.626607504726e-07 
+181 KSP Residual norm 3.316409926894e-07 
+182 KSP Residual norm 3.032796870284e-07 
+183 KSP Residual norm 2.773485227551e-07 
+184 KSP Residual norm 2.536388402520e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 184
+    Final rnorm                        : 2.536388e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 493.146 (493.146) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 1 -num_smooths 3 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 15625
+      Owned Nodes                      : 15625
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.721790534666e+03 
+  1 KSP Residual norm 4.839132753979e+01 
+  2 KSP Residual norm 2.221775353731e+01 
+  3 KSP Residual norm 1.531079116159e+01 
+  4 KSP Residual norm 1.128840655597e+01 
+  5 KSP Residual norm 8.553253266261e+00 
+  6 KSP Residual norm 6.599835623795e+00 
+  7 KSP Residual norm 5.167907016507e+00 
+  8 KSP Residual norm 4.098110917360e+00 
+  9 KSP Residual norm 3.285758217051e+00 
+ 10 KSP Residual norm 2.659695853743e+00 
+ 11 KSP Residual norm 2.170589680310e+00 
+ 12 KSP Residual norm 1.783723224014e+00 
+ 13 KSP Residual norm 1.474333333546e+00 
+ 14 KSP Residual norm 1.224510340899e+00 
+ 15 KSP Residual norm 1.021111567439e+00 
+ 16 KSP Residual norm 8.543463789176e-01 
+ 17 KSP Residual norm 7.168105485171e-01 
+ 18 KSP Residual norm 6.028224295876e-01 
+ 19 KSP Residual norm 5.079624086673e-01 
+ 20 KSP Residual norm 4.287497788056e-01 
+ 21 KSP Residual norm 3.624130399046e-01 
+ 22 KSP Residual norm 3.067242297191e-01 
+ 23 KSP Residual norm 2.598775958592e-01 
+ 24 KSP Residual norm 2.203993565811e-01 
+ 25 KSP Residual norm 1.870795651103e-01 
+ 26 KSP Residual norm 1.589199260658e-01 
+ 27 KSP Residual norm 1.350933030770e-01 
+ 28 KSP Residual norm 1.149119266398e-01 
+ 29 KSP Residual norm 9.780217218099e-02 
+ 30 KSP Residual norm 8.328436839603e-02 
+ 31 KSP Residual norm 7.095650554157e-02 
+ 32 KSP Residual norm 6.048100163863e-02 
+ 33 KSP Residual norm 5.157389039344e-02 
+ 34 KSP Residual norm 4.399594383094e-02 
+ 35 KSP Residual norm 3.754535235525e-02 
+ 36 KSP Residual norm 3.205166679777e-02 
+ 37 KSP Residual norm 2.737076888833e-02 
+ 38 KSP Residual norm 2.338068394723e-02 
+ 39 KSP Residual norm 1.997808625938e-02 
+ 40 KSP Residual norm 1.707537626494e-02 
+ 41 KSP Residual norm 1.459823132870e-02 
+ 42 KSP Residual norm 1.248354985055e-02 
+ 43 KSP Residual norm 1.067772290182e-02 
+ 44 KSP Residual norm 9.135179197726e-03 
+ 45 KSP Residual norm 7.817158641555e-03 
+ 46 KSP Residual norm 6.690677351827e-03 
+ 47 KSP Residual norm 5.727653363805e-03 
+ 48 KSP Residual norm 4.904167352646e-03 
+ 49 KSP Residual norm 4.199836973809e-03 
+ 50 KSP Residual norm 3.597286926999e-03 
+ 51 KSP Residual norm 3.081699758843e-03 
+ 52 KSP Residual norm 2.640434835919e-03 
+ 53 KSP Residual norm 2.262704931198e-03 
+ 54 KSP Residual norm 1.939301544974e-03 
+ 55 KSP Residual norm 1.662361483453e-03 
+ 56 KSP Residual norm 1.425168391942e-03 
+ 57 KSP Residual norm 1.221983923541e-03 
+ 58 KSP Residual norm 1.047904050312e-03 
+ 59 KSP Residual norm 8.987367183371e-04 
+ 60 KSP Residual norm 7.708976324827e-04 
+ 61 KSP Residual norm 6.613214491425e-04 
+ 62 KSP Residual norm 5.673860705256e-04 
+ 63 KSP Residual norm 4.868480847128e-04 
+ 64 KSP Residual norm 4.177876919683e-04 
+ 65 KSP Residual norm 3.585617083535e-04 
+ 66 KSP Residual norm 3.077634497757e-04 
+ 67 KSP Residual norm 2.641884791943e-04 
+ 68 KSP Residual norm 2.268053519425e-04 
+ 69 KSP Residual norm 1.947306232503e-04 
+ 70 KSP Residual norm 1.672074915754e-04 
+ 71 KSP Residual norm 1.435875444215e-04 
+ 72 KSP Residual norm 1.233151522995e-04 
+ 73 KSP Residual norm 1.059141237427e-04 
+ 74 KSP Residual norm 9.097629129866e-05 
+ 75 KSP Residual norm 7.815174713090e-05 
+ 76 KSP Residual norm 6.714048815832e-05 
+ 77 KSP Residual norm 5.768526589954e-05 
+ 78 KSP Residual norm 4.956546621134e-05 
+ 79 KSP Residual norm 4.259186962697e-05 
+ 80 KSP Residual norm 3.660216486558e-05 
+ 81 KSP Residual norm 3.145710657785e-05 
+ 82 KSP Residual norm 2.703722433968e-05 
+ 83 KSP Residual norm 2.324000333075e-05 
+ 84 KSP Residual norm 1.997746877728e-05 
+ 85 KSP Residual norm 1.717411600400e-05 
+ 86 KSP Residual norm 1.476513641693e-05 
+ 87 KSP Residual norm 1.269489690573e-05 
+ 88 KSP Residual norm 1.091563627776e-05 
+ 89 KSP Residual norm 9.386347625877e-06 
+ 90 KSP Residual norm 8.071819975368e-06 
+ 91 KSP Residual norm 6.941816420263e-06 
+ 92 KSP Residual norm 5.970369221727e-06 
+ 93 KSP Residual norm 5.135175160759e-06 
+ 94 KSP Residual norm 4.417076827355e-06 
+ 95 KSP Residual norm 3.799617576849e-06 
+ 96 KSP Residual norm 3.268659667748e-06 
+ 97 KSP Residual norm 2.812056553532e-06 
+ 98 KSP Residual norm 2.419371652325e-06 
+ 99 KSP Residual norm 2.081636943168e-06 
+100 KSP Residual norm 1.791145760674e-06 
+101 KSP Residual norm 1.541274905124e-06 
+102 KSP Residual norm 1.326331918172e-06 
+103 KSP Residual norm 1.141423951379e-06 
+104 KSP Residual norm 9.823451536778e-07 
+105 KSP Residual norm 8.454799732081e-07 
+106 KSP Residual norm 7.277201006981e-07 
+107 KSP Residual norm 6.263931326027e-07 
+108 KSP Residual norm 5.392012939736e-07 
+109 KSP Residual norm 4.641687986472e-07 
+110 KSP Residual norm 3.995966188726e-07 
+111 KSP Residual norm 3.440236354116e-07 
+112 KSP Residual norm 2.961932442494e-07 
+113 KSP Residual norm 2.550246687188e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 113
+    Final rnorm                        : 2.550247e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 416.634 (416.634) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 1 -num_smooths 4 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 2
+      Global Nodes                     : 15625
+      Owned Nodes                      : 15625
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.722149688814e+03 
+  1 KSP Residual norm 5.485921775888e+01 
+  2 KSP Residual norm 2.322158842475e+01 
+  3 KSP Residual norm 1.494238460036e+01 
+  4 KSP Residual norm 1.022425035306e+01 
+  5 KSP Residual norm 7.232480439437e+00 
+  6 KSP Residual norm 5.248533646757e+00 
+  7 KSP Residual norm 3.889131718687e+00 
+  8 KSP Residual norm 2.931050561940e+00 
+  9 KSP Residual norm 2.238953235608e+00 
+ 10 KSP Residual norm 1.728392122140e+00 
+ 11 KSP Residual norm 1.345194972749e+00 
+ 12 KSP Residual norm 1.053595629871e+00 
+ 13 KSP Residual norm 8.292833032522e-01 
+ 14 KSP Residual norm 6.552698246032e-01 
+ 15 KSP Residual norm 5.193855989792e-01 
+ 16 KSP Residual norm 4.127260371619e-01 
+ 17 KSP Residual norm 3.286608048035e-01 
+ 18 KSP Residual norm 2.621831452780e-01 
+ 19 KSP Residual norm 2.094699023613e-01 
+ 20 KSP Residual norm 1.675758236470e-01 
+ 21 KSP Residual norm 1.342159930940e-01 
+ 22 KSP Residual norm 1.076077817459e-01 
+ 23 KSP Residual norm 8.635406838349e-02 
+ 24 KSP Residual norm 6.935575042933e-02 
+ 25 KSP Residual norm 5.574545979389e-02 
+ 26 KSP Residual norm 4.483688667016e-02 
+ 27 KSP Residual norm 3.608574931567e-02 
+ 28 KSP Residual norm 2.905955108817e-02 
+ 29 KSP Residual norm 2.341402859986e-02 
+ 30 KSP Residual norm 1.887473334058e-02 
+ 31 KSP Residual norm 1.522257638963e-02 
+ 32 KSP Residual norm 1.228244871485e-02 
+ 33 KSP Residual norm 9.914238898654e-03 
+ 34 KSP Residual norm 8.005726755831e-03 
+ 35 KSP Residual norm 6.466949572974e-03 
+ 36 KSP Residual norm 5.225727692767e-03 
+ 37 KSP Residual norm 4.224105100199e-03 
+ 38 KSP Residual norm 3.415513767189e-03 
+ 39 KSP Residual norm 2.762511614202e-03 
+ 40 KSP Residual norm 2.234975897696e-03 
+ 41 KSP Residual norm 1.808658760123e-03 
+ 42 KSP Residual norm 1.464031192156e-03 
+ 43 KSP Residual norm 1.185356975011e-03 
+ 44 KSP Residual norm 9.599502272010e-04 
+ 45 KSP Residual norm 7.775796911787e-04 
+ 46 KSP Residual norm 6.299904141012e-04 
+ 47 KSP Residual norm 5.105194319077e-04 
+ 48 KSP Residual norm 4.137867903323e-04 
+ 49 KSP Residual norm 3.354469904287e-04 
+ 50 KSP Residual norm 2.719889332993e-04 
+ 51 KSP Residual norm 2.205748186014e-04 
+ 52 KSP Residual norm 1.789103498872e-04 
+ 53 KSP Residual norm 1.451401158132e-04 
+ 54 KSP Residual norm 1.177632281038e-04 
+ 55 KSP Residual norm 9.556526674989e-05 
+ 56 KSP Residual norm 7.756335937318e-05 
+ 57 KSP Residual norm 6.296184397211e-05 
+ 58 KSP Residual norm 5.111646332707e-05 
+ 59 KSP Residual norm 4.150543995400e-05 
+ 60 KSP Residual norm 3.370610213416e-05 
+ 61 KSP Residual norm 2.737599012485e-05 
+ 62 KSP Residual norm 2.223757949890e-05 
+ 63 KSP Residual norm 1.806592576877e-05 
+ 64 KSP Residual norm 1.467866910770e-05 
+ 65 KSP Residual norm 1.192794630972e-05 
+ 66 KSP Residual norm 9.693844518259e-06 
+ 67 KSP Residual norm 7.879101610352e-06 
+ 68 KSP Residual norm 6.404814853668e-06 
+ 69 KSP Residual norm 5.206965304656e-06 
+ 70 KSP Residual norm 4.233602283068e-06 
+ 71 KSP Residual norm 3.442562109730e-06 
+ 72 KSP Residual norm 2.799619396567e-06 
+ 73 KSP Residual norm 2.276988560344e-06 
+ 74 KSP Residual norm 1.852109030409e-06 
+ 75 KSP Residual norm 1.506660243589e-06 
+ 76 KSP Residual norm 1.225762843538e-06 
+ 77 KSP Residual norm 9.973307641475e-07 
+ 78 KSP Residual norm 8.115456274878e-07 
+ 79 KSP Residual norm 6.604302868688e-07 
+ 80 KSP Residual norm 5.375027745433e-07 
+ 81 KSP Residual norm 4.374954373810e-07 
+ 82 KSP Residual norm 3.561269630278e-07 
+ 83 KSP Residual norm 2.899173052581e-07 
+ 84 KSP Residual norm 2.360374131165e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 84
+    Final rnorm                        : 2.360374e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 398.249 (398.249) sec
+
+  coarse p:  2
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 8 -coarse_degree 2 -num_smooths 1 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 132651
+      Owned Nodes                      : 132651
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788307732964e+03 
+  1 KSP Residual norm 1.736706279818e+00 
+  2 KSP Residual norm 1.208926842024e+00 
+  3 KSP Residual norm 9.675653074838e-01 
+  4 KSP Residual norm 8.057326921481e-01 
+  5 KSP Residual norm 6.836376030584e-01 
+  6 KSP Residual norm 5.861722190918e-01 
+  7 KSP Residual norm 5.058583302877e-01 
+  8 KSP Residual norm 4.383980339121e-01 
+  9 KSP Residual norm 3.810390359572e-01 
+ 10 KSP Residual norm 3.318700484310e-01 
+ 11 KSP Residual norm 2.894827471394e-01 
+ 12 KSP Residual norm 2.527946070647e-01 
+ 13 KSP Residual norm 2.209493417266e-01 
+ 14 KSP Residual norm 1.932600352477e-01 
+ 15 KSP Residual norm 1.691841539686e-01 
+ 16 KSP Residual norm 1.483425513869e-01 
+ 17 KSP Residual norm 1.306426913509e-01 
+ 18 KSP Residual norm 1.166960992307e-01 
+ 19 KSP Residual norm 1.090020270322e-01 
+ 20 KSP Residual norm 1.143398310419e-01 
+ 21 KSP Residual norm 1.452928571867e-01 
+ 22 KSP Residual norm 2.182237075615e-01 
+ 23 KSP Residual norm 3.559977195338e-01 
+ 24 KSP Residual norm 5.991310837773e-01 
+ 25 KSP Residual norm 1.021084473806e+00 
+ 26 KSP Residual norm 1.752358512629e+00 
+ 27 KSP Residual norm 3.023260456734e+00 
+ 28 KSP Residual norm 5.240585530851e+00 
+ 29 KSP Residual norm 9.125141888328e+00 
+ 30 KSP Residual norm 1.595899875765e+01 
+ 31 KSP Residual norm 2.803154126668e+01 
+ 32 KSP Residual norm 4.944719277724e+01 
+ 33 KSP Residual norm 8.759353803950e+01 
+ 34 KSP Residual norm 1.558196398179e+02 
+ 35 KSP Residual norm 2.783396647188e+02 
+ 36 KSP Residual norm 4.992418688583e+02 
+ 37 KSP Residual norm 8.990950721402e+02 
+ 38 KSP Residual norm 1.625656977524e+03 
+ 39 KSP Residual norm 2.950830465467e+03 
+ 40 KSP Residual norm 5.376604080291e+03 
+ 41 KSP Residual norm 9.832632147474e+03 
+ 42 KSP Residual norm 1.804564796019e+04 
+ 43 KSP Residual norm 3.323176927449e+04 
+ 44 KSP Residual norm 6.139675826657e+04 
+ 45 KSP Residual norm 1.137830755914e+05 
+ 46 KSP Residual norm 2.114838579684e+05 
+ 47 KSP Residual norm 3.941579193525e+05 
+ 48 KSP Residual norm 7.365176401325e+05 
+ 49 KSP Residual norm 1.379569468408e+06 
+ 50 KSP Residual norm 2.589890064257e+06 
+ 51 KSP Residual norm 4.872244472018e+06 
+ 52 KSP Residual norm 9.183808479971e+06 
+ 53 KSP Residual norm 1.734212484971e+07 
+ 54 KSP Residual norm 3.280282215841e+07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : DIVERGED_DTOL
+    Total KSP Iterations               : 54
+    Final rnorm                        : 3.280282e+07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 4.321007e+05
+    CG Solve Time                      : 182.26 (182.26) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 2 -num_smooths 2 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 132651
+      Owned Nodes                      : 132651
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788304684428e+03 
+  1 KSP Residual norm 2.647035210775e+00 
+  2 KSP Residual norm 1.606112897434e+00 
+  3 KSP Residual norm 1.115465913955e+00 
+  4 KSP Residual norm 8.022981817669e-01 
+  5 KSP Residual norm 5.846229644610e-01 
+  6 KSP Residual norm 4.284897496399e-01 
+  7 KSP Residual norm 3.149425244616e-01 
+  8 KSP Residual norm 2.318165096792e-01 
+  9 KSP Residual norm 1.707599926947e-01 
+ 10 KSP Residual norm 1.258387620074e-01 
+ 11 KSP Residual norm 9.276053782593e-02 
+ 12 KSP Residual norm 6.839193240902e-02 
+ 13 KSP Residual norm 5.043480815110e-02 
+ 14 KSP Residual norm 3.719970693865e-02 
+ 15 KSP Residual norm 2.744325170095e-02 
+ 16 KSP Residual norm 2.024989126230e-02 
+ 17 KSP Residual norm 1.494530486536e-02 
+ 18 KSP Residual norm 1.103277891994e-02 
+ 19 KSP Residual norm 8.146391727942e-03 
+ 20 KSP Residual norm 6.016545512067e-03 
+ 21 KSP Residual norm 4.444584848975e-03 
+ 22 KSP Residual norm 3.284106038767e-03 
+ 23 KSP Residual norm 2.427194038124e-03 
+ 24 KSP Residual norm 1.794288005618e-03 
+ 25 KSP Residual norm 1.326718574783e-03 
+ 26 KSP Residual norm 9.812121025114e-04 
+ 27 KSP Residual norm 7.258429708498e-04 
+ 28 KSP Residual norm 5.370519347605e-04 
+ 29 KSP Residual norm 3.974493401814e-04 
+ 30 KSP Residual norm 2.941962677591e-04 
+ 31 KSP Residual norm 2.178112903869e-04 
+ 32 KSP Residual norm 1.612907345686e-04 
+ 33 KSP Residual norm 1.194599161807e-04 
+ 34 KSP Residual norm 8.849458677598e-05 
+ 35 KSP Residual norm 6.556784297283e-05 
+ 36 KSP Residual norm 4.858953892918e-05 
+ 37 KSP Residual norm 3.601391839409e-05 
+ 38 KSP Residual norm 2.669757083588e-05 
+ 39 KSP Residual norm 1.979452028227e-05 
+ 40 KSP Residual norm 1.467872048178e-05 
+ 41 KSP Residual norm 1.088678295914e-05 
+ 42 KSP Residual norm 8.075645935528e-06 
+ 43 KSP Residual norm 5.991279054051e-06 
+ 44 KSP Residual norm 4.445541516874e-06 
+ 45 KSP Residual norm 3.299065554772e-06 
+ 46 KSP Residual norm 2.448593651227e-06 
+ 47 KSP Residual norm 1.817608629890e-06 
+ 48 KSP Residual norm 1.349398859025e-06 
+ 49 KSP Residual norm 1.001924661368e-06 
+ 50 KSP Residual norm 7.440173405644e-07 
+ 51 KSP Residual norm 5.525643298410e-07 
+ 52 KSP Residual norm 4.104242408298e-07 
+ 53 KSP Residual norm 3.048822489042e-07 
+ 54 KSP Residual norm 2.265055748950e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 54
+    Final rnorm                        : 2.265056e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 218.845 (218.845) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 2 -num_smooths 3 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 132651
+      Owned Nodes                      : 132651
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788022316360e+03 
+  1 KSP Residual norm 3.009067983403e+00 
+  2 KSP Residual norm 1.569538351556e+00 
+  3 KSP Residual norm 9.058778768388e-01 
+  4 KSP Residual norm 5.349117457067e-01 
+  5 KSP Residual norm 3.178775778253e-01 
+  6 KSP Residual norm 1.892874345947e-01 
+  7 KSP Residual norm 1.128133190355e-01 
+  8 KSP Residual norm 6.727581874353e-02 
+  9 KSP Residual norm 4.014290542569e-02 
+ 10 KSP Residual norm 2.396757869324e-02 
+ 11 KSP Residual norm 1.431919553093e-02 
+ 12 KSP Residual norm 8.560511852544e-03 
+ 13 KSP Residual norm 5.121171635111e-03 
+ 14 KSP Residual norm 3.065666966573e-03 
+ 15 KSP Residual norm 1.836374923737e-03 
+ 16 KSP Residual norm 1.100706063026e-03 
+ 17 KSP Residual norm 6.601563587319e-04 
+ 18 KSP Residual norm 3.961675958358e-04 
+ 19 KSP Residual norm 2.378804471308e-04 
+ 20 KSP Residual norm 1.429147641704e-04 
+ 21 KSP Residual norm 8.590628743244e-05 
+ 22 KSP Residual norm 5.166463711029e-05 
+ 23 KSP Residual norm 3.108663011706e-05 
+ 24 KSP Residual norm 1.871359365124e-05 
+ 25 KSP Residual norm 1.127030610235e-05 
+ 26 KSP Residual norm 6.790489992068e-06 
+ 27 KSP Residual norm 4.093035980374e-06 
+ 28 KSP Residual norm 2.468092713273e-06 
+ 29 KSP Residual norm 1.488817617899e-06 
+ 30 KSP Residual norm 8.984182599557e-07 
+ 31 KSP Residual norm 5.423327792358e-07 
+ 32 KSP Residual norm 3.274890475850e-07 
+ 33 KSP Residual norm 1.978176456994e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 33
+    Final rnorm                        : 1.978176e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 171.886 (171.886) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 2 -num_smooths 4 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 3
+      Global Nodes                     : 132651
+      Owned Nodes                      : 132651
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.787803008730e+03 
+  1 KSP Residual norm 3.070118630293e+00 
+  2 KSP Residual norm 1.357757859947e+00 
+  3 KSP Residual norm 6.514548674429e-01 
+  4 KSP Residual norm 3.171980381612e-01 
+  5 KSP Residual norm 1.549710423449e-01 
+  6 KSP Residual norm 7.581929445939e-02 
+  7 KSP Residual norm 3.713713682758e-02 
+  8 KSP Residual norm 1.821156869651e-02 
+  9 KSP Residual norm 8.941483000263e-03 
+ 10 KSP Residual norm 4.395365446881e-03 
+ 11 KSP Residual norm 2.163184508088e-03 
+ 12 KSP Residual norm 1.065833458774e-03 
+ 13 KSP Residual norm 5.257308607725e-04 
+ 14 KSP Residual norm 2.595946697203e-04 
+ 15 KSP Residual norm 1.283115363532e-04 
+ 16 KSP Residual norm 6.348232374554e-05 
+ 17 KSP Residual norm 3.143670176070e-05 
+ 18 KSP Residual norm 1.558111453176e-05 
+ 19 KSP Residual norm 7.728911387848e-06 
+ 20 KSP Residual norm 3.836876917689e-06 
+ 21 KSP Residual norm 1.906159480652e-06 
+ 22 KSP Residual norm 9.476439054825e-07 
+ 23 KSP Residual norm 4.714320602743e-07 
+ 24 KSP Residual norm 2.346741050344e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 24
+    Final rnorm                        : 2.346741e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 151.459 (151.459) sec
+
+  coarse p:  4
+
+    v:       1
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing jacobi -degree 8 -coarse_degree 4 -num_smooths 1 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 1092727
+      Owned Nodes                      : 1092727
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788262044961e+03 
+  1 KSP Residual norm 1.578813979898e-01 
+  2 KSP Residual norm 5.707469617516e-02 
+  3 KSP Residual norm 2.743836668118e-02 
+  4 KSP Residual norm 1.516571458802e-02 
+  5 KSP Residual norm 9.061328220977e-03 
+  6 KSP Residual norm 5.688716200118e-03 
+  7 KSP Residual norm 3.702282904461e-03 
+  8 KSP Residual norm 2.487303299971e-03 
+  9 KSP Residual norm 1.735968544730e-03 
+ 10 KSP Residual norm 1.291464925876e-03 
+ 11 KSP Residual norm 1.085750104349e-03 
+ 12 KSP Residual norm 1.103588850736e-03 
+ 13 KSP Residual norm 1.349430866187e-03 
+ 14 KSP Residual norm 1.850907550466e-03 
+ 15 KSP Residual norm 2.693959689660e-03 
+ 16 KSP Residual norm 4.054727189197e-03 
+ 17 KSP Residual norm 6.243063135096e-03 
+ 18 KSP Residual norm 9.782973778456e-03 
+ 19 KSP Residual norm 1.555595596932e-02 
+ 20 KSP Residual norm 2.505013980662e-02 
+ 21 KSP Residual norm 4.079190817301e-02 
+ 22 KSP Residual norm 6.709608547584e-02 
+ 23 KSP Residual norm 1.113761143392e-01 
+ 24 KSP Residual norm 1.864439280853e-01 
+ 25 KSP Residual norm 3.145676977062e-01 
+ 26 KSP Residual norm 5.346668447085e-01 
+ 27 KSP Residual norm 9.151320697352e-01 
+ 28 KSP Residual norm 1.576775987437e+00 
+ 29 KSP Residual norm 2.734107385734e+00 
+ 30 KSP Residual norm 4.769884540413e+00 
+ 31 KSP Residual norm 8.370346218528e+00 
+ 32 KSP Residual norm 1.477148716796e+01 
+ 33 KSP Residual norm 2.620926527052e+01 
+ 34 KSP Residual norm 4.674556093229e+01 
+ 35 KSP Residual norm 8.378861445420e+01 
+ 36 KSP Residual norm 1.509007299813e+02 
+ 37 KSP Residual norm 2.729984580430e+02 
+ 38 KSP Residual norm 4.960105480008e+02 
+ 39 KSP Residual norm 9.048612452533e+02 
+ 40 KSP Residual norm 1.657035887417e+03 
+ 41 KSP Residual norm 3.045370534907e+03 
+ 42 KSP Residual norm 5.615753642696e+03 
+ 43 KSP Residual norm 1.038818902747e+04 
+ 44 KSP Residual norm 1.927273553476e+04 
+ 45 KSP Residual norm 3.585342860133e+04 
+ 46 KSP Residual norm 6.686804999648e+04 
+ 47 KSP Residual norm 1.250055009339e+05 
+ 48 KSP Residual norm 2.342012252034e+05 
+ 49 KSP Residual norm 4.396742986936e+05 
+ 50 KSP Residual norm 8.269749247163e+05 
+ 51 KSP Residual norm 1.558172049044e+06 
+ 52 KSP Residual norm 2.940678295724e+06 
+ 53 KSP Residual norm 5.558279635836e+06 
+ 54 KSP Residual norm 1.052082924862e+07 
+ 55 KSP Residual norm 1.994050180809e+07 
+ 56 KSP Residual norm 3.784095900328e+07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : DIVERGED_DTOL
+    Total KSP Iterations               : 56
+    Final rnorm                        : 3.784096e+07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 5.011355e+05
+    CG Solve Time                      : 5088.71 (5088.71) sec
+
+    v:       2
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 4 -num_smooths 2 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 1092727
+      Owned Nodes                      : 1092727
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788167029103e+03 
+  1 KSP Residual norm 2.718290308402e-01 
+  2 KSP Residual norm 5.528264725679e-02 
+  3 KSP Residual norm 1.763001121966e-02 
+  4 KSP Residual norm 6.429589902911e-03 
+  5 KSP Residual norm 2.449568719481e-03 
+  6 KSP Residual norm 9.476493835966e-04 
+  7 KSP Residual norm 3.687940352763e-04 
+  8 KSP Residual norm 1.439158185075e-04 
+  9 KSP Residual norm 5.625077307361e-05 
+ 10 KSP Residual norm 2.201186549662e-05 
+ 11 KSP Residual norm 8.622103297018e-06 
+ 12 KSP Residual norm 3.380296367444e-06 
+ 13 KSP Residual norm 1.326331440985e-06 
+ 14 KSP Residual norm 5.208115155234e-07 
+ 15 KSP Residual norm 2.046529262101e-07 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 15
+    Final rnorm                        : 2.046529e-07
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 2211.16 (2211.16) sec
+
+    v:       3
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 4 -num_smooths 3 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 1092727
+      Owned Nodes                      : 1092727
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788066070882e+03 
+  1 KSP Residual norm 4.268832105675e-01 
+  2 KSP Residual norm 4.798670180425e-02 
+  3 KSP Residual norm 8.266823809725e-03 
+  4 KSP Residual norm 1.573816748110e-03 
+  5 KSP Residual norm 3.054051802104e-04 
+  6 KSP Residual norm 5.957209460921e-05 
+  7 KSP Residual norm 1.164543955243e-05 
+  8 KSP Residual norm 2.279253385367e-06 
+  9 KSP Residual norm 4.464305202923e-07 
+ 10 KSP Residual norm 8.748358474969e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 10
+    Final rnorm                        : 8.748358e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 1565.31 (1565.31) sec
+
+    v:       4
+
+Running test:
+/home/jeremy/Dev/petsc/cpu-opt/bin/mpiexec ./multigrid -ksp_type richardson -ksp_monitor -dm_plex_box_lower -3,-3,-3 -dm_plex_box_upper 3,3,3 -smoothing chebyshev -degree 8 -coarse_degree 4 -num_smooths 4 -cells 26,26,26
+
+-- CEED Benchmark Problem 3 -- libCEED + PETSc + PCMG --
+  PETSc:
+    PETSc Vec Type                     : seq
+  libCEED:
+    libCEED Backend                    : /cpu/self/avx/blocked
+    libCEED Backend MemType            : host
+  Mesh:
+    Number of 1D Basis Nodes (p)       : 9
+    Number of 1D Quadrature Points (q) : 10
+    Global Nodes                       : 8869743
+    Owned Nodes                        : 8869743
+    DoF per node                       : 1
+  Multigrid:
+    Number of Levels                   : 2
+    Level 0 (coarse):
+      Number of 1D Basis Nodes (p)     : 5
+      Global Nodes                     : 1092727
+      Owned Nodes                      : 1092727
+    Level 1 (fine):
+      Number of 1D Basis Nodes (p)     : 9
+      Global Nodes                     : 8869743
+      Owned Nodes                      : 8869743
+  0 KSP Residual norm 2.788039000220e+03 
+  1 KSP Residual norm 4.329918358213e-01 
+  2 KSP Residual norm 2.967936247656e-02 
+  3 KSP Residual norm 3.022749743095e-03 
+  4 KSP Residual norm 3.230438986396e-04 
+  5 KSP Residual norm 3.505292315428e-05 
+  6 KSP Residual norm 3.834649362213e-06 
+  7 KSP Residual norm 4.219341474082e-07 
+  8 KSP Residual norm 4.665092762220e-08 
+  KSP:
+    KSP Type                           : richardson
+    KSP Convergence                    : CONVERGED_RTOL
+    Total KSP Iterations               : 8
+    Final rnorm                        : 4.665093e-08
+  PCMG:
+    PCMG Type                          : MULTIPLICATIVE
+    PCMG Cycle Type                    : v
+  Performance:
+    Pointwise Error (max)              : 1.880176e+01
+    CG Solve Time                      : 1299.61 (1299.61) sec

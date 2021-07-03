@@ -206,7 +206,7 @@ where $\mathbf{G}$ represents the element assembly operator, $\mathbf{B}$ is a b
 
 Consider the specific case of a block Toeplitz operator representing an arbitrary second order scalar PDE in one dimension with Lagrange basis of polynomial degree $p$ given in the form of \cref{pdediscrete} and \cref{efficienthighorder}.
 The basis $\mathbf{B}$ is defined on the mesh grid with points given by $x_i$, for $i \in \left\lbrace 1, 2, \dots, p + 1 \right\rbrace$ on one element.
-The nodes on the left and right boundaries of the element map to the same Fourier mode when localized to a single finite element, so we can compute the symbol matrix of size $p \times p$ as
+The nodes on the left and right boundaries of the element map to the same Fourier mode when localized to nodes unique to a single finite element, so we can compute the symbol matrix of size $p \times p$ as
 \begin{equation}\label{symbolscalar1d}
 \tilde{\mathbf{A}} = \mathbf{Q}^T \left( \mathbf{A}_e \odot \left[ e^{\imath \left( x_j - x_i \right) \theta / h} \right] \right) \mathbf{Q},
 \end{equation}
@@ -267,7 +267,7 @@ $\mathbf{A}_e$ is the finite element operator for the element and $\mathbf{Q}$ i
 
 Note that this LFA notation is applicable to any second-order PDE with a weak form that can be represented by \cref{efficienthighorder}.
 This representation is used in LFAToolkit.jl, where the users provide the finite element basis $\mathbf{B}$, the node to mode mapping $\mathbf{Q}$, and the pointwise representation of the weak form $\mathbf{D}$, and the software can provide the LFA of the PDE with various preconditioners.
-The nodes may be defined by points $\mathbf x_i$ or more generally, as dual basis functions that may be applied to the Fourier modes; however we restrict ourselves to nodal bases in this paper.
+The nodes may be defined by points $\mathbf x_i$ or more generally, as dual basis functions that may be applied to the Fourier modes; however, we restrict ourselves to nodal bases in this paper.
 
 If the pointwise representation of the weak form $\mathbf{D}$ has a tensor product structure, then the element operator $\mathbf{A}_e$ and therefore the symbol $\tilde{\mathbf{A}}$ will have a tensor product structure, as shown in \cite{he2020two}.
 We omit this optimization in this analysis and LFAToolkit.jl in favor of supporting second-order PDEs that do not have a tensor product decomposition.
@@ -277,7 +277,7 @@ We omit this optimization in this analysis and LFAToolkit.jl in favor of support
 % -----------------------------------------------------------------------------
 
 Multigrid methods require a fine grid smoother, typically applied both before and after the coarse grid correction is computed.
-In this section, we compute the error propagation operator and smoothing factor for two polynomial smoothers, Jacobi and Chebyshev.
+In this section, we compute the symbol of the error propagation operator for two polynomial smoothers, Jacobi and Chebyshev.
 
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
 The LFA-predicted convergence factor is given by the maximum spectral radius of the symbol across all frequencies
@@ -316,7 +316,7 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
   \caption{Jacobi smoothing for high-order finite elements for the 1D Laplacian.}
 \end{figure}
 
-Using \cref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left( - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum_2,fig:jacobi_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange bases on Gauss-Lobatto points.
+Using \cref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left[ - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum_2,fig:jacobi_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange basis functions on Gauss-Lobatto points.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Chebyshev Smoother}\label{sec:chebyshev}
@@ -390,7 +390,7 @@ with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \righ
   \caption{Chebyshev smoothing for high-order finite elements for the 1D Laplacian.}
 \end{figure}
 
-Using \cref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum_2,fig:chebyshev_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange bases on Gauss-Lobatto points.
+Using \cref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum_2,fig:chebyshev_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange basis functions on Gauss-Lobatto points.
 In both plots, we use the computation of the extremal eigenvalues discussed below.
 We see improved smoothing when compared to the Jacobi smoothing in \cref{fig:jacobi_spectrum_2,fig:jacobi_spectrum_4}.
 
@@ -1008,9 +1008,10 @@ The LFA two-grid convergence factor for three dimensional linear elasticity is m
 
 In this paper we developed LFA of p-multigrid with arbitrary second-order PDEs using high-order finite element discretizations by using an operator representation for efficient application of matrix-free implementations.
 We introduced LFAToolkit.jl \cite{thompson2021toolkit}, a new Julia package for LFA of high-order finite element methods, and used LFAToolkit.jl to investigate p-multigrid method with Jacobi and Chebyshev semi-iterative method smoothing and aggressive coarsening strategies.
-The LFA of p-multigrid framework presented here can be extended to the LFA of h-multigrid methods and reproduces previous work in this area.
-
 We observed that the performance of p-multigrid with these two polynomial smoothers degrades as we coarsen more aggressively.
+
+The LFA of p-multigrid framework presented here can be extended to the LFA of h-multigrid methods and reproduces previous work in this area.
+Also, we briefly described how thi work can be extended to LFA of h-multigrid for finite difference discretization stencils that can be represented as finite difference methods.
 
 The LFA formulation in LFAToolkit.jl accurately predicts the performance of two-grid p-multigrid with polynomial smoothers for the scalar Laplacian in three dimensions and can provide two-grid convergence factors for more complex PDEs, such as linear elasticity in three dimensions.
 

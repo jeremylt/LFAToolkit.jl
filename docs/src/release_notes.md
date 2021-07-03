@@ -2,7 +2,15 @@
 
 ## Current Development
 
-Current development includes improved functionality and bugfixes.
+Current development includes:
+
+Enhancements:
+
+Bugfixes:
+
+## v0.4.0
+
+This release includes improved functionality and bugfixes.
 
 Enhancements:
 
@@ -11,15 +19,10 @@ Enhancements:
 Bugfixes:
 
 * Minor spelling and notation errors corrected
-
 * Newton tolerance for quadrature point computation relaxed
-
 * Identity preconditioner modified for compatibility with multigrid
-
 * Fix computation of change of coordinates for gradient and quadrature weights
-
 * Fix computation of eigenvalue estimates and error iteration for Chebyshev smoother
-
 * Fix injection operator for Dirichlet BDDC
 
 Examples:
@@ -28,7 +31,7 @@ Examples:
 
 ## v0.3.0
 
-This release include updated functionality and an interface change.
+This release includes updated functionality and an interface change.
 
 Breaking change:
 

@@ -21,5 +21,6 @@ LFAToolkit.getsubassembledrowmodemap
 LFAToolkit.getsubassembledcolumnmodemap
 LFAToolkit.getmixedrowmodemap
 LFAToolkit.getmixedcolumnmodemap
+LFAToolkit.getmodepermutation
 LFAToolkit.computesymbolsinjection(::BDDC, ::Array)
 ```

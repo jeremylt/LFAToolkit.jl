@@ -41,6 +41,7 @@ mutable struct BDDC <: AbstractPreconditioner
     subassembledcolumnmodemap::AbstractArray{Float64,2}
     mixedrowmodemap::AbstractArray{Float64,2}
     mixedcolumnmodemap::AbstractArray{Float64,2}
+    modepermutation::AbstractArray{Bool,2}
     jacobi::Jacobi
 
     # inner constructor
@@ -829,6 +830,40 @@ end
 
 """
 ```julia
+getmodepermutation(bddc)
+```
+
+Compute or retrieve the matrix permuting multi-component modes to standard ordering
+
+# Returns:
+- Matrix mapping BDDC mode ordering to standard ordering
+"""
+function getmodepermutation(bddc::BDDC)
+    # assemble if needed
+    if !isdefined(bddc, :modepermutation)
+        numberprimal = max(size(bddc.primalmodes)...)
+        numbersubassembled = max(size(bddc.subassembledmodes)...)
+        numbermodes = numberprimal + numbersubassembled
+        modepermutation = spzeros(Bool, numbermodes, numbermodes)
+
+        # build permutation matrix
+        for i = 1:numberprimal
+            modepermutation[bddc.primalmodes[i], i] = true
+        end
+        for i = 1:numbersubassembled
+            modepermutation[bddc.subassembledmodes[i], i+numberprimal] = true
+        end
+
+        # store
+        bddc.modepermutation = modepermutation
+    end
+
+    # return
+    return getfield(bddc, :modepermutation)
+end
+
+"""
+```julia
 getmixedmultiplicity(bddc)
 ```
 
@@ -1029,6 +1064,8 @@ function Base.getproperty(bddc::BDDC, f::Symbol)
         return getmixedrowmodemap(bddc)
     elseif f == :mixedcolumnmodemap
         return getmixedcolumnmodemap(bddc)
+    elseif f == :modepermutation
+        return getmodepermutation(bddc)
     else
         return getfield(bddc, f)
     end
@@ -1207,7 +1244,12 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
         bddc.mixedrowmodemap * R_mixed' * Â_inv_mixed * R_mixed * bddc.mixedcolumnmodemap
 
     # return
-    return I - ω[1] * R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)
+    return I -
+           ω[1] *
+           bddc.modepermutation *
+           R_T_Â_inv_R_modes *
+           bddc.modepermutation' *
+           computesymbols(bddc.operator, θ)
 end
 
 # ------------------------------------------------------------------------------

@@ -790,7 +790,7 @@ function getmixedrowmodemap(bddc::BDDC)
         ]
 
         # store
-        bddc.mixedrowmodemap = mixedrowmodemap
+        bddc.mixedrowmodemap = bddc.modepermutation * mixedrowmodemap
     end
 
     # return
@@ -1244,12 +1244,7 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
         bddc.mixedrowmodemap * R_mixed' * Â_inv_mixed * R_mixed * bddc.mixedcolumnmodemap
 
     # return
-    return I -
-           ω[1] *
-           bddc.modepermutation *
-           R_T_Â_inv_R_modes *
-           bddc.modepermutation' *
-           computesymbols(bddc.operator, θ)
+    return I - ω[1] * R_T_Â_inv_R_modes * computesymbols(bddc.operator, θ)
 end
 
 # ------------------------------------------------------------------------------

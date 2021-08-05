@@ -375,8 +375,9 @@ If $x \in \Pi^e$ or $x \in \text{I}^e$, then $\lvert \mathcal{N} \left( x \right
 The scaled injection operator, $\mathbf{R}_1$ is defined as the mapping between the global degrees of freedom and the broken space where each element is scaled by $1 / \lvert \mathcal{N} \left( x \right) \rvert$.
 For interior and vertex degrees of freedom, the sparse matrix representation of $\mathbf{R}_1$ would contain a single entry with a value of $1$, while each column corresponding to a duplicated degree of freedom has $\lvert \mathcal{N} \left( x \right) \rvert$ entries, each given by $1 / \lvert \mathcal{N} \left( x \right) \rvert$.
 
-\begin{definition}\label{def:scaledinjection}
+\begin{definition}[Scaled Injection Operator]
 Let the scaled injection operator, $\mathbf{R}_1$, be given by the mapping from the global problem space to the broken space where each degree of freedom is scaled by its multiplicity in the broken space, denoted by $\lvert \mathcal{N} \left( x \right) \rvert$.
+\label{def:scaledinjection}
 \end{definition}
 
 An operator preconditioned with the lumped BDDC preconditioner has the same eigenvalues as the lumped FETI-DP preconditioned operator, with the exception of some eigenvalues that are equal to $0$ and $1$ \cite{li2007use}.
@@ -415,10 +416,6 @@ The second injection operator, $\mathbf{R}_2$, the harmonic injection operator, 
 This injection operator uses a discrete harmonic extension of the interface values to minimize the energy norm of the result, which leads to a better stability bound, as shown by Toselli and Widlund \cite{toselli2006domain}.
 Let $\boldsymbol{\mathcal{H}}$ be given by a direct sum of local operators $\boldsymbol{\mathcal{H}}^e = - \mathbf{A}_{\text{I}, \text{I}}^{e, -1} \mathbf{A}_{\Gamma, \text{I}}^{e, T}$.
 This operator solves a local Dirichlet problem given by mapping the jump over subdomain interfaces for duplicated values to the subdomain interior.
-The jump mapping is given by
-\begin{equation}
-\mathbf{J}^{e, T} v \left( x \right) = \sum_{i \in \mathcal{N} \left( x \right)} \left( \frac{v^e \left( x \right)}{\lvert \mathcal{N} \left( x \right) \rvert} - \frac{v^i \left( x \right)}{\lvert \mathcal{N} \left( x \right) \rvert} \right), \forall x \in \Gamma^e.
-\end{equation}
 
 \begin{definition}[Harmonic Injection Operator]
 Let the harmonic injection operator be given by $\mathbf{R}_2 = \mathbf{R}_1 - \mathbf{J}^T \boldsymbol{\mathcal{H}}^T$, where $\boldsymbol{\mathcal{H}}$ is given by a direct sum of local operators $\boldsymbol{\mathcal{H}}^e = - \mathbf{A}_{\text{I}, \text{I}}^{e, -1} \mathbf{A}_{\Gamma, \text{I}}^{e, T}$ and
@@ -432,26 +429,8 @@ An operator preconditioned with the Dirichlet BDDC preconditioner, $\mathbf{M}^{
 
 For the symbol of the harmonic injection operator, we need the symbol of the harmonic extension and jump mapping.
 
-As with the partially subassembled problem, the symbol of the harmonic extension is given by the symbols of the local operators,
-\begin{equation}
-\tilde{\boldsymbol{\mathcal{H}}} = - \tilde{\mathbf{A}}_{I, I}^{-1} \tilde{\mathbf{A}}_{\Gamma, I}^T
-\end{equation}
-where
-\begin{equation}
-\tilde{\mathbf{A}}_{I, I}^{-1} \left( \boldsymbol{\theta} \right) = \mathbf{A}_{I, I}^{e, -1} \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right],
-\hspace{5mm}
-\tilde{\mathbf{A}}_{\Gamma, I}^T \left( \boldsymbol{\theta} \right) = \mathbf{A}_{\Gamma, I}^{e, T} \odot \left[ e^{\imath \left( \mathbf{x}_j - \mathbf{x}_i \right) \cdot \boldsymbol{\theta} / \mathbf{h}} \right]
-\end{equation}
-
+As with the partially subassembled problem, the symbol of the harmonic extension is given by the symbols of the local operators.
 The jump mapping is a pointwise scaling operator, so it is its own symbol, just as $\mathbf{R}_1$ is its own symbol.
-The symbol $\tilde{\mathbf{J}}$ is a operator with entries on the diagonal given by
-\begin{equation}
-\tilde{\mathbf{J}}_{i, i} = - \frac{\lvert \mathcal{N} \left( x_i \right) \rvert - 1}{\lvert \mathcal{N} \left( x_i \right) \rvert}
-\end{equation}
-and off diagonal entries given by
-\begin{equation}
-\tilde{\mathbf{J}}_{i, j} = - \frac{1}{\lvert \mathcal{N} \left( x_i \right) \rvert} \hspace{2mm} \text{if} \hspace{2mm} x_j \in \mathcal{N} \left( x_i \right).
-\end{equation}
 
 \begin{definition}[Symbol of Harmonic Injection Operator]
 The symbol of the harmonic injection operator is given by

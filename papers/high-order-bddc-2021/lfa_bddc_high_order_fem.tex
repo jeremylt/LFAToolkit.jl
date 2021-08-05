@@ -497,7 +497,7 @@ and off diagonal entries given by
 
 The symbol of the lumped and Dirichled variants of BDDC are given by the symbol of the subassembled inverse and the respective injection operators.
 
-\begin{definition}\label{def:lumped_bddc_symbol}
+\begin{definition}\label{def:bddc_symbol}
 The symbol of the BDDC preconditioner is given by
 \begin{equation}
 \tilde{\mathbf{M}}^{-1}_i = \tilde{\mathbf{R}}^T_i \tilde{\hat{\mathbf{A}}}^{-1} \tilde{\mathbf{R}}_i
@@ -505,11 +505,16 @@ The symbol of the BDDC preconditioner is given by
 where $\tilde{\mathbf{R}}_i$ is the symbol of the injection operator, given by \cref{def:scaled_injection_symbol,def:harmonic_injection_symbol}, and $\tilde{\hat{\mathbf{A}}}^{-1}$ is the symbol of the inverse of the subassembled problem, given by \cref{def:subassembled_symbol}.
 \end{definition}
 
-% -----------------------------------------------------------------------------
-\subsection{Extension to Macro-Elements}\label{sec:previouswork}
-% -----------------------------------------------------------------------------
+\begin{figure}[!tbp]
+  \centering
+  \subfloat[Spectrum of Lumped BDDC for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/LumpedBDDCHighOrder}\label{fig:lumped_spectrum_4}}
+  \hfill
+  \subfloat[Spectrum of Dirichlet BDDC for $p = 4$]{\includegraphics[width=0.48\textwidth]{img/DirichletBDDCHighOrder}\label{fig:dirichlet_spectrum_4}}
+  \caption{BDDC preconditioning for high-order finite elements for the 2D Laplacian.}
+\end{figure}
 
-ToDo
+Using \cref{def:bddc_symbol}, we plot the spectral radius of $\tilde{\mathbf{M}}^{-1}_i \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:lumped_spectrum_4,fig:dirichlet_spectrum_4} for the lumped and Dirichlet BDDC preconditioned operator, respectively, for the two dimensional Laplacian with a 4th degree $H^1$ Lagrange basis functions on Gauss-Lobatto points.
+As anticipated, the Dirichlet BDDC preconditioner more effectively reduces the condition number of the two dimensional Laplacian than the Lumped BDDC preconditioner.
 
 % -----------------------------------------------------------------------------
 \section{Numerical Results}\label{sec:results}
@@ -521,8 +526,12 @@ In this section, we present validation with previous numerical results for this 
 \subsection{Scalar Laplacian - Low-Order Validation}\label{sec:lowordervalidate}
 % -----------------------------------------------------------------------------
 
+By using macro-elements, \cite{kumar2019local, brown2019local}, our LFA of BDDC on subdomains consisting of single high-order elements can be extended to subdomains consisting of multiple elements.
+For 1D analysis, a macro-element for a two element subdomain is single element comprising of a pair of sub-elements with separate quadrature spaces, which is equivalent to partially assembling the finite element operator on two element subdomains.
+
 Previous work by Brown, He, and MacLachlan \cite{brown2019local} provided LFA of lumped and Dirichlet BDDC on subdomains consisting of multiple low-order finite elements.
 This previous work provided very sharp LFA convergence estimates when compared to numerical experiments with PETSc \cite{petsc-user-ref} on a periodic mesh.
+Our LFA of BDDC can reproduce this previous work with macro-elements consisting of multiple linear elements.
 
 \begin{table}[ht!]
 \begin{center}

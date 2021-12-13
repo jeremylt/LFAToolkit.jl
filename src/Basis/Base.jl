@@ -1230,31 +1230,25 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
 
     # coordinate transformation
     gradient = basis.gradient
-    dxdX = (basis.gradient1d*basis.nodes1d)[1]
 
     # adjust for mesh
     if dimension == 1
         # 1D
-        return gradient / (dxdX * mesh.dx)
+        return gradient / mesh.dx
     elseif dimension == 2
         # 2D
-        scalex = 1 / (dxdX * mesh.dx)
-        scaley = 1 / (dxdX * mesh.dy)
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :] * scalex
-            gradient[numberquadraturepoints+1:end, :] * scaley
+            gradient[1:numberquadraturepoints, :] / mesh.dx
+            gradient[numberquadraturepoints+1:end, :] / mesh.dy
         ]
     elseif dimension == 3
         # 3D
-        scalex = 1 / (dxdX * mesh.dx)
-        scaley = 1 / (dxdX * mesh.dy)
-        scalez = 1 / (dxdX * mesh.dz)
         numberquadraturepoints = basis.numberquadraturepoints
         return [
-            gradient[1:numberquadraturepoints, :] * scalex
-            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :] * scaley
-            gradient[2*numberquadraturepoints+1:end, :] * scalez
+            gradient[1:numberquadraturepoints, :] / mesh.dx
+            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :] / mesh.dy
+            gradient[2*numberquadraturepoints+1:end, :] / mesh.dz
         ]
     end
 end
@@ -1288,7 +1282,7 @@ basis = TensorH1LagrangeBasis(4, 3, 1, 1);
 weights = LFAToolkit.getdxdXquadratureweights(basis, mesh);
 
 # verify
-@assert basis.quadratureweights / 2 ≈ weights
+@assert basis.quadratureweights * mesh.volume / basis.volume ≈ weights
 
 # output
 
@@ -1303,17 +1297,8 @@ function getdxdXquadratureweights(basis::TensorBasis, mesh::Mesh)
         error("mesh dimension must match basis dimension") # COV_EXCL_LINE
     end
 
-    # coordinate transformation
-    dxdX = (basis.gradient1d*basis.nodes1d)[1]
-
     # adjust for mesh
-    if dimension == 1
-        return dxdX * basis.quadratureweights / mesh.dx
-    elseif dimension == 2
-        return dxdX^2 * basis.quadratureweights / (mesh.dx * mesh.dy)
-    elseif dimension == 3
-        return dxdX^3 * basis.quadratureweights / (mesh.dx * mesh.dy * mesh.dz)
-    end
+    return basis.quadratureweights * mesh.volume / basis.volume
 end
 
 function getdxdXquadratureweights(basis::NonTensorBasis, mesh::Mesh)

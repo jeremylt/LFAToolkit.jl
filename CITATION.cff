@@ -1,7 +1,7 @@
 cff-version: 1.1.0
 title: "LFAToolkit.jl"
 message: "Please cite the following works when using this software."
-version: 0.4.0
+version: 0.4.1
 date-released: 2021-07-02
 license:  BSD-2-Clause
 authors:

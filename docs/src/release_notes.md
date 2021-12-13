@@ -8,6 +8,10 @@ Enhancements:
 
 Bugfixes:
 
+## v0.4.1
+
+This release includes a small fix for properly handling stretched meshes, such as when `dx != dy`.
+
 ## v0.4.0
 
 This release includes improved functionality and bugfixes.

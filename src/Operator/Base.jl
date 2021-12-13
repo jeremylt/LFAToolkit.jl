@@ -357,14 +357,11 @@ function getelementmatrix(operator::Operator)
         end
 
         # quadrature weight input index
-        weightscale = 1.0
         if weightinputindex != 0
             quadratureweights = getdxdXquadratureweights(
                 operator.inputs[weightinputindex].basis,
                 operator.mesh,
             )
-            weightscale =
-                operator.mesh.volume / operator.inputs[weightinputindex].basis.volume
         end
 
         # outputs
@@ -423,7 +420,7 @@ function getelementmatrix(operator::Operator)
             for q = 1:numberquadraturepoints
                 # set quadrature weight
                 if weightinputindex != 0
-                    weakforminputs[weightinputindex][1] = quadratureweights[q] * weightscale
+                    weakforminputs[weightinputindex][1] = quadratureweights[q]
                 end
 
                 # fill sparse matrix

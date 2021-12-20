@@ -2,6 +2,7 @@
 # linear elasticity example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

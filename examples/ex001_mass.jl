@@ -2,6 +2,7 @@
 # mass matrix example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

@@ -2,6 +2,7 @@
 # lumped BDDC on macro elements example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

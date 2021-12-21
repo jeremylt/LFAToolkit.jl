@@ -2,6 +2,7 @@
 # hyperelasticity example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

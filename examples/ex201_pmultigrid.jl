@@ -2,6 +2,7 @@
 # p-multigrid example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

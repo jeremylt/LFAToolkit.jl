@@ -2,6 +2,7 @@
 # Dirichlet BDDC example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

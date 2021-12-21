@@ -2,6 +2,7 @@
 # diffusion operator example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

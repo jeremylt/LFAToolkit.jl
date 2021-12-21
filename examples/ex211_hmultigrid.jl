@@ -2,6 +2,7 @@
 # h-multigrid example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

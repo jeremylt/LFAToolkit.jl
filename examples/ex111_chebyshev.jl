@@ -2,6 +2,7 @@
 # Chebyshev smoother example
 # ------------------------------------------------------------------------------
 
+using LFAToolkit
 using LinearAlgebra
 
 # setup

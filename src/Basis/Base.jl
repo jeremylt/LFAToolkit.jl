@@ -408,7 +408,7 @@ function getnodes(basis::TensorBasis)
                 ),
             )
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         basis.nodes = nodes
     end
@@ -531,7 +531,7 @@ function getquadraturepoints(basis::TensorBasis)
                 ),
             )
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         basis.quadraturepoints = quadraturepoints
     end
@@ -600,7 +600,7 @@ function getquadratureweights(basis::TensorBasis)
                 basis.quadratureweights1d,
             )
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         basis.quadratureweights = quadratureweights
     end
@@ -667,7 +667,7 @@ function getinterpolation(basis::TensorBasis)
                 basis.interpolation1d,
             )
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         basis.interpolation = interpolation
     end
@@ -738,7 +738,7 @@ function getgradient(basis::TensorBasis)
                 ],
             )
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         basis.gradient = gradient
     end
@@ -866,7 +866,7 @@ function getmodemap(basis::TensorBasis)
                 ]...,
             ]
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         numbermodes1component = max(modemap...)
         modemap = vcat(
@@ -941,7 +941,7 @@ function getprimalnodes(basis::TensorBasis)
             primalnodes1component =
                 [1, p, p^2 - p + 1, p^2, p^3 - p^2 + 1, p^3 - p^2 + p, p^3 - p + 1, p^3]
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         primalnodes = vcat(
             [
@@ -1034,7 +1034,7 @@ function getinterfacenodes(basis::TensorBasis)
                 push!(interfacenodes1component, i*p^2+2*p:p:(i+1)*p^2-p...)
             end
         else
-            throw(DomanError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
+            throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
         interfacenodes1component = sort(interfacenodes1component)
         interfacenodes = vcat(

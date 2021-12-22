@@ -52,7 +52,7 @@ function gaussquadrature(q::Int)
     quadratureweights = zeros(Float64, q)
 
     if q < 1
-        throw(DomanError(basis.dimension, "q must be greater than or equal to 1")) # COV_EXCL_LINE
+        throw(DomainError(q, "q must be greater than or equal to 1")) # COV_EXCL_LINE
     end
 
     # build qref1d, qweight1d
@@ -142,7 +142,7 @@ function lobattoquadrature(q::Int, weights::Bool)
     quadratureweights = zeros(Float64, q)
 
     if q < 2
-        throw(DomanError(basis.dimension, "q must be greater than or equal to 2")) # COV_EXCL_LINE
+        throw(DomainError(q, "q must be greater than or equal to 2")) # COV_EXCL_LINE
     end
 
     # endpoints

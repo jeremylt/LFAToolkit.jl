@@ -204,7 +204,7 @@ function HMultigrid(
         if input.basis.numberelements == 1
             # COV_EXCL_START
             throw(
-                DomanError(
+                DomainError(
                     field.basis.numberelements,
                     "must use macro elements in the fine operator for h-multigrid",
                 ),

@@ -28,3 +28,11 @@ Pages = [
     "public/pc/bddc.md",
 ]
 ```
+
+### Utilities
+
+```@contents
+Pages = [
+    "public/utilities.md",
+]
+```

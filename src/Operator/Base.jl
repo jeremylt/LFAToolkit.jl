@@ -878,7 +878,7 @@ Compute the symbol matrix for an operator
 
 # Arguments:
 - `operator`: Finite element operator to compute symbol matrix for
-- `θ`:              Fourier mode frequency array (one frequency per dimension)
+- `θ`:        Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the operator

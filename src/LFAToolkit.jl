@@ -40,6 +40,7 @@ export OperatorField
 export Operator,
     GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, computesymbols
 # preconditioners
+export AbstractPreconditioner
 export IdentityPC
 export Jacobi
 export Chebyshev, seteigenvalueestimatescaling
@@ -47,6 +48,8 @@ export Chebyshev, seteigenvalueestimatescaling
 export Multigrid, PMultigrid, HMultigrid
 # -- BDDC
 export BDDC, LumpedBDDC, DirichletBDDC
+# -- Utils
+export computesymbolsoverrange
 
 # ------------------------------------------------------------------------------
 # imports
@@ -74,6 +77,8 @@ include("PC/Multigrid/Constructors.jl")
 # -- BDDC
 include("PC/BDDC/Base.jl")
 include("PC/BDDC/Constructors.jl")
+# -- Utils
+include("Utilities.jl")
 
 end # module
 

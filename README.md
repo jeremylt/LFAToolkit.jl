@@ -36,6 +36,21 @@ julia --project -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit")'
 
 Examples can be found in the ``examples`` directory, with interactive examples in Jupyter notebooks found in the ``examples/jupyter`` directory.
 
+## Documentation
+
+Documentation can be found at the url listed above.
+To build the documentation locally, run
+
+```
+julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build()'
+```
+
+followed by
+
+```
+DOCSARGS=local julia --project=docs/ docs/make.jl
+```
+
 ## Online Demos
 
 Both of the current online demos are not performing smoothly.

@@ -130,7 +130,7 @@ mutable struct TensorBasis <: AbstractBasis
             quadratureweights1d,
             interpolation1d,
             gradient1d,
-            (max(nodes1d...) - min(nodes1d...))^dimension,
+            (maximum(nodes1d) - minimum(nodes1d))^dimension,
             numberelements1d,
         )
     )
@@ -260,7 +260,7 @@ mutable struct NonTensorBasis <: AbstractBasis
         # compute volume
         volume = 1;
         for d = 1:dimension
-            volume *= (max(nodes[:, d]...) - min(nodes[:, d]...))
+            volume *= (maximum(nodes[:, d]) - minimum(nodes[:, d]))
         end;
 
         # constructor
@@ -275,7 +275,7 @@ mutable struct NonTensorBasis <: AbstractBasis
             interpolation,
             gradient,
             volume,
-            max(modemap...),
+            maximum(modemap),
             modemap,
             numberelements,
         )
@@ -782,7 +782,7 @@ end
 function getnumbermodes(basis::TensorBasis)
     # assemble if needed
     if !isdefined(basis, :modemap)
-        basis.numbermodes = max(basis.modemap...)
+        basis.numbermodes = maximum(basis.modemap)
     end
 
     # return
@@ -868,7 +868,7 @@ function getmodemap(basis::TensorBasis)
         else
             throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
         end
-        numbermodes1component = max(modemap...)
+        numbermodes1component = maximum(modemap)
         modemap = vcat(
             [
                 ((i - 1) * numbermodes1component) .+ modemap for
@@ -876,7 +876,7 @@ function getmodemap(basis::TensorBasis)
             ]...,
         )
         basis.modemap = modemap
-        basis.numbermodes = max(modemap...)
+        basis.numbermodes = maximum(modemap)
     end
 
     # return

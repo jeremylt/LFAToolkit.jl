@@ -194,11 +194,11 @@ for dimension in 1:3
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
     if dimension == 1
-        @assert max(eigenvalues...) ≈ 1/7
+        @assert maximum(eigenvalues) ≈ 1/7
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ -1/14
+        @assert minimum(eigenvalues) ≈ -1/14
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ -0.33928571428571486
+        @assert minimum(eigenvalues) ≈ -0.33928571428571486
     end
 end
 

@@ -6,6 +6,8 @@ Current development includes:
 
 Enhancements:
 
+* Added `computesymbolsoverrange` to facilitate common analysis.
+
 Bugfixes:
 
 ## v0.4.1

@@ -20,8 +20,8 @@ end
 @testset "  ex001: mass example                        " begin
     include("../examples/ex001_mass.jl")
 
-    @test min(eigenvalues...) ≈ 0.008379422444571976
-    @test max(eigenvalues...) ≈ 0.17361111111111088
+    @test minimum(eigenvalues) ≈ 0.008379422444571976
+    @test maximum(eigenvalues) ≈ 0.17361111111111088
 end
 
 # ------------------------------------------------------------------------------
@@ -31,8 +31,8 @@ end
 @testset "  ex002: diffusion example                   " begin
     include("../examples/ex002_diffusion.jl")
 
-    @test min(eigenvalues...) ≈ 0.3321136902208588
-    @test max(eigenvalues...) ≈ 2.131118740197114
+    @test minimum(eigenvalues) ≈ 0.3321136902208588
+    @test maximum(eigenvalues) ≈ 2.131118740197114
 end
 
 # ------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ end
 @testset "  ex101: Jacobi example                      " begin
     include("../examples/ex101_jacobi.jl")
 
-    @test min(eigenvalues...) ≈ -0.6289239142744161
-    @test max(eigenvalues...) ≈ 0.6405931989084651
+    @test minimum(eigenvalues) ≈ -0.6289239142744161
+    @test maximum(eigenvalues) ≈ 0.6405931989084651
 end
 
 # ------------------------------------------------------------------------------
@@ -53,8 +53,8 @@ end
 @testset "  ex111: Chebyshev example                   " begin
     include("../examples/ex111_chebyshev.jl")
 
-    @test min(eigenvalues...) ≈ -0.272875736279538
-    @test max(eigenvalues...) ≈ 0.26048711552603726
+    @test minimum(eigenvalues) ≈ -0.272875736279538
+    @test maximum(eigenvalues) ≈ 0.26048711552603726
 end
 
 # ------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ end
 @testset "  ex201: p-multigrid example                 " begin
     include("../examples/ex201_pmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.026444090458920978
+    @test maximum(eigenvalues) ≈ 0.026444090458920978
 end
 
 # ------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ end
 @testset "  ex202: p-multigrid multilevel example      " begin
     include("../examples/ex202_pmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.07661416476317891
+    @test maximum(eigenvalues) ≈ 0.07661416476317891
 end
 
 # ------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ end
 @testset "  ex211: h-multigrid example                 " begin
     include("../examples/ex211_hmultigrid.jl")
 
-    @test max(eigenvalues...) ≈ 0.03791330252587746
+    @test maximum(eigenvalues) ≈ 0.03791330252587746
 end
 
 # ------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ end
 @testset "  ex212: h-multigrid multilevel example      " begin
     include("../examples/ex212_hmultigrid_multilevel.jl")
 
-    @test max(eigenvalues...) ≈ 0.06922195649613641
+    @test maximum(eigenvalues) ≈ 0.06922195649613641
 end
 
 # ------------------------------------------------------------------------------
@@ -104,8 +104,8 @@ end
 @testset "  ex221: lumped BDDC example                 " begin
     include("../examples/ex221_lumped_bddc.jl")
 
-    @test min(eigenvalues...) ≈ -0.19999999999999862
-    @test max(eigenvalues...) ≈ 0.8000000000000009
+    @test minimum(eigenvalues) ≈ -0.19999999999999862
+    @test maximum(eigenvalues) ≈ 0.8000000000000009
 end
 
 # ------------------------------------------------------------------------------
@@ -115,8 +115,8 @@ end
 @testset "  ex222: lumped BDDC macro element example   " begin
     include("../examples/ex222_lumped_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.11129065897024093
-    @test max(eigenvalues...) ≈ 0.8000000000000005
+    @test minimum(eigenvalues) ≈ 0.11129065897024093
+    @test maximum(eigenvalues) ≈ 0.8000000000000005
 end
 
 # ------------------------------------------------------------------------------
@@ -126,8 +126,8 @@ end
 @testset "  ex223: Dirichlet BDDC example              " begin
     include("../examples/ex223_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.7690030364372471
-    @test max(eigenvalues...) ≈ 0.8000000000000004
+    @test minimum(eigenvalues) ≈ 0.7690030364372471
+    @test maximum(eigenvalues) ≈ 0.8000000000000004
 end
 
 # ------------------------------------------------------------------------------
@@ -137,8 +137,8 @@ end
 @testset "  ex224: Dirichlet BDDC macro element example" begin
     include("../examples/ex224_dirichlet_bddc.jl")
 
-    @test min(eigenvalues...) ≈ 0.771335238873009
-    @test max(eigenvalues...) ≈ 0.8000000000000009
+    @test minimum(eigenvalues) ≈ 0.771335238873009
+    @test maximum(eigenvalues) ≈ 0.8000000000000009
 end
 
 # ------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ end
 @testset "  ex301: linear elasticity example           " begin
     include("../examples/ex301_linear_elasticity.jl")
 
-    @test max(eigenvalues...) ≈ 0.07359884745780573
+    @test maximum(eigenvalues) ≈ 0.07359884745780573
 end
 
 # ------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ end
 @testset "  ex311: hyperelasticity example             " begin
     include("../examples/ex311_hyperelasticity.jl")
 
-    @test max(eigenvalues...) ≈ 0.07818657329883297
+    @test maximum(eigenvalues) ≈ 0.07818657329883297
 end
 
 # ------------------------------------------------------------------------------

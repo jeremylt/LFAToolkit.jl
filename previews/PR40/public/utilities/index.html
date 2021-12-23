@@ -21,19 +21,19 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigenvalues);
     if dimension == 1
-        @assert min(eigenvalues[4, :]...) ≈ 1
-        @assert max(eigenvalues[4, :]...) ≈ 4/3
+        @assert minimum(eigenvalues[4, :]) ≈ 1
+        @assert maximum(eigenvalues[4, :]) ≈ 4/3
     elseif dimension == 2
-        @assert min(eigenvalues[19, :]...) ≈ 2/3
-        @assert max(eigenvalues[19, :]...) ≈ 64/45
+        @assert minimum(eigenvalues[19, :]) ≈ 2/3
+        @assert maximum(eigenvalues[19, :]) ≈ 64/45
     elseif dimension == 3
-        @assert min(eigenvalues[94, :]...) ≈ 1/3
-        @assert max(eigenvalues[94, :]...) ≈ 256/225
+        @assert minimum(eigenvalues[94, :]) ≈ 1/3
+        @assert maximum(eigenvalues[94, :]) ≈ 256/225
     end
 end
 
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5de5d0bbc08e0b381f6230ffa2e07247fd818c5f/src/Utilities.jl#L9-L65">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}" href="#LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}"><code>LFAToolkit.computesymbolsoverrange</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbols(operator, θ)</code></pre><p>Compute the eigenvalues and eigenvectors of the symbol matrix for an operator   over a range of θ from -π/2 to 3π/2</p><p><strong>Arguments:</strong></p><ul><li><code>preconditioner</code>: Preconditioner to compute symbol matries for</li><li><code>ω</code>:              Smoothing parameter array</li><li><code>numbersteps1d</code>:  Number of values of θ to sample in each dimension                     Note: numbersteps1d^dimension symbol matrices will be computed</li></ul><p><strong>Returns:</strong></p><ul><li>Values of θ sampled</li><li>Eigenvalues of symbol matrix at θ sampled</li><li>Eigenvectors of symbol matrix at θ sampled</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LFAToolkit;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/b71cb46ebeb464a2eaf0e89d9550db40e930965e/src/Utilities.jl#L9-L65">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}" href="#LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}"><code>LFAToolkit.computesymbolsoverrange</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbols(operator, θ)</code></pre><p>Compute the eigenvalues and eigenvectors of the symbol matrix for an operator   over a range of θ from -π/2 to 3π/2</p><p><strong>Arguments:</strong></p><ul><li><code>preconditioner</code>: Preconditioner to compute symbol matries for</li><li><code>ω</code>:              Smoothing parameter array</li><li><code>numbersteps1d</code>:  Number of values of θ to sample in each dimension                     Note: numbersteps1d^dimension symbol matrices will be computed</li></ul><p><strong>Returns:</strong></p><ul><li>Values of θ sampled</li><li>Eigenvalues of symbol matrix at θ sampled</li><li>Eigenvectors of symbol matrix at θ sampled</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LFAToolkit;
 
 numbersteps1d = 5
 
@@ -58,16 +58,16 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigenvalues);
     if dimension == 1
-        @assert min(eigenvalues[4, :]...) ≈ 0.15151515151515105
-        @assert max(eigenvalues[4, :]...) ≈ 0.27272727272727226
+        @assert minimum(eigenvalues[4, :]) ≈ 0.15151515151515105
+        @assert maximum(eigenvalues[4, :]) ≈ 0.27272727272727226
     elseif dimension == 2
-        @assert min(eigenvalues[19, :]...) ≈ -0.25495098334134725
-        @assert max(eigenvalues[19, :]...) ≈ -0.17128758445192374
+        @assert minimum(eigenvalues[19, :]) ≈ -0.25495098334134725
+        @assert maximum(eigenvalues[19, :]) ≈ -0.17128758445192374
     elseif dimension == 3
-        @assert min(eigenvalues[94, :]...) ≈ -0.8181818181818181
-        @assert max(eigenvalues[94, :]...) ≈ -0.357575757575757
+        @assert minimum(eigenvalues[94, :]) ≈ -0.8181818181818181
+        @assert maximum(eigenvalues[94, :]) ≈ -0.357575757575757
     end
 end
 
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/5de5d0bbc08e0b381f6230ffa2e07247fd818c5f/src/Utilities.jl#L102-L162">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 23 December 2021 23:26">Thursday 23 December 2021</span>. Using Julia version 1.7.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/b71cb46ebeb464a2eaf0e89d9550db40e930965e/src/Utilities.jl#L102-L162">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 23 December 2021 23:45">Thursday 23 December 2021</span>. Using Julia version 1.7.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

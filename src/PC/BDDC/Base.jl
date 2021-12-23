@@ -304,7 +304,7 @@ function getprimalmodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :primalmodes)
         primalmodes::Array{Int,1} = []
-        numberprimalnodes = max(size(bddc.primalnodes)...)
+        numberprimalnodes = maximum(size(bddc.primalnodes))
         numbermodes, _ = size(bddc.operator.rowmodemap)
         modemap = bddc.operator.rowmodemap[:, bddc.primalnodes] * ones(numberprimalnodes)
         for i = 1:numbermodes
@@ -402,7 +402,7 @@ function getinterfacemodes(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :interfacemodes)
         interfacemodes::Array{Int,1} = []
-        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        numberinterfacenodes = maximum(size(bddc.interfacenodes))
         numbermodes, _ = size(bddc.operator.rowmodemap)
         modemap =
             bddc.operator.rowmodemap[:, bddc.interfacenodes] * ones(numberinterfacenodes)
@@ -781,9 +781,9 @@ symbol matrix
 function getmixedrowmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :mixedrowmodemap)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
-        numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
-        numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+        numberprimalmodes = maximum(size(bddc.primalmodes))
+        numbersubassembledmodes = maximum(size(bddc.subassembledmodes))
+        numbersubassemblednodes = maximum(size(bddc.subassemblednodes))
         mixedrowmodemap = [
             I(numberprimalmodes) zeros((numberprimalmodes, numbersubassemblednodes))
             zeros(numbersubassembledmodes, numberprimalmodes) bddc.subassembledrowmodemap
@@ -811,9 +811,9 @@ symbol matrix
 function getmixedcolumnmodemap(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :mixedcolumnmodemap)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
-        numbersubassembledmodes = max(size(bddc.subassembledmodes)...)
-        numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+        numberprimalmodes = maximum(size(bddc.primalmodes))
+        numbersubassembledmodes = maximum(size(bddc.subassembledmodes))
+        numbersubassemblednodes = maximum(size(bddc.subassemblednodes))
         mixedcolumnmodemap = [
             I(numberprimalmodes) zeros((numberprimalmodes, numbersubassembledmodes))
             zeros(numbersubassemblednodes, numberprimalmodes) bddc.subassembledcolumnmodemap
@@ -841,8 +841,8 @@ Compute or retrieve the matrix permuting multi-component modes to standard order
 function getmodepermutation(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :modepermutation)
-        numberprimal = max(size(bddc.primalmodes)...)
-        numbersubassembled = max(size(bddc.subassembledmodes)...)
+        numberprimal = maximum(size(bddc.primalmodes))
+        numbersubassembled = maximum(size(bddc.subassembledmodes))
         numbermodes = numberprimal + numbersubassembled
         modepermutation = spzeros(Bool, numbermodes, numbermodes)
 
@@ -876,7 +876,7 @@ multiplicity for the BDDC preconditioner
 function getmixedmultiplicity(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :mixedmultiplicity)
-        numberprimalmodes = max(size(bddc.primalmodes)...)
+        numberprimalmodes = maximum(size(bddc.primalmodes))
         mixedmultiplicity = Diagonal(
             vcat(
                 ones(numberprimalmodes, 1)...,
@@ -906,10 +906,10 @@ function getJDT(bddc::BDDC)
     # assemble if needed
     if !isdefined(bddc, :JDT)
         # setup
-        numberprimalmodes = max(size(bddc.primalmodes)...)
+        numberprimalmodes = maximum(size(bddc.primalmodes))
         numbernodes, _ = size(bddc.operator.columnmodemap)
         numbermixed, _ = size(bddc.mixedcolumnmodemap)
-        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        numberinterfacenodes = maximum(size(bddc.interfacenodes))
 
         # build jump map
         J_D_T_nodes = zeros(numbernodes, numbernodes)
@@ -970,11 +970,11 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         end
 
         # -- setup
-        numberprimalmodes = max(size(bddc.primalmodes)...)
+        numberprimalmodes = maximum(size(bddc.primalmodes))
         numbernodes, _ = size(bddc.operator.columnmodemap)
         numbermixed, _ = size(bddc.mixedcolumnmodemap)
-        numberinteriornodes = max(size(bddc.interiornodes)...)
-        numberinterfacenodes = max(size(bddc.interfacenodes)...)
+        numberinteriornodes = maximum(size(bddc.interiornodes))
+        numberinterfacenodes = maximum(size(bddc.interfacenodes))
         nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
         elementmatrix = bddc.operator.elementmatrix
 
@@ -1118,11 +1118,11 @@ for dimension in 2:3
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 2
-        @assert min(eigenvalues...) ≈ 0.43999999999999995
-        @assert max(eigenvalues...) ≈ 0.8
+        @assert minimum(eigenvalues) ≈ 0.43999999999999995
+        @assert maximum(eigenvalues) ≈ 0.8
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ -0.6319999999999972
-        @assert max(eigenvalues...) ≈ 0.8
+        @assert minimum(eigenvalues) ≈ -0.6319999999999972
+        @assert maximum(eigenvalues) ≈ 0.8
     end
 end
 
@@ -1151,11 +1151,11 @@ for dimension in 2:3
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 2
-        @assert min(eigenvalues...) ≈ 0.7999999999999998
-        @assert max(eigenvalues...) ≈ 0.8
+        @assert minimum(eigenvalues) ≈ 0.7999999999999998
+        @assert maximum(eigenvalues) ≈ 0.8
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ 0.7801226993865031
-        @assert max(eigenvalues...) ≈ 0.8
+        @assert minimum(eigenvalues) ≈ 0.7801226993865031
+        @assert maximum(eigenvalues) ≈ 0.8
     end
 end
 
@@ -1175,9 +1175,9 @@ function computesymbols(bddc::BDDC, ω::Array, θ::Array)
 
     # setup
     elementmatrix = bddc.operator.elementmatrix
-    numberprimalnodes = max(size(bddc.primalnodes)...)
-    numberprimalmodes = max(size(bddc.primalmodes)...)
-    numbersubassemblednodes = max(size(bddc.subassemblednodes)...)
+    numberprimalnodes = maximum(size(bddc.primalnodes))
+    numberprimalmodes = maximum(size(bddc.primalmodes))
+    numbersubassemblednodes = maximum(size(bddc.subassemblednodes))
     nodecoordinatedifferences = bddc.operator.nodecoordinatedifferences
 
     # subdomain solver

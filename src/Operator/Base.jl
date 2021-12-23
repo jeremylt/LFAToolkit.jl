@@ -809,7 +809,7 @@ function getnodecoordinatedifferences(operator::Operator)
         outputcoordinates = operator.outputcoordinates
         dimension = operator.inputs[1].basis.dimension
         lengths = [
-            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for
+            maximum(inputcoordinates[:, d]) - minimum(inputcoordinates[:, d]) for
             d = 1:dimension
         ]
 
@@ -905,14 +905,14 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 1
-        @assert min(eigenvalues...) ≈ 1
-        @assert max(eigenvalues...) ≈ 4/3
+        @assert minimum(eigenvalues) ≈ 1
+        @assert maximum(eigenvalues) ≈ 4/3
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ 2/3
-        @assert max(eigenvalues...) ≈ 64/45
+        @assert minimum(eigenvalues) ≈ 2/3
+        @assert maximum(eigenvalues) ≈ 64/45
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ 1/3
-        @assert max(eigenvalues...) ≈ 256/225
+        @assert minimum(eigenvalues) ≈ 1/3
+        @assert maximum(eigenvalues) ≈ 256/225
     end
 end
 

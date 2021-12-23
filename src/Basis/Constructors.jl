@@ -550,7 +550,7 @@ function TensorMacroElementBasisFrom1D(
         numberquadraturepoints1d * numberelements1d
 
     # basis nodes
-    lower = min(basis1dmicro.nodes1d...)
+    lower = minimum(basis1dmicro.nodes1d)
     width = basis1dmicro.volume
     nodes1dmacro = zeros(numbernodes1dmacro)
     micronodes = (basis1dmicro.nodes1d .- lower) ./ numberelements1d
@@ -828,8 +828,8 @@ function TensorHProlongationBasis(
     numberfineelements1d::Int,
 )
     # compute dimensions
-    numbercoarsenodes1d = max(size(coarsenodes1d)...)
-    numberfinenodes1d = max(size(finenodes1d)...)
+    numbercoarsenodes1d = maximum(size(coarsenodes1d))
+    numberfinenodes1d = maximum(size(finenodes1d))
 
     # form coarse to fine basis
     interpolation1d, gradient1d = buildinterpolationandgradient(coarsenodes1d, finenodes1d)

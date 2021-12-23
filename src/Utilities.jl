@@ -48,14 +48,14 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigenvalues);
     if dimension == 1
-        @assert min(eigenvalues[4, :]...) ≈ 1
-        @assert max(eigenvalues[4, :]...) ≈ 4/3
+        @assert minimum(eigenvalues[4, :]) ≈ 1
+        @assert maximum(eigenvalues[4, :]) ≈ 4/3
     elseif dimension == 2
-        @assert min(eigenvalues[19, :]...) ≈ 2/3
-        @assert max(eigenvalues[19, :]...) ≈ 64/45
+        @assert minimum(eigenvalues[19, :]) ≈ 2/3
+        @assert maximum(eigenvalues[19, :]) ≈ 64/45
     elseif dimension == 3
-        @assert min(eigenvalues[94, :]...) ≈ 1/3
-        @assert max(eigenvalues[94, :]...) ≈ 256/225
+        @assert minimum(eigenvalues[94, :]) ≈ 1/3
+        @assert maximum(eigenvalues[94, :]) ≈ 256/225
     end
 end
 
@@ -145,14 +145,14 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigenvalues);
     if dimension == 1
-        @assert min(eigenvalues[4, :]...) ≈ 0.15151515151515105
-        @assert max(eigenvalues[4, :]...) ≈ 0.27272727272727226
+        @assert minimum(eigenvalues[4, :]) ≈ 0.15151515151515105
+        @assert maximum(eigenvalues[4, :]) ≈ 0.27272727272727226
     elseif dimension == 2
-        @assert min(eigenvalues[19, :]...) ≈ -0.25495098334134725
-        @assert max(eigenvalues[19, :]...) ≈ -0.17128758445192374
+        @assert minimum(eigenvalues[19, :]) ≈ -0.25495098334134725
+        @assert maximum(eigenvalues[19, :]) ≈ -0.17128758445192374
     elseif dimension == 3
-        @assert min(eigenvalues[94, :]...) ≈ -0.8181818181818181
-        @assert max(eigenvalues[94, :]...) ≈ -0.357575757575757
+        @assert minimum(eigenvalues[94, :]) ≈ -0.8181818181818181
+        @assert maximum(eigenvalues[94, :]) ≈ -0.357575757575757
     end
 end
 

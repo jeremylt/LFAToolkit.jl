@@ -169,22 +169,22 @@ function geteigenvalueestimates(preconditioner::Chebyshev)
             for θ_x in θ_range
                 A = computesymbols(preconditioner.operator, [θ_x])
                 eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
-                λ_min = min(λ_min, eigenvalues...)
-                λ_max = max(λ_max, eigenvalues...)
+                λ_min = minimum([λ_min, eigenvalues...])
+                λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 2
             for θ_x in θ_range, θ_y in θ_range
                 A = computesymbols(preconditioner.operator, [θ_x, θ_y])
                 eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
-                λ_min = min(λ_min, eigenvalues...)
-                λ_max = max(λ_max, eigenvalues...)
+                λ_min = minimum([λ_min, eigenvalues...])
+                λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 3
             for θ_x in θ_range, θ_y in θ_range, θ_z in θ_range
                 A = computesymbols(preconditioner.operator, [θ_x, θ_y, θ_z])
                 eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
-                λ_min = min(λ_min, eigenvalues...)
-                λ_max = max(λ_max, eigenvalues...)
+                λ_min = minimum([λ_min, eigenvalues...])
+                λ_max = maximum([λ_max, eigenvalues...])
             end
         end
 
@@ -326,14 +326,14 @@ for dimension in 1:3
     using LinearAlgebra;
     eigenvalues = real(eigvals(A));
     if dimension == 1
-        @assert min(eigenvalues...) ≈ 0.15151515151515105
-        @assert max(eigenvalues...) ≈ 0.27272727272727226
+        @assert minimum(eigenvalues) ≈ 0.15151515151515105
+        @assert maximum(eigenvalues) ≈ 0.27272727272727226
     elseif dimension == 2
-        @assert min(eigenvalues...) ≈ -0.25495098334134725
-        @assert max(eigenvalues...) ≈ -0.17128758445192374
+        @assert minimum(eigenvalues) ≈ -0.25495098334134725
+        @assert maximum(eigenvalues) ≈ -0.17128758445192374
     elseif dimension == 3
-        @assert min(eigenvalues...) ≈ -0.8181818181818181
-        @assert max(eigenvalues...) ≈ -0.357575757575757
+        @assert minimum(eigenvalues) ≈ -0.8181818181818181
+        @assert maximum(eigenvalues) ≈ -0.357575757575757
     end
 end
 

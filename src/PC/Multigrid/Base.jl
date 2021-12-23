@@ -101,7 +101,7 @@ function getnodecoordinatedifferences(multigrid::Multigrid)
         inputcoordinates = multigrid.coarseoperator.inputcoordinates
         outputcoordinates = multigrid.fineoperator.outputcoordinates
         lengths = [
-            max(inputcoordinates[:, d]...) - min(inputcoordinates[:, d]...) for
+            maximum(inputcoordinates[:, d]) - minimum(inputcoordinates[:, d]) for
             d = 1:dimension
         ]
 
@@ -320,11 +320,11 @@ for dimension in 1:3
     # verify
     eigenvalues = real(eigvals(A));
     if dimension == 1
-       @assert max(eigenvalues...) ≈ 0.64
+       @assert maximum(eigenvalues) ≈ 0.64
     elseif dimension == 2
-       @assert max(eigenvalues...) ≈ 0.9082562365654528
+       @assert maximum(eigenvalues) ≈ 0.9082562365654528
     elseif dimension == 3
-       @assert max(eigenvalues...) ≈ 1.4359882222222669
+       @assert maximum(eigenvalues) ≈ 1.4359882222222669
     end
 end
 

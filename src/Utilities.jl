@@ -8,7 +8,7 @@
 
 """
 ```julia
-computesymbols(operator, θ)
+computesymbols(operator, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over
@@ -18,6 +18,10 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
 - `operator`:      Finite element operator to compute symbol matrices for
 - `numbersteps1d`: Number of values of θ to sample in each dimension
                      Note: numbersteps1d^dimension symbol matrices will be computed
+
+# Keyword Arguments:
+- `mass`:  Mass operator to invert for comparison to analytic solution
+- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
 
 # Returns:
 - Values of θ sampled
@@ -63,12 +67,16 @@ end
 
 ```
 """
-function computesymbolsoverrange(operator::Operator, numbersteps1d::Int)
+function computesymbolsoverrange(
+    operator::Operator,
+    numbersteps1d::Int;
+    mass::Union{Operator,Nothing} = nothing,
+    θ_min::Float64 = -π / 2,
+)
     # setup range
     dimension = operator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_min = -π / 2
-    θ_max = 3π / 2
+    θ_max = θ_min + 2π
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 
@@ -89,6 +97,9 @@ function computesymbolsoverrange(operator::Operator, numbersteps1d::Int)
     for (step, θ) in enumerate(rangeiterator)
         θ = collect(θ)
         A = computesymbols(operator, θ)
+        if mass != nothing
+            A = computesymbols(mass, θ)^-1 * A
+        end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values
         eigenvectors[step, :, :] = currenteigen.vectors
@@ -101,7 +112,7 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ)
+computesymbols(preconditioner, ω, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned
@@ -112,6 +123,10 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a precondition
 - `ω`:              Smoothing parameter array
 - `numbersteps1d`:  Number of values of θ to sample in each dimension
                       Note: numbersteps1d^dimension symbol matrices will be computed
+
+# Keyword Arguments:
+- `mass`:  Mass operator to invert for comparison to analytic solution
+- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
 
 # Returns:
 - Values of θ sampled
@@ -163,13 +178,14 @@ end
 function computesymbolsoverrange(
     preconditioner::AbstractPreconditioner,
     ω::Array,
-    numbersteps1d::Int,
+    numbersteps1d::Int;
+    mass::Union{Operator,Nothing} = nothing,
+    θ_min::Float64 = -π / 2,
 )
     # setup range
     dimension = preconditioner.operator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_min = -π / 2
-    θ_max = 3π / 2
+    θ_max = θ_min + 2π
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 
@@ -190,6 +206,9 @@ function computesymbolsoverrange(
     for (step, θ) in enumerate(rangeiterator)
         θ = collect(θ)
         A = computesymbols(preconditioner, ω, θ)
+        if mass != nothing
+            A = computesymbols(mass, θ)^-1 * A
+        end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values
         eigenvectors[step, :, :] = currenteigen.vectors
@@ -202,7 +221,7 @@ end
 
 """
 ```julia
-computesymbols(multigrid, ω, v, θ)
+computesymbols(multigrid, ω, v, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
@@ -214,6 +233,10 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
 - `v`:             Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
 - `numbersteps1d`: Number of values of θ to sample in each dimension
                      Note: numbersteps1d^dimension symbol matrices will be computed
+
+# Keyword Arguments:
+- `mass`:  Mass operator to invert for comparison to analytic solution
+- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
 
 # Returns:
 - Values of θ sampled
@@ -272,13 +295,14 @@ function computesymbolsoverrange(
     multigrid::Multigrid,
     p::Array,
     v::Array,
-    numbersteps1d::Int,
+    numbersteps1d::Int;
+    mass::Union{Operator,Nothing} = nothing,
+    θ_min::Float64 = -π / 2,
 )
     # setup range
     dimension = multigrid.fineoperator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_min = -π / 2
-    θ_max = 3π / 2
+    θ_max = θ_min + 2π
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 
@@ -299,6 +323,9 @@ function computesymbolsoverrange(
     for (step, θ) in enumerate(rangeiterator)
         θ = [abs(θ_i) > 100 * eps() ? θ_i : 100 * eps() for θ_i in θ]
         A = computesymbols(multigrid, p, v, θ)
+        if mass != nothing
+            A = computesymbols(mass, θ)^-1 * A
+        end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values
         eigenvectors[step, :, :] = currenteigen.vectors

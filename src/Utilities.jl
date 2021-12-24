@@ -297,7 +297,7 @@ function computesymbolsoverrange(
 
     # compute
     for (step, θ) in enumerate(rangeiterator)
-        θ = collect(θ)
+        θ = [abs(θ_i) > 100 * eps() ? θ_i : 100 * eps() for θ_i in θ]
         A = computesymbols(multigrid, p, v, θ)
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values

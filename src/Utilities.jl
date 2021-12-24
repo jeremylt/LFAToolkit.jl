@@ -8,7 +8,7 @@
 
 """
 ```julia
-computesymbols(operator, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(operator, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over
@@ -112,7 +112,7 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(preconditioner, ω, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned
@@ -221,7 +221,7 @@ end
 
 """
 ```julia
-computesymbols(multigrid, ω, v, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(multigrid, ω, v, θ; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid

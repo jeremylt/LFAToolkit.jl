@@ -98,7 +98,7 @@ function computesymbolsoverrange(
         θ = collect(θ)
         A = computesymbols(operator, θ)
         if mass != nothing
-            A = computesymbols(mass, θ)^-1 * A
+            A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values
@@ -207,7 +207,7 @@ function computesymbolsoverrange(
         θ = collect(θ)
         A = computesymbols(preconditioner, ω, θ)
         if mass != nothing
-            A = computesymbols(mass, θ)^-1 * A
+            A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values
@@ -324,7 +324,7 @@ function computesymbolsoverrange(
         θ = [abs(θ_i) > 100 * eps() ? θ_i : 100 * eps() for θ_i in θ]
         A = computesymbols(multigrid, p, v, θ)
         if mass != nothing
-            A = computesymbols(mass, θ)^-1 * A
+            A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)
         eigenvalues[step, :] = currenteigen.values

@@ -28,7 +28,7 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
 - Eigenvalues of symbol matrix at θ sampled
 - Eigenvectors of symbol matrix at θ sampled
 
-# Example:
+# Examples:
 ```jldoctest
 using LFAToolkit;
 
@@ -62,6 +62,33 @@ for dimension in 1:3
         @assert maximum(eigenvalues[94, :]) ≈ 256/225
     end
 end
+
+# output
+
+```
+
+```jldoctest
+using LFAToolkit;
+
+# setup
+numbersteps1d = 3
+mesh = Mesh2D(0.5, 0.5)
+p = 6
+
+# operators
+mass = GalleryOperator("mass", p + 1, p + 1, mesh)
+diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh)
+
+# compute symbols
+(_, eigenvalues, _) = computesymbolsoverrange(
+    diffusion,
+    numbersteps1d;
+    mass = mass,
+    θ_min = -π
+);
+eigenvalues = real(eigenvalues);
+
+@assert minimum(eigenvalues[2, :]) ≈ π^2
 
 # output
 

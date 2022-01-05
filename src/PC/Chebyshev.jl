@@ -12,7 +12,7 @@ Chebyshev polynomial preconditioner for finite element operators.
     where ``D^{-1}`` is the inverse of the operator diagonal.
 
 # Arguments:
-- `operator`: finite element operator to precondition
+- `operator`:  finite element operator to precondition
 
 # Returns:
 - Chebyshev preconditioner object
@@ -89,6 +89,9 @@ getoperatordiagonalinverse(preconditioner)
 Compute or retrieve the inverse of the symbol matrix diagonal for a Chebyshev
     preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute diagonal inverse
+
 # Returns:
 - Symbol matrix diagonal inverse for the operator
 
@@ -132,6 +135,9 @@ geteigenvalueestimates(preconditioner)
 ```
 
 Compute or retrieve the eigenvalue estimates for a Chebyshev preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute eigenvalue estimates
 
 # Returns:
 - Eigenvalue estimates for the operator
@@ -204,8 +210,9 @@ seteigenvalueestimatescaling(preconditioner, eigenvaluebounds)
 Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 
 # Arguments:
-- `eigenvaluebounds`: array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
-    and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
+- `preconditioner`:    preconditioner to set eigenvalue estimate scaling
+- `eigenvaluebounds`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
+                           and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
 
 ``\\lambda_{\\text{min}}`` = a * estimated min + b * estimated max
 
@@ -291,11 +298,11 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a Chebyshev preconditioned operator
 
 # Arguments:
-- `preconditioner`: Chebyshev preconditioner to compute symbol matrix for
-- `ω`:              Smoothing parameter array
-                      [degree], [degree, ``\\lambda_{\\text{max}}``], or
-                      [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
-- `θ`:              Fourier mode frequency array (one frequency per dimension)
+- `preconditioner`:  Chebyshev preconditioner to compute symbol matrix for
+- `ω`:               smoothing parameter array
+                         [degree], [degree, ``\\lambda_{\\text{max}}``], or
+                         [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
+- `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the Chebyshev preconditioned operator

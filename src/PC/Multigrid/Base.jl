@@ -10,11 +10,11 @@ Multigrid(fineoperator, coarseoperator, smoother, prolongation, multigridtype)
 Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:      finite element operator to precondition
-- `coarseoperator`:    coarse grid representation of finite element operator to
-                           precondition
-- `smoother`:          error relaxation operator, such as Jacobi
-- `prolongationbases`: element prolongation bases from coarse to fine grid
+- `fineoperator`:       finite element operator to precondition
+- `coarseoperator`:     coarse grid representation of finite element operator to
+                            precondition
+- `smoother`:           error relaxation operator, such as Jacobi
+- `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
 - Multigrid preconditioner object
@@ -90,6 +90,9 @@ getnodecoordinateddifferences(multigrid)
 
 Compute or retrieve the array of differences in coordinates between nodes
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute node coordinate differences
+
 # Returns:
 - Array of differences in coordinates between nodes
 """
@@ -128,6 +131,9 @@ getprolongationmatrix(multigrid)
 ```
 
 Compute or retrieve the prolongation matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute prolongation matrix
 
 # Returns:
 - Matrix prolonging from coarse grid to fine grid
@@ -206,6 +212,9 @@ computesymbolsprolongation(multigrid, θ)
 Compute the symbol matrix for a multigrid prolongation operator
 
 # Arguments:
+- `preconditioner`:  preconditioner to compute prolongation symbol
+
+# Arguments:
 - `multigrid`: Multigrid operator to compute prolongation symbol matrix for
 - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
@@ -280,10 +289,10 @@ computesymbols(multigrid, p, v, θ)
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
-- `multigrid`: Multigrid preconditioner to compute symbol matrix for
-- `p`:         Smoothing paramater array
-- `v`:         Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-- `θ`:         Fourier mode frequency array (one frequency per dimension)
+- `multigrid`:  multigrid preconditioner to compute symbol matrix for
+- `p`:          smoothing paramater array
+- `v`:          pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+- `θ`:          Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the multigrid preconditioned operator

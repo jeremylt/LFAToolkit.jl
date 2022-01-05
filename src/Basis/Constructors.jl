@@ -333,12 +333,14 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
   or Gauss-Legendre-Lobatto quadrature points
 
 # Arguments:
-- `numbernodes1d`:                 number of Gauss-Legendre-Lobatto nodes in 1 dimension
-- `numberquadraturepoints1d`:      number of quadrature points in 1 dimension
-- `numbercomponents`:              number of components
-- `dimension`:                     dimension of basis
+- `numbernodes1d`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
+- `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
+- `numbercomponents`:          number of components
+- `dimension`:                 dimension of basis
+
+# Keyword Arguments:
 - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                     default: Gauss-Legendre-Lobatto
+                                       default: false, Gauss-Legendre-Lobatto
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -523,7 +525,11 @@ Tensor product macro-element basis from 1d single element tensor product basis
 - `dimension`:                 dimension of basis
 - `numberelements1d`:          number of elements in macro-element
 - `basis1dmicro`:              1d micro element basis to replicate 
-    
+
+# Keyword Arguments:
+- `overlapquadraturepoints`:  Overlap quadrature points between elements, for prolongation
+                                  default: false
+
 # Returns:
 - Tensor product macro-element basis object
 """
@@ -627,8 +633,10 @@ Tensor product macro-element basis on Gauss-Legendre-Lobatto points with
 - `numbercomponents`:              number of components
 - `dimension`:                     dimension of basis
 - `numberelements1d`:              number of elements in macro-element
+
+# Keyword Arguments:
 - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                     default: Gauss-Legendre-Lobatto
+                                     default: false, Gauss-Legendre-Lobatto
 
 # Returns:
 - H1 Lagrange tensor product macro-element basis object
@@ -924,10 +932,10 @@ TensorH1UniformHProlongationBasis(
 Tensor product h-prolongation basis on uniformly spaced points
 
 # Arguments:
-- `numbernodes1d`:            number of uniformly spaced nodes per element
-- `numbercomponents`:         number of components
-- `dimension`:                dimension of basis
-- `numberfineelements1d`:     number of fine grid elements
+- `numbernodes1d`:         number of uniformly spaced nodes per element
+- `numbercomponents`:      number of components
+- `dimension`:             dimension of basis
+- `numberfineelements1d`:  number of fine grid elements
 
 # Returns:
 - H1 Lagrange tensor product h-prolongation basis on uniformly spaced nodes object

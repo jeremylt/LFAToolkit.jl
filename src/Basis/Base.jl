@@ -29,18 +29,18 @@ TensorBasis(
 Tensor product basis
 
 # Arguments:
-- `numbernodes1d`:            number of nodes in 1 dimension
-- `numberquadraturepoints1d`: number of quadrature points in 1 dimension
-- `numbercomponents`:         number of components
-- `dimension`:                dimension of the basis
-- `nodes1d`:                  coordinates of the nodes in 1 dimension
-- `quadraturepoints1d`:       coordinates of the quadrature points in 1
-                                  dimension
-- `quadratureweights1d`:      quadrature weights in 1 dimension
-- `interpolation1d`:          interpolation matrix from nodes to quadrature
-                                  points in 1 dimension
-- `gradient1d`:               gradient matrix from nodes to quadrature points in
-                                  1 dimension
+- `numbernodes1d`:             number of nodes in 1 dimension
+- `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
+- `numbercomponents`:          number of components
+- `dimension`:                 dimension of the basis
+- `nodes1d`:                   coordinates of the nodes in 1 dimension
+- `quadraturepoints1d`:        coordinates of the quadrature points in 1
+                                   dimension
+- `quadratureweights1d`:       quadrature weights in 1 dimension
+- `interpolation1d`:           interpolation matrix from nodes to quadrature
+                                   points in 1 dimension
+- `gradient1d`:                gradient matrix from nodes to quadrature points in
+                                   1 dimension
 
 # Returns:
 - Tensor product basis object
@@ -173,15 +173,15 @@ NonTensorBasis(
 Non-tensor basis
 
 # Arguments:
-- `numbernodes`:            number of nodes 
-- `numberquadraturepoints`: number of quadrature points
-- `numbercomponents`:       number of components
-- `dimension`:              dimension of the basis
-- `nodes`:                  coordinates of the nodes
-- `quadraturepoints`:       coordinates of the quadrature points
-- `quadratureweights`:      quadrature weights
-- `interpolation`:          interpolation matrix from nodes to quadrature points
-- `gradient`:               gradient matrix from nodes to quadrature points
+- `numbernodes`:             number of nodes 
+- `numberquadraturepoints`:  number of quadrature points
+- `numbercomponents`:        number of components
+- `dimension`:               dimension of the basis
+- `nodes`:                   coordinates of the nodes
+- `quadraturepoints`:        coordinates of the quadrature points
+- `quadratureweights`:       quadrature weights
+- `interpolation`:           interpolation matrix from nodes to quadrature points
+- `gradient`:                gradient matrix from nodes to quadrature points
 
 # Returns:
 - Non-tensor product basis object
@@ -314,7 +314,7 @@ getnumbernodes(basis)
 Get the number of nodes for the basis
 
 # Arguments:
-- `basis`: basis to compute number of nodes
+- `basis`:  basis to compute number of nodes
 
 # Returns:
 - Integer number of basis nodes
@@ -350,7 +350,7 @@ Get nodes for basis
 - Basis nodes array
 
 # Arguments:
-- `basis`: basis to compute nodes
+- `basis`:  basis to compute nodes
 
 # Example:
 ```jldoctest
@@ -425,7 +425,7 @@ getnumberquadraturepoints(basis)
 Get the number of quadrature points for the basis
 
 # Arguments:
-- `basis`: basis to compute number of quadrature points
+- `basis`:  basis to compute number of quadrature points
 
 # Returns:
 - Integer number of basis quadrature points
@@ -551,7 +551,7 @@ Get full quadrature weights vector for basis
 - Basis quadrature weights vector
 
 # Arguments:
-- `basis`: basis to compute quadrature weights
+- `basis`:  basis to compute quadrature weights
 
 # Example:
 ```jldoctest
@@ -617,7 +617,7 @@ getinterpolation(basis)
 Get full interpolation matrix for basis
 
 # Arguments:
-- `basis`: basis to compute interpolation matrix
+- `basis`:  basis to compute interpolation matrix
 
 # Returns:
 - Basis interpolation matrix
@@ -684,7 +684,7 @@ getgradient(basis)
 Get full gradient matrix for basis
 
 # Arguments:
-- `basis`: basis to compute gradient matrix
+- `basis`:  basis to compute gradient matrix
 
 # Returns:
 - Basis gradient matrix
@@ -755,7 +755,7 @@ getnumbermodes(basis)
 Get number of modes for basis
 
 # Arguments:
-- `basis`: basis to compute number of modes
+- `basis`:  basis to compute number of modes
 
 # Returns:
 - Number of modes for basis
@@ -797,7 +797,7 @@ getmodemap(basis)
 Get mode mapping vector for basis
 
 # Arguments:
-- `basis`: basis to compute mode map vector
+- `basis`:  basis to compute mode map vector
 
 # Returns:
 - Basis mode map vector
@@ -891,7 +891,7 @@ getprimalnodes(basis)
 Get primal nodes for basis
 
 # Arguments:
-- `basis`: basis to compute primal nodes
+- `basis`:  basis to compute primal nodes
 
 # Returns:
 - Basis primal nodes vector
@@ -964,7 +964,7 @@ getinterfacenodes(basis)
 Get interface nodes for basis
 
 # Arguments:
-- `basis`: basis to compute primal nodes
+- `basis`:  basis to compute primal nodes
 
 # Returns:
 - Basis primal nodes vector
@@ -1058,7 +1058,7 @@ getnumberelements(basis)
 Get the number of elements for the basis
 
 # Arguments:
-- `basis`: basis to compute number of micro-elements
+- `basis`:  basis to compute number of micro-elements
 
 # Returns:
 - Integer number of basis micro-elements
@@ -1165,8 +1165,8 @@ getdXdxgradient(basis, mesh)
 Get gradient adjusted for mesh stretching
 
 # Arguments:
-- `basis`: basis to compute gradient
-- `mesh`:  mesh to compute gradient
+- `basis`:  basis to compute gradient
+- `mesh`:   mesh to compute gradient
 
 # Returns:
 - gradient matrix multiplied by change of coordinates adjoint
@@ -1265,8 +1265,8 @@ getdxdXquadratureweights(basis, mesh)
 Get quadrature weights adjusted for mesh stretching
 
 # Arguments:
-- `basis`: basis to compute quadratureweights
-- `mesh`:  mesh to compute quadratureweights
+- `basis`:  basis to compute quadratureweights
+- `mesh`:   mesh to compute quadratureweights
 
 # Returns:
 - quadrature weights multiplied by change of coordinates adjoint

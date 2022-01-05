@@ -63,9 +63,9 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a identity preconditioned operator
 
 # Arguments:
-- `preconditioner`: Identity preconditioner to compute symbol matrix for
-- `ω`:              Smoothing weighting factor array
-- `θ`:              Fourier mode frequency array (one frequency per dimension)
+- `preconditioner`:  Identity preconditioner to compute symbol matrix for
+- `ω`:               smoothing weighting factor array
+- `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the identity preconditioner (I)

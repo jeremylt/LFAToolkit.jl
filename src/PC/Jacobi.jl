@@ -10,7 +10,7 @@ Jacobi(operator)
 Jacobi diagonal preconditioner for finite element operators
 
 # Arguments:
-- `operator`: finite element operator to precondition
+- `operator`:  finite element operator to precondition
 
 # Returns:
 - Jacobi preconditioner object
@@ -92,6 +92,9 @@ getoperatordiagonalinverse(preconditioner)
 Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
     preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute diagonal inverse
+
 # Returns:
 - Symbol matrix diagonal inverse for the operator
 
@@ -161,9 +164,9 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
-- `preconditioner`: Jacobi preconditioner to compute symbol matrix for
-- `ω`:              Smoothing weighting factor array
-- `θ`:              Fourier mode frequency array (one frequency per dimension)
+- `preconditioner`:  Jacobi preconditioner to compute symbol matrix for
+- `ω`:               smoothing weighting factor array
+- `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the Jacobi preconditioned operator

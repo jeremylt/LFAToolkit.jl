@@ -15,11 +15,11 @@ Operator(
 Finite element operator comprising of a weak form and bases
 
 # Arguments:
-- `weakform`: user provided function that represents weak form at
-                  quadrature points
-- `mesh`:     mesh object with deformation in each dimension
-- `inputs`:   array of operator input fields
-- `outputs`:  array of operator output fields
+- `weakform`:  user provided function that represents weak form at
+                   quadrature points
+- `mesh`:      mesh object with deformation in each dimension
+- `inputs`:    array of operator input fields
+- `outputs`:   array of operator output fields
 
 # Returns:
 - Finite element operator object
@@ -202,7 +202,7 @@ getdimension(operator)
 Retrieve the dimension of an operator
 
 # Arguments:
-- `operator`: operator to retrieve the dimension of
+- `operator`:  operator to retrieve the dimension
 
 # Returns:
 - Dimension of the operator
@@ -233,7 +233,7 @@ getelementmatrix(operator)
 Compute or retrieve the element matrix of operator for computing the symbol
 
 # Arguments:
-- `operator`: operator to compute element element matrix
+- `operator`:  operator to compute element matrix
 
 # Returns:
 - Assembled element matrix
@@ -462,6 +462,9 @@ getdiagonal(operator)
 
 Compute or retrieve the symbol matrix diagonal for an operator
 
+# Arguments:
+- `operator`:  operator to compute diagonal
+
 # Returns:
 - Symbol matrix diagonal for the operator
 
@@ -508,6 +511,9 @@ getmultiplicity(operator)
 ```
 
 Compute or retrieve the vector of node multiplicity for the operator
+
+# Arguments:
+- `operator`:  operator to compute node multiplicity
 
 # Returns:
 - Vector of node multiplicity for the operator
@@ -586,6 +592,9 @@ getrowmodemap(operator)
 
 Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix
 
+# Arguments:
+- `operator`:  operator to compute row mode map
+
 # Returns:
 - Matrix mapping rows of element matrix to symbol matrix
 
@@ -648,6 +657,9 @@ getcolumnmodemap(operator)
 Compute or retrieve the matrix mapping the columns of the element matrix to the
   symbol matrix
 
+# Arguments:
+- `operator`:  operator to compute column mode map
+
 # Returns:
 - Matrix mapping columns of element matrix to symbol matrix
 
@@ -709,6 +721,9 @@ getinputcoordinates(operator)
 
 Compute or retrieve the array of input coordinates
 
+# Arguments:
+- `operator`:  operator to get input coordinates
+
 # Returns:
 - Array of input coordinates
 """
@@ -744,6 +759,9 @@ getoutputcoordinates(operator)
 
 Compute or retrieve the array of output coordinates
 
+# Arguments:
+- `operator`:  operator to get output coordinates
+
 # Returns:
 - Array of output coordinates
 """
@@ -776,6 +794,9 @@ getnodecoordinatedifferences(operator)
 ```
 
 Compute or retrieve the array of differences in coordinates between nodes
+
+# Arguments:
+- `operator`:  operator to compute differences between node coordinates
 
 # Returns:
 - Array of differences in coordinates between nodes
@@ -877,8 +898,8 @@ computesymbols(operator, θ)
 Compute the symbol matrix for an operator
 
 # Arguments:
-- `operator`: Finite element operator to compute symbol matrix for
-- `θ`:        Fourier mode frequency array (one frequency per dimension)
+- `operator`:  finite element operator to compute symbol matrix for
+- `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the operator

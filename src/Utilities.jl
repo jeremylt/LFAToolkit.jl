@@ -15,13 +15,15 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
   a range of θ from -π/2 to 3π/2
 
 # Arguments:
-- `operator`:      Finite element operator to compute symbol matrices for
-- `numbersteps1d`: Number of values of θ to sample in each dimension
-                     Note: numbersteps1d^dimension symbol matrices will be computed
+- `operator`:       Finite element operator to compute symbol matrices for
+- `numbersteps1d`:  Number of values of θ to sample in each dimension
+                        Note: numbersteps1d^dimension symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:  Mass operator to invert for comparison to analytic solution
-- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
+- `mass`:   Mass operator to invert for comparison to analytic solution,
+                default: nothing
+- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
+                default: -π / 2
 
 # Returns:
 - Values of θ sampled
@@ -146,14 +148,16 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a precondition
   operator over a range of θ from -π/2 to 3π/2
 
 # Arguments:
-- `preconditioner`: Preconditioner to compute symbol matries for
-- `ω`:              Smoothing parameter array
-- `numbersteps1d`:  Number of values of θ to sample in each dimension
-                      Note: numbersteps1d^dimension symbol matrices will be computed
+- `preconditioner`:  Preconditioner to compute symbol matries for
+- `ω`:               Smoothing parameter array
+- `numbersteps1d`:   Number of values of θ to sample in each dimension
+                         Note: numbersteps1d^dimension symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:  Mass operator to invert for comparison to analytic solution
-- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
+- `mass`:   Mass operator to invert for comparison to analytic solution,
+                default: nothing
+- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
+                default: -π / 2
 
 # Returns:
 - Values of θ sampled
@@ -255,15 +259,17 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
   preconditioned operator over a range of θ from -π/2 to 3π/2
 
 # Arguments:
-- `multigrid`:     Preconditioner to compute symbol matries for
-- `p`:             Smoothing parameter array
-- `v`:             Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-- `numbersteps1d`: Number of values of θ to sample in each dimension
-                     Note: numbersteps1d^dimension symbol matrices will be computed
+- `multigrid`:      Preconditioner to compute symbol matries for
+- `p`:              Smoothing parameter array
+- `v`:              Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+- `numbersteps1d`:  Number of values of θ to sample in each dimension
+                       Note: numbersteps1d^dimension symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:  Mass operator to invert for comparison to analytic solution
-- `θ_min`: Bottom of range of θ, shifts range to [θ_min, θ_min + 2π]
+- `mass`:   Mass operator to invert for comparison to analytic solution,
+                default: nothing
+- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
+                default: -π / 2
 
 # Returns:
 - Values of θ sampled

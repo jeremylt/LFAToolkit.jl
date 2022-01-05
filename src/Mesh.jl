@@ -15,7 +15,7 @@ Mesh1D(dx)
 One dimensional regular background mesh
 
 # Arguments:
-- `dx`: deformation in x dimension
+- `dx`:  deformation in x dimension
 
 # Returns:
 - One dimensional mesh object
@@ -69,8 +69,8 @@ Mesh2D(dx, dy)
 Two dimensional regular background mesh
 
 # Arguments:
-- `dx`: deformation in x dimension
-- `dy`: deformation in y dimension
+- `dx`:  deformation in x dimension
+- `dy`:  deformation in y dimension
 
 # Returns:
 - Two dimensional mesh object
@@ -128,9 +128,9 @@ Mesh3D(dx, dy, dz)
 Three dimensional regular background mesh
 
 # Arguments:
-- `dx`: deformation in x dimension
-- `dy`: deformation in y dimension
-- `dz`: deformation in z dimension
+- `dx`:  deformation in x dimension
+- `dy`:  deformation in y dimension
+- `dz`:  deformation in z dimension
 
 # Returns:
 - Three dimensional mesh object

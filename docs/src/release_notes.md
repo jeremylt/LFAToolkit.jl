@@ -6,6 +6,18 @@ Current development includes:
 
 Enhancements:
 
+Bugfixes:
+
+## v0.5.0
+
+This release include some minor fixes and some convenience utilities.
+
+Breaking change:
+
+* Kkeyword argument indicating quadrature point placement for Basis convenience constructors renamed.
+
+Enhancements:
+
 * Added `computesymbolsoverrange` to facilitate common analysis.
 
 Bugfixes:

@@ -16,7 +16,7 @@ ctofbasis = TensorH1LagrangeBasis(
     finep + 1,
     numbercomponents,
     dimension,
-    lagrangequadrature = true,
+    collocatedquadrature = true,
 )
 
 # diffusion operators

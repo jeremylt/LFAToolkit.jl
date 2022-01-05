@@ -10,8 +10,8 @@ BDDC(operator, coarseoperator, smoother, prolongation)
 BDDC preconditioner for finite element operators
 
 # Arguments:
-- `operator`:      finite element operator to precondition
-- `injectiontype`: type of injection into subassembled space to use
+- `operator`:       finite element operator to precondition
+- `injectiontype`:  type of injection into subassembled space to use
 
 # Returns:
 - BDDC preconditioner object
@@ -130,6 +130,9 @@ getsubassemblednodes(bddc)
 
 Compute or retrieve the subassembled nodes for a BDDC preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute sumassembled nodes
+
 # Returns:
 - Vector of subassembled nodes for BDDC preconditioner
 
@@ -171,6 +174,9 @@ getinterfacenodes(bddc)
 ```
 
 Compute or retrieve the interface nodes for a BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute interface nodes
 
 # Returns:
 - Vector of interface nodes for BDDC preconditioner
@@ -231,6 +237,9 @@ getinteriornodes(bddc)
 
 Compute or retrieve the interior nodes for a BDDC preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute interior nodes
+
 # Returns:
 - Vector of interior nodes for BDDC preconditioner
 
@@ -277,6 +286,9 @@ getprimalmodes(bddc)
 ```
 
 Compute or retrieve the primal modes for a BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute primal nodes
 
 # Returns:
 - Vector of primal modes for BDDC preconditioner
@@ -328,6 +340,9 @@ getsubassembledmodes(bddc)
 
 Compute or retrieve the subassembled modes for a BDDC preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute subassembled modes
+
 # Returns:
 - Vector of subassembled modes for BDDC preconditioner
 
@@ -369,6 +384,9 @@ getinterfacemodes(bddc)
 ```
 
 Compute or retrieve the interface modes for a BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute interface modes
 
 # Returns:
 - Vector of interface modes for BDDC preconditioner
@@ -428,6 +446,9 @@ getinteriormodes(bddc)
 
 Compute or retrieve the interior modes for a BDDC preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute interior modes
+
 # Returns:
 - Vector of interior modes for BDDC preconditioner
 
@@ -467,6 +488,9 @@ getsubassembledinverse(bddc)
 ```
 
 Compute or retrieve the solver for subdomain for a BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute subdomain solver
 
 # Returns:
 - Solver for subdomain
@@ -512,6 +536,9 @@ getinteriorinverse(bddc)
 
 Compute or retrieve the solver for subdomain interior for a BDDC preconditioner
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute subdomain interior solver
+
 # Returns:
 - Solver for subdomain interior
 
@@ -554,6 +581,9 @@ getschur(bddc)
 ```
 
 Compute or retrieve the Schur complement matrix for a BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute Schur complement matrix
 
 # Returns:
 - Matrix for Schur complement
@@ -604,6 +634,9 @@ getprimalrowmodemap(bddc)
 
 Compute or retrieve the matrix mapping the rows of the primal BDDC matrix to the primal symbol matrix
 
+# Arguments:
+- `preconditioner`:  preconditioner to compute primal row mode map
+
 # Returns:
 - Matrix mapping rows of primal BDDC matrix to primal symbol matrix
 
@@ -644,7 +677,10 @@ getprimalcolumnmodemap(bddc)
 ```
 
 Compute or retrieve the matrix mapping the columns of the primal BDDC matrix to the
-primal symbol matrix
+    primal symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute primal column mode map
 
 # Returns:
 - Matrix mapping columns of primal BDDC matrix to primal symbol matrix
@@ -687,7 +723,10 @@ getsubassembledrowmodemap(bddc)
 ```
 
 Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix to the
-subassembled symbol matrix
+    subassembled symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute subassembled row mode map
 
 # Returns:
 - Matrix mapping rows of subassembled BDDC matrix to subassembled symbol matrix
@@ -730,7 +769,10 @@ getsubassembledcolumnmodemap(bddc)
 ```
 
 Compute or retrieve the matrix mapping the columns of the subassembled BDDC matrix to the
-subassembled symbol matrix
+    subassembled symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute subassembled column mode map
 
 # Returns:
 - Matrix mapping columns of subassembled BDDC matrix to subassembled symbol matrix
@@ -773,7 +815,10 @@ getmixedrowmodemap(bddc)
 ```
 
 Compute or retrieve the matrix mapping the rows of the mixed BDDC matrix to the
-symbol matrix
+    symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute mixed row mode map
 
 # Returns:
 - Matrix mapping rows of mixed BDDC matrix to symbol matrix
@@ -803,7 +848,10 @@ getmixedcolumnmodemap(bddc)
 ```
 
 Compute or retrieve the matrix mapping the columns of the mixed BDDC matrix to the
-symbol matrix
+    symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute mixed column mode map
 
 # Returns:
 - Matrix mapping columns of mixed BDDC matrix to symbol matrix
@@ -834,6 +882,9 @@ getmodepermutation(bddc)
 ```
 
 Compute or retrieve the matrix permuting multi-component modes to standard ordering
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute mode permutation matrix
 
 # Returns:
 - Matrix mapping BDDC mode ordering to standard ordering
@@ -868,7 +919,10 @@ getmixedmultiplicity(bddc)
 ```
 
 Compute or retrieve the diagonal matrix of mixed interface node and primal mode
-multiplicity for the BDDC preconditioner
+    multiplicity for the BDDC preconditioner
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute mixed node/mode multiplicity
 
 # Returns:
 - Matrix of mixed multiplicity for the BDDC preconditioner
@@ -897,7 +951,10 @@ end
 getJDT(bddc)
 ```
 
-Compute or retrieve the matrix mapping the jump over subdomain interfacemodes
+Compute or retrieve the matrix mapping the jump over subdomain interface modes
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute jump mapping matrix
 
 # Returns:
 - Matrix mapping the jump over subdomain interfacemodes
@@ -946,6 +1003,9 @@ computesymbolsinjection(bddc)
 ```
 
 Compute or retrieve the injection operator for the BDDC symbol matrix
+
+# Arguments:
+- `preconditioner`:  preconditioner to compute injection matrix
 
 # Returns:
 - Matrix providing the injection operator of BDDC symbol matrix
@@ -1091,8 +1151,8 @@ computesymbols(bddc, θ)
 Compute the symbol matrix for a BDDC preconditioned operator
 
 # Arguments:
-- `bddc`: BDDC preconditioner to compute symbol matrix for
-- `θ`:    Fourier mode frequency array (one frequency per dimension)
+- `bddc`:  BDDC preconditioner to compute symbol matrix for
+- `θ`:     Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 - Symbol matrix for the BDDC preconditioned operator

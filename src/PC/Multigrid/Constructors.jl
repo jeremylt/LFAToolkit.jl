@@ -14,11 +14,11 @@ Pmultigrid(fineoperator, coarseoperator, smoother, prolongation)
 P-Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:      finite element operator to precondition
-- `coarseoperator`:    coarse grid representation of finite element operator to
-                           precondition
-- `smoother`:          error relaxation operator, such as Jacobi
-- `prolongationbases`: element prolongation bases from coarse to fine grid
+- `fineoperator`:       finite element operator to precondition
+- `coarseoperator`:     coarse grid representation of finite element operator to
+                            precondition
+- `smoother`:           error relaxation operator, such as Jacobi
+- `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
 - P-multigrid preconditioner object
@@ -107,11 +107,11 @@ Hmultigrid(fineoperator, coarseoperator, smoother, prolongation)
 H-Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:      finite element operator to precondition
-- `coarseoperator`:    coarse grid representation of finite element operator to
-                           precondition
-- `smoother`:          error relaxation operator, such as Jacobi
-- `prolongationbases`: element prolongation bases from coarse to fine grid
+- `fineoperator`:       finite element operator to precondition
+- `coarseoperator`:     coarse grid representation of finite element operator to
+                            precondition
+- `smoother`:           error relaxation operator, such as Jacobi
+- `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
 - H-multigrid preconditioner object

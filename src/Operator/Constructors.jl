@@ -8,16 +8,16 @@
 
 """
 ```julia
-GalleryOperator(name, p1d, q1d, mesh)
+GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh)
 ```
 
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`: string containing name of operator
-- `p1d`:  polynomial order of TensorH1LagrangeBasis
-- `q1d`:  number of quadrature points in one dimension for basis
-- `mesh`: mesh for operator
+- `name`:                      string containing name of operator
+- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+- `mesh`:                      mesh for operator
 
 # Returns:
 - Finite element operator object
@@ -110,9 +110,19 @@ operator field:
     gradient
 ```
 """
-function GalleryOperator(name::String, p1d::Int, q1d::Int, mesh::Mesh)
+function GalleryOperator(
+    name::String,
+    numbernodes1d::Int,
+    numberquadraturepoints1d::Int,
+    mesh::Mesh,
+)
     if haskey(operatorgallery, name)
-        basis = TensorH1LagrangeBasis(p1d, q1d, 1, mesh.dimension)
+        basis = TensorH1LagrangeBasis(
+            numbernodes1d,
+            numberquadraturepoints1d,
+            1,
+            mesh.dimension,
+        )
         return operatorgallery[name](basis, mesh)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
@@ -121,17 +131,17 @@ end
 
 """
 ```julia
-GalleryVectorOperator(name, p1d, q1d, numberelements1d, mesh)
+GalleryVectorOperator(name, numbernodes1d, numberquadraturepoints1d, numberelements1d, mesh)
 ```
 
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`:              string containing name of operator
-- `p1d`:               polynomial order of TensorH1LagrangeBasis
-- `q1d`:               number of quadrature points in one dimension for basis
-- `numbercomponents` : number of components
-- `mesh`:              mesh for operator
+- `name`:                      string containing name of operator
+- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+- `numbercomponents`:          number of components
+- `mesh`:                      mesh for operator
 
 # Returns:
 - Finite element operator object
@@ -226,13 +236,18 @@ operator field:
 """
 function GalleryVectorOperator(
     name::String,
-    p1d::Int,
-    q1d::Int,
+    numbernodes1d::Int,
+    numberquadraturepoints1d::Int,
     numbercomponents::Int,
     mesh::Mesh,
 )
     if haskey(operatorgallery, name)
-        basis = TensorH1LagrangeBasis(p1d, q1d, numbercomponents, mesh.dimension)
+        basis = TensorH1LagrangeBasis(
+            numbernodes1d,
+            numberquadraturepoints1d,
+            numbercomponents,
+            mesh.dimension,
+        )
         return operatorgallery[name](basis, mesh)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
@@ -241,17 +256,17 @@ end
 
 """
 ```julia
-GalleryMacroElementOperator(name, p1d, q1d, numberelements1d, mesh)
+GalleryMacroElementOperator(name, numbernodes1d, numberquadraturepoints1d, numberelements1d, mesh)
 ```
 
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`:              string containing name of operator
-- `p1d`:               polynomial order of TensorH1LagrangeBasis
-- `q1d`:               number of quadrature points in one dimension for basis
-- `numberelements1d` : number of elements in macro-element
-- `mesh`:              mesh for operator
+- `name`:                      string containing name of operator
+- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+- `numberelements1d`:          number of elements in macro-element
+- `mesh`:                      mesh for operator
 
 # Returns:
 - Finite element operator object
@@ -352,13 +367,19 @@ operator field:
 """
 function GalleryMacroElementOperator(
     name::String,
-    p1d::Int,
-    q1d::Int,
+    numbernodes1d::Int,
+    numberquadraturepoints1d::Int,
     numberelements1d::Int,
     mesh::Mesh,
 )
     if haskey(operatorgallery, name)
-        basis = TensorH1LagrangeMacroBasis(p1d, q1d, 1, mesh.dimension, numberelements1d)
+        basis = TensorH1LagrangeMacroBasis(
+            numbernodes1d,
+            numberquadraturepoints1d,
+            1,
+            mesh.dimension,
+            numberelements1d,
+        )
         return operatorgallery[name](basis, mesh)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
@@ -461,8 +482,8 @@ Convenience constructor for diffusion operator
 - ``\\int \\nabla v \\nabla u``
 
 # Arguments:
-- `basis`: basis for all operator fields to use
-- `mesh`:  mesh for operator
+- `basis`:  basis for all operator fields to use
+- `mesh`:   mesh for operator
 
 # Returns:
 - Diffusion operator with basis on mesh

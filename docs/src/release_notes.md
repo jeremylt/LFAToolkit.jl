@@ -10,6 +10,8 @@ Enhancements:
 
 Bugfixes:
 
+* Fix language surrounding quadrature, consistently using Gauss-Legendre and Gauss-Legendre-Lobatto or `gaussquadrature` and `gausslobattoquadrature`.
+
 ## v0.4.1
 
 This release includes a small fix for properly handling stretched meshes, such as when `dx != dy`.

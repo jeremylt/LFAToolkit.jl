@@ -288,7 +288,7 @@ for dimension in 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0);
     end
-    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension, lagrangequadrature=true);
+    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature=true);
 
     # operators
     finediffusion = GalleryOperator("diffusion", 5, 5, mesh);

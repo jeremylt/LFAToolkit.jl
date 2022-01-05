@@ -3,7 +3,7 @@
 ```@docs
 LFAToolkit.AbstractBasis
 LFAToolkit.gaussquadrature
-LFAToolkit.lobattoquadrature
+LFAToolkit.gausslobattoquadrature
 LFAToolkit.TensorMacroElementBasisFrom1D
 LFAToolkit.TensorHProlongationBasis
 LFAToolkit.buildinterpolationandgradient

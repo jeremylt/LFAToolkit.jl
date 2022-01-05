@@ -791,7 +791,7 @@ nodedifferences = LFAToolkit.getnodecoordinatedifferences(mass);
 nodedifferences = mass.nodecoordinatedifferences;
 
 # verify
-truenodes = LFAToolkit.lobattoquadrature(4, false);
+truenodes = LFAToolkit.gausslobattoquadrature(4, false);
 truenodedifferences = [
     (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
 ];

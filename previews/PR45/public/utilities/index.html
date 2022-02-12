@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/public/utilities/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../examples/">Examples</a></li><li><a class="tocitem" href="../">Public API</a></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/public/utilities.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Utilities"><a class="docs-heading-anchor" href="#Utilities">Utilities</a><a id="Utilities-1"></a><a class="docs-heading-anchor-permalink" href="#Utilities" title="Permalink"></a></h2><p>These functions are utilities for common analysis.</p><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsoverrange-Tuple{Operator, Int64}" href="#LFAToolkit.computesymbolsoverrange-Tuple{Operator, Int64}"><code>LFAToolkit.computesymbolsoverrange</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbolsoverrange(operator, θ; mass=nothing, θ_min=-π/2)</code></pre><p>Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over   a range of θ from -π/2 to 3π/2</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:       Finite element operator to compute symbol matrices for</li><li><code>numbersteps1d</code>:  Number of values of θ to sample in each dimension                       Note: numbersteps1d^dimension symbol matrices will be computed</li></ul><p><strong>Keyword Arguments:</strong></p><ul><li><code>mass</code>:   Mass operator to invert for comparison to analytic solution,               default: nothing</li><li><code>θ_min</code>:  Bottom of range of θ, shifts range to [θ<em>min, θ</em>min + 2π],               default: -π / 2</li></ul><p><strong>Returns:</strong></p><ul><li>Values of θ sampled</li><li>Eigenvalues of symbol matrix at θ sampled</li><li>Eigenvectors of symbol matrix at θ sampled</li></ul><p><strong>Examples:</strong></p><pre><code class="language-julia">using LFAToolkit;
+
+numbersteps1d = 5
+
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+
+    # compute symbols
+    (_, eigenvalues, _) = computesymbolsoverrange(diffusion, numbersteps1d);
+
+    # verify
+    eigenvalues = real(eigenvalues);
+    if dimension == 1
+        @assert minimum(eigenvalues[4, :]) ≈ 1
+        @assert maximum(eigenvalues[4, :]) ≈ 4/3
+    elseif dimension == 2
+        @assert minimum(eigenvalues[19, :]) ≈ 2/3
+        @assert maximum(eigenvalues[19, :]) ≈ 64/45
+    elseif dimension == 3
+        @assert minimum(eigenvalues[94, :]) ≈ 1/3
+        @assert maximum(eigenvalues[94, :]) ≈ 256/225
+    end
+end
+
+# output
+</code></pre><pre><code class="language-julia">using LFAToolkit;
+
+# setup
+numbersteps1d = 3
+mesh = Mesh2D(0.5, 0.5)
+p = 6
+
+# operators
+mass = GalleryOperator(&quot;mass&quot;, p + 1, p + 1, mesh)
+diffusion = GalleryOperator(&quot;diffusion&quot;, p + 1, p + 1, mesh)
+
+# compute symbols
+(_, eigenvalues, _) = computesymbolsoverrange(
+    diffusion,
+    numbersteps1d;
+    mass = mass,
+    θ_min = -π
+);
+eigenvalues = real(eigenvalues);
+
+@assert minimum(eigenvalues[2, :]) ≈ π^2
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/597c62ddb40160853666c99cc6bdc4b61a4e7ff9/src/Utilities.jl#L9-L98">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}" href="#LFAToolkit.computesymbolsoverrange-Tuple{AbstractPreconditioner, Array, Int64}"><code>LFAToolkit.computesymbolsoverrange</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbolsoverrange(preconditioner, ω, θ; mass=nothing, θ_min=-π/2)</code></pre><p>Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned   operator over a range of θ from -π/2 to 3π/2</p><p><strong>Arguments:</strong></p><ul><li><code>preconditioner</code>:  Preconditioner to compute symbol matries for</li><li><code>ω</code>:               Smoothing parameter array</li><li><code>numbersteps1d</code>:   Number of values of θ to sample in each dimension                        Note: numbersteps1d^dimension symbol matrices will be computed</li></ul><p><strong>Keyword Arguments:</strong></p><ul><li><code>mass</code>:   Mass operator to invert for comparison to analytic solution,               default: nothing</li><li><code>θ_min</code>:  Bottom of range of θ, shifts range to [θ<em>min, θ</em>min + 2π],               default: -π / 2</li></ul><p><strong>Returns:</strong></p><ul><li>Values of θ sampled</li><li>Eigenvalues of symbol matrix at θ sampled</li><li>Eigenvectors of symbol matrix at θ sampled</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LFAToolkit;
+
+numbersteps1d = 5
+
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+
+    # preconditioner
+    chebyshev = Chebyshev(diffusion);
+
+    # compute symbols
+    (_, eigenvalues, _) = computesymbolsoverrange(chebyshev, [1], numbersteps1d);
+
+    # verify
+    eigenvalues = real(eigenvalues);
+    if dimension == 1
+        @assert minimum(eigenvalues[4, :]) ≈ 0.15151515151515105
+        @assert maximum(eigenvalues[4, :]) ≈ 0.27272727272727226
+    elseif dimension == 2
+        @assert minimum(eigenvalues[19, :]) ≈ -0.25495098334134725
+        @assert maximum(eigenvalues[19, :]) ≈ -0.17128758445192374
+    elseif dimension == 3
+        @assert minimum(eigenvalues[94, :]) ≈ -0.8181818181818181
+        @assert maximum(eigenvalues[94, :]) ≈ -0.357575757575757
+    end
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/597c62ddb40160853666c99cc6bdc4b61a4e7ff9/src/Utilities.jl#L142-L208">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbolsoverrange-Tuple{Multigrid, Array, Array, Int64}" href="#LFAToolkit.computesymbolsoverrange-Tuple{Multigrid, Array, Array, Int64}"><code>LFAToolkit.computesymbolsoverrange</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbolsoverrange(multigrid, ω, v, θ; mass=nothing, θ_min=-π/2)</code></pre><p>Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid   preconditioned operator over a range of θ from -π/2 to 3π/2</p><p><strong>Arguments:</strong></p><ul><li><code>multigrid</code>:      Preconditioner to compute symbol matries for</li><li><code>p</code>:              Smoothing parameter array</li><li><code>v</code>:              Pre and post smooths iteration count array, 0 indicates no pre or post smoothing</li><li><code>numbersteps1d</code>:  Number of values of θ to sample in each dimension                      Note: numbersteps1d^dimension symbol matrices will be computed</li></ul><p><strong>Keyword Arguments:</strong></p><ul><li><code>mass</code>:   Mass operator to invert for comparison to analytic solution,               default: nothing</li><li><code>θ_min</code>:  Bottom of range of θ, shifts range to [θ<em>min, θ</em>min + 2π],               default: -π / 2</li></ul><p><strong>Returns:</strong></p><ul><li>Values of θ sampled</li><li>Eigenvalues of symbol matrix at θ sampled</li><li>Eigenvectors of symbol matrix at θ sampled</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia">using LFAToolkit;
+
+numbersteps1d = 5
+
+using LinearAlgebra
+
+for dimension in 1:3
+    # setup
+    mesh = []
+    if dimension == 1
+        mesh = Mesh1D(1.0);
+    elseif dimension == 2
+        mesh = Mesh2D(1.0, 1.0);
+    elseif dimension == 3
+        mesh = Mesh3D(1.0, 1.0, 1.0);
+    end
+    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature=true);
+
+    # operators
+    finediffusion = GalleryOperator(&quot;diffusion&quot;, 5, 5, mesh);
+    coarsediffusion = GalleryOperator(&quot;diffusion&quot;, 3, 5, mesh);
+
+    # smoother
+    jacobi = Jacobi(finediffusion);
+
+    # preconditioner
+    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
+
+    # compute symbols
+    (_, eigenvalues, _) = computesymbolsoverrange(multigrid, [1.0], [1, 1], numbersteps1d);
+
+    # verify
+    eigenvalues = real(eigenvalues)
+    if dimension == 1
+       @assert maximum(eigenvalues[4, :]) ≈ 0.64
+    elseif dimension == 2
+       @assert maximum(eigenvalues[19, :]) ≈ 0.9082562365654528
+    elseif dimension == 3
+       @assert maximum(eigenvalues[94, :]) ≈ 1.4359882222222669
+    end
+end
+
+# output
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/597c62ddb40160853666c99cc6bdc4b61a4e7ff9/src/Utilities.jl#L253-L326">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 12 February 2022 00:20">Saturday 12 February 2022</span>. Using Julia version 1.7.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

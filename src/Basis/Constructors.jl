@@ -2,6 +2,8 @@
 # finite element bases
 # ------------------------------------------------------------------------------
 
+using Polynomials
+
 # ------------------------------------------------------------------------------
 # utility functions for generating polynomial bases
 # ------------------------------------------------------------------------------
@@ -208,6 +210,47 @@ function gausslobattoquadrature(q::Int, weights::Bool)
     else
         return quadraturepoints
     end
+end
+
+"""
+Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s).
+See Figure 4.1 of Hale and Trefethen.
+"""
+function sausage(d = 9)
+    c = zeros(d + 1)
+    c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
+    c /= sum(c)
+    g = Polynomial(c)
+    g, derivative(g)
+end
+
+# This function transforms the quadrature
+function transformquadrature(points, weights = nothing, mapping = sausage)
+    g_map, g_map_prime = mapping()
+    m_points = g_map.(points)
+    if !isnothing(weights)
+        m_weights = g_map_prime.(points) .* weights
+        return m_points, m_weights
+    else
+        return m_points
+    end
+end
+
+# This function returns the transplanted Gauss quadrature points and weights
+function gaussquadraturemapped(q::Int)
+    gausspoints, gaussweights = gaussquadrature(q)
+    transformquadrature(gausspoints, gaussweights)
+end
+
+# This function returns the transplanted lobatto quadrature points and weights
+function lobattoquadraturemapped(q::Int, weights::Bool)
+    if weights
+        lobattopoints, lobattoweights = lobattoquadrature(q, weights)
+    else
+        lobattopoints = lobattoquadrature(q, weights)
+        lobattoweights = nothing
+    end
+    return transformquadrature(lobattopoints, lobattoweights)
 end
 
 """

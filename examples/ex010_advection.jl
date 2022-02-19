@@ -14,15 +14,15 @@ end
 
 function hale_trefethen_strip(ρ)
     τ = π / log(ρ)
-    d = .5 + 1 / (exp(τ * π) + 1)
+    d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
     # Unscaled functions of u
-    g_u(u) = log(1 + exp(-τ*(π2 + u))) - log(1 + exp(-τ*(π2-u))) + d*τ*u
-    g_prime_u(u) = 1 / (exp(τ*(π2+u)) + 1) + 1 / (exp(τ*(π2-u)) + 1) -d
+    g_u(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
+    g_prime_u(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
     # Normalizing factor and scaled functions of s
-    C = 1 / g_u(π/2)
+    C = 1 / g_u(π / 2)
     g(s) = C * g_u(asin(s))
-    g_prime(s) = -τ*C/sqrt(1 - s^2) * g_prime_u(asin(s))
+    g_prime(s) = -τ * C / sqrt(1 - s^2) * g_prime_u(asin(s))
     g, g_prime
 end
 
@@ -31,10 +31,11 @@ mesh = Mesh1D(1.0)
 P = 11;
 Q = P;
 collocate = false
-#mapping = kosloff_tal_ezer(.98)
-#mapping = sausage(29)
+mapping = kosloff_tal_ezer(0.98)
+mapping = sausage(29)
 mapping = hale_trefethen_strip(1.4)
-basis = TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+basis =
+    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # associated phase speed
 U = 1.0
@@ -53,7 +54,8 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 advection = Operator(advectionweakform, mesh, inputs, outputs)
 #advection = GalleryOperator("advection", P, Q, mesh)
-mass = GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+mass =
+    GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
 
 # compute operator symbols
 function advection_symbol(θ)
@@ -78,7 +80,7 @@ S = hcat(advection_symbol.(θ)...)'
 #min_S = minimum(S)
 #max_S = maximum(S)
 plot(θ / π, S ./ π)
-plot!(identity, label="exact", legend=:none, color=:black, ylims=(0, P+2))
+plot!(identity, label = "exact", legend = :none, color = :black, ylims = (0, P + 2))
 
 #tm = hcat(transformation_matrix.(θ)...)'
 #@show tm

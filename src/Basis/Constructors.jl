@@ -444,7 +444,8 @@ function TensorH1LagrangeBasis(
         _, g_prime = mapping
         gradient1d ./= g_prime.(quadraturepoints1d)
         nodes1d = transformquadrature(nodes1d, nothing, mapping)
-        quadraturepoints1d, quadratureweights1d = transformquadrature(quadraturepoints1d, quadratureweights1d, mapping)
+        quadraturepoints1d, quadratureweights1d =
+            transformquadrature(quadraturepoints1d, quadratureweights1d, mapping)
     end
 
     # use basic constructor

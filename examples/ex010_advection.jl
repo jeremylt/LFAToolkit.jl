@@ -46,16 +46,15 @@ end
 
 #θ = LinRange(.01, π, 20)
 numbersteps = 250
-θ_min = -π / 2
-θ_max = 3π / 2
-θ_step = 2π / (numbersteps - 1)
-θ = θ_min:θ_step:θ_max
+θ_min = 0
+θ_max = (P - 1) * π
+θ = LinRange(θ_min, θ_max, numbersteps)
 
 S = hcat(advection_symbol.(θ)...)'
 #min_S = minimum(S)
 #max_S = maximum(S)
-plot(θ / π, S)
-plot!(t -> π*t, label="exact", legend=:none, color=:black)
+plot(θ / π, S ./ π)
+plot!(identity, label="exact", legend=:none, color=:black, ylims=(0, P-1))
 
 #tm = hcat(transformation_matrix.(θ)...)'
 #@show tm

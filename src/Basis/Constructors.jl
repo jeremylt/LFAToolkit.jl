@@ -4,6 +4,39 @@
 
 using Polynomials
 
+"""
+Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s).
+See Figure 4.1 of Hale and Trefethen.
+"""
+function sausage(d = 9)
+    c = zeros(d + 1)
+    c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
+    c /= sum(c)
+    g = Polynomial(c)
+    g, derivative(g)
+end
+
+"""
+Transform quadrature by applying a smooth mapping = (g, g_prime) from the original domain.
+"""
+function transformquadrature(points, weights = nothing, mapping = nothing)
+    if isnothing(mapping)
+        if isnothing(weights)
+            return points
+        else
+            return points, weights
+        end
+    end
+    g_map, g_map_prime = mapping
+    m_points = g_map.(points)
+    if !isnothing(weights)
+        m_weights = g_map_prime.(points) .* weights
+        return m_points, m_weights
+    else
+        return m_points
+    end
+end
+
 # ------------------------------------------------------------------------------
 # utility functions for generating polynomial bases
 # ------------------------------------------------------------------------------
@@ -49,7 +82,7 @@ trueweights = [
 
 ```
 """
-function gaussquadrature(q::Int)
+function gaussquadrature(q::Int; mapping = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -101,8 +134,7 @@ function gaussquadrature(q::Int)
     end
     quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
-    # return
-    return quadraturepoints, quadratureweights
+    return transformquadrature(quadraturepoints, quadratureweights, mapping)
 end
 
 """
@@ -139,7 +171,7 @@ trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool)
+function gausslobattoquadrature(q::Int, weights::Bool; mapping = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -204,53 +236,13 @@ function gausslobattoquadrature(q::Int, weights::Bool)
     end
     quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
+
     # return
     if weights
-        return quadraturepoints, quadratureweights
+        return transformquadrature(quadraturepoints, quadratureweights, mapping)
     else
-        return quadraturepoints
+        return transformquadrature(quadraturepoints, mapping)
     end
-end
-
-"""
-Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s).
-See Figure 4.1 of Hale and Trefethen.
-"""
-function sausage(d = 9)
-    c = zeros(d + 1)
-    c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
-    c /= sum(c)
-    g = Polynomial(c)
-    g, derivative(g)
-end
-
-# This function transforms the quadrature
-function transformquadrature(points, weights = nothing, mapping = sausage)
-    g_map, g_map_prime = mapping()
-    m_points = g_map.(points)
-    if !isnothing(weights)
-        m_weights = g_map_prime.(points) .* weights
-        return m_points, m_weights
-    else
-        return m_points
-    end
-end
-
-# This function returns the transplanted Gauss quadrature points and weights
-function gaussquadraturemapped(q::Int)
-    gausspoints, gaussweights = gaussquadrature(q)
-    transformquadrature(gausspoints, gaussweights)
-end
-
-# This function returns the transplanted lobatto quadrature points and weights
-function lobattoquadraturemapped(q::Int, weights::Bool)
-    if weights
-        lobattopoints, lobattoweights = lobattoquadrature(q, weights)
-    else
-        lobattopoints = lobattoquadrature(q, weights)
-        lobattoweights = nothing
-    end
-    return transformquadrature(lobattopoints, lobattoweights)
 end
 
 """
@@ -367,8 +359,9 @@ TensorH1LagrangeBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     numbercomponents,
-    dimension,
+    dimension;
     collocatedquadrature = false,
+    mapping = nothing,
 )
 ```
 
@@ -413,6 +406,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
+    mapping = nothing,
 )
     # check inputs
     if numbernodes1d < 2
@@ -445,6 +439,13 @@ function TensorH1LagrangeBasis(
 
     # build interpolation, gradient matrices
     interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
+
+    if !isnothing(mapping)
+        _, g_prime = mapping
+        gradient1d ./= g_prime.(quadraturepoints1d)
+        nodes1d = transformquadrature(nodes1d, nothing, mapping)
+        quadraturepoints1d, quadratureweights1d = transformquadrature(quadraturepoints1d, quadratureweights1d, mapping)
+    end
 
     # use basic constructor
     return TensorBasis(

@@ -33,7 +33,8 @@ export TensorBasis,
     TensorH1LagrangePProlongationBasis,
     TensorHProlongationMacroBasisFrom1D,
     TensorH1LagrangeHProlongationMacroBasis,
-    TensorH1UniformHProlongationMacroBasis
+    TensorH1UniformHProlongationMacroBasis,
+    sausage
 # operato oields
 export OperatorField
 # operators

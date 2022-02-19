@@ -8,9 +8,9 @@ using Plots
 
 # setup
 mesh = Mesh1D(1.0)
-P = 3;
+P = 4;
 Q = P;
-basis = TensorH1LagrangeBasis(P, Q, 1, 1)
+basis = TensorH1LagrangeBasis(P, Q, 1, 1, mapping = sausage(9))
 
 # associated phase speed
 U = 1.0
@@ -55,6 +55,7 @@ S = hcat(advection_symbol.(θ)...)'
 #min_S = minimum(S)
 #max_S = maximum(S)
 plot(θ / π, S)
+plot!(t -> π*t, label="exact", legend=:none, color=:black)
 
 #tm = hcat(transformation_matrix.(θ)...)'
 #@show tm

@@ -8,7 +8,8 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh)
+GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh, 
+collocatedquadrature, mapping)
 ```
 
 Finite element operator from a gallery of options
@@ -712,7 +713,7 @@ Convenience constructor for advection operator
 ```jldoctest
 # advection operator
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature, mapping)
 advection = LFAToolkit.advectionoperator(basis, mesh);
 
 # verify
@@ -773,91 +774,6 @@ function advectionoperator(basis::AbstractBasis, mesh::Mesh)
     advection = Operator(advectionweakform, mesh, inputs, outputs)
     return advection
 end
-
-"""
-```julia
-advectionmappedoperator(basis, mesh)
-```
-Convenience constructor for the mapped advection operator
-
-# Weak form:
-- ``\\int \\nabla v u``
-
-# Arguments:
-- `basis`: basis for all operator fields to use
-- `mesh`:  mesh for operator
-
-# Returns:
-- Mapped advection operator with basis on mesh
-
-# Example:
-```jldoctest
-# mapped advection operator
-mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
-advectionmapped = LFAToolkit.advectionmappedoperator(basis, mesh);
-
-# verify
-println(advectionmapped)
-
-# output
-
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    interpolation
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-   
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    gradient
-```
-"""
-function advectionmappedoperator(basis::AbstractBasis, mesh::Mesh)
-    # setup
-    h0 = 1.0
-    g = 9.81
-    U = sqrt(g * h0)
-    function advectionmappedweakform(u::Array{Float64}, w::Array{Float64})
-        dv = U * u * w[1]
-        return [dv]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.interpolation]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
-
-    # operator
-    advectionmapped = Operator(advectionmappedweakform, mesh, inputs, outputs)
-    return advectionmapped
-end
-
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
@@ -865,8 +781,7 @@ end
 operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
-    "advection" => advectionoperator,
-    "advectionmapped" => advectionmappedoperator,
+    "advection" => advectionoperator
 )
 
 # ------------------------------------------------------------------------------

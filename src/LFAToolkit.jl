@@ -34,7 +34,9 @@ export TensorBasis,
     TensorHProlongationMacroBasisFrom1D,
     TensorH1LagrangeHProlongationMacroBasis,
     TensorH1UniformHProlongationMacroBasis,
-    sausage
+    sausage,
+    kosloff_tal_ezer,
+    hale_trefethen_strip
 # operato oields
 export OperatorField
 # operators

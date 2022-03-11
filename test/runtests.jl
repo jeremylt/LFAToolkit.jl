@@ -36,25 +36,14 @@ end
 end
 
 # ------------------------------------------------------------------------------
-# advection example
+# advection operator example with conformal maps 
 # ------------------------------------------------------------------------------
 
 @testset "  ex010: advection example                        " begin
     include("../examples/ex010_advection.jl")
 
-    @test min(eigenvalues...) ≈ 2.0773072350770607
-    @test max(eigenvalues...) ≈ 14.757687010541197
-end
-
-# ------------------------------------------------------------------------------
-# non polynomial advection mapped example
-# ------------------------------------------------------------------------------
-
-@testset "  ex011: non_polynomial_advection_mapped example     " begin
-    include("../examples/ex011_advection_mapped.jl")
-
-    #    @test min(eigenvalues...) ≈ 0.008379422444571976
-    #    @test max(eigenvalues...) ≈ 0.17361111111111088
+    @test min(eigenvalues...) ≈ -30.84740977051096
+    @test max(eigenvalues...) ≈ 30.847409770510946
 end
 
 # ------------------------------------------------------------------------------

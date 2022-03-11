@@ -3,6 +3,7 @@
 The finite element basis objects represent the discretization of the problem.
 
 There are convenience constructors for H1 tensor product bases on uniformly spaced, Gauss-Lobatto, or Gauss-Legendre points with Gauss-Lobatto or Gauss-Legendre quadrature.
+There are also nonpolynomial bases available derived from conformal maps such as sausage map, Kosloff and Tal-Ezer map and the Hale and Trefethen strip transformation 
 Users can create additional finite element bases if the prerequisite information is provided.
 
 ### Base Classes

@@ -4,11 +4,28 @@
 
 using Polynomials
 
+# ------------------------------------------------------------------------------
+# conformal map functions for generating transformed polynomial bases
+# ------------------------------------------------------------------------------
+
 """
-Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s).
-See Figure 4.1 of Hale and Trefethen.
+```julia
+sausage(d)
+```
+# Arguments:
+- `d`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+# Returns:
+Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s)
+See Figure 4.1 of Hale and Trefethen (2008).
+
+# Example:
+```jldoctest
+# sausage conformal map
+g, derivative(g) = LFAToolkit.sausage(9);
+```
 """
-function sausage(d = 9)
+function sausage(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
@@ -17,7 +34,74 @@ function sausage(d = 9)
 end
 
 """
-Transform quadrature by applying a smooth mapping = (g, g_prime) from the original domain.
+```julia
+kosloff_tal_ezer(α)
+```
+# Arguments:
+- `α`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+# Returns:
+The Kosloff and Tal-Ezer map conformal map derived from the inverse sine function.
+
+# Example:
+```jldoctest
+# kosloff_tal_ezer conformal map
+g, g_prime = LFAToolkit.kosloff_tal_ezer(0.95);
+``` 
+"""
+function kosloff_tal_ezer(α)
+    g(s) = asin(α * s) / asin(α)
+    g_prime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
+    g, g_prime
+end
+
+"""
+```julia
+hale_trefethen_strip(ρ)
+```
+# Arguments:
+- `ρ`: sum of the semiminor and semimajor axis  
+
+# Returns:
+The Hale and Trefethen strip transformation
+
+# Example:
+```jldoctest
+# hale_trefethen_strip conformal map
+g, g_prime = LFAToolkit.hale_trefethen_strip(1.4);
+```  
+"""
+function hale_trefethen_strip(ρ)
+    τ = π / log(ρ)
+    d = 0.5 + 1 / (exp(τ * π) + 1)
+    π2 = π / 2
+    # Unscaled functions of u
+    g_u(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
+    g_prime_u(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
+    # Normalizing factor and scaled functions of s
+    C = 1 / g_u(π / 2)
+    g(s) = C * g_u(asin(s))
+    g_prime(s) = -τ * C / sqrt(1 - s^2) * g_prime_u(asin(s))
+    g, g_prime
+end
+
+"""
+```julia
+transformquadrature(points, weights, mapping)
+```
+# Arguments:
+- `points`:  number quadrature points
+- `weights`: boolean flag indicating if quadrature weights are desired
+- `mapping`: choice of conformal map
+
+# Returns:
+Transformed quadrature by applying a smooth mapping = (g, g_prime) from the original domain.
+
+# Example:
+```jldoctest
+# generate transformed quadrature points, weights with choice of conformal map
+m_points, m_weights = LFAToolkit.transformquadrature(3, true, mapping);
+```
 """
 function transformquadrature(points, weights = nothing, mapping = nothing)
     if isnothing(mapping)
@@ -43,21 +127,25 @@ end
 
 """
 ```julia
-gaussquadrature(q)
+gaussquadrature(q, mapping)
 ```
 
-Construct a Gauss-Legendre quadrature
+Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 
 # Arguments:
 - `q`:  number of Gauss-Legendre points
+- `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre quadrature points and weights
+- Gauss-Legendre quadrature points, weights and mapped version
 
 # Example:
 ```jldoctest
 # generate Gauss-Legendre points and weights
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
+
+# generate Gauss-Legendre points, weights and mapped version
+quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping);
 
 # verify
 truepoints = [
@@ -139,17 +227,18 @@ end
 
 """
 ```julia
-gausslobattoquadrature(q, weights)
+gausslobattoquadrature(q, weights, mapping)
 ```
 
-Construct a Gauss-Legendre-Lobatto quadrature
+Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Conformal maps
 
 # Arguments:
 - `q`:        number of Gauss-Legendre-Lobatto points
 - `weights`:  boolean flag indicating if quadrature weights are desired
+- `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre-Lobatto quadrature points or points and weights
+- Gauss-Legendre-Lobatto quadrature points or points, weights and mapped version
 
 # Example:
 ```jldoctest
@@ -378,6 +467,9 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
                                        default: false, Gauss-Legendre-Lobatto
 
+# Keyword Arguments:                                       
+- `mapping = nothing`:  sausage, kosloff_tal_ezer, hale_trefethen_strip
+
 # Returns:
 - H1 Lagrange tensor product basis object
 
@@ -388,6 +480,9 @@ basis = TensorH1LagrangeBasis(4, 4, 3, 2);
 
 # generate basis with Gauss-Legendre quadrature points
 basis = TensorH1LagrangeBasis(4, 4, 3, 2; collocatedquadrature=true);
+
+# generate transformed basis from conformal maps with Gauss-Legendre quadrature points
+basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping);
 
 # verify
 println(basis)

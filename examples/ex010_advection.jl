@@ -20,7 +20,7 @@ mapping = hale_trefethen_strip(1.4)
 basis = TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up
-numbersteps = 250
+numbersteps = 100
 θ_min = 0
 θ_max = (P - 1) * π
 θ = LinRange(θ_min, θ_max, numbersteps)

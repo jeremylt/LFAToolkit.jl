@@ -41,7 +41,7 @@ kosloff_tal_ezer(α)
 - `α`: polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-The Kosloff and Tal-Ezer map conformal map derived from the inverse sine function.
+The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
 
 # Example:
 ```jldoctest

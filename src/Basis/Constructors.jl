@@ -30,7 +30,8 @@ function sausage(d)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
     g = Polynomial(c)
-    g, derivative(g)
+    g_prime = derivative(g)
+    g, g_prime
 end
 
 """

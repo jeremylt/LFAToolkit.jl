@@ -13,9 +13,9 @@ mesh = Mesh1D(1.0)
 P = 4;
 Q = P;
 collocate = false
-#mapping = sausage(29)
+mapping = sausage(29)
 #mapping = kosloff_tal_ezer(0.98)
-mapping = hale_trefethen_strip(1.4)
+#mapping = hale_trefethen_strip(1.4)
 basis = TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up

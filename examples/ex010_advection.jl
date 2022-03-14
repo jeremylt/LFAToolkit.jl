@@ -11,7 +11,7 @@ using Polynomials
 
 # setup
 mesh = Mesh1D(1.0)
-P = 11;
+P = 4;
 Q = P;
 collocate = false
 #mapping = sausage(29)

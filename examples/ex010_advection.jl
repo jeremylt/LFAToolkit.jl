@@ -7,7 +7,6 @@
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra
-using Polynomials
 
 # setup
 mesh = Mesh1D(1.0)

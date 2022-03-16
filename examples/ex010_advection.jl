@@ -50,4 +50,10 @@ function advection_symbol(θ)
 end
 
 eigenvalues = hcat(advection_symbol.(θ)...)'
+
+# compute transformation matrix 
+function transformation_matrix(θ)
+    R = computewavenumbertransformation(advection, [θ])
+    return imag.(eigvals(R))
+end
 # ---------------------------------------------------------------

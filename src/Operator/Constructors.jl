@@ -774,6 +774,13 @@ function advectionoperator(basis::AbstractBasis, mesh::Mesh)
     advection = Operator(advectionweakform, mesh, inputs, outputs)
     return advection
 end
+
+# Combined operator M^{-1}A
+function combinedoperator(θ::Array{Float64})
+  combined_operator = Operator(combinedoperator, mesh, inputs, outputs)
+  return combined_operator
+end
+
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
@@ -781,7 +788,8 @@ end
 operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
-    "advection" => advectionoperator
+    "advection" => advectionoperator,
+    "combined_operator" => combinedoperator
 )
 
 # ------------------------------------------------------------------------------

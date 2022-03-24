@@ -7,6 +7,7 @@
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra
+using Plots
 
 # setup
 mesh = Mesh1D(1.0)
@@ -41,6 +42,15 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 advection = Operator(advectionweakform, mesh, inputs, outputs)
 mass = GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+combined_operator = Operator(combinedoperator, mesh, inputs, outputs) # combined operator M^{-1}A 
+
+# compute combined operator M^{-1}A symbols
+function combinedoperator(θ::Array{Float64})
+    A = computesymbols(advection, [θ]) * 2 # transform from reference to physical on dx=1 grid
+    M = computesymbols(mass, [θ]) # mass matrix
+    inv_MA = computesymbols(combined_operator, [θ]) # M^{-1}A
+    return inv_MA
+end
 
 # compute operator symbols
 function advection_symbol(θ)
@@ -49,11 +59,12 @@ function advection_symbol(θ)
     return sort(imag.(eigvals(-M \ A)))
 end
 
-eigenvalues = hcat(advection_symbol.(θ)...)'
-
 # compute transformation matrix 
 function transformation_matrix(θ)
-    R = computewavenumbertransformation(advection, [θ])
+    R = computewavenumbertransformation(combined_operator, [θ])
     return imag.(eigvals(R))
 end
+
+Tm = hcat(transformation_matrix.(θ)...)'
+plot(θ / π, Tm ./ π)
 # ---------------------------------------------------------------

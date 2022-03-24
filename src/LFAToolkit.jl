@@ -41,7 +41,8 @@ export TensorBasis,
 export OperatorField
 # operators
 export Operator,
-    GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, computesymbols
+    GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, 
+    computesymbols, computewavenumbertransformation
 # preconditioners
 export AbstractPreconditioner
 export IdentityPC

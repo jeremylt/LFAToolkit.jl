@@ -1158,15 +1158,21 @@ function computewavenumbertransformation(operator::Operator, θ::Array)
         throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
     end
 
+    # setup
+    elementmatrix = operator.elementmatrix
+    numberrows, numbercolumns = size(elementmatrix)
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+
     # compute ß
-    ß =  zeros(ComplexF64, numberrows, numbercolumns)
+    𝔙 =  zeros(ComplexF64, numberrows, numbercolumns)
     for i = 1:numberrows, j = 1:numbercolumns
-        ß[i, j] =
-            ℯ^(im * sum([θ[k] - 2 * sign(θ)* k * π * nodecoordinatedifferences[i, j, k] for k = 1:dimension])) # need to update formula
+        𝔙[i, j] =
+            ℯ^(im * sum([θ[k]* nodecoordinatedifferences[i, j, k] - 
+            2 * sign.(θ[k])* k * π * nodecoordinatedifferences[i, j, k] for k = 1:dimension]))
     end
 
     # return
-    return operator.qtbtd * ß
+    return operator.qtbtd * 𝔙
 end
 
 # ------------------------------------------------------------------------------

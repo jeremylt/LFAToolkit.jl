@@ -18,18 +18,13 @@
 \usepackage{booktabs}
 
 % Paper title
-\newcommand{\TheTitle}{%
-  Local Fourier Analysis of P-Multigrid for High-Order Finite Element Operators
-}
+\newcommand{\TheTitle}{Local Fourier Analysis of P-Multigrid for High-Order Finite Element Operators}
 
 % Short title for running heads (if needed)
-\newcommand{\TheShortTitle}{%
-  LFA of P-Multigrid for High-Order FEM
-}
+\newcommand{\TheShortTitle}{LFA of P-Multigrid for High-Order FEM}
 
 % Acknowledge funding or other resources
-\newcommand{\TheFunding}{This work is supported by the Exascale Computing Project (17-SC-20-SC), a collaborative effort of two U.S. Department of Energy organizations (Office of Science and the National Nuclear Security Administration) responsible for the planning and preparation of a capable exascale ecosystem, including software, applications, hardware, advanced system engineering and early testbed platforms, in support of the nation’s exascale computing imperative.
-}
+\newcommand{\TheFunding}{This work is supported by the Exascale Computing Project (17-SC-20-SC), a collaborative effort of two U.S. Department of Energy organizations (Office of Science and the National Nuclear Security Administration) responsible for the planning and preparation of a capable exascale ecosystem, including software, applications, hardware, advanced system engineering and early testbed platforms, in support of the nation’s exascale computing imperative.}
 
 % Authors: full names plus addresses.
 \author{
@@ -102,7 +97,9 @@ In this paper, we develop LFA of p-multigrid with arbitrary second-order PDEs us
 Several software packages have been developed for LFA of h-multigrid methods \cite{rittich2018extending,kahl2020automated,wienands2004practical}, however, to the best of our knowledge, no packages implement LFA of p-multigrid methods, especially with arbitrary PDEs.
 Although \cite{van2011discrete} discussed LFA of p-multigrid for the discontinuous Galerkin method, this formulation cannot be extended to the continuous Galerkin method.
 Our LFA formulation for p-multigrid with high-order finite element discretizations for the continuous Galerkin method can be generalized to reproduce previous work on h-multigrid for high-order finite elements \cite{he2020two} and can be extended to LFA for h-multigrid of finite difference discretizations that can be represented via finite element discretizations as well as LFA of block smoothers \cite{maclachlan2011overlapping,brown2019local}.
-Our work here could be represented in terms of the aLFA framework \cite{kahl2020automated}; however we choose a represntation that will be familiar for the high-order finite element and spectral elements community.
+Our work here could be represented in terms of the aLFA framework \cite{kahl2020automated}; however we choose a representation that will be familiar for the high-order finite element and spectral elements community.
+We give details on the mathematical representation of LFA of grid-transfer operators for p-multigrid for the continuous Galerkin method, which seems absent in current literature.
+Moever, our LFA framework for p-multigrid generalizes and unifies classical LFA for h-multigrid, which would be a rich area for research.
 
 We investigate the performance of Jacobi and Chebyshev semi-iterative smoothers for p-multigrid with aggressive coarsening for the scalar Laplacian in one and two dimensions, and we validate our LFA of p-multigrid with the scalar Laplacian in three dimensions against numerical experiments.
 Our analysis demonstrates that the performance of p-multigrid with these two smoothers degrades as we coarsen more aggressively.
@@ -137,7 +134,7 @@ L_h w_h \left( x \right) = \sum_{\kappa \in V} s_\kappa w_h \left( x + \kappa h 
 \end{equation}
 where $V \subset \mathbb{Z}$ is a finite index set, $s_\kappa \in \mathbb{R}$ are constant coefficients, and $w_h \left( x \right)$ is a $l^2$ function on $G_h$. In the terminology of stencils, $s_{\kappa}$ are stencil weights that are nonzero on the neighborhood $\kappa \in V$.
 
-Since $L_h$ is Toeplitz, it can be diagonalized by the standard Fourier modes $\varphi \left( \theta, x \right) = e^{\imath \theta x / h}$, which alias according to $\varphi(\theta+ 2\pi/h, x) = \varphi(\theta, x)$ on all grid points $x \in h \mathbb Z$.
+Since $L_h$ is Toeplitz, it can be diagonalized by the standard Fourier modes $\varphi \left( \theta, x \right) = e^{\imath \theta x / h}$, with $i^2 = -1$, which alias according to $\varphi(\theta+ 2\pi, x) = \varphi(\theta, x)$ on all grid points $x \in h \mathbb Z$.
 
 \begin{definition}[Symbol of $L_h$]\label{def:symbol}
 If for all grid functions $\varphi \left( \theta, x \right)$ we have
@@ -162,7 +159,7 @@ The symbol of $\mathbf{L}_h$, denoted $\tilde{\mathbf{L}}_h$, is a $q \times q$ 
 For a system of equations representing an error propagation operator in a relaxation scheme, the spectral radius of the symbol matrix determines how rapidly the scheme decreases error at a target frequency.
 
 These definitions are readily extended to $d$ dimensions by taking the neighborhood $V \subset \mathbb Z^d$ and letting $\theta \in [-\pi,\pi)^d$.
-For standard coarsening from fine $h=1$ to coarse $h=2$, low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in \left[-\pi, \pi \right)^d \setminus T^{\text{low}}$ or equivalently by periodicity, $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$.
+For standard coarsening from a fine grid with a mesh size $h$ to a coarse grid with a mesh size of $H = 2 h$, low frequencies are given by $\theta \in T^{\text{low}} = \left[ - \pi / 2, \pi / 2 \right)^d$ and high frequencies are given by $\theta \in \left[-\pi, \pi \right)^d \setminus T^{\text{low}}$ or equivalently by periodicity, $\theta \in T^{\text{high}} = \left[ - \pi / 2, 3 \pi / 2 \right)^d \setminus T^{\text{low}}$.
 
 % -----------------------------------------------------------------------------
 \section{Local Fourier Analysis for P-Multigrid}\label{sec:lfa}
@@ -193,6 +190,8 @@ We will use the representation of the weak form of linear second-order PDEs desc
 for some suitable $\mathcal V \subseteq H_0^1 \left( \Omega \right)$.
 In this equation, $f_{i, j}$ may come from a linear PDE or the linearization of a non-linear problem.
 Boundary terms have been omitted, as they are not present on the infinite uniform grid $G_h$.
+
+This omission of boundary conditions corresponds to periodic boundary conditions on a finite domain; however, in practice LFA on the infinite uniform grid offers good predictions for finite domains with other boundary conditions \cite{wienands2004practical}.
 
 Selecting a finite element basis, we can discretize this weak form and produce
 \begin{equation}\label{pdediscrete}
@@ -283,7 +282,7 @@ In this section, we compute the symbol of the error propagation operator for two
 The error propagation operator for a smoother is given by $\mathbf{S} = \mathbf{I} - \mathbf{M}^{-1} \mathbf{A}$, where $\mathbf{M}^{-1}$ is given by the particular smoother under investigation.
 The LFA-predicted convergence factor is given by the maximum spectral radius of the symbol across all frequencies
 \begin{equation}
-\mu = \max_{\boldsymbol{\theta} \in T^{\text{low}}, T^{\text{high}}} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
+\mu \left( \omega \right) = \max_{\boldsymbol{\theta} \in T} \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right) \right),
 \end{equation}
 where $ \rho \left( \tilde{\mathbf{S}} \left( \nu, \omega, \boldsymbol{\theta} \right)\right)$ denotes the spectral radius of the matrix symbol $\tilde{\mathbf{S}}$.
 Our goal is to select tuning parameters for the polynomial smoothers to minimize the LFA-predicted convergence factor of two-grid p-multigrid cycles with agressive coarsening.

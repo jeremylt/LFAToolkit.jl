@@ -120,7 +120,7 @@ The numerical results for LFA in this paper were generated using the Julia packa
 This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
 This repository contains Julia scripts and interactive Jupyter notebooks that can replicate the tables and plots in this paper.
 
-Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-joss} with PETSc \cite{petsc-user-ref} p-multigrid example found in the libCEED repository.
+Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using libCEED \cite{libceed-joss} with PETSc \cite{petsc-user-ref} p-multigrid example found in the libCEED repository.
 
 % -----------------------------------------------------------------------------
 \section{Definitions and Notation}\label{sec:notation}
@@ -874,7 +874,7 @@ f \left( x, y, z \right) = x y z \sin \left( \pi x \right) \sin \left( \pi \left
 on the domain $\left[ -3, 3 \right]^3$ with Dirichlet boundary conditions for finite element discretizations with varying orders on approximately 8 million degrees of freedom for a variety of test cases.
 
 Although LFA is defined on infinite grids, which most naturally translate to periodic problems, LFA-predicted convergence factors are also accurate for appropriate problems with other boundary conditions on finite grids after appropriate reformulation of the analysis \cite{rodrigo2019validity}.
-It is not feasable to tune multigrid individually for multiple complex PDEs with different boundary conditions on a variety of engineering meshes; therefore, we are interested in directly comparing the LFA convergence factors for the problem on an infinite grid with our test problem with Dirichlet boundary conditions.
+Since it is not feasable to tune multigrid individually for each set of boundary conditions in engineering domains, we explore the sharpness and robustness of infinite-grid LFA by comparing directly to the test problem with Dirichlet boundary conditions.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Jacobi Smoothing}

@@ -87,7 +87,7 @@ Multigrid methods \cite{brandt1982guide, briggs2000multigrid, stuben1982multigri
 Local Fourier Analysis (LFA) \cite{brandt1977multi, wienands2004practical} is a powerful tool for predicting multigrid performance and tuning of multigrid components by examining the spectral radius and/or condition number of the {\em{symbol}} of the underlying operator, which enables sharp predictions for large-scale problems.
 
 High-order finite element methods offer accuracy advantages over low-order finite elements \cite{demkowicz1989toward, oden1989toward, rachowicz1989toward}; however, high-order finite elements are less common because a linear operator or the Jacobian of a non-linear operator rapidly loses sparsity in a sparse matrix representation.
-Matrix-free formulations of these methods \cite{brown2010efficient, deville2002highorder, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-user-manual, fischer2020scalability, kronbichler2019multigrid}.
+Matrix-free formulations of these methods \cite{brown2010efficient, deville2002highorder, knoll2004jacobian}, provide efficient implementations of these methods on modern hardware \cite{libceed-joss, fischer2020scalability, kronbichler2019multigrid}.
 
 LFA of h-multigrid with high-order finite elements was developed in \cite{he2020two} for Lagrange bases with uniformly spaced nodes.
 P-multigrid, developed by R{\o}nquist and Patera \cite{ronquist1987spectral}, is based on decreasing the order of the bases in high-order or spectral finite element methods rather than aggregating elements to coarsen the mesh.
@@ -119,7 +119,7 @@ The numerical results for LFA in this paper were generated using the Julia packa
 This package is under active development and may be found on GitHub at \href{https://github.com/jeremylt/LFAToolkit.jl}{jeremylt/LFAToolkit.jl}.
 This repository contains Julia scripts and interactive Jupyter notebooks that can replicate the tables and plots in this paper.
 
-Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} p-multigrid example found in the libCEED repository.
+Our numerical experiments demonstrating actual convergence rates of p-multigrid were conducted using the libCEED \cite{libceed-joss} with PETSc \cite{petsc-user-ref} p-multigrid example found in the libCEED repository.
 
 % -----------------------------------------------------------------------------
 \section{Definitions and Notation}\label{sec:notation}
@@ -863,7 +863,7 @@ As in one dimension, increasing the lower eigenvalue estimate results in better 
 % -----------------------------------------------------------------------------
 
 In this section, we compare the LFA two-grid convergence factors to numerical results.
-Our numerical experiments were conducted using the libCEED \cite{libceed-user-manual} with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
+Our numerical experiments were conducted using the libCEED \cite{libceed-joss} with PETSc \cite{petsc-user-ref} multigrid example found in the libCEED repository.
 PETSc provides the mesh management, linear solvers, and multigrid preconditioner while libCEED provides the matrix-free operator evaluation.
 
 We recover the manufactured solution given by

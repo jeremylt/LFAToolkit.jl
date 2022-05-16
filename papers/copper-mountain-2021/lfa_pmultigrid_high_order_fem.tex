@@ -318,6 +318,7 @@ where $\nu$ is the number of smoothing passes and $\omega$ is the smoothing para
 \end{figure}
 
 Using \cref{def:jacobi_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ over the interval $\theta \in \left[ - \pi / 2, 3 \pi / 2 \right)$ in \cref{fig:jacobi_spectrum_2,fig:jacobi_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange basis functions on Gauss-Lobatto points.
+The eigenvalues have been colored to identify the characteristic curves.
 
 % -----------------------------------------------------------------------------
 \subsubsection{Chebyshev Smoother}\label{sec:chebyshev}
@@ -393,6 +394,7 @@ with $\tilde{\mathbf{A}}_J = \left( \mathbf{Q}^T \diag \left( \mathbf{A}_e \righ
 
 Using \cref{def:chebyshev_symbol}, we plot the eigenvalues of $\tilde{\mathbf{M}}^{-1} \tilde{\mathbf{A}} \left( \boldsymbol{\theta} \right)$ in \cref{fig:chebyshev_spectrum_2,fig:chebyshev_spectrum_4} for the one dimensional Laplacian with a 2nd and 4th degree $H^1$ Lagrange basis functions on Gauss-Lobatto points.
 In both plots, we use the computation of the extremal eigenvalues discussed below.
+These eigenvalues have been colored to identify the characteristic curves.
 We see improved smoothing when compared to the Jacobi smoothing in \cref{fig:jacobi_spectrum_2,fig:jacobi_spectrum_4}.
 
 The Chebyshev semi-iterative method is known to be sensitive to the quality of the estimates of the extremal eigenvalues $\lambda_{\text{min}}$ and $\lambda_{\text{max}}$.

@@ -8,7 +8,7 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh, 
+GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh,
 collocatedquadrature, mapping)
 ```
 
@@ -743,7 +743,7 @@ operator field:
     dimension: 2
   evaluation mode:
     quadratureweights
-   
+
 1 output:
 operator field:
   tensor product basis:
@@ -774,6 +774,29 @@ function advectionoperator(basis::AbstractBasis, mesh::Mesh)
     advection = Operator(advectionweakform, mesh, inputs, outputs)
     return advection
 end
+
+function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh)
+  # setup
+  U = 1.0
+  # Tau scaling for SUPG
+  τ = 1.0 # 0 returns Galerkin method
+  function supgadvectionweakform(u::Array{Float64}, du::Array{Float64}, w::Array{Float64})
+      dv = (U * u - U * τ * (U * du)) * w[1]
+      return [dv]
+  end
+
+  # fields
+  inputs = [
+      OperatorField(basis, [EvaluationMode.interpolation]),
+      OperatorField(basis, [EvaluationMode.gradient], "gradient field"),
+      OperatorField(basis, [EvaluationMode.quadratureweights]),
+  ]
+  outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+
+  # operator
+  supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
+  return supgadvection
+end
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
@@ -781,7 +804,8 @@ end
 operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
-    "advection" => advectionoperator
+    "advection" => advectionoperator,
+    "supgadvection" => supgadvectionoperator
 )
 
 # ------------------------------------------------------------------------------

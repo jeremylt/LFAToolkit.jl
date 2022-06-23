@@ -10,34 +10,42 @@ using Polynomials
 
 """
 ```julia
-sausage(d)
+sausagetransformation(d)
 ```
+
 # Arguments:
 - `d`: polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-Conformal mapping of Gauss ellipses to sausages using a truncated Taylor expansion of arcsin(s)
-See Figure 4.1 of Hale and Trefethen (2008).
+Conformal mapping of Gauss ellipses to sausagetransformations using a
+truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
 
 # Example:
 ```jldoctest
-# sausage conformal map
-g, derivative(g) = LFAToolkit.sausage(9);
+# sausagetransformation conformal map
+g, gprime = LFAToolkit.sausagetransformation(9);
+
+# verify
+for i in 1:numberquadraturepoints
+    println(g[i])
+end
+
 ```
 """
-function sausage(d)
+function sausagetransformation(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
     g = Polynomial(c)
-    g_prime = derivative(g)
-    g, g_prime
+    gprime = derivative(g)
+    g, gprime
 end
 
 """
 ```julia
-kosloff_tal_ezer(α)
+koslofftalezertransformation(α)
 ```
+
 # Arguments:
 - `α`: polynomial degree of truncated Taylor series expansion of arcsin(s).
 
@@ -46,62 +54,83 @@ The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
 
 # Example:
 ```jldoctest
-# kosloff_tal_ezer conformal map
-g, g_prime = LFAToolkit.kosloff_tal_ezer(0.95);
-``` 
+# koslofftalezertransformation conformal map
+g, gprime = LFAToolkit.koslofftalezertransformation(0.95);
+
+# verify
+for i in 1:numberquadraturepoints
+    println(g[i])
+end
+
+```
 """
-function kosloff_tal_ezer(α)
+function koslofftalezertransformation(α)
     g(s) = asin(α * s) / asin(α)
-    g_prime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
-    g, g_prime
+    gprime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
+    g, gprime
 end
 
 """
 ```julia
-hale_trefethen_strip(ρ)
+haletrefethenstriptransformation(ρ)
 ```
+
 # Arguments:
-- `ρ`: sum of the semiminor and semimajor axis  
+- `ρ`: sum of the semiminor and semimajor axis
 
 # Returns:
 The Hale and Trefethen strip transformation
 
 # Example:
 ```jldoctest
-# hale_trefethen_strip conformal map
-g, g_prime = LFAToolkit.hale_trefethen_strip(1.4);
-```  
+# haletrefethenstriptransformation conformal map
+g, gprime = LFAToolkit.haletrefethenstriptransformation(1.4);
+
+# verify
+for i in 1:numberquadraturepoints
+    println(g[i])
+end
+
+```
 """
-function hale_trefethen_strip(ρ)
+function haletrefethenstriptransformation(ρ)
     τ = π / log(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
     # Unscaled functions of u
-    g_u(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
-    g_prime_u(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
+    gu(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
+    gprimeu(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
     # Normalizing factor and scaled functions of s
-    C = 1 / g_u(π / 2)
-    g(s) = C * g_u(asin(s))
-    g_prime(s) = -τ * C / sqrt(1 - s^2) * g_prime_u(asin(s))
-    g, g_prime
+    C = 1 / gu(π / 2)
+    g(s) = C * gu(asin(s))
+    gprime(s) = -τ * C / sqrt(1 - s^2) * gprimeu(asin(s))
+    g, gprime
 end
 
 """
 ```julia
 transformquadrature(points, weights, mapping)
 ```
+
 # Arguments:
 - `points`:  number quadrature points
 - `weights`: boolean flag indicating if quadrature weights are desired
 - `mapping`: choice of conformal map
 
 # Returns:
-Transformed quadrature by applying a smooth mapping = (g, g_prime) from the original domain.
+Transformed quadrature by applying a smooth mapping = (g, gprime) from the original domain.
 
 # Example:
 ```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
-m_points, m_weights = LFAToolkit.transformquadrature(3, true, mapping);
+mpoints, mweights = LFAToolkit.transformquadrature(points, true, mapping);
+
+# verify:
+for i in 1:points
+    wsum = sum(mweights[i, :]);
+    @assert abs(wsum - 2.0) < 1e-12
+end
+
 ```
 """
 function transformquadrature(points, weights = nothing, mapping = nothing)
@@ -112,13 +141,13 @@ function transformquadrature(points, weights = nothing, mapping = nothing)
             return points, weights
         end
     end
-    g_map, g_map_prime = mapping
-    m_points = g_map.(points)
+    gmap, gmapprime = mapping
+    mpoints = gmap.(points)
     if !isnothing(weights)
-        m_weights = g_map_prime.(points) .* weights
-        return m_points, m_weights
+        mweights = gmapprime.(points) .* weights
+        return mpoints, mweights
     else
-        return m_points
+        return mpoints
     end
 end
 
@@ -468,8 +497,8 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
                                        default: false, Gauss-Legendre-Lobatto
 
-# Keyword Arguments:                                       
-- `mapping = nothing`:  sausage, kosloff_tal_ezer, hale_trefethen_strip
+# Keyword Arguments:
+- `mapping = nothing`:  sausagetransformation, koslofftalezertransformation, haletrefethenstriptransformation
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -537,8 +566,8 @@ function TensorH1LagrangeBasis(
     interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
 
     if !isnothing(mapping)
-        _, g_prime = mapping
-        gradient1d ./= g_prime.(quadraturepoints1d)
+        _, gprime = mapping
+        gradient1d ./= gprime.(quadraturepoints1d)
         nodes1d = transformquadrature(nodes1d, nothing, mapping)
         quadraturepoints1d, quadratureweights1d =
             transformquadrature(quadraturepoints1d, quadratureweights1d, mapping)
@@ -665,7 +694,7 @@ Tensor product macro-element basis from 1d single element tensor product basis
 - `numbercomponents`:          number of components
 - `dimension`:                 dimension of basis
 - `numberelements1d`:          number of elements in macro-element
-- `basis1dmicro`:              1d micro element basis to replicate 
+- `basis1dmicro`:              1d micro element basis to replicate
 
 # Keyword Arguments:
 - `overlapquadraturepoints`:  Overlap quadrature points between elements, for prolongation

@@ -781,7 +781,7 @@ end
 operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
-    "advection" => advectionoperator
+    "advection" => advectionoperator,
 )
 
 # ------------------------------------------------------------------------------

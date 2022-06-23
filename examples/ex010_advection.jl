@@ -1,9 +1,12 @@
 # ---------------------------------------------------------------
 # advection example following Melvin, Staniforth and Thuburn
 # Q.J:R. Meteorol. Soc. 138: 1934-1947, Oct (2012)
-# non polynomial advection example using transplanted
-# quadrature formulas from conformal maps following Hale and 
+# non polynomial advection example using transplanted (transformed)
+# quadrature formulas from conformal maps following Hale and
 # Trefethen (2008) SIAM J. NUMER. ANAL. Vol. 46, No. 2
+# In this example, we can call other mapping options available
+# i.e, sausagetransformation(9), koslofftalezertransformation(0.98)
+# otherwise, set mapping = nothing
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra
@@ -13,10 +16,9 @@ mesh = Mesh1D(1.0)
 P = 4;
 Q = P;
 collocate = false
-mapping = sausage(29)
-#mapping = kosloff_tal_ezer(0.98)
-#mapping = hale_trefethen_strip(1.4)
-basis = TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+mapping = haletrefethenstriptransformation(1.4)
+basis =
+    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up
 numbersteps = 100
@@ -40,7 +42,8 @@ inputs = [
 ]
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 advection = Operator(advectionweakform, mesh, inputs, outputs)
-mass = GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+mass =
+    GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
 
 # compute operator symbols
 function advection_symbol(θ)

@@ -5,9 +5,9 @@ LFAToolkit.AbstractBasis
 LFAToolkit.gaussquadrature
 LFAToolkit.gausslobattoquadrature
 LFAToolkit.transformquadrature
-LFAToolkit.sausage
-LFAToolkit.kosloff_tal_ezer
-LFAToolkit.hale_trefethen_strip
+LFAToolkit.sausagetransformation
+LFAToolkit.koslofftalezertransformation
+LFAToolkit.haletrefethenstriptransformation
 LFAToolkit.TensorMacroElementBasisFrom1D
 LFAToolkit.TensorHProlongationBasis
 LFAToolkit.buildinterpolationandgradient

@@ -23,12 +23,15 @@ truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2
 # Example:
 ```jldoctest
 # sausagetransformation conformal map
+numberquadraturepoints = 5;
 g, gprime = LFAToolkit.sausagetransformation(9);
 
 # verify
 for i in 1:numberquadraturepoints
     println(g[i])
 end
+
+# output
 
 ```
 """
@@ -55,12 +58,15 @@ The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
 # Example:
 ```jldoctest
 # koslofftalezertransformation conformal map
+numberquadraturepoints = 5;
 g, gprime = LFAToolkit.koslofftalezertransformation(0.95);
 
 # verify
 for i in 1:numberquadraturepoints
     println(g[i])
 end
+
+# output
 
 ```
 """
@@ -84,12 +90,15 @@ The Hale and Trefethen strip transformation
 # Example:
 ```jldoctest
 # haletrefethenstriptransformation conformal map
+numberquadraturepoints = 5;
 g, gprime = LFAToolkit.haletrefethenstriptransformation(1.4);
 
 # verify
 for i in 1:numberquadraturepoints
     println(g[i])
 end
+
+# output
 
 ```
 """
@@ -123,6 +132,8 @@ Transformed quadrature by applying a smooth mapping = (g, gprime) from the origi
 # Example:
 ```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
+points = 5;
+mapping = haletrefethenstriptransformation(1.4);
 mpoints, mweights = LFAToolkit.transformquadrature(points, true, mapping);
 
 # verify:
@@ -130,6 +141,8 @@ for i in 1:points
     wsum = sum(mweights[i, :]);
     @assert abs(wsum - 2.0) < 1e-12
 end
+
+# output
 
 ```
 """
@@ -175,6 +188,7 @@ Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
 # generate Gauss-Legendre points, weights and mapped version
+mapping = haletrefethenstriptransformation(1.4);
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping);
 
 # verify
@@ -280,7 +294,8 @@ truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
 @assert truepoints ≈ quadraturepoints
 
 # generate Gauss-Legendre-Lobatto points and weights
-quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true);
+mapping = haletrefethenstriptransformation(1.4);
+quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping);
 
 # verify
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];

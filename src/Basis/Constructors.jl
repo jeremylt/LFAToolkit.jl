@@ -184,9 +184,6 @@ Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre points and weights
-quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
-
 # generate Gauss-Legendre points, weights and mapped version
 mapping = haletrefethenstriptransformation(1.4);
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping);
@@ -286,8 +283,7 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Confor
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre-Lobatto points
-quadraturepoints = LFAToolkit.gausslobattoquadrature(5, false);
+
 
 # verify
 truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
@@ -520,13 +516,8 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 
 # Example:
 ```jldoctest
-# generate H1 Lagrange tensor product basis
-basis = TensorH1LagrangeBasis(4, 4, 3, 2);
-
-# generate basis with Gauss-Legendre quadrature points
-basis = TensorH1LagrangeBasis(4, 4, 3, 2; collocatedquadrature=true);
-
 # generate transformed basis from conformal maps with Gauss-Legendre quadrature points
+mapping = haletrefethenstriptransformation(1.4);
 basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping);
 
 # verify

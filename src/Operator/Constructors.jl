@@ -8,7 +8,7 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh, 
+GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh,
 collocatedquadrature, mapping)
 ```
 
@@ -713,6 +713,8 @@ Convenience constructor for advection operator
 ```jldoctest
 # advection operator
 mesh = Mesh2D(1.0, 1.0);
+mapping = haletrefethenstriptransformation(1.4);
+collocatedquadrature = false
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature, mapping)
 advection = LFAToolkit.advectionoperator(basis, mesh);
 
@@ -743,7 +745,7 @@ operator field:
     dimension: 2
   evaluation mode:
     quadratureweights
-   
+
 1 output:
 operator field:
   tensor product basis:

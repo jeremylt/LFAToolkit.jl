@@ -23,13 +23,10 @@ truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2
 # Example:
 ```jldoctest
 # sausagetransformation conformal map
-numberquadraturepoints = 5;
-g, gprime = LFAToolkit.sausagetransformation(9);
+g, gprime = LFAToolkit.sausagetransformation(9)
 
 # verify
-for i in 1:numberquadraturepoints
-    println(g[i])
-end
+@assert g.(LinRange(-1,1,5)) ≈ [-0.9999999999999999, -0.39765215163451934, 0.0, 0.39765215163451934, 0.9999999999999999]
 
 # output
 
@@ -62,9 +59,7 @@ numberquadraturepoints = 5;
 g, gprime = LFAToolkit.koslofftalezertransformation(0.95);
 
 # verify
-for i in 1:numberquadraturepoints
-    println(g[i])
-end
+@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0]
 
 # output
 
@@ -90,13 +85,10 @@ The Hale and Trefethen strip transformation
 # Example:
 ```jldoctest
 # haletrefethenstriptransformation conformal map
-numberquadraturepoints = 5;
-g, gprime = LFAToolkit.haletrefethenstriptransformation(1.4);
+g, gprime = haletrefethenstriptransformation(1.4);
 
 # verify
-for i in 1:numberquadraturepoints
-    println(g[i])
-end
+@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0]
 
 # output
 
@@ -176,17 +168,16 @@ gaussquadrature(q, mapping)
 Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 
 # Arguments:
-- `q`:  number of Gauss-Legendre points
+- `q`:  number of quadrature points
 - `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre quadrature points, weights and mapped version
+- quadrature points, weights
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre points, weights and mapped version
-mapping = haletrefethenstriptransformation(1.4);
-quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping);
+# generate Gauss-Legendre points, weights
+quadraturepoints, quadratureweights = gaussquadrature(5);
 
 # verify
 truepoints = [
@@ -206,6 +197,25 @@ trueweights = [
     (322-13*√70)/900
 ];
 @assert trueweights ≈ quadratureweights
+
+# generate Gauss-Legendre points, weights
+mapping = haletrefethenstriptransformation(1.4);
+quadraturepoints, quadratureweights = gaussquadrature(5, mapping = mapping);
+
+# verify
+@assert quadraturepoints ≈ [-0.7948688880827978, -0.3997698842865811, 0.0, 0.3997698842865811, 0.7948688880827978]
+@assert quadratureweights ≈ [0.3807611340604039, 0.3992835637032222, 0.3999715882806566, 0.3992835637032222, 0.3807611340604039]
+
+# Accuracy test see Hale and Trefethen Fig 3.4
+f(x) = exp(-40*x^2)
+x, w = gaussquadrature(40);
+ref = w' * f.(x);
+x, w = gaussquadrature(20);
+xm, wm = gaussquadrature(20, mapping=haletrefethenstriptransformation(1.4))
+
+# verify
+@assert abs(w' * f.(x) - ref) ≈ 2.879622518375813e-5
+@assert abs(wm' * f.(xm) - ref) ≈ 3.26498938996167e-10
 
 # output
 
@@ -283,19 +293,20 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Confor
 
 # Example:
 ```jldoctest
-
+# generate Gauss-Legendre-Lobatto points
+quadraturepoints = gausslobattoquadrature(5, false);
 
 # verify
 truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
 @assert truepoints ≈ quadraturepoints
 
 # generate Gauss-Legendre-Lobatto points and weights
-mapping = haletrefethenstriptransformation(1.4);
-quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping);
+mapping = sausagetransformation(9);
+quadraturepoints, quadratureweights = gausslobattoquadrature(5, true, mapping=mapping)
 
 # verify
-trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
-@assert trueweights ≈ quadratureweights
+@assert quadraturepoints ≈ [-0.9999999999999999, -0.5418159129215785, 0.0, 0.5418159129215785, 0.9999999999999999]
+@assert quadratureweights ≈ [0.18690312494113656, 0.5445666710618016, 0.5400742149974571, 0.5445666710618016, 0.18690312494113656]
 
 # output
 
@@ -518,7 +529,7 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 ```jldoctest
 # generate transformed basis from conformal maps with Gauss-Legendre quadrature points
 mapping = haletrefethenstriptransformation(1.4);
-basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping);
+basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping=mapping);
 
 # verify
 println(basis)

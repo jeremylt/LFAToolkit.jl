@@ -114,7 +114,7 @@ transformquadrature(points, weights, mapping)
 ```
 
 # Arguments:
-- `points`:  number quadrature points
+- `points`:  array of quadrature points
 - `weights`: boolean flag indicating if quadrature weights are desired
 - `mapping`: choice of conformal map
 
@@ -124,15 +124,13 @@ Transformed quadrature by applying a smooth mapping = (g, gprime) from the origi
 # Example:
 ```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
-points = 5;
+points = LinRange(-1,1,5)
 mapping = haletrefethenstriptransformation(1.4);
 mpoints, mweights = LFAToolkit.transformquadrature(points, true, mapping);
 
 # verify:
-for i in 1:points
-    wsum = sum(mweights[i, :]);
-    @assert abs(wsum - 2.0) < 1e-12
-end
+wsum = sum(mweights);
+@assert wsum ≈ 2.0
 
 # output
 
@@ -177,7 +175,7 @@ Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 # Example:
 ```jldoctest
 # generate Gauss-Legendre points, weights
-quadraturepoints, quadratureweights = gaussquadrature(5);
+quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
 # verify
 truepoints = [
@@ -200,7 +198,7 @@ trueweights = [
 
 # generate Gauss-Legendre points, weights
 mapping = haletrefethenstriptransformation(1.4);
-quadraturepoints, quadratureweights = gaussquadrature(5, mapping = mapping);
+quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping = mapping);
 
 # verify
 @assert quadraturepoints ≈ [-0.7948688880827978, -0.3997698842865811, 0.0, 0.3997698842865811, 0.7948688880827978]
@@ -208,10 +206,10 @@ quadraturepoints, quadratureweights = gaussquadrature(5, mapping = mapping);
 
 # Accuracy test see Hale and Trefethen Fig 3.4
 f(x) = exp(-40*x^2)
-x, w = gaussquadrature(40);
+x, w = LFAToolkit.gaussquadrature(40);
 ref = w' * f.(x);
-x, w = gaussquadrature(20);
-xm, wm = gaussquadrature(20, mapping=haletrefethenstriptransformation(1.4))
+x, w = LFAToolkit.gaussquadrature(20);
+xm, wm = LFAToolkit.gaussquadrature(20, mapping=haletrefethenstriptransformation(1.4))
 
 # verify
 @assert abs(w' * f.(x) - ref) ≈ 2.879622518375813e-5
@@ -294,7 +292,7 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Confor
 # Example:
 ```jldoctest
 # generate Gauss-Legendre-Lobatto points
-quadraturepoints = gausslobattoquadrature(5, false);
+quadraturepoints = LFAToolkit.gausslobattoquadrature(5, false);
 
 # verify
 truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
@@ -302,7 +300,7 @@ truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
 
 # generate Gauss-Legendre-Lobatto points and weights
 mapping = sausagetransformation(9);
-quadraturepoints, quadratureweights = gausslobattoquadrature(5, true, mapping=mapping)
+quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping=mapping)
 
 # verify
 @assert quadraturepoints ≈ [-0.9999999999999999, -0.5418159129215785, 0.0, 0.5418159129215785, 0.9999999999999999]

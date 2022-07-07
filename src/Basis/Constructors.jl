@@ -163,7 +163,7 @@ end
 gaussquadrature(q, mapping)
 ```
 
-Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
+Construct a Gauss-Legendre quadrature with the option of applying conformal maps
 
 # Arguments:
 - `q`:  number of quadrature points

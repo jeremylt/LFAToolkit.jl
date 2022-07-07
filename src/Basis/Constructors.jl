@@ -163,14 +163,14 @@ end
 gaussquadrature(q, mapping)
 ```
 
-Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
+Construct a Gauss-Legendre quadrature with the option of applying conformal maps
 
 # Arguments:
 - `q`:  number of quadrature points
 - `mapping`: choice of conformal map
 
 # Returns:
-- quadrature points and weights
+- Gauss-Legendre quadrature points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest
@@ -279,7 +279,7 @@ end
 gausslobattoquadrature(q, weights, mapping)
 ```
 
-Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Conformal maps
+Construct a Gauss-Legendre-Lobatto quadrature with the option of applying conformal maps
 
 # Arguments:
 - `q`:        number of Gauss-Legendre-Lobatto points
@@ -287,7 +287,7 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Confor
 - `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre-Lobatto quadrature points or points, weights and mapped version
+- Gauss-Legendre-Lobatto quadrature points or points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest

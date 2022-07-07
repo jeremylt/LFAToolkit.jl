@@ -27,11 +27,11 @@ numbersteps = 100
 θ = LinRange(θ_min, θ_max, numbersteps)
 
 # associated phase speed
-U = 1.0
+c = 1.0
 
 # weak form
 function advectionweakform(u::Array{Float64}, w::Array{Float64})
-    dv = U * u * w[1]
+    dv = c * u * w[1]
     return [dv]
 end
 

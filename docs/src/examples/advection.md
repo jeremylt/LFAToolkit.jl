@@ -28,4 +28,4 @@ For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008)
 
 ### LFAToolkit code
 
-The advection operator is a classical test case to see dipersion spectrum inside LFAToolkit.
+The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit.

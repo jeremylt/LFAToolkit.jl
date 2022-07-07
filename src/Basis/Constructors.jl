@@ -170,7 +170,7 @@ Construct a Gauss-Legendre quadrature with the option of applying conformal maps
 - `mapping`: choice of conformal map
 
 # Returns:
-- quadrature points, weights
+- Gauss-Legendre quadrature points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest

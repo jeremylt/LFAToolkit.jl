@@ -279,7 +279,7 @@ end
 gausslobattoquadrature(q, weights, mapping)
 ```
 
-Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Conformal maps
+Construct a Gauss-Legendre-Lobatto quadrature with the option of applying conformal maps
 
 # Arguments:
 - `q`:        number of Gauss-Legendre-Lobatto points

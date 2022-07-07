@@ -11,7 +11,7 @@ mapping = haletrefethenstriptransformation(1.4)
 The advection problem is given by
 
 ```math
-\dfrac{\partial \zeta}{\partial t} + U \dfrac{\partial \zeta}{\partial x} = 0
+\dfrac{\partial u}{\partial t} + c \dfrac{\partial u}{\partial x} = 0
 ```
 where ``\zeta = \zeta(x,t)`` and ``U`` is its associated phase speed.
 

@@ -170,11 +170,11 @@ Construct a Gauss-Legendre quadrature with the option of applying Conformal maps
 - `mapping`: choice of conformal map
 
 # Returns:
-- quadrature points, weights
+- quadrature points and weights
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre points, weights
+# generate Gauss-Legendre points and weights
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
 
 # verify
@@ -196,7 +196,7 @@ trueweights = [
 ];
 @assert trueweights ≈ quadratureweights
 
-# generate Gauss-Legendre points, weights
+# generate Gauss-Legendre points and weights
 mapping = haletrefethenstriptransformation(1.4);
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping = mapping);
 
@@ -291,12 +291,16 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying Confor
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre-Lobatto points
-quadraturepoints = LFAToolkit.gausslobattoquadrature(5, false);
+# generate Gauss-Legendre-Lobatto points and weights
+quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true);
 
 # verify
 truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
 @assert truepoints ≈ quadraturepoints
+
+# verify
+trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
+@assert trueweights ≈ quadratureweights
 
 # generate Gauss-Legendre-Lobatto points and weights
 mapping = sausagetransformation(9);

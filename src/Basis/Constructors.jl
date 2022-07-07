@@ -287,7 +287,7 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying confor
 - `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre-Lobatto quadrature points or points, weights and mapped version
+- Gauss-Legendre-Lobatto quadrature points or points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest

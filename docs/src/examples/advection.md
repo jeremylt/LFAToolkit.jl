@@ -24,8 +24,7 @@ The weak form is given by
 for an appropriate test space ``V \subseteq H^1 \left( \Omega \right)`` on the domain.
 In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.
 
-For understanding about nonpolynomial bases, see paper New quadrature formulas from conformal maps
-SIAM J. NUMER. ANAL. Vol. 46, No. 2 (2008) by following Hale and Trefethen (2008)
+For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008) New quadrature formulas from conformal maps. https://doi.org/10.1137/07068607X
 
 ### LFAToolkit code
 

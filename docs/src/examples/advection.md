@@ -13,12 +13,12 @@ The advection problem is given by
 ```math
 \dfrac{\partial u}{\partial t} + c \dfrac{\partial u}{\partial x} = 0
 ```
-where ``\zeta = \zeta(x,t)`` and ``U`` is its associated phase speed.
+where ``u = u(x,t)`` and ``c`` is its associated phase speed.
 
 The weak form is given by
 
 ```math
-\int_\Omega v \left(\dfrac{\partial \zeta}{\partial t} \right) dV - \int_\Omega U \zeta \left( \dfrac{\partial v}{\partial x} \right) dV = 0, \forall v \in V
+\int_\Omega v \left(\dfrac{\partial u}{\partial t} \right) dV - \int_\Omega c u \left( \dfrac{\partial v}{\partial x} \right) dV = 0, \forall v \in V
 ```
 
 for an appropriate test space ``V \subseteq H^1 \left( \Omega \right)`` on the domain.

@@ -115,7 +115,7 @@ transformquadrature(points, weights, mapping)
 
 # Arguments:
 - `points`:  array of quadrature points
-- `weights`: boolean flag indicating if quadrature weights are desired
+- `weights`: optional array of weights to transform
 - `mapping`: choice of conformal map
 
 # Returns:
@@ -124,9 +124,9 @@ Transformed quadrature by applying a smooth mapping = (g, gprime) from the origi
 # Example:
 ```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
-points = LinRange(-1,1,5)
-mapping = haletrefethenstriptransformation(1.4);
-mpoints, mweights = LFAToolkit.transformquadrature(points, true, mapping);
+points, weights = LFAToolkit.gaussquadrature(5)
+mapping = sausagetransformation(9)
+mpoints, mweights = transformquadrature(points, weights, mapping)
 
 # verify:
 wsum = sum(mweights);

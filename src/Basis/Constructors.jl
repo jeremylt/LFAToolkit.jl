@@ -212,8 +212,8 @@ x, w = LFAToolkit.gaussquadrature(20);
 xm, wm = LFAToolkit.gaussquadrature(20, mapping=haletrefethenstriptransformation(1.4))
 
 # verify
-@assert abs(w' * f.(x) - ref) ≈ 2.879622518375813e-5
-@assert abs(wm' * f.(xm) - ref) ≈ 3.26498938996167e-10
+@assert isapprox(w' * f.(x) - ref, -2.879622518375813e-5, rtol=1e-10)
+@assert isapprox(wm' * f.(xm) - ref, -3.26498938996167e-10, rtol=1e-5)
 
 # output
 

@@ -5,7 +5,7 @@
 # quadrature formulas from conformal maps following Hale and
 # Trefethen (2008) SIAM J. NUMER. ANAL. Vol. 46, No. 2
 # In this example, we can call other mapping options available
-# i.e, sausagetransformation(9), koslofftalezertransformation(0.98)
+# i.e, sausage_transformation(9), kosloff_talezer_transformation(0.98)
 # otherwise, set mapping = nothing
 # ---------------------------------------------------------------
 using LFAToolkit
@@ -16,7 +16,7 @@ mesh = Mesh1D(1.0)
 P = 4;
 Q = P;
 collocate = false
-mapping = haletrefethenstriptransformation(1.4)
+mapping = hale_trefethen_strip_transformation(1.4)
 basis =
     TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 

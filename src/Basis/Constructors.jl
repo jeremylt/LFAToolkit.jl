@@ -10,20 +10,20 @@ using Polynomials
 
 """
 ```julia
-sausagetransformation(d)
+sausage_transformation(d)
 ```
 
 # Arguments:
 - `d`: polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-Conformal mapping of Gauss ellipses to sausagetransformations using a
+Conformal mapping of Gauss ellipses to sausage_transformations using a
 truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
 
 # Example:
 ```jldoctest
-# sausagetransformation conformal map
-g, gprime = LFAToolkit.sausagetransformation(9)
+# sausage_transformation conformal map
+g, gprime = LFAToolkit.sausage_transformation(9)
 
 # verify
 @assert g.(LinRange(-1,1,5)) ≈ [-0.9999999999999999, -0.39765215163451934, 0.0, 0.39765215163451934, 0.9999999999999999]
@@ -32,7 +32,7 @@ g, gprime = LFAToolkit.sausagetransformation(9)
 
 ```
 """
-function sausagetransformation(d)
+function sausage_transformation(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
@@ -43,7 +43,7 @@ end
 
 """
 ```julia
-koslofftalezertransformation(α)
+kosloff_talezer_transformation(α)
 ```
 
 # Arguments:
@@ -54,9 +54,9 @@ The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
 
 # Example:
 ```jldoctest
-# koslofftalezertransformation conformal map
+# kosloff_talezer_transformation conformal map
 numberquadraturepoints = 5;
-g, gprime = LFAToolkit.koslofftalezertransformation(0.95);
+g, gprime = LFAToolkit.kosloff_talezer_transformation(0.95);
 
 # verify
 @assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0]
@@ -65,7 +65,7 @@ g, gprime = LFAToolkit.koslofftalezertransformation(0.95);
 
 ```
 """
-function koslofftalezertransformation(α)
+function kosloff_talezer_transformation(α)
     g(s) = asin(α * s) / asin(α)
     gprime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
     g, gprime
@@ -73,7 +73,7 @@ end
 
 """
 ```julia
-haletrefethenstriptransformation(ρ)
+hale_trefethen_strip_transformation(ρ)
 ```
 
 # Arguments:
@@ -84,8 +84,8 @@ The Hale and Trefethen strip transformation
 
 # Example:
 ```jldoctest
-# haletrefethenstriptransformation conformal map
-g, gprime = haletrefethenstriptransformation(1.4);
+# hale_trefethen_strip_transformation conformal map
+g, gprime = hale_trefethen_strip_transformation(1.4);
 
 # verify
 @assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0]
@@ -94,7 +94,7 @@ g, gprime = haletrefethenstriptransformation(1.4);
 
 ```
 """
-function haletrefethenstriptransformation(ρ)
+function hale_trefethen_strip_transformation(ρ)
     τ = π / log(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
@@ -125,7 +125,7 @@ Transformed quadrature by applying a smooth mapping = (g, gprime) from the origi
 ```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
 points, weights = LFAToolkit.gaussquadrature(5)
-mapping = sausagetransformation(9)
+mapping = sausage_transformation(9)
 mpoints, mweights = transformquadrature(points, weights, mapping)
 
 # verify:
@@ -197,7 +197,7 @@ trueweights = [
 @assert trueweights ≈ quadratureweights
 
 # generate Gauss-Legendre points and weights
-mapping = haletrefethenstriptransformation(1.4);
+mapping = hale_trefethen_strip_transformation(1.4);
 quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping = mapping);
 
 # verify
@@ -209,7 +209,7 @@ f(x) = exp(-40*x^2)
 x, w = LFAToolkit.gaussquadrature(40);
 ref = w' * f.(x);
 x, w = LFAToolkit.gaussquadrature(20);
-xm, wm = LFAToolkit.gaussquadrature(20, mapping=haletrefethenstriptransformation(1.4))
+xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformation(1.4))
 
 # verify
 @assert isapprox(w' * f.(x) - ref, -2.879622518375813e-5, rtol=1e-10)
@@ -303,7 +303,7 @@ trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 @assert trueweights ≈ quadratureweights
 
 # generate Gauss-Legendre-Lobatto points and weights
-mapping = sausagetransformation(9);
+mapping = sausage_transformation(9);
 quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping=mapping)
 
 # verify
@@ -522,7 +522,7 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
                                        default: false, Gauss-Legendre-Lobatto
 
 # Keyword Arguments:
-- `mapping = nothing`:  sausagetransformation, koslofftalezertransformation, haletrefethenstriptransformation
+- `mapping = nothing`:  sausage_transformation, kosloff_talezer_transformation, hale_trefethen_strip_transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -530,7 +530,7 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 # Example:
 ```jldoctest
 # generate transformed basis from conformal maps with Gauss-Legendre quadrature points
-mapping = haletrefethenstriptransformation(1.4);
+mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping=mapping);
 
 # verify

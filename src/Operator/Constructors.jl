@@ -713,7 +713,7 @@ Convenience constructor for advection operator
 ```jldoctest
 # advection operator
 mesh = Mesh2D(1.0, 1.0);
-mapping = haletrefethenstriptransformation(1.4);
+mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 advection = LFAToolkit.advectionoperator(basis, mesh);
 

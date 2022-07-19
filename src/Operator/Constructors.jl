@@ -162,7 +162,7 @@ function GalleryOperator(
     numberquadraturepoints1d::Int,
     mesh::Mesh;
     collocatedquadrature::Bool = false,
-    mapping::function,
+    mapping::Function = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeBasis(

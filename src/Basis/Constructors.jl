@@ -136,7 +136,7 @@ wsum = sum(mweights);
 
 ```
 """
-function transformquadrature(points, weights = nothing, mapping::function)
+function transformquadrature(points, weights = nothing, mapping::Function = nothing)
     if isnothing(mapping)
         if isnothing(weights)
             return points
@@ -219,7 +219,7 @@ xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformat
 
 ```
 """
-function gaussquadrature(q::Int; mapping::function)
+function gaussquadrature(q::Int; mapping::Function = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -314,7 +314,7 @@ quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true,
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool; mapping::function)
+function gausslobattoquadrature(q::Int, weights::Bool; mapping::Function = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -550,7 +550,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
-    mapping::function,
+    mapping::Function = nothing,
 )
     # check inputs
     if numbernodes1d < 2

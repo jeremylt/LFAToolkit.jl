@@ -6,7 +6,7 @@
 # Trefethen (2008) SIAM J. NUMER. ANAL. Vol. 46, No. 2
 # In this example, we can call other mapping options available
 # i.e, sausage_transformation(9), kosloff_talezer_transformation(0.98)
-# otherwise, set mapping = nothing
+# otherwise, run without mapping
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra

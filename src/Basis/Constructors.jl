@@ -136,7 +136,7 @@ wsum = sum(mweights);
 
 ```
 """
-function transformquadrature(points, weights = nothing, mapping = nothing)
+function transformquadrature(points, weights = nothing, mapping::function)
     if isnothing(mapping)
         if isnothing(weights)
             return points
@@ -219,7 +219,7 @@ xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformat
 
 ```
 """
-function gaussquadrature(q::Int; mapping = nothing)
+function gaussquadrature(q::Int; mapping::function)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -314,7 +314,7 @@ quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true,
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool; mapping = nothing)
+function gausslobattoquadrature(q::Int, weights::Bool; mapping::function)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -504,7 +504,7 @@ TensorH1LagrangeBasis(
     numbercomponents,
     dimension;
     collocatedquadrature = false,
-    mapping = nothing,
+    mapping=nothing,
 )
 ```
 
@@ -522,7 +522,7 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
                                        default: false, Gauss-Legendre-Lobatto
 
 # Keyword Arguments:
-- `mapping = nothing`:  sausage_transformation, kosloff_talezer_transformation, hale_trefethen_strip_transformation
+- `mapping=nothing`:  sausage_transformation, kosloff_talezer_transformation, hale_trefethen_strip_transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -550,7 +550,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
-    mapping = nothing,
+    mapping::function,
 )
     # check inputs
     if numbernodes1d < 2

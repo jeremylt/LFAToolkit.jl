@@ -289,8 +289,10 @@ function getelementmatrix(operator::Operator)
         weakforminputs = []
         numbernodes = 0
         numbernodeinputs = 0
+        numbernodeoutputs = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
+        numberquadratureoutputs = 0
         numberfieldsin = []
         numberfieldsout = []
         weightinputindex = 0
@@ -371,12 +373,17 @@ function getelementmatrix(operator::Operator)
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
-                    numberfields += output.basis.numbercomponents
+                    numberfields += 1
+                    numbernodeoutputs += output.basis.numbercomponents
+                    numberquadratureoutputs += output.basis.numbercomponents
                     Btcurrent =
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    numberfields += output.basis.dimension * output.basis.numbercomponents
+                    numberfields += output.basis.dimension
+                    numbernodeoutputs += output.basis.numbercomponents
+                    numberquadratureoutputs +=
+                        output.basis.dimension * output.basis.numbercomponents
                     gradient = getdXdxgradient(output.basis, operator.mesh)
                     Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
                     # note: quadrature weights checked in constructor
@@ -388,8 +395,8 @@ function getelementmatrix(operator::Operator)
 
         # output basis matrix
         Bt = spzeros(
-            numberquadratureinputs * numberquadraturepoints,
-            numbernodeinputs * numbernodes,
+            numberquadratureoutputs * numberquadraturepoints,
+            numbernodeoutputs * numbernodes,
         )
         currentrow = 1
         currentcolumn = 1
@@ -405,7 +412,7 @@ function getelementmatrix(operator::Operator)
 
         # QFunction matrix
         D = spzeros(
-            numberquadratureinputs * numberquadraturepoints,
+            numberquadratureoutputs * numberquadraturepoints,
             numberquadratureinputs * numberquadraturepoints,
         )
         # loop over inputs
@@ -435,8 +442,8 @@ function getelementmatrix(operator::Operator)
                     for k = 1:length(operator.outputs)
                         for l = 1:numberfieldsout[k]
                             D[
-                                (currentfieldin+j-1)*numberquadraturepoints+q,
                                 currentfieldout*numberquadraturepoints+q,
+                                (currentfieldin+j-1)*numberquadraturepoints+q,
                             ] = outputs[k][l]
                             currentfieldout += 1
                         end

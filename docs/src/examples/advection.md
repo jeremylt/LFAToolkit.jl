@@ -1,10 +1,6 @@
 ## Advection operator
 
-This is an example of an advection operator by using polynomial bases vs nonpolynomial bases
-The choices of nonpolynomial bases available are:
-mapping = sausage_transformation(9)
-mapping = kosloff_talezer_transformation(0.98)
-mapping = hale_trefethen_strip_transformation(1.4)
+This is an example of the 1D scalar advection problem.
 
 ### Problem formulation
 

@@ -102,9 +102,11 @@ function hale_trefethen_strip_transformation(ρ)
     τ = π / log(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
+
     # Unscaled functions of u
     gu(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
     gprimeu(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
+
     # Normalizing factor and scaled functions of s
     C = 1 / gu(π / 2)
     g(s) = C * gu(asin(s))

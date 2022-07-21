@@ -101,7 +101,7 @@ eigenvalues = real(eigenvalues);
 function computesymbolsoverrange(
     operator::Operator,
     numbersteps1d::Int;
-    mass::Union{Operator,Nothing} = nothing;
+    mass::Union{Operator,Nothing} = nothing,
     θ_min::Float64 = -π / 2,
     θ_band::Float64 = 2π,
 )

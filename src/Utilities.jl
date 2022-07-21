@@ -8,7 +8,7 @@
 
 """
 ```julia
-computesymbolsoverrange(operator, numbersteps1d; mass=nothing, θ_min=-π/2, θ_band=2π)
+computesymbolsoverrange(operator, numbersteps1d; mass = nothing, θ_min = -π/2, θ_band = 2π)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over

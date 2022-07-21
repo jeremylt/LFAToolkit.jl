@@ -25,6 +25,7 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
 - `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
                 default: -π / 2
 - `θ_band`: θ_max = θ_min + θ_band
+                default: 2π
 
 # Returns:
 - Values of θ sampled

@@ -518,7 +518,7 @@ TensorH1LagrangeBasis(
     numbercomponents,
     dimension;
     collocatedquadrature = false,
-    mapping=nothing,
+    mapping = nothing,
 )
 ```
 

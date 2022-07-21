@@ -38,7 +38,7 @@ export TensorBasis,
     sausage_transformation,
     kosloff_talezer_transformation,
     hale_trefethen_strip_transformation
-# operato oields
+# operator fields
 export OperatorField
 # operators
 export Operator,

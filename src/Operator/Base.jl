@@ -373,14 +373,14 @@ function getelementmatrix(operator::Operator)
             Btcurrent = []
             for mode in output.evaluationmodes
                 if mode == EvaluationMode.interpolation
-                    numberfields += 1
+                    numberfields += output.basis.numbercomponents
                     numbernodeoutputs += output.basis.numbercomponents
                     numberquadratureoutputs += output.basis.numbercomponents
                     Btcurrent =
                         Btcurrent == [] ? output.basis.interpolation :
                         [Btcurrent; output.basis.intepolation]
                 elseif mode == EvaluationMode.gradient
-                    numberfields += output.basis.dimension
+                    numberfields += output.basis.dimension * output.basis.numbercomponents
                     numbernodeoutputs += output.basis.numbercomponents
                     numberquadratureoutputs +=
                         output.basis.dimension * output.basis.numbercomponents

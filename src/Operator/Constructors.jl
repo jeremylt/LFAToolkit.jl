@@ -162,7 +162,7 @@ function GalleryOperator(
     numberquadraturepoints1d::Int,
     mesh::Mesh;
     collocatedquadrature::Bool = false,
-    mapping::Function = nothing,
+    mapping::Function{Tuple} = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeBasis(
@@ -705,6 +705,7 @@ Convenience constructor for advection operator
 # Arguments:
 - `basis`: basis for all operator fields to use
 - `mesh`:  mesh for operator
+- `wind`:  advection speed in 2D
 
 # Returns:
 - Advection operator with basis on mesh

@@ -1,10 +1,6 @@
 ## Advection operator
 
-This is an example of an advection operator by using polynomial bases vs nonpolynomial bases
-The choices of nonpolynomial bases available are:
-mapping = sausage_transformation(9)
-mapping = kosloff_talezer_transformation(0.98)
-mapping = hale_trefethen_strip_transformation(1.4)
+This is an example of the 1D scalar advection problem.
 
 ### Problem formulation
 
@@ -24,8 +20,18 @@ The weak form is given by
 for an appropriate test space ``V \subseteq H^1 \left( \Omega \right)`` on the domain.
 In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.
 
-For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008) New quadrature formulas from conformal maps. https://doi.org/10.1137/07068607X
-
 ### LFAToolkit code
 
 The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit.
+Here we show the advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a H1 Lagrange basis.
+
+For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008) New quadrature formulas from conformal maps. https://doi.org/10.1137/07068607X
+
+````@eval
+using Markdown
+Markdown.parse("""
+```julia
+$(read("../../../examples/ex010_advection.jl", String))
+```
+""")
+````

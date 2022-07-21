@@ -2,7 +2,7 @@
 
 The following PDEs are available in the operator gallery.
 
-### Scalar Mass, Diffusion and Advection Operators
+### Scalar Mass, Diffusion, and Advection Operators
 
 ```@docs
 GalleryOperator

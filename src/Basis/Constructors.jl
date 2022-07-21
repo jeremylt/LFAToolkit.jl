@@ -36,8 +36,12 @@ function sausage_transformation(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
-    g = Polynomial(c)
-    gprime = derivative(g)
+    pg = Polynomial(c)
+    pgprime = derivative(pg)
+
+    # Lower from Polynomial to Function
+    g(x) = pg(x)
+    gprime(x) = pgprime(x)
     g, gprime
 end
 
@@ -98,9 +102,11 @@ function hale_trefethen_strip_transformation(ρ)
     τ = π / log(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
+
     # Unscaled functions of u
     gu(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
     gprimeu(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
+
     # Normalizing factor and scaled functions of s
     C = 1 / gu(π / 2)
     g(s) = C * gu(asin(s))
@@ -136,7 +142,11 @@ wsum = sum(mweights);
 
 ```
 """
-function transformquadrature(points, weights = nothing, mapping::Function{Tuple} = nothing)
+function transformquadrature(
+    points,
+    weights = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
     if isnothing(mapping)
         if isnothing(weights)
             return points
@@ -219,7 +229,7 @@ xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformat
 
 ```
 """
-function gaussquadrature(q::Int; mapping::Function{Tuple} = nothing)
+function gaussquadrature(q::Int; mapping::Union{Tuple{Function,Function},Nothing} = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -314,7 +324,11 @@ quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true,
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool; mapping::Function{Tuple} = nothing)
+function gausslobattoquadrature(
+    q::Int,
+    weights::Bool;
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -504,7 +518,7 @@ TensorH1LagrangeBasis(
     numbercomponents,
     dimension;
     collocatedquadrature = false,
-    mapping=nothing,
+    mapping = nothing,
 )
 ```
 
@@ -522,7 +536,8 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
                                        default: false, Gauss-Legendre-Lobatto
 
 # Keyword Arguments:
-- `mapping=nothing`:  sausage_transformation, kosloff_talezer_transformation, hale_trefethen_strip_transformation
+- `mapping = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, or Hale-Trefethen strip transformation
+                                          default: nothing, no transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object
@@ -550,7 +565,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
-    mapping::Function{Tuple} = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     # check inputs
     if numbernodes1d < 2

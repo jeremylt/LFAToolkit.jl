@@ -8,8 +8,14 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh,
-collocatedquadrature, mapping)
+GalleryOperator(
+    name,
+    numbernodes1d,
+    numberquadraturepoints1d,
+    mesh;
+    collocatedquadrature = false,
+    mapping = nothing
+)
 ```
 
 Finite element operator from a gallery of options
@@ -162,7 +168,7 @@ function GalleryOperator(
     numberquadraturepoints1d::Int,
     mesh::Mesh;
     collocatedquadrature::Bool = false,
-    mapping::Function{Tuple} = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeBasis(

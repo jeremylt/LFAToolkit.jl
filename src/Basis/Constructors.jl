@@ -536,7 +536,8 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
                                        default: false, Gauss-Legendre-Lobatto
 
 # Keyword Arguments:
-- `mapping=nothing`:  sausage_transformation, kosloff_talezer_transformation, hale_trefethen_strip_transformation
+- `mapping = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, or Hale-Trefethen strip transformation
+                                          default: nothing, no transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object

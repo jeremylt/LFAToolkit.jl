@@ -36,8 +36,11 @@ function sausage_transformation(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
-    g = Polynomial(c)
-    gprime = derivative(g)
+    pg = Polynomial(c)
+    pgprime = derivative(pg)
+    # Lower from Polynomial to Function
+    g(x) = pg(x)
+    gprime(x) = pgprime(x)
     g, gprime
 end
 
@@ -136,7 +139,11 @@ wsum = sum(mweights);
 
 ```
 """
-function transformquadrature(points, weights = nothing, mapping::Function = nothing)
+function transformquadrature(
+    points,
+    weights = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
     if isnothing(mapping)
         if isnothing(weights)
             return points
@@ -219,7 +226,7 @@ xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformat
 
 ```
 """
-function gaussquadrature(q::Int; mapping::Function = nothing)
+function gaussquadrature(q::Int; mapping::Union{Tuple{Function,Function},Nothing} = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -314,7 +321,11 @@ quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true,
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool; mapping::Function = nothing)
+function gausslobattoquadrature(
+    q::Int,
+    weights::Bool;
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -550,7 +561,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
-    mapping::Function = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     # check inputs
     if numbernodes1d < 2

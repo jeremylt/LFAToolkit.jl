@@ -38,6 +38,7 @@ function sausage_transformation(d)
     c /= sum(c)
     pg = Polynomial(c)
     pgprime = derivative(pg)
+
     # Lower from Polynomial to Function
     g(x) = pg(x)
     gprime(x) = pgprime(x)

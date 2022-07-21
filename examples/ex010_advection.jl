@@ -53,4 +53,5 @@ function advection_symbol(θ)
 end
 
 eigenvalues = hcat(advection_symbol.(θ)...)'
+
 # ---------------------------------------------------------------

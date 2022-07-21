@@ -8,8 +8,14 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh,
-collocatedquadrature, mapping)
+GalleryOperator(
+    name,
+    numbernodes1d,
+    numberquadraturepoints1d,
+    mesh;
+    collocatedquadrature = false,
+    mapping = nothing
+)
 ```
 
 Finite element operator from a gallery of options

@@ -532,12 +532,11 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 - `dimension`:                 dimension of basis
 
 # Keyword Arguments:
-- `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                       default: false, Gauss-Legendre-Lobatto
-
-# Keyword Arguments:
-- `mapping = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, or Hale-Trefethen strip transformation
-                                          default: nothing, no transformation
+- `collocatedquadrature = false`:   Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
+                                    default: false, Gauss-Legendre-Lobatto
+- `mapping = nothing`:              quadrature point mapping - sausage, Kosloff-Talezer,
+                                    or Hale-Trefethen strip transformation
+                                    default: nothing, no transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object

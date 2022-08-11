@@ -6,6 +6,9 @@ Current development includes:
 
 Enhancements:
 
+* Added conformal maps `sausage_transformation`, `kosloff_talezer_transformation`, and `hale_trefethen_strip_transformation` for basis quadrature spaces.
+* Add advection operator convenience constructor and examples.
+
 Bugfixes:
 
 ## v0.5.0
@@ -14,7 +17,7 @@ This release include some minor fixes and some convenience utilities.
 
 Breaking change:
 
-* Kkeyword argument indicating quadrature point placement for Basis convenience constructors renamed.
+* Keyword argument indicating quadrature point placement for Basis convenience constructors renamed.
 
 Enhancements:
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/examples/advection/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../">Examples</a></li><li><a class="tocitem" href="../../public/">Public API</a></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/examples/advection.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Advection-operator"><a class="docs-heading-anchor" href="#Advection-operator">Advection operator</a><a id="Advection-operator-1"></a><a class="docs-heading-anchor-permalink" href="#Advection-operator" title="Permalink"></a></h2><p>This is an example of the 1D scalar advection problem.</p><h3 id="Problem-formulation"><a class="docs-heading-anchor" href="#Problem-formulation">Problem formulation</a><a id="Problem-formulation-1"></a><a class="docs-heading-anchor-permalink" href="#Problem-formulation" title="Permalink"></a></h3><p>The advection problem is given by</p><div>\[\dfrac{\partial u}{\partial t} + c \dfrac{\partial u}{\partial x} = 0\]</div><p>where <span>$u = u(x,t)$</span> and <span>$c$</span> is its associated phase speed.</p><p>The weak form is given by</p><div>\[\int_\Omega v \left(\dfrac{\partial u}{\partial t} \right) dV - \int_\Omega c u \left( \dfrac{\partial v}{\partial x} \right) dV = 0, \forall v \in V\]</div><p>for an appropriate test space <span>$V \subseteq H^1 \left( \Omega \right)$</span> on the domain. In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.</p><h3 id="LFAToolkit-code"><a class="docs-heading-anchor" href="#LFAToolkit-code">LFAToolkit code</a><a id="LFAToolkit-code-1"></a><a class="docs-heading-anchor-permalink" href="#LFAToolkit-code" title="Permalink"></a></h3><p>The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit. Here we show the advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a H1 Lagrange basis.</p><p>For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008) New quadrature formulas from conformal maps. https://doi.org/10.1137/07068607X</p><pre><code class="language-julia"># ---------------------------------------------------------------
+# advection example following Melvin, Staniforth and Thuburn
+# Q.J:R. Meteorol. Soc. 138: 1934-1947, Oct (2012)
+# non polynomial advection example using transplanted (transformed)
+# quadrature formulas from conformal maps following Hale and
+# Trefethen (2008) SIAM J. NUMER. ANAL. Vol. 46, No. 2
+# In this example, we can call other mapping options available
+# i.e, sausage_transformation(9), kosloff_talezer_transformation(0.98)
+# otherwise, run without mapping
+# ---------------------------------------------------------------
+using LFAToolkit
+using LinearAlgebra
+
+# setup
+mesh = Mesh1D(1.0)
+P = 4;
+Q = P;
+collocate = false
+mapping = hale_trefethen_strip_transformation(1.4)
+basis =
+    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+
+# frequency set up
+numbersteps = 100
+θ_min = 0
+θ_max = (P - 1) * π
+θ = LinRange(θ_min, θ_max, numbersteps)
+
+# associated phase speed
+c = 1.0
+
+# weak form
+function advectionweakform(u::Array{Float64}, w::Array{Float64})
+    dv = c * u * w[1]
+    return [dv]
+end
+
+# advection operator
+inputs = [
+    OperatorField(basis, [EvaluationMode.interpolation], &quot;advected field&quot;),
+    OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+]
+outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+advection = Operator(advectionweakform, mesh, inputs, outputs)
+mass =
+    GalleryOperator(&quot;mass&quot;, P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+
+# compute operator symbols
+function advection_symbol(θ)
+    A = computesymbols(advection, [θ]) * 2 # transform from reference to physical on dx=1 grid
+    M = computesymbols(mass, [θ]) # mass matrix
+    return sort(imag.(eigvals(-M \ A)))
+end
+
+eigenvalues = hcat(advection_symbol.(θ)...)&#39;
+
+# ---------------------------------------------------------------
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Thursday 11 August 2022 15:05">Thursday 11 August 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

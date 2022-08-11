@@ -8,7 +8,14 @@
 
 """
 ```julia
-GalleryOperator(name, numbernodes1d, numberquadraturepoints1d, mesh)
+GalleryOperator(
+    name,
+    numbernodes1d,
+    numberquadraturepoints1d,
+    mesh;
+    collocatedquadrature = false,
+    mapping = nothing
+)
 ```
 
 Finite element operator from a gallery of options
@@ -109,12 +116,59 @@ operator field:
   evaluation mode:
     gradient
 ```
+
+# Advection operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+advection = GalleryOperator("advection", 4, 4, mesh);
+
+# verify
+println(advection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+```
 """
 function GalleryOperator(
     name::String,
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
-    mesh::Mesh,
+    mesh::Mesh;
+    collocatedquadrature::Bool = false,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeBasis(
@@ -122,6 +176,8 @@ function GalleryOperator(
             numberquadraturepoints1d,
             1,
             mesh.dimension,
+            collocatedquadrature = collocatedquadrature,
+            mapping = mapping,
         )
         return operatorgallery[name](basis, mesh)
     else
@@ -214,6 +270,51 @@ operator field:
     dimension: 2
   evaluation mode:
     gradient
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+
+# Advection operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+advection = GalleryVectorOperator("advection", 4, 4, 3, mesh);
+
+# verify
+println(advection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    interpolation
 operator field:
   tensor product basis:
     numbernodes1d: 4
@@ -364,6 +465,51 @@ operator field:
   evaluation mode:
     gradient
 ```
+
+# Advection operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+advection = GalleryVectorOperator("advection", 4, 4, 3, mesh);
+
+# verify
+println(advection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 3
+    dimension: 2
+  evaluation mode:
+    gradient
+```
 """
 function GalleryMacroElementOperator(
     name::String,
@@ -440,7 +586,7 @@ operator field:
     dimension: 2
   evaluation mode:
     quadratureweights
-   
+
 1 output:
 operator field:
   tensor product basis:
@@ -522,7 +668,7 @@ operator field:
     dimension: 2
   evaluation mode:
     quadratureweights
-   
+
 1 output:
 operator field:
   tensor product basis:
@@ -553,10 +699,95 @@ function diffusionoperator(basis::AbstractBasis, mesh::Mesh)
     return diffusion
 end
 
+"""
+```julia
+advectionoperator(basis, mesh)
+```
+Convenience constructor for advection operator
+
+# Weak form:
+- ``\\int \\nabla v u``
+
+# Arguments:
+- `basis`: basis for all operator fields to use
+- `mesh`:  mesh for operator
+- `wind`:  advection speed in 2D
+
+# Returns:
+- Advection operator with basis on mesh
+
+# Example:
+```jldoctest
+# advection operator
+mesh = Mesh2D(1.0, 1.0);
+mapping = hale_trefethen_strip_transformation(1.4);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+advection = LFAToolkit.advectionoperator(basis, mesh);
+
+# verify
+println(advection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    function advectionweakform(u::Array{Float64}, w::Array{Float64})
+        dv = wind * u * w[1]
+        return [dv]
+    end
+
+    # fields
+    inputs = [
+        OperatorField(basis, [EvaluationMode.interpolation]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
+    ]
+    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+
+    # operator
+    advection = Operator(advectionweakform, mesh, inputs, outputs)
+    return advection
+end
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
 
-operatorgallery = Dict("mass" => massoperator, "diffusion" => diffusionoperator)
+operatorgallery = Dict(
+    "mass" => massoperator,
+    "diffusion" => diffusionoperator,
+    "advection" => advectionoperator,
+)
 
 # ------------------------------------------------------------------------------

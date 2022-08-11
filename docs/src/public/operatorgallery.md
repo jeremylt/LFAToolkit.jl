@@ -2,13 +2,13 @@
 
 The following PDEs are available in the operator gallery.
 
-### Scalar Mass and Diffusion Operator
+### Scalar Mass, Diffusion, and Advection Operators
 
 ```@docs
 GalleryOperator
 ```
 
-### Vector Mass and Diffusion Operator
+### Vector Mass and Diffusion Operators
 
 ```@docs
 GalleryVectorOperator

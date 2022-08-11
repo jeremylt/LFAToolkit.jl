@@ -8,7 +8,7 @@
 
 """
 ```julia
-computesymbolsoverrange(operator, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(operator, numbersteps1d; mass = nothing, θ_min = -π/2, θ_band = 2π)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over
@@ -24,6 +24,8 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
                 default: nothing
 - `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
                 default: -π / 2
+- `θ_band`: θ_max = θ_min + θ_band
+                default: 2π
 
 # Returns:
 - Values of θ sampled
@@ -101,11 +103,12 @@ function computesymbolsoverrange(
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
     θ_min::Float64 = -π / 2,
+    θ_band::Float64 = 2π,
 )
     # setup range
     dimension = operator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_max = θ_min + 2π
+    θ_max = θ_min + θ_band
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 

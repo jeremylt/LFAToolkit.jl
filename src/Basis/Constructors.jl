@@ -2,22 +2,185 @@
 # finite element bases
 # ------------------------------------------------------------------------------
 
+using Polynomials
+
+# ------------------------------------------------------------------------------
+# conformal map functions for generating transformed polynomial bases
+# ------------------------------------------------------------------------------
+
+"""
+```julia
+sausage_transformation(d)
+```
+
+# Arguments:
+- `d`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+# Returns:
+Conformal mapping of Gauss ellipses to sausage_transformations using a
+truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
+
+# Example:
+```jldoctest
+# sausage_transformation conformal map
+g, gprime = LFAToolkit.sausage_transformation(9)
+
+# verify
+@assert g.(LinRange(-1,1,5)) ≈ [-0.9999999999999999, -0.39765215163451934, 0.0, 0.39765215163451934, 0.9999999999999999]
+
+# output
+
+```
+"""
+function sausage_transformation(d)
+    c = zeros(d + 1)
+    c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
+    c /= sum(c)
+    pg = Polynomial(c)
+    pgprime = derivative(pg)
+
+    # Lower from Polynomial to Function
+    g(x) = pg(x)
+    gprime(x) = pgprime(x)
+    g, gprime
+end
+
+"""
+```julia
+kosloff_talezer_transformation(α)
+```
+
+# Arguments:
+- `α`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+# Returns:
+The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
+
+# Example:
+```jldoctest
+# kosloff_talezer_transformation conformal map
+numberquadraturepoints = 5;
+g, gprime = LFAToolkit.kosloff_talezer_transformation(0.95);
+
+# verify
+@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0]
+
+# output
+
+```
+"""
+function kosloff_talezer_transformation(α)
+    g(s) = asin(α * s) / asin(α)
+    gprime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
+    g, gprime
+end
+
+"""
+```julia
+hale_trefethen_strip_transformation(ρ)
+```
+
+# Arguments:
+- `ρ`: sum of the semiminor and semimajor axis
+
+# Returns:
+The Hale and Trefethen strip transformation
+
+# Example:
+```jldoctest
+# hale_trefethen_strip_transformation conformal map
+g, gprime = hale_trefethen_strip_transformation(1.4);
+
+# verify
+@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0]
+
+# output
+
+```
+"""
+function hale_trefethen_strip_transformation(ρ)
+    τ = π / log(ρ)
+    d = 0.5 + 1 / (exp(τ * π) + 1)
+    π2 = π / 2
+
+    # Unscaled functions of u
+    gu(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
+    gprimeu(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
+
+    # Normalizing factor and scaled functions of s
+    C = 1 / gu(π / 2)
+    g(s) = C * gu(asin(s))
+    gprime(s) = -τ * C / sqrt(1 - s^2) * gprimeu(asin(s))
+    g, gprime
+end
+
+"""
+```julia
+transformquadrature(points, weights, mapping)
+```
+
+# Arguments:
+- `points`:  array of quadrature points
+- `weights`: optional array of weights to transform
+- `mapping`: choice of conformal map
+
+# Returns:
+Transformed quadrature by applying a smooth mapping = (g, gprime) from the original domain.
+
+# Example:
+```jldoctest
+# generate transformed quadrature points, weights with choice of conformal map
+points, weights = LFAToolkit.gaussquadrature(5)
+mapping = sausage_transformation(9)
+mpoints, mweights = transformquadrature(points, weights, mapping)
+
+# verify:
+wsum = sum(mweights);
+@assert wsum ≈ 2.0
+
+# output
+
+```
+"""
+function transformquadrature(
+    points,
+    weights = nothing,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
+    if isnothing(mapping)
+        if isnothing(weights)
+            return points
+        else
+            return points, weights
+        end
+    end
+    gmap, gmapprime = mapping
+    mpoints = gmap.(points)
+    if !isnothing(weights)
+        mweights = gmapprime.(points) .* weights
+        return mpoints, mweights
+    else
+        return mpoints
+    end
+end
+
 # ------------------------------------------------------------------------------
 # utility functions for generating polynomial bases
 # ------------------------------------------------------------------------------
 
 """
 ```julia
-gaussquadrature(q)
+gaussquadrature(q, mapping)
 ```
 
-Construct a Gauss-Legendre quadrature
+Construct a Gauss-Legendre quadrature with the option of applying conformal maps
 
 # Arguments:
-- `q`:  number of Gauss-Legendre points
+- `q`:  number of quadrature points
+- `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre quadrature points and weights
+- Gauss-Legendre quadrature points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest
@@ -43,11 +206,30 @@ trueweights = [
 ];
 @assert trueweights ≈ quadratureweights
 
+# generate Gauss-Legendre points and weights
+mapping = hale_trefethen_strip_transformation(1.4);
+quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping = mapping);
+
+# verify
+@assert quadraturepoints ≈ [-0.7948688880827978, -0.3997698842865811, 0.0, 0.3997698842865811, 0.7948688880827978]
+@assert quadratureweights ≈ [0.3807611340604039, 0.3992835637032222, 0.3999715882806566, 0.3992835637032222, 0.3807611340604039]
+
+# Accuracy test see Hale and Trefethen Fig 3.4
+f(x) = exp(-40*x^2)
+x, w = LFAToolkit.gaussquadrature(40);
+ref = w' * f.(x);
+x, w = LFAToolkit.gaussquadrature(20);
+xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformation(1.4))
+
+# verify
+@assert isapprox(w' * f.(x) - ref, -2.879622518375813e-5, rtol=1e-10)
+@assert isapprox(wm' * f.(xm) - ref, -3.26498938996167e-10, rtol=1e-5)
+
 # output
 
 ```
 """
-function gaussquadrature(q::Int)
+function gaussquadrature(q::Int; mapping::Union{Tuple{Function,Function},Nothing} = nothing)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -99,45 +281,54 @@ function gaussquadrature(q::Int)
     end
     quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
-    # return
-    return quadraturepoints, quadratureweights
+    return transformquadrature(quadraturepoints, quadratureweights, mapping)
 end
 
 """
 ```julia
-gausslobattoquadrature(q, weights)
+gausslobattoquadrature(q, weights, mapping)
 ```
 
-Construct a Gauss-Legendre-Lobatto quadrature
+Construct a Gauss-Legendre-Lobatto quadrature with the option of applying conformal maps
 
 # Arguments:
 - `q`:        number of Gauss-Legendre-Lobatto points
 - `weights`:  boolean flag indicating if quadrature weights are desired
+- `mapping`: choice of conformal map
 
 # Returns:
-- Gauss-Legendre-Lobatto quadrature points or points and weights
+- Gauss-Legendre-Lobatto quadrature points or points and weights, with conformal mapping applied to the points, if provided
 
 # Example:
 ```jldoctest
-# generate Gauss-Legendre-Lobatto points
-quadraturepoints = LFAToolkit.gausslobattoquadrature(5, false);
+# generate Gauss-Legendre-Lobatto points and weights
+quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true);
 
 # verify
 truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
 @assert truepoints ≈ quadraturepoints
 
-# generate Gauss-Legendre-Lobatto points and weights
-quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true);
-
 # verify
 trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
 @assert trueweights ≈ quadratureweights
+
+# generate Gauss-Legendre-Lobatto points and weights
+mapping = sausage_transformation(9);
+quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping=mapping)
+
+# verify
+@assert quadraturepoints ≈ [-0.9999999999999999, -0.5418159129215785, 0.0, 0.5418159129215785, 0.9999999999999999]
+@assert quadratureweights ≈ [0.18690312494113656, 0.5445666710618016, 0.5400742149974571, 0.5445666710618016, 0.18690312494113656]
 
 # output
 
 ```
 """
-function gausslobattoquadrature(q::Int, weights::Bool)
+function gausslobattoquadrature(
+    q::Int,
+    weights::Bool;
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+)
     quadraturepoints = zeros(Float64, q)
     quadratureweights = zeros(Float64, q)
 
@@ -202,11 +393,12 @@ function gausslobattoquadrature(q::Int, weights::Bool)
     end
     quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
 
+
     # return
     if weights
-        return quadraturepoints, quadratureweights
+        return transformquadrature(quadraturepoints, quadratureweights, mapping)
     else
-        return quadraturepoints
+        return transformquadrature(quadraturepoints, mapping)
     end
 end
 
@@ -324,8 +516,9 @@ TensorH1LagrangeBasis(
     numbernodes1d,
     numberquadraturepoints1d,
     numbercomponents,
-    dimension,
+    dimension;
     collocatedquadrature = false,
+    mapping = nothing,
 )
 ```
 
@@ -339,19 +532,20 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 - `dimension`:                 dimension of basis
 
 # Keyword Arguments:
-- `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                       default: false, Gauss-Legendre-Lobatto
+- `collocatedquadrature = false`:   Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
+                                    default: false, Gauss-Legendre-Lobatto
+- `mapping = nothing`:              quadrature point mapping - sausage, Kosloff-Talezer,
+                                    or Hale-Trefethen strip transformation
+                                    default: nothing, no transformation
 
 # Returns:
 - H1 Lagrange tensor product basis object
 
 # Example:
 ```jldoctest
-# generate H1 Lagrange tensor product basis
-basis = TensorH1LagrangeBasis(4, 4, 3, 2);
-
-# generate basis with Gauss-Legendre quadrature points
-basis = TensorH1LagrangeBasis(4, 4, 3, 2; collocatedquadrature=true);
+# generate transformed basis from conformal maps with Gauss-Legendre quadrature points
+mapping = hale_trefethen_strip_transformation(1.4);
+basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping=mapping);
 
 # verify
 println(basis)
@@ -370,6 +564,7 @@ function TensorH1LagrangeBasis(
     numbercomponents::Int,
     dimension::Int;
     collocatedquadrature::Bool = false,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     # check inputs
     if numbernodes1d < 2
@@ -402,6 +597,14 @@ function TensorH1LagrangeBasis(
 
     # build interpolation, gradient matrices
     interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
+
+    if !isnothing(mapping)
+        _, gprime = mapping
+        gradient1d ./= gprime.(quadraturepoints1d)
+        nodes1d = transformquadrature(nodes1d, nothing, mapping)
+        quadraturepoints1d, quadratureweights1d =
+            transformquadrature(quadraturepoints1d, quadratureweights1d, mapping)
+    end
 
     # use basic constructor
     return TensorBasis(
@@ -524,7 +727,7 @@ Tensor product macro-element basis from 1d single element tensor product basis
 - `numbercomponents`:          number of components
 - `dimension`:                 dimension of basis
 - `numberelements1d`:          number of elements in macro-element
-- `basis1dmicro`:              1d micro element basis to replicate 
+- `basis1dmicro`:              1d micro element basis to replicate
 
 # Keyword Arguments:
 - `overlapquadraturepoints`:  Overlap quadrature points between elements, for prolongation

@@ -33,8 +33,12 @@ export TensorBasis,
     TensorH1LagrangePProlongationBasis,
     TensorHProlongationMacroBasisFrom1D,
     TensorH1LagrangeHProlongationMacroBasis,
-    TensorH1UniformHProlongationMacroBasis
-# operato oields
+    TensorH1UniformHProlongationMacroBasis,
+    transformquadrature,
+    sausage_transformation,
+    kosloff_talezer_transformation,
+    hale_trefethen_strip_transformation
+# operator fields
 export OperatorField
 # operators
 export Operator,

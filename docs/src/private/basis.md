@@ -4,6 +4,10 @@
 LFAToolkit.AbstractBasis
 LFAToolkit.gaussquadrature
 LFAToolkit.gausslobattoquadrature
+LFAToolkit.transformquadrature
+LFAToolkit.sausage_transformation
+LFAToolkit.kosloff_talezer_transformation
+LFAToolkit.hale_trefethen_strip_transformation
 LFAToolkit.TensorMacroElementBasisFrom1D
 LFAToolkit.TensorHProlongationBasis
 LFAToolkit.buildinterpolationandgradient

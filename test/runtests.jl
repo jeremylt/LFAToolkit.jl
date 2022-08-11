@@ -39,7 +39,7 @@ end
 # advection operator example with conformal maps
 # ------------------------------------------------------------------------------
 
-@testset "  ex010: advection example                        " begin
+@testset "  ex010: advection example                   " begin
     include("../examples/ex010_advection.jl")
 
     @test min(eigenvalues...) ≈ -7.634155067582601

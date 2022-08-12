@@ -780,6 +780,27 @@ function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
     advection = Operator(advectionweakform, mesh, inputs, outputs)
     return advection
 end
+# TO DO - write the convenience constructor for supg advection
+function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    # Tau scaling for SUPG
+    τ = 1.0 # 0 returns Galerkin method
+    function supgadvectionweakform(u::Array{Float64}, du::Array{Float64}, w::Array{Float64})
+        dv = (wind * u - wind * τ * (wind * du)) * w[1]
+        return [dv]
+    end
+
+    # fields
+    inputs = [
+        OperatorField(basis, [EvaluationMode.interpolation], "advected field"),
+        OperatorField(basis, [EvaluationMode.gradient], "gradient field"),
+        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
+    ]
+    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+
+    # operator
+    supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
+    return supgadvection
+end
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
@@ -788,6 +809,7 @@ operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
     "advection" => advectionoperator,
+    "supgadvection" => supgadvectionoperator,
 )
 
 # ------------------------------------------------------------------------------

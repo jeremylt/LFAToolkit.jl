@@ -47,6 +47,17 @@ end
 end
 
 # ------------------------------------------------------------------------------
+# SUPG advection operator example with conformal maps
+# ------------------------------------------------------------------------------
+
+@testset "  ex011: SUPG advection example                   " begin
+    include("../examples/ex011_advection_supg.jl")
+
+    @test min(eigenvalues...) ≈ -7.634155067582601 # To be updated
+    @test max(eigenvalues...) ≈ 7.634155067582592  # To be updated
+end
+
+# ------------------------------------------------------------------------------
 # Jacobi smoother example
 # ------------------------------------------------------------------------------
 

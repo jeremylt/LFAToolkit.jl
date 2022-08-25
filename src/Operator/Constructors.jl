@@ -701,7 +701,7 @@ end
 
 """
 ```julia
-advectionoperator(basis, mesh)
+advectionoperator(basis, mesh, wind)
 ```
 Convenience constructor for advection operator
 
@@ -780,7 +780,80 @@ function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
     advection = Operator(advectionweakform, mesh, inputs, outputs)
     return advection
 end
-# TO DO - write the convenience constructor for supg advection
+
+"""
+```julia
+supgadvectionoperator(basis, mesh, wind)
+```
+Convenience constructor for SUPG advection operator
+
+# Weak form:
+- ``\\int \\nabla v u - τ \\nabla u``
+
+# Arguments:
+- `basis`: basis for all operator fields to use
+- `mesh`:  mesh for operator
+- `wind`:  advection speed in 2D
+- `τ`:     scaling for SUPG
+
+# Returns:
+- SUPG advection operator with basis on mesh
+
+# Example:
+```jldoctest
+# supg advection operator
+mesh = Mesh2D(1.0, 1.0);
+mapping = hale_trefethen_strip_transformation(1.4);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh);
+
+# verify
+println(supgadvection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+3 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
 function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
     # Tau scaling for SUPG
     τ = 1.0 # 0 returns Galerkin method

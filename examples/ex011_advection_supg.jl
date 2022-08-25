@@ -14,7 +14,7 @@ using Plots
 
 # setup
 mesh = Mesh1D(1.0)
-P = 3;
+P = 2;
 Q = P;
 collocate = false
 mapping = nothing
@@ -42,7 +42,7 @@ function supgadvectionweakform(u::Array{Float64}, du::Array{Float64}, w::Array{F
     return [dv]
 end
 
-# advection operator
+# supg advection operator
 inputs = [
     OperatorField(basis, [EvaluationMode.interpolation], "advected field"),
     OperatorField(basis, [EvaluationMode.gradient], "gradient field"),

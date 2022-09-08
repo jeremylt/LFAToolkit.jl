@@ -18,9 +18,9 @@ P = 2;
 Q = P;
 collocate = false
 mapping = nothing
-#mapping = sausage(29)
-#mapping = kosloff_tal_ezer(0.98)
-#mapping = hale_trefethen_strip(1.4)
+#mapping = sausage_transformation(9)
+#mapping = kosloff_talezer_transformation(0.98)
+#mapping = hale_trefethen_strip_transformation(1.4)
 basis =
     TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature=collocate, mapping=mapping)
 
@@ -34,7 +34,7 @@ numbersteps = 100
 c = 1.0
 
 # Tau scaling for SUPG
-τ = 0.5 # 0 returns Galerkin method
+τ = 0.5 / (P - 1) # 0 returns Galerkin method; empirically, 0.25 is too big for P=3 (quadratic)
 
 # weak form for SUPG advection
 function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
@@ -79,7 +79,6 @@ if true
         label="exact",
         legend=:none,
         color=:black,
-        ylims=(0, P),
     )
 else
     plot(θ / π, S ./ θ, linewidth=3)    # Phase speed plot
@@ -89,7 +88,8 @@ else
         ylabel="Phase speed",
         legend=:none,
         color=:black,
-        ylim=(0.9, 1.05),
+        ylim=(0.95, 1.05),
     )
 end
+plot!(title="P=$P, collocate=$collocate, τ=$τ")
 # ---------------------------------------------------------------

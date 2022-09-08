@@ -288,13 +288,15 @@ function getelementmatrix(operator::Operator)
         # collect info on operator
         weakforminputs = []
         numbernodes = 0
+        numberdofsinput = 0
+        numberdofsoutput = 0
         numbernodeinputs = 0
         numbernodeoutputs = 0
         numberquadraturepoints = 0
         numberquadratureinputs = 0
         numberquadratureoutputs = 0
-        numberfieldsin = []
-        numberfieldsout = []
+        numberfieldsin = Int[]
+        numberfieldsout = Int[]
         weightinputindex = 0
         quadratureweights = []
         Bblocks = []
@@ -305,11 +307,14 @@ function getelementmatrix(operator::Operator)
             # number of nodes
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
                 numbernodes += input.basis.numbernodes
+                numberdofsinput += input.basis.numbernodes * input.basis.numbercomponents
             end
 
             # number of quadrature points
             if numberquadraturepoints == 0
                 numberquadraturepoints = input.basis.numberquadraturepoints
+            else
+                @assert numberquadraturepoints == input.basis.numberquadraturepoints
             end
 
             # input evaluation modes
@@ -345,8 +350,9 @@ function getelementmatrix(operator::Operator)
         # input basis matrix
         B = spzeros(
             numberquadratureinputs * numberquadraturepoints,
-            numbernodeinputs * numbernodes,
+            numberdofsinput,
         )
+
         currentrow = 1
         currentcolumn = 1
         for Bblock in Bblocks
@@ -369,6 +375,9 @@ function getelementmatrix(operator::Operator)
         # outputs
         for output in operator.outputs
             # output evaluation modes
+            if output.evaluationmodes[1] != EvaluationMode.quadratureweights
+                numberdofsoutput += output.basis.numbernodes * output.basis.numbercomponents
+            end
             numberfields = 0
             Btcurrent = []
             for mode in output.evaluationmodes
@@ -396,7 +405,7 @@ function getelementmatrix(operator::Operator)
         # output basis matrix
         Bt = spzeros(
             numberquadratureoutputs * numberquadraturepoints,
-            numbernodeoutputs * numbernodes,
+            numberdofsoutput,
         )
         currentrow = 1
         currentcolumn = 1
@@ -844,11 +853,6 @@ function getnodecoordinatedifferences(operator::Operator)
         # fill matrix
         numberrows, numbercolumns = size(operator.elementmatrix)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
-        @show size(inputcoordinates)
-        @show inputcoordinates
-        @show size(outputcoordinates)
-        @show outputcoordinates
-        @show size(nodecoordinatedifferences)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
                 (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]

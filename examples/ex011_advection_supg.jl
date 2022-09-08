@@ -22,7 +22,7 @@ mapping = nothing
 #mapping = kosloff_tal_ezer(0.98)
 #mapping = hale_trefethen_strip(1.4)
 basis =
-    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature=collocate, mapping=mapping)
 
 # frequency set up
 numbersteps = 100
@@ -34,24 +34,33 @@ numbersteps = 100
 c = 1.0
 
 # Tau scaling for SUPG
-τ = 1.0 # 0 returns Galerkin method
+τ = 0.5 # 0 returns Galerkin method
 
 # weak form for SUPG advection
-function supgadvectionweakform(u::Array{Float64}, du::Array{Float64}, w::Array{Float64})
+function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
+    u = U[1, :]
+    du = U[2, :]
     dv = (c * u - c * τ * (c * du)) * w[1]
     return [dv]
 end
 
 # supg advection operator
 inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation], "advected field"),
-    OperatorField(basis, [EvaluationMode.gradient], "gradient field"),
+    OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient], "advected field"),
     OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
 ]
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
-mass =
-    GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+
+function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
+    v = udot * w[1]
+    dv = c * τ * udot * w[1]
+    return ([v; dv],)
+end
+mass = Operator(supgmassweakform, mesh,
+    [OperatorField(basis, [EvaluationMode.interpolation], "u_t"),
+        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights")],
+    [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])])
 
 # compute operator symbols
 function advection_supg_symbol(θ)
@@ -61,16 +70,26 @@ function advection_supg_symbol(θ)
 end
 
 S = hcat(advection_supg_symbol.(θ)...)'
-#plot(θ / π, (S./θ)./ π , linewidth=3)    # Phase speed plot
-plot(θ / π, S ./ π, linewidth = 3)
-plot!(
-    identity,
-    xlabel = "θ/π",
-    ylabel = "Eigenvalues",
-    label = "exact",
-    linewidth = 3,
-    legend = :none,
-    color = :black,
-    ylims = (0, P),
-)
+if true
+    plot(θ / π, S ./ π, linewidth=3)  # Dispersion
+    plot!(
+        identity,
+        xlabel="θ/π",
+        ylabel="Eigenvalues",
+        label="exact",
+        legend=:none,
+        color=:black,
+        ylims=(0, P),
+    )
+else
+    plot(θ / π, S ./ θ, linewidth=3)    # Phase speed plot
+    plot!(
+        one,
+        xlabel="θ/π",
+        ylabel="Phase speed",
+        legend=:none,
+        color=:black,
+        ylim=(0.9, 1.05),
+    )
+end
 # ---------------------------------------------------------------

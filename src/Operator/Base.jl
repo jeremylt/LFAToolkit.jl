@@ -854,15 +854,7 @@ function getnodecoordinatedifferences(operator::Operator)
         # fill matrix
         numberrows, numbercolumns = size(operator.elementmatrix)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
-<<<<<<< HEAD
-=======
-        @show size(inputcoordinates)
-        @show inputcoordinates
-        @show size(outputcoordinates)
-        @show outputcoordinates
-        @show size(nodecoordinatedifferences)
-        @show numberrows, numbercolumns
->>>>>>> f4b011a3 (shape mismatch issues)
+
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
                 (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]

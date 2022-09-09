@@ -22,7 +22,7 @@ mapping = nothing
 #mapping = kosloff_talezer_transformation(0.98)
 #mapping = hale_trefethen_strip_transformation(1.4)
 basis =
-    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature=collocate, mapping=mapping)
+    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up
 numbersteps = 100
@@ -54,7 +54,11 @@ end
 
 # supg advection operator
 inputs = [
-    OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient], "advected field"),
+    OperatorField(
+        basis,
+        [EvaluationMode.interpolation, EvaluationMode.gradient],
+        "advected field",
+    ),
     OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
 ]
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
@@ -66,10 +70,15 @@ function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
     dv = c * τ * udot * w[1]
     return ([v; dv],)
 end
-mass = Operator(supgmassweakform, mesh,
-    [OperatorField(basis, [EvaluationMode.interpolation], "u_t"),
-        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights")],
-    [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])])
+mass = Operator(
+    supgmassweakform,
+    mesh,
+    [
+        OperatorField(basis, [EvaluationMode.interpolation], "u_t"),
+        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
+    ],
+    [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])],
+)
 
 # compute operator symbols
 function advection_supg_symbol(θ)
@@ -80,25 +89,25 @@ end
 
 S = hcat(advection_supg_symbol.(θ)...)'
 if true
-    plot(θ / π, S ./ π, linewidth=3)  # Dispersion
+    plot(θ / π, S ./ π, linewidth = 3)  # Dispersion
     plot!(
         identity,
-        xlabel="θ/π",
-        ylabel="Eigenvalues",
-        label="exact",
-        legend=:none,
-        color=:black,
+        xlabel = "θ/π",
+        ylabel = "Eigenvalues",
+        label = "exact",
+        legend = :none,
+        color = :black,
     )
 else
-    plot(θ / π, S ./ θ, linewidth=3)    # Phase speed plot
+    plot(θ / π, S ./ θ, linewidth = 3)    # Phase speed plot
     plot!(
         one,
-        xlabel="θ/π",
-        ylabel="Phase speed",
-        legend=:none,
-        color=:black,
-        ylim=(0.95, 1.05),
+        xlabel = "θ/π",
+        ylabel = "Phase speed",
+        legend = :none,
+        color = :black,
+        ylim = (0.95, 1.05),
     )
 end
-plot!(title="P=$P, collocate=$collocate, τ=$τ")
+plot!(title = "P=$P, collocate=$collocate, τ=$τ")
 # ---------------------------------------------------------------

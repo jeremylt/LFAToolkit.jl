@@ -348,10 +348,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # input basis matrix
-        B = spzeros(
-            numberquadratureinputs * numberquadraturepoints,
-            numberdofsinput,
-        )
+        B = spzeros(numberquadratureinputs * numberquadraturepoints, numberdofsinput)
 
         currentrow = 1
         currentcolumn = 1
@@ -403,10 +400,7 @@ function getelementmatrix(operator::Operator)
         end
 
         # output basis matrix
-        Bt = spzeros(
-            numberquadratureoutputs * numberquadraturepoints,
-            numberdofsoutput,
-        )
+        Bt = spzeros(numberquadratureoutputs * numberquadraturepoints, numberdofsoutput)
         currentrow = 1
         currentcolumn = 1
         for Btblock in Btblocks

@@ -44,12 +44,21 @@ function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
     return [dv]
 end
 
+# weak form for SUPG mass matrix
+# udot will be obtained from M udot  = A u
+function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
+    v = udot * w[1]
+    dv = c * τ * udot * w[1]
+    return [v, dv]
+end
+
 # supg advection operator
 inputs = [
     OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient], "advected field"),
     OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
 ]
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+#outputs = [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient,])]
 supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
 
 function supgmassweakform(udot::Array{Float64}, w::Array{Float64})

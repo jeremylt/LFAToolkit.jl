@@ -13,3 +13,5 @@ N. Hale and L. N. Trefethen, [New quadrature formulas from conformal maps](https
 T. J. R. Hughes and A. N. Brooks *A multi-dimensional upwind scheme with no crosswind diﬀusion*, In: Hughes TJR, editor. Finite element methods for convection dominated ﬂows, AMD-vol. 34. New York: ASME, (1979), pp. 19-35.
 
 T. Melvin, A. Staniforth and J. Thuburn, *Dispersion analysis of the spectral element method*, Q.J.R. Meteorol. Soc. 138, (2012), pp. 1934-1947.
+
+C. H. Whiting, K. E. Jansen and S. Dey, *Hierarchical basis for stabilized finite element methods for compressible flows*, Comput. Methods Appl. Mech. Engrg. 192, (2003), pp. 5167-5185.

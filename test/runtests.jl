@@ -53,8 +53,8 @@ end
 @testset "  ex011: SUPG advection example                   " begin
     include("../examples/ex011_advection_supg.jl")
 
-    @test min(eigenvalues...) ≈ -7.634155067582601 # To be updated
-    @test max(eigenvalues...) ≈ 7.634155067582592  # To be updated
+    @test min(eigenvalues...) ≈ 0.0000000000000000
+    @test max(eigenvalues...) ≈ 2.0998054953673844
 end
 
 # ------------------------------------------------------------------------------

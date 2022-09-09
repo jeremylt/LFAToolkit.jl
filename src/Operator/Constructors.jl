@@ -722,6 +722,7 @@ Convenience constructor for advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+wind = [1, 1]
 advection = LFAToolkit.advectionoperator(basis, mesh, wind);
 
 # verify
@@ -806,6 +807,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 #mapping = sausage_transformation(9);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+wind = [1, 1]
 supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh, wind);
 
 # verify
@@ -902,6 +904,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 #mapping = sausage_transformation(9);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+wind = [1, 1]
 supgmass = LFAToolkit.supgmassoperator(basis, mesh, wind);
 
 # verify

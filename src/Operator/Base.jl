@@ -844,7 +844,7 @@ function getnodecoordinatedifferences(operator::Operator)
             maximum(inputcoordinates[:, d]) - minimum(inputcoordinates[:, d]) for
             d = 1:dimension
         ]
-        @show lengths
+
         # fill matrix
         numberrows, numbercolumns = size(operator.elementmatrix)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)

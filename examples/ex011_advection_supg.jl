@@ -10,7 +10,6 @@
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra
-using Plots
 
 # setup
 mesh = Mesh1D(1.0)
@@ -19,8 +18,6 @@ Q = P;
 collocate = false
 mapping = nothing
 #mapping = sausage_transformation(9)
-#mapping = kosloff_talezer_transformation(0.98)
-#mapping = hale_trefethen_strip_transformation(1.4)
 basis =
     TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
@@ -44,14 +41,6 @@ function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
     return [dv]
 end
 
-# weak form for SUPG mass matrix
-# udot will be obtained from M udot  = A u
-function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
-    v = udot * w[1]
-    dv = c * τ * udot * w[1]
-    return [v, dv]
-end
-
 # supg advection operator
 inputs = [
     OperatorField(
@@ -62,15 +51,16 @@ inputs = [
     OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
 ]
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
-#outputs = [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient,])]
+
 supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
 
+# supg mass operator
 function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
     v = udot * w[1]
     dv = c * τ * udot * w[1]
     return ([v; dv],)
 end
-mass = Operator(
+supgmass = Operator(
     supgmassweakform,
     mesh,
     [
@@ -83,31 +73,10 @@ mass = Operator(
 # compute operator symbols
 function advection_supg_symbol(θ)
     A = computesymbols(supgadvection, [θ]) * 2 # transform from reference to physical on dx=1 grid
-    M = computesymbols(mass, [θ]) # mass matrix
+    M = computesymbols(supgmass, [θ]) # mass matrix
     return sort(imag.(eigvals(-M \ A)))
 end
 
-S = hcat(advection_supg_symbol.(θ)...)'
-if true
-    plot(θ / π, S ./ π, linewidth = 3)  # Dispersion
-    plot!(
-        identity,
-        xlabel = "θ/π",
-        ylabel = "Eigenvalues",
-        label = "exact",
-        legend = :none,
-        color = :black,
-    )
-else
-    plot(θ / π, S ./ θ, linewidth = 3)    # Phase speed plot
-    plot!(
-        one,
-        xlabel = "θ/π",
-        ylabel = "Phase speed",
-        legend = :none,
-        color = :black,
-        ylim = (0.95, 1.05),
-    )
-end
-plot!(title = "P=$P, collocate=$collocate, τ=$τ")
+eigenvalues = hcat(advection_supg_symbol.(θ)...)'
+
 # ---------------------------------------------------------------

@@ -820,7 +820,7 @@ finite element operator:
     dx: 1.0
     dy: 1.0
 
-3 inputs:
+2 inputs:
 operator field:
   tensor product basis:
     numbernodes1d: 3
@@ -828,14 +828,8 @@ operator field:
     numbercomponents: 1
     dimension: 2
   evaluation mode:
+    modes:
     interpolation
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
     gradient
 operator field:
   tensor product basis:
@@ -935,7 +929,7 @@ operator field:
   evaluation mode:
     quadratureweights
 
-2 output:
+1 output:
 operator field:
   tensor product basis:
     numbernodes1d: 3
@@ -943,6 +937,7 @@ operator field:
     numbercomponents: 1
     dimension: 2
   evaluation mode:
+    modes:
     interpolation
     gradient
 ```

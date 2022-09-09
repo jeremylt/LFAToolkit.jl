@@ -722,7 +722,7 @@ Convenience constructor for advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-advection = LFAToolkit.advectionoperator(basis, mesh);
+advection = LFAToolkit.advectionoperator(basis, mesh, wind);
 
 # verify
 println(advection)
@@ -787,8 +787,8 @@ supgadvectionoperator(basis, mesh, wind)
 ```
 Convenience constructor for SUPG advection operator
 
-# Weak form:
-- ``\\int \\nabla v u - τ \\nabla u``
+# Weak form: Right hand side
+- ``\\int wind \\nabla v u - wind wind τ \\nabla v \\nabla u``
 
 # Arguments:
 - `basis`: basis for all operator fields to use
@@ -803,9 +803,10 @@ Convenience constructor for SUPG advection operator
 ```jldoctest
 # supg advection operator
 mesh = Mesh2D(1.0, 1.0);
-mapping = hale_trefethen_strip_transformation(1.4);
+mapping = nothing
+#mapping = sausage_transformation(9);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh);
+supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh, wind);
 
 # verify
 println(supgadvection)
@@ -854,25 +855,113 @@ operator field:
     gradient
 ```
 """
+P = 2
+τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
 function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
-    # Tau scaling for SUPG
-    τ = 1.0 # 0 returns Galerkin method
-    function supgadvectionweakform(u::Array{Float64}, du::Array{Float64}, w::Array{Float64})
+    function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
+        u = U[1, :]
+        du = U[2, :]
         dv = (wind * u - wind * τ * (wind * du)) * w[1]
         return [dv]
     end
 
     # fields
     inputs = [
-        OperatorField(basis, [EvaluationMode.interpolation], "advected field"),
-        OperatorField(basis, [EvaluationMode.gradient], "gradient field"),
-        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
+        OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
     ]
     outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 
     # operator
     supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
     return supgadvection
+end
+
+"""
+```julia
+supgmassoperator(basis, mesh, wind)
+```
+Convenience constructor for SUPG mass matrix operator
+
+# Weak form: Left hand side
+- ``\\int v u_t + wind τ u_t \\nabla v``
+
+# Arguments:
+- `basis`: basis for all operator fields to use
+- `mesh`:  mesh for operator
+- `wind`:  advection speed in 2D
+- `τ`:     scaling for SUPG
+
+# Returns:
+- SUPG mass matrix operator with basis on mesh
+
+# Example:
+```jldoctest
+# supg mass matrix operator
+mesh = Mesh2D(1.0, 1.0);
+mapping = nothing
+#mapping = sausage_transformation(9);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
+supgmass = LFAToolkit.supgmassoperator(basis, mesh, wind);
+
+# verify
+println(supgmass)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+2 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+    gradient
+```
+"""
+function supgmassoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
+        v = udot * w[1]
+        dv = wind * τ * udot * w[1]
+        return ([v; dv],)
+    end
+
+    # fields
+    inputs = [
+        OperatorField(basis, [EvaluationMode.interpolation]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
+    ]
+    outputs =
+        [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])]
+
+    #operator
+    supgmass = Operator(supgmassweakform, mesh, inputs, outputs)
+    return supgmass
 end
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
@@ -883,6 +972,7 @@ operatorgallery = Dict(
     "diffusion" => diffusionoperator,
     "advection" => advectionoperator,
     "supgadvection" => supgadvectionoperator,
+    "supgmass" => supgmassoperator,
 )
 
 # ------------------------------------------------------------------------------

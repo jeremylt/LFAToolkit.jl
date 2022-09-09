@@ -18,16 +18,17 @@ The SUPG advection weak form is given by
 ```
 for an appropriate test space ``V \subseteq H^1 \left( \Omega \right)`` on the domain.
 In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.
-Where ``τ`` is the scaling for SUPG, we note that ``τ = 0`` gives classical Galerkin formulation, ``τ = 0.5`` gives nodally exact solution to the advection-diffusion equation and ``τ = 1`` gives SUPG formulation.
+Where ``τ`` is the scaling for SUPG, we note that ``τ = 0`` gives classical Galerkin formulation, ``τ = \dfrac{h}{2}`` gives nodally exact solution to the pure advection equation and ``τ = 1`` gives SUPG formulation.
 
 ### LFAToolkit code
 
 The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit.
 Here we show the supg advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a H1 Lagrange basis.
 
-For understanding about SUPG in this work, see papers by Hughes TJR and Brooks AN (1979, 1982)
+For understanding about SUPG in this work, see papers by Hughes TJR, Brooks AN (1979, 1982) and C.H. Whiting
 A multi-dimensional upwind scheme with no crosswind diﬀusion. In: Hughes TJR, editor. Finite element methods for convection dominated ﬂows, AMD-vol. 34. New York: ASME, (1979), pp. 19-35.
 Streamline upwind/Petrov–Galerkin formulations for convection dominated ﬂows with particular emphasis on the incompressible Navier–Stokes equations. Comput Meth Appl Mech Eng, 32 (1982), pp. 199-259.
+Hierarchical basis for stabilized finite element methods for compressible flows. Comput. Methods Appl. Mech. Engrg. 192, (2003), pp. 5167-5185.
 
 ````@eval
 using Markdown

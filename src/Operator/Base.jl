@@ -443,6 +443,7 @@ function getelementmatrix(operator::Operator)
                 for j = 1:numberfieldsin[i]
                     # run user weak form function
                     weakforminputs[i][j] = 1.0
+                    #@show weakforminputs
                     outputs = operator.weakform(weakforminputs...)
                     weakforminputs[i][j] = 0.0
 
@@ -849,10 +850,19 @@ function getnodecoordinatedifferences(operator::Operator)
             maximum(inputcoordinates[:, d]) - minimum(inputcoordinates[:, d]) for
             d = 1:dimension
         ]
-
+        @show lengths
         # fill matrix
         numberrows, numbercolumns = size(operator.elementmatrix)
         nodecoordinatedifferences = zeros(numberrows, numbercolumns, dimension)
+<<<<<<< HEAD
+=======
+        @show size(inputcoordinates)
+        @show inputcoordinates
+        @show size(outputcoordinates)
+        @show outputcoordinates
+        @show size(nodecoordinatedifferences)
+        @show numberrows, numbercolumns
+>>>>>>> f4b011a3 (shape mismatch issues)
         for i = 1:numberrows, j = 1:numbercolumns, k = 1:dimension
             nodecoordinatedifferences[i, j, k] =
                 (inputcoordinates[j, k] - outputcoordinates[i, k]) / lengths[k]

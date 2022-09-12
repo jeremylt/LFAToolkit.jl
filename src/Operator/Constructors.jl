@@ -827,8 +827,7 @@ operator field:
     numberquadraturepoints1d: 4
     numbercomponents: 1
     dimension: 2
-  evaluation mode:
-    modes:
+  evaluation modes:
     interpolation
     gradient
 operator field:

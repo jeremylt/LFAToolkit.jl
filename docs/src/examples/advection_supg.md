@@ -18,7 +18,7 @@ The SUPG advection weak form is given by
 ```
 for an appropriate test space ``V \subseteq H^1 \left( \Omega \right)`` on the domain.
 In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis.
-Where ``τ`` is the scaling for SUPG, we note that ``τ = 0`` gives classical Galerkin formulation, ``τ = \dfrac{h}{2}`` gives nodally exact solution to the pure advection equation and ``τ = 1`` gives SUPG formulation.
+The SUPG stabilization is controlled by the parameter ``τ``, where ``τ = 0`` gives the classical Galerkin formulation and ``τ = \dfrac{h}{2}`` gives a nodally exact solution to the steady advection equation with source when using linear elements (this can be extended to advection-diffusion with a further scaling that depends on the cell Péclet number).
 
 ### LFAToolkit code
 

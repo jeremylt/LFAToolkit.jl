@@ -437,7 +437,6 @@ function getelementmatrix(operator::Operator)
                 for j = 1:numberfieldsin[i]
                     # run user weak form function
                     weakforminputs[i][j] = 1.0
-                    #@show weakforminputs
                     outputs = operator.weakform(weakforminputs...)
                     weakforminputs[i][j] = 0.0
 

@@ -22,7 +22,10 @@ The SUPG stabilization is controlled by the parameter ``τ``, where ``τ = 0`` g
 
 ### LFAToolkit code
 
-The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit.
+The symbol of the continuous advection operator ``u_t + c u_x = 0`` applied to the Fourier mode ``e^{i\theta x}`` is ``i\theta``.
+The finite element discretization yields ``M u_t + A u = 0``, and thus we are interested in the symbol of ``-M^{-1} A``.
+One may compare the continuous spectrum with the discrete symbol, which is necessarily periodic on ``[-\pi, \pi)``, to understand the behavior for high wave numbers, including the high frequencies that will limit stable time steps.
+To understand dispersion within the resolved frequencies, we instead plot the phase speed ``\lambda/\theta``, which should be very close to ``c`` through the resolved frequencies.
 Here we show the supg advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a H1 Lagrange basis.
 
 For understanding about SUPG in this work, see papers by Hughes TJR, Brooks AN (1979, 1982) and C.H. Whiting

@@ -17,7 +17,6 @@ P = 2;
 Q = P;
 collocate = false
 mapping = nothing
-#mapping = sausage_transformation(9)
 basis =
     TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 

@@ -805,7 +805,6 @@ Convenience constructor for SUPG advection operator
 # supg advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
-#mapping = sausage_transformation(9);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 wind = [1, 1]
 supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh, wind);
@@ -895,7 +894,6 @@ Convenience constructor for SUPG mass matrix operator
 # supg mass matrix operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
-#mapping = sausage_transformation(9);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 wind = [1, 1]
 supgmass = LFAToolkit.supgmassoperator(basis, mesh, wind);

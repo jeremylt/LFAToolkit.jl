@@ -26,7 +26,7 @@ The symbol of the continuous advection operator ``u_t + c u_x = 0`` applied to t
 The finite element discretization yields ``M u_t + A u = 0``, and thus we are interested in the symbol of ``-M^{-1} A``.
 One may compare the continuous spectrum with the discrete symbol, which is necessarily periodic on ``[-\pi, \pi)``, to understand the behavior for high wave numbers, including the high frequencies that will limit stable time steps.
 To understand dispersion within the resolved frequencies, we instead plot the phase speed ``\lambda/\theta``, which should be very close to ``c`` through the resolved frequencies.
-Here we show the SUPG advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a ``H^1`` Lagrange basis.
+Here we show the SUPG advection operator on ``H^1`` Lagrange basis.
 
 For understanding about SUPG in this work, see papers by Hughes TJR, Brooks AN (1979, 1982) and C.H. Whiting
 A multi-dimensional upwind scheme with no crosswind diﬀusion. In: Hughes TJR, editor. Finite element methods for convection dominated ﬂows, AMD-vol. 34. New York: ASME, (1979), pp. 19-35.

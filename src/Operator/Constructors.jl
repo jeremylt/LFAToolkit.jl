@@ -701,7 +701,7 @@ end
 
 """
 ```julia
-advectionoperator(basis, mesh, wind)
+advectionoperator(basis, mesh)
 ```
 Convenience constructor for advection operator
 
@@ -723,7 +723,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 wind = [1, 1]
-advection = LFAToolkit.advectionoperator(basis, mesh, wind);
+advection = LFAToolkit.advectionoperator(basis, mesh);
 
 # verify
 println(advection)
@@ -764,7 +764,8 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+function advectionoperator(basis::AbstractBasis, mesh::Mesh)
+    wind = [1, 1]
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
         dv = wind * u * w[1]
         return [dv]
@@ -784,7 +785,7 @@ end
 
 """
 ```julia
-supgadvectionoperator(basis, mesh, wind)
+supgadvectionoperator(basis, mesh)
 ```
 Convenience constructor for SUPG advection operator
 
@@ -807,7 +808,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 wind = [1, 1]
-supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh, wind);
+supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh);
 
 # verify
 println(supgadvection)
@@ -851,11 +852,12 @@ operator field:
 """
 P = 2
 τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
-function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
-    function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
+function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh)
+    wind = [1, 1]
+    function supgadvectionweakform(wind::Array{Float64}, U::Matrix{Float64}, w::Array{Float64})
         u = U[1, :]
         du = U[2, :]
-        dv = (wind * u - wind * τ * (wind * du)) * w[1]
+        dv = (wind .* u - wind .* τ * (wind .* du)) * w[1]
         return [dv]
     end
 
@@ -873,7 +875,7 @@ end
 
 """
 ```julia
-supgmassoperator(basis, mesh, wind)
+supgmassoperator(basis, mesh)
 ```
 Convenience constructor for SUPG mass matrix operator
 
@@ -896,7 +898,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 wind = [1, 1]
-supgmass = LFAToolkit.supgmassoperator(basis, mesh, wind);
+supgmass = LFAToolkit.supgmassoperator(basis, mesh);
 
 # verify
 println(supgmass)
@@ -938,10 +940,11 @@ operator field:
     gradient
 ```
 """
-function supgmassoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
-    function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
+function supgmassoperator(basis::AbstractBasis, mesh::Mesh)
+    wind = [1, 1]
+    function supgmassweakform(wind::Array{Float64}, udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]
-        dv = wind * τ * udot * w[1]
+        dv = wind .* τ * udot * w[1]
         return ([v; dv],)
     end
 

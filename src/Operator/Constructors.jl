@@ -161,6 +161,103 @@ operator field:
   evaluation mode:
     gradient
 ```
+
+# SUPG mass matrix example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mapping = nothing;
+collocate = false;
+supgmass = GalleryOperator("supgmass", 4, 4, mesh, collocatedquadrature = collocate, mapping = mapping);
+
+# verify
+println(supgmass)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    interpolation
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation modes:
+    interpolation
+    gradient
+```
+
+# SUPG advection operator example:
+```jldoctest
+# setup
+mesh = Mesh2D(1.0, 1.0);
+mapping = nothing;
+collocate = false;
+supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, collocatedquadrature = collocate, mapping = mapping);
+
+# verify
+println(supgadvection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation modes:
+    interpolation
+    gradient
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+
 """
 function GalleryOperator(
     name::String,

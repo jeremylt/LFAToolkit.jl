@@ -90,6 +90,7 @@ mutable struct Operator
 
     # data empty until assembled
     elementmatrix::AbstractArray{Float64,2}
+    qtbtd::AbstractArray{Float64,2}
     diagonal::AbstractArray{Float64}
     multiplicity::AbstractArray{Float64}
     rowmodemap::AbstractArray{Float64,2}
@@ -463,6 +464,10 @@ function getelementmatrix(operator::Operator)
 
     # return
     return getfield(operator, :elementmatrix)
+end
+
+function getqtbtd(operator::Operator)
+
 end
 
 """
@@ -870,6 +875,8 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getdimension(operator)
     elseif f == :elementmatrix
         return getelementmatrix(operator)
+    elseif f == :qtbtd
+        return getqtbtd(operator)
     elseif f == :diagonal
         return getdiagonal(operator)
     elseif f == :multiplicity
@@ -977,6 +984,39 @@ function computesymbols(operator::Operator, θ::Array)
 
     # return
     return symbolmatrixmodes
+end
+
+# ------------------------------------------------------------------------------
+# compute wave number transformation symbol matrix
+# ------------------------------------------------------------------------------
+
+function computewavenumbersymbol(operator::Operator, θ::Array)
+    # validity check
+    dimension = length(θ)
+    if dimension != operator.inputs[1].basis.dimension
+        throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+    end
+
+    # setup
+    qtbtd = operator.qtbtd
+    numberrows, numbercolumns = size(elementmatrix)
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+    ß = zeros(ComplexF64, numberrows, numbercolumns)
+
+    # compute ß
+    for i = 1:numberrows, j = 1:numbercolumns
+        ß[i, j] =
+            ℯ^(
+                im * sum([
+                    θ[k] - 2 * sign(θ) * k * π * nodecoordinatedifferences[i, j, k] for
+                    k = 1:dimension
+                ])
+            )
+    end
+    symbolmatrixharmonics = qtbtd * ß
+
+    # return symbol matrix in harmonics
+    return symbolmatrixharmonics
 end
 
 # ------------------------------------------------------------------------------

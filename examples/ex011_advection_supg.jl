@@ -10,6 +10,7 @@
 # ---------------------------------------------------------------
 using LFAToolkit
 using LinearAlgebra
+using Plots
 
 # setup
 mesh = Mesh1D(1.0)
@@ -76,6 +77,21 @@ function advection_supg_symbol(θ)
     return sort(imag.(eigvals(-M \ A)))
 end
 
-eigenvalues = hcat(advection_supg_symbol.(θ)...)'
+# transformation matrix
+function transformation_matrix()
+    R = computewavenumbersymbol()
+    return sort(imag.(eigvals(R)))
+end
 
+eigenvalues = hcat(advection_supg_symbol.(θ)...)'
+plot(θ / π, eigenvalues ./ π, linewidth = 3)  # Dispersion
+plot!(
+    identity,
+    xlabel = "θ/π",
+    ylabel = "Eigenvalues",
+    label = "exact",
+    legend = :none,
+    color = :black,
+    title = "P=$P, collocate=$collocate, τ=$τ",
+)
 # ---------------------------------------------------------------

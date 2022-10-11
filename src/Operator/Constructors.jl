@@ -1042,7 +1042,7 @@ function supgmassoperator(basis::AbstractBasis, mesh::Mesh)
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]
         dv = wind * τ * udot * w[1]
-        return ([v; dv],)
+        return [v; dv]
     end
 
     # fields

@@ -861,8 +861,8 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh)
-    wind = [1, 1]
+function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
         dv = wind * u * w[1]
         return [dv]
@@ -949,8 +949,8 @@ operator field:
 """
 P = 2
 τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
-function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh)
-    wind = [1, 1]
+function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    # set up
     function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
         u = U[1, :]
         du = U[2, :]
@@ -1037,8 +1037,8 @@ operator field:
     gradient
 ```
 """
-function supgmassoperator(basis::AbstractBasis, mesh::Mesh)
-    wind = [1, 1]
+function supgmassoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+    # set up
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]
         dv = wind * τ * udot * w[1]

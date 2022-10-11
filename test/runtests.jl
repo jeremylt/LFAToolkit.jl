@@ -50,7 +50,7 @@ end
 # SUPG advection operator example with conformal maps
 # ------------------------------------------------------------------------------
 
-@testset "  ex011: SUPG advection example                   " begin
+@testset "  ex011: SUPG advection example               " begin
     include("../examples/ex011_advection_supg.jl")
 
     @test min(eigenvalues...) ≈ 0.0000000000000000

@@ -955,8 +955,8 @@ P = 2
 τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
 function supgadvectionoperator(
     basis::AbstractBasis,
-    mesh::Mesh,
-    parameters = (wind = [1, 1]),
+    mesh::Mesh;
+    parameters=(wind=[1, 1]),
 )
     # set up
     function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})

@@ -13,6 +13,7 @@ GalleryOperator(
     numbernodes1d,
     numberquadraturepoints1d,
     mesh;
+    parameters,
     collocatedquadrature = false,
     mapping = nothing
 )
@@ -166,9 +167,10 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
+parameters = (wind = [1, 1]);
 mapping = nothing;
 collocate = false;
-supgmass = GalleryOperator("supgmass", 4, 4, mesh, collocatedquadrature = collocate, mapping = mapping);
+supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters, collocatedquadrature = collocate, mapping = mapping);
 
 # verify
 println(supgmass)
@@ -214,9 +216,10 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
+parameters = (wind = [1, 1]);
 mapping = nothing;
 collocate = false;
-supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, collocatedquadrature = collocate, mapping = mapping);
+supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters, collocatedquadrature = collocate, mapping = mapping);
 
 # verify
 println(supgadvection)
@@ -264,10 +267,12 @@ function GalleryOperator(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     mesh::Mesh;
+    parameters::Float64,
     collocatedquadrature::Bool = false,
     mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
+        parameters = (wind = [1, 1])
         basis = TensorH1LagrangeBasis(
             numbernodes1d,
             numberquadraturepoints1d,
@@ -276,7 +281,7 @@ function GalleryOperator(
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
-        return operatorgallery[name](basis, mesh)
+        return operatorgallery[name](basis, mesh, parameters)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
@@ -819,7 +824,7 @@ Convenience constructor for advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-wind = [1, 1]
+parameters = (wind = [1, 1])
 advection = LFAToolkit.advectionoperator(basis, mesh);
 
 # verify
@@ -861,7 +866,7 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+function advectionoperator(basis::AbstractBasis, mesh::Mesh, parameters = (wind = [1, 1]))
     # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
         dv = wind * u * w[1]
@@ -904,7 +909,7 @@ Convenience constructor for SUPG advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-wind = [1, 1]
+parameters = (wind = [1, 1])
 supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh);
 
 # verify
@@ -949,7 +954,11 @@ operator field:
 """
 P = 2
 τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
-function supgadvectionoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+function supgadvectionoperator(
+    basis::AbstractBasis,
+    mesh::Mesh,
+    parameters = (wind = [1, 1]),
+)
     # set up
     function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
         u = U[1, :]
@@ -994,7 +1003,7 @@ Convenience constructor for SUPG mass matrix operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-wind = [1, 1]
+parameters = (wind = [1, 1])
 supgmass = LFAToolkit.supgmassoperator(basis, mesh);
 
 # verify
@@ -1037,7 +1046,7 @@ operator field:
     gradient
 ```
 """
-function supgmassoperator(basis::AbstractBasis, mesh::Mesh, wind = [1, 1])
+function supgmassoperator(basis::AbstractBasis, mesh::Mesh, parameters = (wind = [1, 1]))
     # set up
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]

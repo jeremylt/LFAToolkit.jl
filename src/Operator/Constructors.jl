@@ -167,10 +167,10 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-parameters = (wind = [1, 1]);
+parameters = nothing;
 mapping = nothing;
 collocate = false;
-supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters, collocatedquadrature = collocate, mapping = mapping);
+supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters = parameters, collocatedquadrature = collocate, mapping = mapping);
 
 # verify
 println(supgmass)
@@ -216,10 +216,10 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-parameters = (wind = [1, 1]);
+parameters = nothing;
 mapping = nothing;
 collocate = false;
-supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters, collocatedquadrature = collocate, mapping = mapping);
+supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters = parameters, collocatedquadrature = collocate, mapping = mapping);
 
 # verify
 println(supgadvection)
@@ -280,7 +280,7 @@ function GalleryOperator(
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
-        return operatorgallery[name](basis, mesh; parameters=parameters)
+        return operatorgallery[name](basis, mesh; parameters = parameters)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
@@ -699,7 +699,7 @@ operator field:
     interpolation
 ```
 """
-function massoperator(basis::AbstractBasis, mesh::Mesh)
+function massoperator(basis::AbstractBasis, mesh::Mesh; parameters = nothing)
     # setup
     function massweakform(u::Array{Float64}, w::Array{Float64})
         v = u * w[1]
@@ -781,7 +781,7 @@ operator field:
     gradient
 ```
 """
-function diffusionoperator(basis::AbstractBasis, mesh::Mesh)
+function diffusionoperator(basis::AbstractBasis, mesh::Mesh; parameters = nothing)
     # setup
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
         dv = du * w[1]
@@ -865,7 +865,7 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh; parameters=(wind=[1, 1]))
+function advectionoperator(basis::AbstractBasis, mesh::Mesh; parameters = (wind = [1, 1]))
     # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
         dv = wind * u * w[1]
@@ -956,7 +956,7 @@ P = 2
 function supgadvectionoperator(
     basis::AbstractBasis,
     mesh::Mesh;
-    parameters=(wind=[1, 1]),
+    parameters = (wind = [1, 1]),
 )
     # set up
     function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
@@ -1045,7 +1045,7 @@ operator field:
     gradient
 ```
 """
-function supgmassoperator(basis::AbstractBasis, mesh::Mesh, parameters = (wind = [1, 1]))
+function supgmassoperator(basis::AbstractBasis, mesh::Mesh; parameters = (wind = [1, 1]))
     # set up
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]

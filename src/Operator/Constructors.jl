@@ -267,12 +267,11 @@ function GalleryOperator(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     mesh::Mesh;
-    parameters::Float64,
+    parameters::Tuple{Float64, Float64},
     collocatedquadrature::Bool = false,
     mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
-        parameters = (wind = [1, 1])
         basis = TensorH1LagrangeBasis(
             numbernodes1d,
             numberquadraturepoints1d,
@@ -281,7 +280,7 @@ function GalleryOperator(
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
-        return operatorgallery[name](basis, mesh, parameters)
+        return operatorgallery[name](basis, mesh, parameters = (wind = [1, 1]))
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end

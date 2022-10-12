@@ -267,7 +267,7 @@ function GalleryOperator(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     mesh::Mesh;
-    parameters::Tuple{Float64, Float64},
+    parameters::Tuple{Float64,Float64},
     collocatedquadrature::Bool = false,
     mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )

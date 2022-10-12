@@ -865,7 +865,7 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh, parameters = (wind = [1, 1]))
+function advectionoperator(basis::AbstractBasis, mesh::Mesh; parameters=(wind=[1, 1]))
     # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
         dv = wind * u * w[1]

@@ -280,7 +280,7 @@ function GalleryOperator(
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
-        return operatorgallery[name](basis, mesh, parameters = (wind = [1, 1]))
+        return operatorgallery[name](basis, mesh; parameters=parameters)
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end

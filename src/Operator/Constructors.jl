@@ -993,8 +993,7 @@ Convenience constructor for SUPG mass matrix operator
 # Arguments:
 - `basis`: basis for all operator fields to use
 - `mesh`:  mesh for operator
-- `wind`:  advection speed in 2D
-- `parameters`:  named tuple for wind speed
+- `parameters`:  named tuple of model parameters, defines wind speed
 - `τ`:     scaling for SUPG
 
 # Returns:

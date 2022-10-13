@@ -650,7 +650,7 @@ Convenience constructor for mass operator
 # Arguments:
 - `basis`: basis to use of all operator fields
 - `mesh`:  mesh for operator
-- `parameters`: named tuple for wind is nothing fpr mass operator
+- `parameters`: named tuple of model parameters, nothing for mass operator
 
 # Returns:
 - Mass matrix operator with basis on mesh

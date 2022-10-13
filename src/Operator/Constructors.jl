@@ -650,6 +650,7 @@ Convenience constructor for mass operator
 # Arguments:
 - `basis`: basis to use of all operator fields
 - `mesh`:  mesh for operator
+- `parameters`: named tuple for wind is nothing fpr mass operator
 
 # Returns:
 - Mass matrix operator with basis on mesh
@@ -731,6 +732,7 @@ Convenience constructor for diffusion operator
 # Arguments:
 - `basis`:  basis for all operator fields to use
 - `mesh`:   mesh for operator
+- `parameters`: named tuple for wind is nothing for diffusion operator
 
 # Returns:
 - Diffusion operator with basis on mesh
@@ -813,6 +815,7 @@ Convenience constructor for advection operator
 - `basis`: basis for all operator fields to use
 - `mesh`:  mesh for operator
 - `wind`:  advection speed in 2D
+- `parameters`:  named tuple for wind speed
 
 # Returns:
 - Advection operator with basis on mesh
@@ -897,6 +900,7 @@ Convenience constructor for SUPG advection operator
 - `basis`: basis for all operator fields to use
 - `mesh`:  mesh for operator
 - `wind`:  advection speed in 2D
+- `parameters`:  named tuple for wind speed
 - `τ`:     scaling for SUPG
 
 # Returns:
@@ -991,6 +995,7 @@ Convenience constructor for SUPG mass matrix operator
 - `basis`: basis for all operator fields to use
 - `mesh`:  mesh for operator
 - `wind`:  advection speed in 2D
+- `parameters`:  named tuple for wind speed
 - `τ`:     scaling for SUPG
 
 # Returns:

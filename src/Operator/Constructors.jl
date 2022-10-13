@@ -983,7 +983,7 @@ end
 
 """
 ```julia
-supgmassoperator(basis, mesh)
+supgmassoperator(basis, mesh; parameters)
 ```
 Convenience constructor for SUPG mass matrix operator
 

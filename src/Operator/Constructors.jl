@@ -1007,7 +1007,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = nothing
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 parameters = (wind = [1, 1])
-supgmass = LFAToolkit.supgmassoperator(basis, mesh);
+supgmass = LFAToolkit.supgmassoperator(basis, mesh; parameters = parameters);
 
 # verify
 println(supgmass)

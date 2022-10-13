@@ -13,7 +13,7 @@ GalleryOperator(
     numbernodes1d,
     numberquadraturepoints1d,
     mesh;
-    parameters,
+    parameters = nothing,
     collocatedquadrature = false,
     mapping = nothing
 )

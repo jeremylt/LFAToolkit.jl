@@ -889,7 +889,7 @@ end
 
 """
 ```julia
-supgadvectionoperator(basis, mesh)
+supgadvectionoperator(basis, mesh; parameters)
 ```
 Convenience constructor for SUPG advection operator
 

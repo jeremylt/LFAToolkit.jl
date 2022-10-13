@@ -827,7 +827,7 @@ mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
 basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
 parameters = (wind = [1, 1])
-advection = LFAToolkit.advectionoperator(basis, mesh);
+advection = LFAToolkit.advectionoperator(basis, mesh; parameters = parameters);
 
 # verify
 println(advection)

@@ -732,7 +732,7 @@ Convenience constructor for diffusion operator
 # Arguments:
 - `basis`:  basis for all operator fields to use
 - `mesh`:   mesh for operator
-- `parameters`: named tuple for wind is nothing for diffusion operator
+- `parameters`: named tuple of model parameters, nothing for diffusion operator
 
 # Returns:
 - Diffusion operator with basis on mesh

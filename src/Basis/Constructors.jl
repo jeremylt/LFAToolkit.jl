@@ -14,11 +14,10 @@ sausage_transformation(d)
 ```
 
 # Arguments:
-- `d`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+- `d`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-Conformal mapping of Gauss ellipses to sausage_transformations using a
-truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
+Conformal mapping of Gauss ellipses to sausage_transformations using a truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
 
 # Example:
 ```jldoctest
@@ -51,7 +50,7 @@ kosloff_talezer_transformation(α)
 ```
 
 # Arguments:
-- `α`: polynomial degree of truncated Taylor series expansion of arcsin(s).
+- `α`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
 The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
@@ -81,7 +80,7 @@ hale_trefethen_strip_transformation(ρ)
 ```
 
 # Arguments:
-- `ρ`: sum of the semiminor and semimajor axis
+- `ρ`:  sum of the semiminor and semimajor axis
 
 # Returns:
 The Hale and Trefethen strip transformation
@@ -120,9 +119,9 @@ transformquadrature(points, weights, mapping)
 ```
 
 # Arguments:
-- `points`:  array of quadrature points
-- `weights`: optional array of weights to transform
-- `mapping`: choice of conformal map
+- `points`:   array of quadrature points
+- `weights`:  optional array of weights to transform
+- `mapping`:  choice of conformal map
 
 # Returns:
 Transformed quadrature by applying a smooth mapping = (g, gprime) from the original domain.
@@ -176,8 +175,8 @@ gaussquadrature(q, mapping)
 Construct a Gauss-Legendre quadrature with the option of applying conformal maps
 
 # Arguments:
-- `q`:  number of quadrature points
-- `mapping`: choice of conformal map
+- `q`:        number of quadrature points
+- `mapping`:  choice of conformal map
 
 # Returns:
 - Gauss-Legendre quadrature points and weights, with conformal mapping applied to the points, if provided
@@ -294,7 +293,7 @@ Construct a Gauss-Legendre-Lobatto quadrature with the option of applying confor
 # Arguments:
 - `q`:        number of Gauss-Legendre-Lobatto points
 - `weights`:  boolean flag indicating if quadrature weights are desired
-- `mapping`: choice of conformal map
+- `mapping`:  choice of conformal map
 
 # Returns:
 - Gauss-Legendre-Lobatto quadrature points or points and weights, with conformal mapping applied to the points, if provided

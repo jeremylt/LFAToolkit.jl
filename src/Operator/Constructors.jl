@@ -13,9 +13,9 @@ GalleryOperator(
     numbernodes1d,
     numberquadraturepoints1d,
     mesh;
-    parameters = nothing,
     collocatedquadrature = false,
-    mapping = nothing
+    mapping = nothing,
+    parameters = nothing
 )
 ```
 
@@ -26,6 +26,15 @@ Finite element operator from a gallery of options
 - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
 - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
 - `mesh`:                      mesh for operator
+
+# Keyword Arguments:
+- `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
+                                       default: false, Gauss-Legendre-Lobatto
+- `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer,
+                                       or Hale-Trefethen strip transformation
+                                       default: nothing, no transformation
+- `parameters = nothing`:          named tuple of model parameters
+                                       default: nothing, default parameters
 
 # Returns:
 - Finite element operator object
@@ -167,7 +176,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-parameters = nothing;
+parameters = (wind = [1., 1.], τ = 1.0);
 mapping = nothing;
 collocate = false;
 supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters = parameters, collocatedquadrature = collocate, mapping = mapping);
@@ -267,9 +276,9 @@ function GalleryOperator(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     mesh::Mesh;
-    parameters::Union{NamedTuple{Any},Nothing} = nothing,
     collocatedquadrature::Bool = false,
     mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+    parameters::Union{NamedTuple,Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeBasis(
@@ -280,7 +289,11 @@ function GalleryOperator(
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
-        return operatorgallery[name](basis, mesh; parameters = parameters)
+        if isnothing(parameters)
+            return operatorgallery[name](basis, mesh)
+        else
+            return operatorgallery[name](basis, mesh; parameters = parameters)
+        end
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
@@ -458,7 +471,14 @@ end
 
 """
 ```julia
-GalleryMacroElementOperator(name, numbernodes1d, numberquadraturepoints1d, numberelements1d, mesh)
+GalleryMacroElementOperator(
+    name,
+    numbernodes1d,
+    numberquadraturepoints1d,
+    numberelements1d,
+    mesh;
+    parameters = nothing,
+)
 ```
 
 Finite element operator from a gallery of options
@@ -469,6 +489,10 @@ Finite element operator from a gallery of options
 - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
 - `numberelements1d`:          number of elements in macro-element
 - `mesh`:                      mesh for operator
+
+# Keyword Arguments:
+- `parameters` = nothing:      named tuple of model parameters
+                                   default: nothing, default parameters
 
 # Returns:
 - Finite element operator object
@@ -617,7 +641,9 @@ function GalleryMacroElementOperator(
     numbernodes1d::Int,
     numberquadraturepoints1d::Int,
     numberelements1d::Int,
-    mesh::Mesh,
+    mesh::Mesh;
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
+    parameters::Union{NamedTuple,Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
         basis = TensorH1LagrangeMacroBasis(
@@ -627,7 +653,11 @@ function GalleryMacroElementOperator(
             mesh.dimension,
             numberelements1d,
         )
-        return operatorgallery[name](basis, mesh)
+        if isnothing(parameters)
+            return operatorgallery[name](basis, mesh)
+        else
+            return operatorgallery[name](basis, mesh; parameters = parameters)
+        end
     else
         throw(ArgumentError("operator name not found")) # COV_EXCL_LINE
     end
@@ -639,7 +669,7 @@ end
 
 """
 ```julia
-massoperator(basis, mesh)
+massoperator(basis, mesh; parameters)
 ```
 
 Convenience constructor for mass operator
@@ -648,9 +678,12 @@ Convenience constructor for mass operator
 - ``\\int v u``
 
 # Arguments:
-- `basis`: basis to use of all operator fields
-- `mesh`:  mesh for operator
-- `parameters`: named tuple of model parameters, nothing for mass operator
+- `basis`:  basis for all operator fields to use
+- `mesh`:   mesh for operator
+
+# Keyword Arguments:
+- `parameters = nothing`:  named tuple of model parameters
+                               default: nothing, no parameters
 
 # Returns:
 - Mass matrix operator with basis on mesh
@@ -659,7 +692,7 @@ Convenience constructor for mass operator
 ```jldoctest
 # mass operator
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension);
 mass = LFAToolkit.massoperator(basis, mesh);
 
 # verify
@@ -721,7 +754,7 @@ end
 
 """
 ```julia
-diffusionoperator(basis, mesh)
+diffusionoperator(basis, mesh; parameters)
 ```
 
 Convenience constructor for diffusion operator
@@ -732,7 +765,10 @@ Convenience constructor for diffusion operator
 # Arguments:
 - `basis`:  basis for all operator fields to use
 - `mesh`:   mesh for operator
-- `parameters`: named tuple of model parameters, nothing for diffusion operator
+
+# Keyword Arguments:
+- `parameters = nothing`:  named tuple of model parameters
+                               default: nothing, no parameters
 
 # Returns:
 - Diffusion operator with basis on mesh
@@ -741,7 +777,7 @@ Convenience constructor for diffusion operator
 ```jldoctest
 # diffusion operator
 mesh = Mesh2D(1.0, 1.0);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension)
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension);
 diffusion = LFAToolkit.diffusionoperator(basis, mesh);
 
 # verify
@@ -804,7 +840,7 @@ end
 
 """
 ```julia
-advectionoperator(basis, mesh)
+advectionoperator(basis, mesh; parameters)
 ```
 Convenience constructor for advection operator
 
@@ -812,10 +848,12 @@ Convenience constructor for advection operator
 - ``\\int \\nabla v u``
 
 # Arguments:
-- `basis`: basis for all operator fields to use
-- `mesh`:  mesh for operator
-- `wind`:  advection speed in 2D
-- `parameters`:  named tuple of model parameters, defines wind speed
+- `basis`:  basis for all operator fields to use
+- `mesh`:   mesh for operator
+
+# Keyword Arguments:
+- `parameters = ([wind = [1., 1.],)`:  named tuple of model parameters, defines wind speed
+                                           default: wind speed = [1.0, 1.0]
 
 # Returns:
 - Advection operator with basis on mesh
@@ -825,8 +863,8 @@ Convenience constructor for advection operator
 # advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-parameters = (wind = [1, 1])
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
+parameters = (wind = [1., 1.],);
 advection = LFAToolkit.advectionoperator(basis, mesh; parameters = parameters);
 
 # verify
@@ -868,10 +906,19 @@ operator field:
     gradient
 ```
 """
-function advectionoperator(basis::AbstractBasis, mesh::Mesh; parameters = (wind = [1, 1]))
+function advectionoperator(
+    basis::AbstractBasis,
+    mesh::Mesh;
+    parameters::NamedTuple = (wind = [1.0, 1.0],),
+)
+    # check parameters
+    if !haskey(parameters, :wind)
+        parameters.wind = [1.0, 1.0] # COV_EXCL_LINE
+    end
+
     # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})
-        dv = wind * u * w[1]
+        dv = parameters.wind * u * w[1]
         return [dv]
     end
 
@@ -889,100 +936,6 @@ end
 
 """
 ```julia
-supgadvectionoperator(basis, mesh; parameters)
-```
-Convenience constructor for SUPG advection operator
-
-# Weak form: Right hand side
-- ``\\int wind \\nabla v u - wind wind τ \\nabla v \\nabla u``
-
-# Arguments:
-- `basis`: basis for all operator fields to use
-- `mesh`:  mesh for operator
-- `parameters`:  named tuple of model parameters, defines wind speed
-- `τ`:     scaling for SUPG
-
-# Returns:
-- SUPG advection operator with basis on mesh
-
-# Example:
-```jldoctest
-# supg advection operator
-mesh = Mesh2D(1.0, 1.0);
-mapping = nothing
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-parameters = (wind = [1, 1])
-supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh; parameters = parameters);
-
-# verify
-println(supgadvection)
-
-# output
-
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation modes:
-    interpolation
-    gradient
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 3
-    numberquadraturepoints1d: 4
-    numbercomponents: 1
-    dimension: 2
-  evaluation mode:
-    gradient
-```
-"""
-P = 2
-τ = 0.5 / (P - 1) # Tau scaling for SUPG, 0 returns Galerkin method
-function supgadvectionoperator(
-    basis::AbstractBasis,
-    mesh::Mesh;
-    parameters = (wind = [1, 1]),
-)
-    # set up
-    function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
-        u = U[1, :]
-        du = U[2, :]
-        dv = (hcat(wind * u', [0; 0]) - wind * wind' .* du) .* w[1]
-        return [dv]
-    end
-
-    # fields
-    inputs = [
-        OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient]),
-        OperatorField(basis, [EvaluationMode.quadratureweights]),
-    ]
-    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
-
-    # operator
-    supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
-    return supgadvection
-end
-
-"""
-```julia
 supgmassoperator(basis, mesh; parameters)
 ```
 Convenience constructor for SUPG mass matrix operator
@@ -991,10 +944,12 @@ Convenience constructor for SUPG mass matrix operator
 - ``\\int v u_t + wind τ u_t \\nabla v``
 
 # Arguments:
-- `basis`: basis for all operator fields to use
-- `mesh`:  mesh for operator
-- `parameters`:  named tuple of model parameters, defines wind speed
-- `τ`:     scaling for SUPG
+- `basis`:  basis for all operator fields to use
+- `mesh`:   mesh for operator
+
+# Keyword Arguments:
+- `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
+                                                   default: wind speed = [1.0, 1.0], τ = 1.0
 
 # Returns:
 - SUPG mass matrix operator with basis on mesh
@@ -1003,9 +958,9 @@ Convenience constructor for SUPG mass matrix operator
 ```jldoctest
 # supg mass matrix operator
 mesh = Mesh2D(1.0, 1.0);
-mapping = nothing
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping)
-parameters = (wind = [1, 1])
+mapping = nothing;
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
+parameters = (wind = [1., 1.], τ = 1.0);
 supgmass = LFAToolkit.supgmassoperator(basis, mesh; parameters = parameters);
 
 # verify
@@ -1048,11 +1003,23 @@ operator field:
     gradient
 ```
 """
-function supgmassoperator(basis::AbstractBasis, mesh::Mesh; parameters = (wind = [1, 1]))
+function supgmassoperator(
+    basis::AbstractBasis,
+    mesh::Mesh;
+    parameters::NamedTuple = (wind = [1.0, 1.0], τ = 1.0),
+)
+    # check parameters
+    if !haskey(parameters, :wind)
+        parameters.wind = [1.0, 1.0] # COV_EXCL_LINE
+    end
+    if !haskey(parameters, :τ)
+        parameters.τ = 1.0 # COV_EXCL_LINE
+    end
+
     # set up
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
         v = udot * w[1]
-        dv = wind * τ * udot * w[1]
+        dv = parameters.wind * parameters.τ * udot * w[1]
         return [v; dv]
     end
 
@@ -1068,6 +1035,113 @@ function supgmassoperator(basis::AbstractBasis, mesh::Mesh; parameters = (wind =
     supgmass = Operator(supgmassweakform, mesh, inputs, outputs)
     return supgmass
 end
+
+"""
+```julia
+supgadvectionoperator(basis, mesh; parameters)
+```
+Convenience constructor for SUPG advection operator
+
+# Weak form: Right hand side
+- ``\\int wind \\nabla v u - wind wind τ \\nabla v \\nabla u``
+
+# Arguments:
+- `basis`:  basis for all operator fields to use
+- `mesh`:   mesh for operator
+
+# Keyword Arguments:
+- `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
+                                                   default: wind speed = [1.0, 1.0], τ = 1.0
+
+# Returns:
+- SUPG advection operator with basis on mesh
+
+# Example:
+```jldoctest
+# supg advection operator
+mesh = Mesh2D(1.0, 1.0);
+mapping = nothing;
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
+parameters = (wind = [1., 1.], τ = 1.0);
+supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh; parameters = parameters);
+
+# verify
+println(supgadvection)
+
+# output
+
+finite element operator:
+2d mesh:
+    dx: 1.0
+    dy: 1.0
+
+2 inputs:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation modes:
+    interpolation
+    gradient
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    quadratureweights
+
+1 output:
+operator field:
+  tensor product basis:
+    numbernodes1d: 3
+    numberquadraturepoints1d: 4
+    numbercomponents: 1
+    dimension: 2
+  evaluation mode:
+    gradient
+```
+"""
+function supgadvectionoperator(
+    basis::AbstractBasis,
+    mesh::Mesh;
+    parameters::NamedTuple = (wind = [1.0, 1.0], τ = 1.0),
+)
+    # check parameters
+    if !haskey(parameters, :wind)
+        parameters.wind = [1.0, 1.0] # COV_EXCL_LINE
+    end
+    if !haskey(parameters, :τ)
+        parameters.τ = 1.0 # COV_EXCL_LINE
+    end
+
+    # set up
+    function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
+        u = U[1, :]
+        du = U[2, :]
+        dv =
+            (
+                hcat(parameters.wind * u', [0; 0]) -
+                parameters.τ * parameters.wind * parameters.wind' .* du
+            ) .* w[1]
+        return [dv]
+    end
+
+    # fields
+    inputs = [
+        OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient]),
+        OperatorField(basis, [EvaluationMode.quadratureweights]),
+    ]
+    outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+
+    # operator
+    supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
+    return supgadvection
+end
+
 # ------------------------------------------------------------------------------
 # operator gallery dictionary
 # ------------------------------------------------------------------------------
@@ -1076,8 +1150,8 @@ operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
     "advection" => advectionoperator,
-    "supgadvection" => supgadvectionoperator,
     "supgmass" => supgmassoperator,
+    "supgadvection" => supgadvectionoperator,
 )
 
 # ------------------------------------------------------------------------------

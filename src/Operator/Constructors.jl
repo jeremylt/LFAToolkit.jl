@@ -281,14 +281,18 @@ function GalleryOperator(
     parameters::Union{NamedTuple,Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
+        numbercomponents = 1
         basis = TensorH1LagrangeBasis(
             numbernodes1d,
             numberquadraturepoints1d,
-            1,
+            numbercomponents,
             mesh.dimension,
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
         )
+        if numbercomponents > 1
+            throw(DomainError(numbercomponents, "basis only support one component"))
+        end
         if isnothing(parameters)
             return operatorgallery[name](basis, mesh)
         else
@@ -646,13 +650,17 @@ function GalleryMacroElementOperator(
     parameters::Union{NamedTuple,Nothing} = nothing,
 )
     if haskey(operatorgallery, name)
+        numbercomponents = 1
         basis = TensorH1LagrangeMacroBasis(
             numbernodes1d,
             numberquadraturepoints1d,
-            1,
+            numbercomponents,
             mesh.dimension,
             numberelements1d,
         )
+        if numbercomponents > 1
+            throw(DomainError(numbercomponents, "basis only support one component"))
+        end
         if isnothing(parameters)
             return operatorgallery[name](basis, mesh)
         else

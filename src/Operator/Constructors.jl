@@ -284,7 +284,7 @@ function GalleryOperator(
         basis = TensorH1LagrangeBasis(
             numbernodes1d,
             numberquadraturepoints1d,
-            numbercomponents,
+            1,
             mesh.dimension,
             collocatedquadrature = collocatedquadrature,
             mapping = mapping,
@@ -649,7 +649,7 @@ function GalleryMacroElementOperator(
         basis = TensorH1LagrangeMacroBasis(
             numbernodes1d,
             numberquadraturepoints1d,
-            numbercomponents,
+            1,
             mesh.dimension,
             numberelements1d,
         )

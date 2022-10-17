@@ -915,6 +915,9 @@ function advectionoperator(
     if !haskey(parameters, :wind)
         parameters.wind = [1.0, 1.0] # COV_EXCL_LINE
     end
+    if basis.numbercomponents != 1
+        throw(DomainError(basis.numbercomponents, "Advection gallery operator only accepts single component bases")) # COV_EXCL_LINE
+    end
 
     # set up
     function advectionweakform(u::Array{Float64}, w::Array{Float64})

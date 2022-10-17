@@ -12,4 +12,6 @@ LFAToolkit.getnodecoordinatedifferences(::Operator)
 LFAToolkit.massoperator
 LFAToolkit.diffusionoperator
 LFAToolkit.advectionoperator
+LFAToolkit.supgadvectionoperator
+LFAToolkit.supgmassoperator
 ```

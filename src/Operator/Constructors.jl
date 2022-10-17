@@ -408,7 +408,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-advection = GalleryVectorOperator("advection", 4, 4, 3, mesh);
+advection = GalleryVectorOperator("advection", 4, 4, 1, mesh);
 
 # verify
 println(advection)
@@ -425,7 +425,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -433,7 +433,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -443,7 +443,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -595,7 +595,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-advection = GalleryVectorOperator("advection", 4, 4, 3, mesh);
+advection = GalleryVectorOperator("advection", 4, 4, 1, mesh);
 
 # verify
 println(advection)
@@ -612,7 +612,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     interpolation
@@ -620,7 +620,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     quadratureweights
@@ -630,7 +630,7 @@ operator field:
   tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
-    numbercomponents: 3
+    numbercomponents: 1
     dimension: 2
   evaluation mode:
     gradient
@@ -916,7 +916,12 @@ function advectionoperator(
         parameters.wind = [1.0, 1.0] # COV_EXCL_LINE
     end
     if basis.numbercomponents != 1
-        throw(DomainError(basis.numbercomponents, "Advection gallery operator only accepts single component bases")) # COV_EXCL_LINE
+        throw(
+            DomainError(
+                basis.numbercomponents,
+                "Advection gallery operator only accepts single component bases",
+            ),
+        ) # COV_EXCL_LINE
     end
 
     # set up
@@ -1018,6 +1023,15 @@ function supgmassoperator(
     if !haskey(parameters, :τ)
         parameters.τ = 1.0 # COV_EXCL_LINE
     end
+    if basis.numbercomponents != 1
+        throw(
+            DomainError(
+                basis.numbercomponents,
+                "SUPG mass gallery operator only accepts single component bases",
+            ),
+        ) # COV_EXCL_LINE
+    end
+
 
     # set up
     function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
@@ -1119,6 +1133,14 @@ function supgadvectionoperator(
     end
     if !haskey(parameters, :τ)
         parameters.τ = 1.0 # COV_EXCL_LINE
+    end
+    if basis.numbercomponents != 1
+        throw(
+            DomainError(
+                basis.numbercomponents,
+                "SUPG advection gallery operator only accepts single component bases",
+            ),
+        ) # COV_EXCL_LINE
     end
 
     # set up

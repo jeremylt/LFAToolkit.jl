@@ -22,7 +22,7 @@ Conformal mapping of Gauss ellipses to sausage_transformations using a truncated
 # Example:
 ```jldoctest
 # sausage_transformation conformal map
-g, gprime = LFAToolkit.sausage_transformation(9)
+g, gprime = LFAToolkit.sausage_transformation(9);
 
 # verify
 @assert g.(LinRange(-1,1,5)) ≈ [-0.9999999999999999, -0.39765215163451934, 0.0, 0.39765215163451934, 0.9999999999999999]
@@ -35,12 +35,12 @@ function sausage_transformation(d)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
-    pg = Polynomial(c)
-    pgprime = derivative(pg)
+    gp = Polynomial(c)
+    gprimep = derivative(gp)
 
-    # Lower from Polynomial to Function
-    g(x) = pg(x)
-    gprime(x) = pgprime(x)
+    # lower from Polynomial to Function
+    g(x) = gp(x)
+    gprime(x) = gprimep(x)
     g, gprime
 end
 
@@ -58,7 +58,6 @@ The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
 # Example:
 ```jldoctest
 # kosloff_talezer_transformation conformal map
-numberquadraturepoints = 5;
 g, gprime = LFAToolkit.kosloff_talezer_transformation(0.95);
 
 # verify
@@ -102,11 +101,11 @@ function hale_trefethen_strip_transformation(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
 
-    # Unscaled functions of u
+    # unscaled functions of u
     gu(u) = log(1 + exp(-τ * (π2 + u))) - log(1 + exp(-τ * (π2 - u))) + d * τ * u
     gprimeu(u) = 1 / (exp(τ * (π2 + u)) + 1) + 1 / (exp(τ * (π2 - u)) + 1) - d
 
-    # Normalizing factor and scaled functions of s
+    # normalizing factor and scaled functions of s
     C = 1 / gu(π / 2)
     g(s) = C * gu(asin(s))
     gprime(s) = -τ * C / sqrt(1 - s^2) * gprimeu(asin(s))
@@ -128,14 +127,16 @@ Transformed quadrature by applying a smooth mapping = (g, gprime) from the origi
 
 # Example:
 ```jldoctest
+using FastGaussQuadrature;
+
 # generate transformed quadrature points, weights with choice of conformal map
-points, weights = LFAToolkit.gaussquadrature(5)
-mapping = sausage_transformation(9)
-mpoints, mweights = transformquadrature(points, weights, mapping)
+points, weights = gausslegendre(5);
+mapping = sausage_transformation(9);
+mappedpoints, mappedweights = transformquadrature(points, weights, mapping);
 
 # verify:
-wsum = sum(mweights);
-@assert wsum ≈ 2.0
+weightsum = sum(mappedweights);
+@assert weightsum ≈ 2.0
 
 # output
 
@@ -169,240 +170,6 @@ end
 
 """
 ```julia
-gaussquadrature(q, mapping)
-```
-
-Construct a Gauss-Legendre quadrature with the option of applying conformal maps
-
-# Arguments:
-- `q`:        number of quadrature points
-- `mapping`:  choice of conformal map
-
-# Returns:
-- Gauss-Legendre quadrature points and weights, with conformal mapping applied to the points, if provided
-
-# Example:
-```jldoctest
-# generate Gauss-Legendre points and weights
-quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5);
-
-# verify
-truepoints = [
-    -√(5 + 2*√(10/7))/3,
-    -√(5 - 2*√(10/7))/3,
-    0.0,
-    √(5 - 2*√(10/7))/3,
-    √(5 + 2*√(10/7))/3
-];
-@assert truepoints ≈ quadraturepoints
-
-trueweights = [
-    (322-13*√70)/900,
-    (322+13*√70)/900,
-    128/225,
-    (322+13*√70)/900,
-    (322-13*√70)/900
-];
-@assert trueweights ≈ quadratureweights
-
-# generate Gauss-Legendre points and weights
-mapping = hale_trefethen_strip_transformation(1.4);
-quadraturepoints, quadratureweights = LFAToolkit.gaussquadrature(5, mapping = mapping);
-
-# verify
-@assert quadraturepoints ≈ [-0.7948688880827978, -0.3997698842865811, 0.0, 0.3997698842865811, 0.7948688880827978]
-@assert quadratureweights ≈ [0.3807611340604039, 0.3992835637032222, 0.3999715882806566, 0.3992835637032222, 0.3807611340604039]
-
-# Accuracy test see Hale and Trefethen Fig 3.4
-f(x) = exp(-40*x^2)
-x, w = LFAToolkit.gaussquadrature(40);
-ref = w' * f.(x);
-x, w = LFAToolkit.gaussquadrature(20);
-xm, wm = LFAToolkit.gaussquadrature(20, mapping=hale_trefethen_strip_transformation(1.4))
-
-# verify
-@assert isapprox(w' * f.(x) - ref, -2.879622518375813e-5, rtol=1e-10)
-@assert isapprox(wm' * f.(xm) - ref, -3.26498938996167e-10, rtol=1e-5)
-
-# output
-
-```
-"""
-function gaussquadrature(q::Int; mapping::Union{Tuple{Function,Function},Nothing} = nothing)
-    quadraturepoints = zeros(Float64, q)
-    quadratureweights = zeros(Float64, q)
-
-    if q < 1
-        throw(DomainError(q, "q must be greater than or equal to 1")) # COV_EXCL_LINE
-    end
-
-    # build qref1d, qweight1d
-    for i = 0:floor(Int, q / 2)
-        # guess
-        xi = cos(π * (2 * i + 1.0) / (2 * q))
-
-        # Pn(xi)
-        p0 = 1.0
-        p1 = xi
-        p2 = 0.0
-        for j = 2:q
-            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
-            p0 = p1
-            p1 = p2
-        end
-
-        # first Newton step
-        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-        xi = xi - p2 / dp2
-
-        # Newton to convergence
-        iter = 0
-        maxiter = q^2 * 100
-        while iter < maxiter && abs(p2) > 1e-15
-            p0 = 1.0
-            p1 = xi
-            for j = 2:q
-                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
-                p0 = p1
-                p1 = p2
-            end
-            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-            xi = xi - p2 / dp2
-            iter += 1
-        end
-
-        # save xi, wi
-        quadraturepoints[i+1] = -xi
-        quadraturepoints[q-i] = xi
-        wi = 2.0 / ((1.0 - xi * xi) * dp2 * dp2)
-        quadratureweights[i+1] = wi
-        quadratureweights[q-i] = wi
-    end
-    quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
-
-    return transformquadrature(quadraturepoints, quadratureweights, mapping)
-end
-
-"""
-```julia
-gausslobattoquadrature(q, weights, mapping)
-```
-
-Construct a Gauss-Legendre-Lobatto quadrature with the option of applying conformal maps
-
-# Arguments:
-- `q`:        number of Gauss-Legendre-Lobatto points
-- `weights`:  boolean flag indicating if quadrature weights are desired
-- `mapping`:  choice of conformal map
-
-# Returns:
-- Gauss-Legendre-Lobatto quadrature points or points and weights, with conformal mapping applied to the points, if provided
-
-# Example:
-```jldoctest
-# generate Gauss-Legendre-Lobatto points and weights
-quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true);
-
-# verify
-truepoints = [-1.0, -√(3/7), 0.0, √(3/7), 1.0];
-@assert truepoints ≈ quadraturepoints
-
-# verify
-trueweights = [1/10, 49/90, 32/45, 49/90, 1/10];
-@assert trueweights ≈ quadratureweights
-
-# generate Gauss-Legendre-Lobatto points and weights
-mapping = sausage_transformation(9);
-quadraturepoints, quadratureweights = LFAToolkit.gausslobattoquadrature(5, true, mapping=mapping)
-
-# verify
-@assert quadraturepoints ≈ [-0.9999999999999999, -0.5418159129215785, 0.0, 0.5418159129215785, 0.9999999999999999]
-@assert quadratureweights ≈ [0.18690312494113656, 0.5445666710618016, 0.5400742149974571, 0.5445666710618016, 0.18690312494113656]
-
-# output
-
-```
-"""
-function gausslobattoquadrature(
-    q::Int,
-    weights::Bool;
-    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
-)
-    quadraturepoints = zeros(Float64, q)
-    quadratureweights = zeros(Float64, q)
-
-    if q < 2
-        throw(DomainError(q, "q must be greater than or equal to 2")) # COV_EXCL_LINE
-    end
-
-    # endpoints
-    quadraturepoints[1] = -1.0
-    quadraturepoints[q] = 1.0
-    if weights
-        wi = 2.0 / (q * (q - 1.0))
-        quadratureweights[1] = wi
-        quadratureweights[q] = wi
-    end
-
-    # build qref1d, qweight1d
-    for i = 1:floor(Int, (q - 1) / 2)
-        # guess
-        xi = cos(π * i / (q - 1.0))
-
-        # Pn(xi)
-        p0 = 1.0
-        p1 = xi
-        p2 = 0.0
-        for j = 2:q-1
-            p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
-            p0 = p1
-            p1 = p2
-        end
-
-        # first Newton step
-        dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-        d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
-        xi = xi - dp2 / d2p2
-
-        # Newton to convergence
-        iter = 0
-        maxiter = q^2 * 100
-        while iter < maxiter && abs(dp2) > 1e-15
-            p0 = 1.0
-            p1 = xi
-            for j = 2:q-1
-                p2 = ((2 * j - 1.0) * xi * p1 - (j - 1.0) * p0) / j
-                p0 = p1
-                p1 = p2
-            end
-            dp2 = (xi * p2 - p0) * q / (xi * xi - 1.0)
-            d2p2 = (2 * xi * dp2 - q * (q - 1.0) * p2) / (1.0 - xi * xi)
-            xi = xi - dp2 / d2p2
-            iter += 1
-        end
-
-        # save xi, wi
-        quadraturepoints[i+1] = -xi
-        quadraturepoints[q-i] = xi
-        if weights
-            wi = 2.0 / (q * (q - 1.0) * p2 * p2)
-            quadratureweights[i+1] = wi
-            quadratureweights[q-i] = wi
-        end
-    end
-    quadraturepoints[abs.(quadraturepoints).<10*eps()] .= 0
-
-
-    # return
-    if weights
-        return transformquadrature(quadraturepoints, quadratureweights, mapping)
-    else
-        return transformquadrature(quadraturepoints, mapping)
-    end
-end
-
-"""
-```julia
 buildinterpolationandgradient(
     nodes,
     quadraturepoints,
@@ -420,11 +187,13 @@ Build one dimensional interpolation and gradient matrices, from Fornberg 1998
 
 # Example:
 ```jldoctest
+using FastGaussQuadrature
+
 # get nodes, quadrature points, and weights
 numbernodes = 3;
 numberquadraturepoints = 4;
-nodes = LFAToolkit.gausslobattoquadrature(numbernodes, false);
-quadraturepoints, quadratureweights1d = LFAToolkit.gaussquadrature(numberquadraturepoints);
+nodes, = gausslobatto(numbernodes);
+quadraturepoints, quadratureweights1d = gausslegendre(numberquadraturepoints);
 
 # build interpolation, gradient matrices
 interpolation, gradient = LFAToolkit.buildinterpolationandgradient(nodes, quadraturepoints);
@@ -584,14 +353,13 @@ function TensorH1LagrangeBasis(
     end
 
     # get nodes, quadrature points, and weights
-    nodes1d = gausslobattoquadrature(numbernodes1d, false)
+    nodes1d, = gausslobatto(numbernodes1d)
     quadraturepoints1d = []
     quadratureweights1d = []
     if collocatedquadrature
-        quadraturepoints1d, quadratureweights1d =
-            gausslobattoquadrature(numberquadraturepoints1d, true)
+        quadraturepoints1d, quadratureweights1d = gausslobatto(numberquadraturepoints1d)
     else
-        quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
+        quadraturepoints1d, quadratureweights1d = gausslegendre(numberquadraturepoints1d)
     end
 
     # build interpolation, gradient matrices
@@ -682,7 +450,7 @@ function TensorH1UniformBasis(
 
     # get nodes, quadrature points, and weights
     nodes1d = [-1.0:(2.0/(numbernodes1d-1)):1.0...]
-    quadraturepoints1d, quadratureweights1d = gaussquadrature(numberquadraturepoints1d)
+    quadraturepoints1d, quadratureweights1d = gausslegendre(numberquadraturepoints1d)
 
     # build interpolation, gradient matrices
     interpolation1d, gradient1d = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
@@ -1103,7 +871,7 @@ function TensorH1LagrangeHProlongationBasis(
     numberfineelements1d::Int,
 )
     # generate nodes
-    nodescoarse1d = gausslobattoquadrature(numbernodes1d, false)
+    nodescoarse1d, = gausslobatto(numbernodes1d)
     nodesfine1d = zeros((numbernodes1d - 1) * numberfineelements1d + 1)
     for i = 1:numberfineelements1d
         nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =

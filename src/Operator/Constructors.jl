@@ -403,51 +403,6 @@ operator field:
   evaluation mode:
     gradient
 ```
-
-# Advection operator example:
-```jldoctest
-# setup
-mesh = Mesh2D(1.0, 1.0);
-advection = GalleryVectorOperator("advection", 4, 4, 3, mesh);
-
-# verify
-println(advection)
-
-# output
-
-finite element operator:
-2d mesh:
-    dx: 1.0
-    dy: 1.0
-
-2 inputs:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    interpolation
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    quadratureweights
-
-1 output:
-operator field:
-  tensor product basis:
-    numbernodes1d: 4
-    numberquadraturepoints1d: 4
-    numbercomponents: 3
-    dimension: 2
-  evaluation mode:
-    gradient
-```
 """
 function GalleryVectorOperator(
     name::String,

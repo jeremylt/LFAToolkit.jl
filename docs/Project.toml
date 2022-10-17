@@ -1,6 +1,7 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 LFAToolkit = "3f92b583-c0aa-4596-8bdf-f02f6c0a52df"
 
 [compat]

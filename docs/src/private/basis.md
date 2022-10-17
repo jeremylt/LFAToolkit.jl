@@ -2,8 +2,6 @@
 
 ```@docs
 LFAToolkit.AbstractBasis
-LFAToolkit.gaussquadrature
-LFAToolkit.gausslobattoquadrature
 LFAToolkit.transformquadrature
 LFAToolkit.sausage_transformation
 LFAToolkit.kosloff_talezer_transformation

@@ -36,7 +36,7 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
 ```jldoctest
 using LFAToolkit;
 
-numbersteps1d = 5
+numbersteps1d = 5;
 
 for dimension in 1:3
     # setup
@@ -75,13 +75,13 @@ end
 using LFAToolkit;
 
 # setup
-numbersteps1d = 3
-mesh = Mesh2D(0.5, 0.5)
-p = 6
+numbersteps1d = 3;
+mesh = Mesh2D(0.5, 0.5);
+p = 6;
 
 # operators
-mass = GalleryOperator("mass", p + 1, p + 1, mesh)
-diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh)
+mass = GalleryOperator("mass", p + 1, p + 1, mesh);
+diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh);
 
 # compute symbols
 (_, eigenvalues, _) = computesymbolsoverrange(
@@ -144,7 +144,7 @@ end
 
 """
 ```julia
-computesymbolsoverrange(preconditioner, ω, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(preconditioner, ω, numbersteps1d; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned
@@ -171,7 +171,7 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a precondition
 ```jldoctest
 using LFAToolkit;
 
-numbersteps1d = 5
+numbersteps1d = 5;
 
 for dimension in 1:3
     # setup
@@ -255,7 +255,7 @@ end
 
 """
 ```julia
-computesymbolsoverrange(multigrid, ω, v, θ; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(multigrid, p, v, numbersteps1d; mass=nothing, θ_min=-π/2)
 ```
 
 Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
@@ -283,7 +283,7 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
 ```jldoctest
 using LFAToolkit;
 
-numbersteps1d = 5
+numbersteps1d = 5;
 
 using LinearAlgebra
 
@@ -357,7 +357,7 @@ function computesymbolsoverrange(
 
     # compute
     for (step, θ) in enumerate(rangeiterator)
-        θ = [abs(θ_i) > 100 * eps() ? θ_i : 100 * eps() for θ_i in θ]
+        θ = [abs(θ_i) > 1000 * eps() ? θ_i : 1000 * eps() for θ_i in θ]
         A = computesymbols(multigrid, p, v, θ)
         if mass != nothing
             A = computesymbols(mass, θ) \ A

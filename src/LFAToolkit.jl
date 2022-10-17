@@ -8,6 +8,7 @@ module LFAToolkit
 # standard libraries
 # ------------------------------------------------------------------------------
 
+using FastGaussQuadrature
 using LinearAlgebra
 using Printf
 using SparseArrays

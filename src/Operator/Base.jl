@@ -813,6 +813,8 @@ Compute or retrieve the array of differences in coordinates between nodes
 
 # Example:
 ```jldoctest
+using FastGaussQuadrature
+
 # setup
 mesh = Mesh1D(1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
@@ -822,7 +824,7 @@ nodedifferences = LFAToolkit.getnodecoordinatedifferences(mass);
 nodedifferences = mass.nodecoordinatedifferences;
 
 # verify
-truenodes = LFAToolkit.gausslobattoquadrature(4, false);
+truenodes, = gausslobatto(4);
 truenodedifferences = [
     (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
 ];

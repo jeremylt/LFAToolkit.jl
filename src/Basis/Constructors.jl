@@ -13,19 +13,32 @@ using Polynomials
 sausage_transformation(d)
 ```
 
+Compute the conformal mapping of Gauss ellipses to sausage_transformations using a truncated Taylor expansion of arcsin(s).
+See Figure 4.1 of Hale and Trefethen (2008).
+
 # Arguments:
-- `d`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+  - `d`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-Conformal mapping of Gauss ellipses to sausage_transformations using a truncated Taylor expansion of arcsin(s). See Figure 4.1 of Hale and Trefethen (2008).
+
+  - conformal mapping
 
 # Example:
+
 ```jldoctest
 # sausage_transformation conformal map
 g, gprime = LFAToolkit.sausage_transformation(9);
 
 # verify
-@assert g.(LinRange(-1,1,5)) ≈ [-0.9999999999999999, -0.39765215163451934, 0.0, 0.39765215163451934, 0.9999999999999999]
+truegonrange = [
+    -0.9999999999999999,
+    -0.39765215163451934,
+    0.0,
+    0.39765215163451934,
+    0.9999999999999999,
+];
+@assert g.(LinRange(-1, 1, 5)) ≈ truegonrange
 
 # output
 
@@ -49,19 +62,25 @@ end
 kosloff_talezer_transformation(α)
 ```
 
+Compute the Kosloff and Tal-Ezer conformal map derived from the inverse sine function
+
 # Arguments:
-- `α`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
+
+  - `α`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
-The Kosloff and Tal-Ezer conformal map derived from the inverse sine function.
+
+  - conformal mapping
 
 # Example:
+
 ```jldoctest
 # kosloff_talezer_transformation conformal map
 g, gprime = LFAToolkit.kosloff_talezer_transformation(0.95);
 
 # verify
-@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0]
+truegonrange = [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0];
+@assert g.(LinRange(-1, 1, 5)) ≈ truegonrange
 
 # output
 
@@ -78,19 +97,25 @@ end
 hale_trefethen_strip_transformation(ρ)
 ```
 
+Compute the Hale and Trefethen strip transformation
+
 # Arguments:
-- `ρ`:  sum of the semiminor and semimajor axis
+
+  - `ρ`:  sum of the semiminor and semimajor axis
 
 # Returns:
-The Hale and Trefethen strip transformation
+
+  - conformal mapping
 
 # Example:
+
 ```jldoctest
 # hale_trefethen_strip_transformation conformal map
 g, gprime = hale_trefethen_strip_transformation(1.4);
 
 # verify
-@assert g.(LinRange(-1,1,5)) ≈ [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0]
+truegonrange = [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0];
+@assert g.(LinRange(-1, 1, 5)) ≈ truegonrange
 
 # output
 
@@ -117,22 +142,39 @@ end
 transformquadrature(points, weights, mapping)
 ```
 
-# Arguments:
-- `points`:   array of quadrature points
-- `weights`:  optional array of weights to transform
-- `mapping`:  choice of conformal map
-
-# Returns:
 Transformed quadrature by applying a smooth mapping = (g, gprime) from the original domain.
 
-# Example:
-```jldoctest
-using FastGaussQuadrature;
+# Arguments:
 
+  - `points`:   array of quadrature points
+  - `weights`:  optional array of weights to transform
+  - `mapping`:  choice of conformal map
+
+# Returns:
+
+  - transformed quadrature points and weights
+
+# Example:
+
+```jldoctest
 # generate transformed quadrature points, weights with choice of conformal map
-points, weights = gausslegendre(5);
+quadraturepoints = [
+    -√(5 + 2 * √(10 / 7)) / 3,
+    -√(5 - 2 * √(10 / 7)) / 3,
+    0.0,
+    √(5 - 2 * √(10 / 7)) / 3,
+    √(5 + 2 * √(10 / 7)) / 3,
+];
+quadratureweights = [
+    (322 - 13 * √(70)) / 900,
+    (322 + 13 * √(70)) / 900,
+    128 / 225,
+    (322 + 13 * √(70)) / 900,
+    (322 - 13 * √(70)) / 900,
+];
 mapping = sausage_transformation(9);
-mappedpoints, mappedweights = transformquadrature(points, weights, mapping);
+mappedpoints, mappedweights =
+    transformquadrature(quadraturepoints, quadratureweights, mapping);
 
 # verify:
 weightsum = sum(mappedweights);
@@ -170,40 +212,42 @@ end
 
 """
 ```julia
-buildinterpolationandgradient(
-    nodes,
-    quadraturepoints,
-)
+buildinterpolationandgradient(nodes, quadraturepoints)
 ```
 
 Build one dimensional interpolation and gradient matrices, from Fornberg 1998
 
 # Arguments:
-- `nodes`:             1d basis nodes
-- `quadraturepoints`:  1d basis quadrature points
+
+  - `nodes`:             1d basis nodes
+  - `quadraturepoints`:  1d basis quadrature points
 
 # Returns:
-- One dimensional interpolation and gradient matrices
+
+  - one dimensional interpolation and gradient matrices
 
 # Example:
-```jldoctest
-using FastGaussQuadrature
 
-# get nodes, quadrature points, and weights
-numbernodes = 3;
+```jldoctest
+# nodes, quadrature points, and weights
 numberquadraturepoints = 4;
-nodes, = gausslobatto(numbernodes);
-quadraturepoints, quadratureweights1d = gausslegendre(numberquadraturepoints);
+nodes = [-1.0, 0.0, 1.0];
+quadraturepoints = [
+    -√(3 / 7 + 2 / 7 * √(6 / 5)),
+    -√(3 / 7 - 2 / 7 * √(6 / 5)),
+    √(3 / 7 - 2 / 7 * √(6 / 5)),
+    √(3 / 7 + 2 / 7 * √(6 / 5)),
+];
 
 # build interpolation, gradient matrices
 interpolation, gradient = LFAToolkit.buildinterpolationandgradient(nodes, quadraturepoints);
 
 # verify
-for i in 1:numberquadraturepoints
-    total = sum(interpolation[i, :]);
+for i = 1:numberquadraturepoints
+    total = sum(interpolation[i, :])
     @assert total ≈ 1.0
 
-    total = sum(gradient[i, :]);
+    total = sum(gradient[i, :])
     @assert abs(total) < 1e-14
 end
 
@@ -290,35 +334,36 @@ TensorH1LagrangeBasis(
 )
 ```
 
-Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (default)
-  or Gauss-Legendre-Lobatto quadrature points
+Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (default) or Gauss-Legendre-Lobatto quadrature points
 
 # Arguments:
-- `numbernodes1d`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
-- `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
-- `numbercomponents`:          number of components
-- `dimension`:                 dimension of basis
+
+  - `numbernodes1d`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
+  - `numbercomponents`:          number of components
+  - `dimension`:                 dimension of basis
 
 # Keyword Arguments:
-- `collocatedquadrature = false`:   Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                    default: false, Gauss-Legendre-Lobatto
-- `mapping = nothing`:              quadrature point mapping - sausage, Kosloff-Talezer,
-                                    or Hale-Trefethen strip transformation
-                                    default: nothing, no transformation
+
+  - `collocatedquadrature = false`:   Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
+  - `mapping = nothing`:              quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
 
 # Returns:
-- H1 Lagrange tensor product basis object
+
+  - H1 Lagrange tensor product basis object
 
 # Example:
+
 ```jldoctest
 # generate transformed basis from conformal maps with Gauss-Legendre quadrature points
 mapping = hale_trefethen_strip_transformation(1.4);
-basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature=true, mapping=mapping);
+basis = TensorH1LagrangeBasis(4, 4, 3, 2, collocatedquadrature = true, mapping = mapping);
 
 # verify
 println(basis)
 
 # output
+
 tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 4
@@ -389,26 +434,24 @@ end
 
 """
 ```julia
-TensorH1UniformBasis(
-    numbernodes1d,
-    numberquadraturepoints1d,
-    numbercomponents,
-    dimension,
-)
+TensorH1UniformBasis(numbernodes1d, numberquadraturepoints1d, numbercomponents, dimension)
 ```
 
 Tensor product basis on uniformly spaced points with Gauss-Legendre quadrature points
 
 # Arguments:
-- `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
-- `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
-- `numbercomponents`:          number of components
-- `dimension`:                 dimension of basis
+
+  - `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
+  - `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
+  - `numbercomponents`:          number of components
+  - `dimension`:                 dimension of basis
 
 # Returns:
-- H1 Lagrange tensor product basis on uniformly spaced nodes object
+
+  - H1 Lagrange tensor product basis on uniformly spaced nodes object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product basis on uniformly spaced nodes
 basis = TensorH1UniformBasis(4, 3, 2, 1);
@@ -417,6 +460,7 @@ basis = TensorH1UniformBasis(4, 3, 2, 1);
 println(basis)
 
 # output
+
 tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 3
@@ -481,7 +525,7 @@ TensorMacroElementBasisFrom1D(
     numbercomponents,
     dimension,
     numberelements1d,
-    basis1dmicro,
+    basis1dmicro;
     overlapquadraturepoints = false,
 )
 ```
@@ -489,19 +533,21 @@ TensorMacroElementBasisFrom1D(
 Tensor product macro-element basis from 1d single element tensor product basis
 
 # Arguments:
-- `numbernodes1d`:             number of basis nodes in 1 dimension
-- `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
-- `numbercomponents`:          number of components
-- `dimension`:                 dimension of basis
-- `numberelements1d`:          number of elements in macro-element
-- `basis1dmicro`:              1d micro element basis to replicate
+
+  - `numbernodes1d`:             number of basis nodes in 1 dimension
+  - `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
+  - `numbercomponents`:          number of components
+  - `dimension`:                 dimension of basis
+  - `numberelements1d`:          number of elements in macro-element
+  - `basis1dmicro`:              1d micro element basis to replicate
 
 # Keyword Arguments:
-- `overlapquadraturepoints`:  Overlap quadrature points between elements, for prolongation
-                                  default: false
+
+  - `overlapquadraturepoints = false`:  overlap quadrature points between elements, for prolongation
 
 # Returns:
-- Tensor product macro-element basis object
+
+  - tensor product macro-element basis object
 """
 function TensorMacroElementBasisFrom1D(
     numbernodes1d::Int,
@@ -589,40 +635,45 @@ TensorH1LagrangeMacroBasis(
     numberquadraturepoints1d,
     numbercomponents,
     dimension,
-    numberelements1d,
+    numberelements1d;
     collocatedquadrature = false,
+    mapping = nothing,
 )
 ```
 
-Tensor product macro-element basis on Gauss-Legendre-Lobatto points with
-  Gauss-Legendre (default) or Gauss-Legendre-Lobatto quadrature points
+Tensor product macro-element basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (default) or Gauss-Legendre-Lobatto quadrature points
 
 # Arguments:
-- `numbernodes1d`:                 number of Gauss-Legendre-Lobatto nodes in 1 dimension
-- `numberquadraturepoints1d`:      number of quadrature points in 1 dimension
-- `numbercomponents`:              number of components
-- `dimension`:                     dimension of basis
-- `numberelements1d`:              number of elements in macro-element
+
+  - `numbernodes1d`:                 number of Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberquadraturepoints1d`:      number of quadrature points in 1 dimension
+  - `numbercomponents`:              number of components
+  - `dimension`:                     dimension of basis
+  - `numberelements1d`:              number of elements in macro-element
 
 # Keyword Arguments:
-- `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                     default: false, Gauss-Legendre-Lobatto
+
+  - `collocatedquadrature = false`:  Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
+  - `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
 
 # Returns:
-- H1 Lagrange tensor product macro-element basis object
+
+  - H1 Lagrange tensor product macro-element basis object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor macro-element product basis
 basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2);
 
 # generate basis with Gauss-Legendre quadrature points
-basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2; collocatedquadrature=true);
+basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2; collocatedquadrature = true);
 
 # verify
 println(basis)
 
 # output
+
 macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 8
@@ -638,6 +689,7 @@ function TensorH1LagrangeMacroBasis(
     dimension::Int,
     numberelements1d::Int;
     collocatedquadrature::Bool = false,
+    mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     basis1dmicro = TensorH1LagrangeBasis(
         numbernodes1d,
@@ -645,6 +697,7 @@ function TensorH1LagrangeMacroBasis(
         numbercomponents,
         1,
         collocatedquadrature = collocatedquadrature,
+        mapping = mapping,
     )
     # use common constructor
     return TensorMacroElementBasisFrom1D(
@@ -671,16 +724,19 @@ TensorH1UniformMacroBasis(
 Tensor product macro-element basis on uniformly points with Gauss-Legendre quadrature
 
 # Arguments:
-- `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
-- `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
-- `numbercomponents`:          number of components
-- `dimension`:                 dimension of basis
-- `numberelements1d`:          number of elements in macro-element
+
+  - `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
+  - `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
+  - `numbercomponents`:          number of components
+  - `dimension`:                 dimension of basis
+  - `numberelements1d`:          number of elements in macro-element
 
 # Returns:
-- H1 Lagrange tensor product macro-element basis on uniformly space nodes object
+
+  - H1 Lagrange tensor product macro-element basis on uniformly space nodes object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product macro-element basis on uniformly spaced nodes
 basis = TensorH1UniformMacroBasis(4, 3, 1, 2, 2);
@@ -689,6 +745,7 @@ basis = TensorH1UniformMacroBasis(4, 3, 1, 2, 2);
 println(basis)
 
 # output
+
 macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 6
@@ -734,15 +791,18 @@ TensorH1LagrangePProlongationBasis(
 Tensor product p-prolongation basis on Gauss-Legendre-Lobatto points
 
 # Arguments:
-- `numbercoarsenodes1d`:  number of coarse grid Gauss-Legendre-Lobatto nodes in 1 dimension
-- `numberfinenodes1d`:    number of fine grid Gauss-Legendre-Lobatto nodes in 1 dimension
-- `numbercomponents`:     number of components
-- `dimension`:            dimension of basis
+
+  - `numbercoarsenodes1d`:  number of coarse grid Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberfinenodes1d`:    number of fine grid Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numbercomponents`:     number of components
+  - `dimension`:            dimension of basis
 
 # Returns:
-- H1 Lagrange tensor product p-prolongation basis object
+
+  - H1 Lagrange tensor product p-prolongation basis object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product p-prolongation basis
 basisctof = TensorH1LagrangePProlongationBasis(2, 3, 1, 2);
@@ -751,6 +811,7 @@ basisctof = TensorH1LagrangePProlongationBasis(2, 3, 1, 2);
 println(basisctof)
 
 # output
+
 tensor product basis:
     numbernodes1d: 2
     numberquadraturepoints1d: 3
@@ -791,14 +852,16 @@ TensorHProlongationBasis(
 Tensor product h-prolongation basis
 
 # Arguments:
-- `coarsenodes1d`:         coarse grid node coordinates in 1 dimension
-- `finenodes1d`:           fine grid node coordinates in 1 dimension
-- `numbercomponents`:      number of components
-- `dimension`:             dimension of basis
-- `numberfineelements1d`:  number of fine grid elements
+
+  - `coarsenodes1d`:         coarse grid node coordinates in 1 dimension
+  - `finenodes1d`:           fine grid node coordinates in 1 dimension
+  - `numbercomponents`:      number of components
+  - `dimension`:             dimension of basis
+  - `numberfineelements1d`:  number of fine grid elements
 
 # Returns:
-- H1 Lagrange tensor product h-prolongation basis object
+
+  - H1 Lagrange tensor product h-prolongation basis object
 """
 function TensorHProlongationBasis(
     coarsenodes1d::AbstractArray{Float64,1},
@@ -840,15 +903,18 @@ TensorH1LagrangeHProlongationBasis(
 Tensor product h-prolongation basis on Gauss-Legendre-Lobatto points
 
 # Arguments:
-- `numbernodes1d`:         number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
-- `numbercomponents`:      number of components
-- `dimension`:             dimension of basis
-- `numberfineelements1d`:  number of fine grid elements
+
+  - `numbernodes1d`:         number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
+  - `numbercomponents`:      number of components
+  - `dimension`:             dimension of basis
+  - `numberfineelements1d`:  number of fine grid elements
 
 # Returns:
-- H1 Lagrange tensor product h-prolongation basis object
+
+  - H1 Lagrange tensor product h-prolongation basis object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product h-prolongation basis
 basis = TensorH1LagrangeHProlongationBasis(4, 3, 2, 2);
@@ -857,6 +923,7 @@ basis = TensorH1LagrangeHProlongationBasis(4, 3, 2, 2);
 println(basis)
 
 # output
+
 tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 7
@@ -902,15 +969,18 @@ TensorH1UniformHProlongationBasis(
 Tensor product h-prolongation basis on uniformly spaced points
 
 # Arguments:
-- `numbernodes1d`:         number of uniformly spaced nodes per element
-- `numbercomponents`:      number of components
-- `dimension`:             dimension of basis
-- `numberfineelements1d`:  number of fine grid elements
+
+  - `numbernodes1d`:         number of uniformly spaced nodes per element
+  - `numbercomponents`:      number of components
+  - `dimension`:             dimension of basis
+  - `numberfineelements1d`:  number of fine grid elements
 
 # Returns:
-- H1 Lagrange tensor product h-prolongation basis on uniformly spaced nodes object
+
+  - H1 Lagrange tensor product h-prolongation basis on uniformly spaced nodes object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product h-prolongation basis on uniformly spaced nodes
 basis = TensorH1UniformHProlongationBasis(4, 3, 2, 2);
@@ -919,6 +989,7 @@ basis = TensorH1UniformHProlongationBasis(4, 3, 2, 2);
 println(basis)
 
 # output
+
 tensor product basis:
     numbernodes1d: 4
     numberquadraturepoints1d: 7
@@ -965,16 +1036,19 @@ TensorH1LagrangeHProlongationMacroBasis(
 Tensor product macro-element h-prolongation basis on Gauss-Legendre-Lobatto points
 
 # Arguments:
-- `numbernodes1d`:           number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
-- `numbercomponents`:        number of components
-- `dimension`:               dimension of basis
-- `numbercoarseelements1d`:  number of coarse grid elements in macro-element
-- `numberfineelements1d`:    number of fine grid elements in macro-element
+
+  - `numbernodes1d`:           number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
+  - `numbercomponents`:        number of components
+  - `dimension`:               dimension of basis
+  - `numbercoarseelements1d`:  number of coarse grid elements in macro-element
+  - `numberfineelements1d`:    number of fine grid elements in macro-element
 
 # Returns:
-- H1 Lagrange tensor product h-prolongation macro-element basis object
+
+  - H1 Lagrange tensor product h-prolongation macro-element basis object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product h-prolongation macro-element basis
 basis = TensorH1LagrangeHProlongationMacroBasis(4, 1, 2, 2, 4);
@@ -983,6 +1057,7 @@ basis = TensorH1LagrangeHProlongationMacroBasis(4, 1, 2, 2, 4);
 println(basis)
 
 # output
+
 macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 13
@@ -1041,16 +1116,19 @@ TensorH1UniformHProlongationMacroBasis(
 Tensor product macro-element h-prolongation basis on uniformly spaced points
 
 # Arguments:
-- `numbernodes1d`:           number of uniformly spaced nodes per element
-- `numbercomponents`:        number of components
-- `dimension`:               dimension of basis
-- `numbercoarseelements1d`:  number of coarse grid elements in macro-element
-- `numberfineelements1d`:    number of fine grid elements in macro-element
+
+  - `numbernodes1d`:           number of uniformly spaced nodes per element
+  - `numbercomponents`:        number of components
+  - `dimension`:               dimension of basis
+  - `numbercoarseelements1d`:  number of coarse grid elements in macro-element
+  - `numberfineelements1d`:    number of fine grid elements in macro-element
 
 # Returns:
-- H1 Lagrange tensor product h-prolongation macro-element basis on uniformly spaced nodes object
+
+  - H1 Lagrange tensor product h-prolongation macro-element basis on uniformly spaced nodes object
 
 # Example:
+
 ```jldoctest
 # generate H1 Lagrange tensor product h-prolongation macro-element basis on uniformly spaced nodes
 basis = TensorH1UniformHProlongationMacroBasis(4, 1, 2, 2, 4);
@@ -1059,6 +1137,7 @@ basis = TensorH1UniformHProlongationMacroBasis(4, 1, 2, 2, 4);
 println(basis)
 
 # output
+
 macro-element tensor product basis:
     numbernodes1d: 7
     numberquadraturepoints1d: 13

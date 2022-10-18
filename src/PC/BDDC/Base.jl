@@ -10,11 +10,13 @@ BDDC(operator, coarseoperator, smoother, prolongation)
 BDDC preconditioner for finite element operators
 
 # Arguments:
-- `operator`:       finite element operator to precondition
-- `injectiontype`:  type of injection into subassembled space to use
+
+  - `operator`:       finite element operator to precondition
+  - `injectiontype`:  type of injection into subassembled space to use
 
 # Returns:
-- BDDC preconditioner object
+
+  - BDDC preconditioner object
 """
 mutable struct BDDC <: AbstractPreconditioner
     # data never changed
@@ -80,22 +82,20 @@ getprimalnodes(bddc)
 Compute or retrieve the primal nodes for a BDDC preconditioner
 
 # Returns:
-- Vector of primal nodes for BDDC preconditioner
+
+  - vector of primal nodes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-primalnodes = LFAToolkit.getprimalnodes(bddc);
-primalnodes = bddc.primalnodes;
-
-# verify
-@assert primalnodes == [1, p, p^2 - p + 1, p^2]
+# verify primal nodes
+@assert bddc.primalnodes == [1, p, p^2 - p + 1, p^2]
 
 # output
 
@@ -131,25 +131,24 @@ getsubassemblednodes(bddc)
 Compute or retrieve the subassembled nodes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute sumassembled nodes
+
+  - `preconditioner`:  preconditioner to compute sumassembled nodes
 
 # Returns:
-- Vector of subassembled nodes for BDDC preconditioner
+
+  - vector of subassembled nodes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-subassemblednodes = LFAToolkit.getsubassemblednodes(bddc);
-subassemblednodes = bddc.subassemblednodes;
-
-# verify
-@assert subassemblednodes == setdiff(1:p^2, [1, p, p^2-p+1, p^2])
+# verify subassembled nodes
+@assert bddc.subassemblednodes == setdiff(1:p^2, [1, p, p^2 - p + 1, p^2])
 
 # output
 
@@ -176,32 +175,33 @@ getinterfacenodes(bddc)
 Compute or retrieve the interface nodes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute interface nodes
+
+  - `preconditioner`:  preconditioner to compute interface nodes
 
 # Returns:
-- Vector of interface nodes for BDDC preconditioner
+
+  - vector of interface nodes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-interfacenodes = LFAToolkit.getinterfacenodes(bddc);
-interfacenodes = bddc.interfacenodes;
-
-# verify
+# get true interface nodes
 trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
 for i = 1:p-2
-    push!(trueinterfacenodes, i*p+1)
-    push!(trueinterfacenodes, (i+1)*p)
+    push!(trueinterfacenodes, i * p + 1)
+    push!(trueinterfacenodes, (i + 1) * p)
 end
 trueinterfacenodes = sort(trueinterfacenodes)
 trueinterfacenodes = setdiff(trueinterfacenodes, bddc.primalnodes)
-@assert interfacenodes == trueinterfacenodes
+
+# verify interface nodes
+@assert bddc.interfacenodes == trueinterfacenodes
 
 # output
 
@@ -238,32 +238,33 @@ getinteriornodes(bddc)
 Compute or retrieve the interior nodes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute interior nodes
+
+  - `preconditioner`:  preconditioner to compute interior nodes
 
 # Returns:
-- Vector of interior nodes for BDDC preconditioner
+
+  - vector of interior nodes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-interiornodes = LFAToolkit.getinteriornodes(bddc);
-interiornodes = bddc.interiornodes;
-
-# verify
+# get true interface nodes
 trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
 for i = 1:p-2
-    push!(trueinterfacenodes, i*p+1)
-    push!(trueinterfacenodes, (i+1)*p)
+    push!(trueinterfacenodes, i * p + 1)
+    push!(trueinterfacenodes, (i + 1) * p)
 end
 trueinterfacenodes = sort(trueinterfacenodes)
 trueinteriornodes = setdiff(bddc.subassemblednodes, trueinterfacenodes)
-@assert interiornodes == trueinteriornodes
+
+# verify
+@assert bddc.interiornodes == trueinteriornodes
 
 # output
 
@@ -288,25 +289,24 @@ getprimalmodes(bddc)
 Compute or retrieve the primal modes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute primal nodes
+
+  - `preconditioner`:  preconditioner to compute primal nodes
 
 # Returns:
-- Vector of primal modes for BDDC preconditioner
+
+  - vector of primal modes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-primalmodes = LFAToolkit.getprimalmodes(bddc);
-primalmodes = bddc.primalmodes;
-
-# verify
-@assert primalmodes == [1]
+# verify primal nodes
+@assert bddc.primalmodes == [1]
 
 # output
 
@@ -341,25 +341,24 @@ getsubassembledmodes(bddc)
 Compute or retrieve the subassembled modes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute subassembled modes
+
+  - `preconditioner`:  preconditioner to compute subassembled modes
 
 # Returns:
-- Vector of subassembled modes for BDDC preconditioner
+
+  - vector of subassembled modes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-subassembledmodes = LFAToolkit.getsubassembledmodes(bddc);
-subassembledmodes = bddc.subassembledmodes;
-
-# verify
-@assert subassembledmodes == setdiff(1:(p-1)^2, [1])
+# verify subassembled modes
+@assert bddc.subassembledmodes == setdiff(1:(p-1)^2, [1])
 
 # output
 
@@ -386,31 +385,32 @@ getinterfacemodes(bddc)
 Compute or retrieve the interface modes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute interface modes
+
+  - `preconditioner`:  preconditioner to compute interface modes
 
 # Returns:
-- Vector of interface modes for BDDC preconditioner
+
+  - vector of interface modes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-interfacemodes = LFAToolkit.getinterfacemodes(bddc);
-interfacemodes = bddc.interfacemodes;
-
-# verify
+# get true interface modes
 trueinterfacemodes = [1:p-1...]
 for i = 1:p-2
-    push!(trueinterfacemodes, i*(p-1)+1)
+    push!(trueinterfacemodes, i * (p - 1) + 1)
 end
 trueinterfacemodes = sort(trueinterfacemodes)
 trueinterfacemodes = setdiff(trueinterfacemodes, bddc.primalmodes)
-@assert interfacemodes == trueinterfacemodes
+
+# verify interface modes
+@assert bddc.interfacemodes == trueinterfacemodes
 
 # output
 
@@ -447,25 +447,24 @@ getinteriormodes(bddc)
 Compute or retrieve the interior modes for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute interior modes
+
+  - `preconditioner`:  preconditioner to compute interior modes
 
 # Returns:
-- Vector of interior modes for BDDC preconditioner
+
+  - vector of interior modes for BDDC preconditioner
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-interiormodes = LFAToolkit.getinteriormodes(bddc);
-interiormodes = bddc.interiormodes;
-
-# verify
-@assert interiormodes == setdiff(bddc.subassembledmodes, bddc.interfacemodes)
+# verify interior modes
+@assert bddc.interiormodes == setdiff(bddc.subassembledmodes, bddc.interfacemodes)
 
 # output
 
@@ -490,25 +489,25 @@ getsubassembledinverse(bddc)
 Compute or retrieve the solver for subdomain for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute subdomain solver
+
+  - `preconditioner`:  preconditioner to compute subdomain solver
 
 # Returns:
-- Solver for subdomain
+
+  - solver for subdomain
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-subassembledinverse = LFAToolkit.getsubassembledinverse(bddc);
-subassembledinverse = bddc.subassembledinverse;
-
-# verify
-@assert subassembledinverse ≈ Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1
+# verify subassembled inverse
+@assert bddc.subassembledinverse ≈
+        Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1
 
 # output
 
@@ -537,25 +536,25 @@ getinteriorinverse(bddc)
 Compute or retrieve the solver for subdomain interior for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute subdomain interior solver
+
+  - `preconditioner`:  preconditioner to compute subdomain interior solver
 
 # Returns:
-- Solver for subdomain interior
+
+  - solver for subdomain interior
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-interiorinverse = LFAToolkit.getinteriorinverse(bddc);
-interiorinverse = bddc.interiorinverse;
-
-# verify
-@assert interiorinverse ≈ Matrix(diffusion.elementmatrix[bddc.interiornodes, bddc.interiornodes])^-1
+# verify interior inverse
+@assert bddc.interiorinverse ≈
+        Matrix(diffusion.elementmatrix[bddc.interiornodes, bddc.interiornodes])^-1
 
 # output
 
@@ -583,28 +582,28 @@ getschur(bddc)
 Compute or retrieve the Schur complement matrix for a BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute Schur complement matrix
+
+  - `preconditioner`:  preconditioner to compute Schur complement matrix
 
 # Returns:
-- Matrix for Schur complement
+
+  - matrix for Schur complement
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
 diffusion = GalleryOperator("diffusion", p, p, mesh);
-bddc = LumpedBDDC(diffusion)
+bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-schur = LFAToolkit.getschur(bddc);
-schur = bddc.schur;
-
-# verify
-@assert schur ≈ diffusion.elementmatrix[bddc.primalnodes, bddc.primalnodes] -
-    diffusion.elementmatrix[bddc.primalnodes, bddc.subassemblednodes] *
-    Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1 *
-    diffusion.elementmatrix[bddc.subassemblednodes, bddc.primalnodes]
+# verify Schur complement
+@assert bddc.schur ≈
+        diffusion.elementmatrix[bddc.primalnodes, bddc.primalnodes] -
+        diffusion.elementmatrix[bddc.primalnodes, bddc.subassemblednodes] *
+        Matrix(diffusion.elementmatrix[bddc.subassemblednodes, bddc.subassemblednodes])^-1 *
+        diffusion.elementmatrix[bddc.subassemblednodes, bddc.primalnodes]
 
 # output
 
@@ -635,24 +634,23 @@ getprimalrowmodemap(bddc)
 Compute or retrieve the matrix mapping the rows of the primal BDDC matrix to the primal symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute primal row mode map
+
+  - `preconditioner`:  preconditioner to compute primal row mode map
 
 # Returns:
-- Matrix mapping rows of primal BDDC matrix to primal symbol matrix
+
+  - matrix mapping rows of primal BDDC matrix to primal symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-primalmodemap = LFAToolkit.getprimalrowmodemap(bddc);
-primalmodemap = bddc.primalrowmodemap;
-
-# verify
-@assert primalmodemap ≈ [1 1 1 1]
+# verify primal row mode map
+@assert bddc.primalrowmodemap ≈ [1 1 1 1]
 
 # output
 
@@ -676,28 +674,26 @@ end
 getprimalcolumnmodemap(bddc)
 ```
 
-Compute or retrieve the matrix mapping the columns of the primal BDDC matrix to the
-    primal symbol matrix
+Compute or retrieve the matrix mapping the columns of the primal BDDC matrix to the primal symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute primal column mode map
+
+  - `preconditioner`:  preconditioner to compute primal column mode map
 
 # Returns:
-- Matrix mapping columns of primal BDDC matrix to primal symbol matrix
+
+  - matrix mapping columns of primal BDDC matrix to primal symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-primalmodemap = LFAToolkit.getprimalcolumnmodemap(bddc);
-primalmodemap = bddc.primalcolumnmodemap;
-
-# verify
-@assert primalmodemap ≈ [1; 1; 1; 1]
+# verify primal column mode map
+@assert bddc.primalcolumnmodemap ≈ [1; 1; 1; 1]
 
 # output
 
@@ -722,28 +718,27 @@ end
 getsubassembledrowmodemap(bddc)
 ```
 
-Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix to the
-    subassembled symbol matrix
+Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix to the subassembled symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute subassembled row mode map
+
+  - `preconditioner`:  preconditioner to compute subassembled row mode map
 
 # Returns:
-- Matrix mapping rows of subassembled BDDC matrix to subassembled symbol matrix
+
+  - matrix mapping rows of subassembled BDDC matrix to subassembled symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-subassembledmodemap = LFAToolkit.getsubassembledrowmodemap(bddc);
-subassembledmodemap = bddc.subassembledrowmodemap;
-
-# verify
-@assert subassembledmodemap ≈ bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
+# verify subassembled row mode map
+@assert bddc.subassembledrowmodemap ≈
+        bddc.operator.rowmodemap[bddc.subassembledmodes, bddc.subassemblednodes]
 
 # output
 
@@ -768,28 +763,27 @@ end
 getsubassembledcolumnmodemap(bddc)
 ```
 
-Compute or retrieve the matrix mapping the columns of the subassembled BDDC matrix to the
-    subassembled symbol matrix
+Compute or retrieve the matrix mapping the columns of the subassembled BDDC matrix to the subassembled symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute subassembled column mode map
+
+  - `preconditioner`:  preconditioner to compute subassembled column mode map
 
 # Returns:
-- Matrix mapping columns of subassembled BDDC matrix to subassembled symbol matrix
+
+  - matrix mapping columns of subassembled BDDC matrix to subassembled symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
-# note: either syntax works
-subassembledmodemap = LFAToolkit.getsubassembledcolumnmodemap(bddc);
-subassembledmodemap = bddc.subassembledcolumnmodemap;
-
-# verify
-@assert subassembledmodemap ≈ bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
+# verify subassembled column mode map
+@assert bddc.subassembledcolumnmodemap ≈
+        bddc.operator.columnmodemap[bddc.subassemblednodes, bddc.subassembledmodes]
 
 # output
 
@@ -814,14 +808,15 @@ end
 getmixedrowmodemap(bddc)
 ```
 
-Compute or retrieve the matrix mapping the rows of the mixed BDDC matrix to the
-    symbol matrix
+Compute or retrieve the matrix mapping the rows of the mixed BDDC matrix to the symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute mixed row mode map
+
+  - `preconditioner`:  preconditioner to compute mixed row mode map
 
 # Returns:
-- Matrix mapping rows of mixed BDDC matrix to symbol matrix
+
+  - matrix mapping rows of mixed BDDC matrix to symbol matrix
 """
 function getmixedrowmodemap(bddc::BDDC)
     # assemble if needed
@@ -847,14 +842,15 @@ end
 getmixedcolumnmodemap(bddc)
 ```
 
-Compute or retrieve the matrix mapping the columns of the mixed BDDC matrix to the
-    symbol matrix
+Compute or retrieve the matrix mapping the columns of the mixed BDDC matrix to the symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute mixed column mode map
+
+  - `preconditioner`:  preconditioner to compute mixed column mode map
 
 # Returns:
-- Matrix mapping columns of mixed BDDC matrix to symbol matrix
+
+  - matrix mapping columns of mixed BDDC matrix to symbol matrix
 """
 function getmixedcolumnmodemap(bddc::BDDC)
     # assemble if needed
@@ -884,10 +880,12 @@ getmodepermutation(bddc)
 Compute or retrieve the matrix permuting multi-component modes to standard ordering
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute mode permutation matrix
+
+  - `preconditioner`:  preconditioner to compute mode permutation matrix
 
 # Returns:
-- Matrix mapping BDDC mode ordering to standard ordering
+
+  - matrix mapping BDDC mode ordering to standard ordering
 """
 function getmodepermutation(bddc::BDDC)
     # assemble if needed
@@ -918,14 +916,15 @@ end
 getmixedmultiplicity(bddc)
 ```
 
-Compute or retrieve the diagonal matrix of mixed interface node and primal mode
-    multiplicity for the BDDC preconditioner
+Compute or retrieve the diagonal matrix of mixed interface node and primal mode multiplicity for the BDDC preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute mixed node/mode multiplicity
+
+  - `preconditioner`:  preconditioner to compute mixed node/mode multiplicity
 
 # Returns:
-- Matrix of mixed multiplicity for the BDDC preconditioner
+
+  - matrix of mixed multiplicity for the BDDC preconditioner
 """
 function getmixedmultiplicity(bddc::BDDC)
     # assemble if needed
@@ -954,10 +953,12 @@ getJDT(bddc)
 Compute or retrieve the matrix mapping the jump over subdomain interface modes
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute jump mapping matrix
+
+  - `preconditioner`:  preconditioner to compute jump mapping matrix
 
 # Returns:
-- Matrix mapping the jump over subdomain interfacemodes
+
+  - matrix mapping the jump over subdomain interfacemodes
 """
 function getJDT(bddc::BDDC)
     # assemble if needed
@@ -1005,11 +1006,12 @@ computesymbolsinjection(bddc)
 Compute or retrieve the injection operator for the BDDC symbol matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute injection matrix
+
+  - `preconditioner`:  preconditioner to compute injection matrix
 
 # Returns:
-- Matrix providing the injection operator of BDDC symbol matrix
 
+  - matrix providing the injection operator of BDDC symbol matrix
 """
 function computesymbolsinjection(bddc::BDDC, θ::Array)
     if (bddc.injectiontype == BDDCInjectionType.scaled)
@@ -1151,32 +1153,35 @@ computesymbols(bddc, θ)
 Compute the symbol matrix for a BDDC preconditioned operator
 
 # Arguments:
-- `bddc`:  BDDC preconditioner to compute symbol matrix for
-- `θ`:     Fourier mode frequency array (one frequency per dimension)
+
+  - `bddc`:  BDDC preconditioner to compute symbol matrix for
+  - `θ`:     Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the BDDC preconditioned operator
+
+  - symbol matrix for the BDDC preconditioned operator
 
 # Lumped BDDC Example:
+
 ```jldoctest
 using LinearAlgebra;
 
-for dimension in 2:3
+for dimension = 2:3
     # setup
     mesh = []
     if dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
     bddc = LumpedBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, [0.2], π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 2
         @assert minimum(eigenvalues) ≈ 0.43999999999999995
         @assert maximum(eigenvalues) ≈ 0.8
@@ -1191,25 +1196,26 @@ end
 ```
 
 # Dirichlet BDDC Example:
+
 ```jldoctest
 using LinearAlgebra;
 
-for dimension in 2:3
+for dimension = 2:3
     # setup
     mesh = []
     if dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
     bddc = DirichletBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, [0.2], π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 2
         @assert minimum(eigenvalues) ≈ 0.7999999999999998
         @assert maximum(eigenvalues) ≈ 0.8

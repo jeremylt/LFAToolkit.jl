@@ -22,28 +22,32 @@ TensorBasis(
     quadraturepoints1d,
     quadratureweights1d,
     interpolation1d,
-    gradient1d
+    gradient1d;
+    numberelements1d = 1,
 )
 ```
 
 Tensor product basis
 
 # Arguments:
-- `numbernodes1d`:             number of nodes in 1 dimension
-- `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
-- `numbercomponents`:          number of components
-- `dimension`:                 dimension of the basis
-- `nodes1d`:                   coordinates of the nodes in 1 dimension
-- `quadraturepoints1d`:        coordinates of the quadrature points in 1
-                                   dimension
-- `quadratureweights1d`:       quadrature weights in 1 dimension
-- `interpolation1d`:           interpolation matrix from nodes to quadrature
-                                   points in 1 dimension
-- `gradient1d`:                gradient matrix from nodes to quadrature points in
-                                   1 dimension
+
+  - `numbernodes1d`:             number of nodes in 1 dimension
+  - `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
+  - `numbercomponents`:          number of components
+  - `dimension`:                 dimension of the basis
+  - `nodes1d`:                   coordinates of the nodes in 1 dimension
+  - `quadraturepoints1d`:        coordinates of the quadrature points in 1 dimension
+  - `quadratureweights1d`:       quadrature weights in 1 dimension
+  - `interpolation1d`:           interpolation matrix from nodes to quadrature points in 1 dimension
+  - `gradient1d`:                gradient matrix from nodes to quadrature points in 1 dimension
+
+# Keyword Arguments:
+
+  - `numberelements1d = 1`:      number of subelements, for macroelement bases
 
 # Returns:
-- Tensor product basis object
+
+  - tensor product basis object
 """
 mutable struct TensorBasis <: AbstractBasis
     # data never changed
@@ -116,7 +120,8 @@ mutable struct TensorBasis <: AbstractBasis
             # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints1d, numbernodes1d)",
-            ) # COV_EXCL_STOP
+            )
+            # COV_EXCL_STOP
         end;
 
         # constructor
@@ -167,24 +172,32 @@ NonTensorBasis(
     quadraturepoints,
     quadratureweights,
     interpolation,
-    gradient
+    gradient;
+    numberelements = 1,
 )
 ```
+
 Non-tensor basis
 
 # Arguments:
-- `numbernodes`:             number of nodes 
-- `numberquadraturepoints`:  number of quadrature points
-- `numbercomponents`:        number of components
-- `dimension`:               dimension of the basis
-- `nodes`:                   coordinates of the nodes
-- `quadraturepoints`:        coordinates of the quadrature points
-- `quadratureweights`:       quadrature weights
-- `interpolation`:           interpolation matrix from nodes to quadrature points
-- `gradient`:                gradient matrix from nodes to quadrature points
+
+  - `numbernodes`:             number of nodes
+  - `numberquadraturepoints`:  number of quadrature points
+  - `numbercomponents`:        number of components
+  - `dimension`:               dimension of the basis
+  - `nodes`:                   coordinates of the nodes
+  - `quadraturepoints`:        coordinates of the quadrature points
+  - `quadratureweights`:       quadrature weights
+  - `interpolation`:           interpolation matrix from nodes to quadrature points
+  - `gradient`:                gradient matrix from nodes to quadrature points
+
+# Keyword Arguments:
+
+  - `numberelements = 1`:      number of subelements, for macroelement bases
 
 # Returns:
-- Non-tensor product basis object
+
+  - non-tensor product basis object
 """
 mutable struct NonTensorBasis <: AbstractBasis
     # data never changed
@@ -314,22 +327,21 @@ getnumbernodes(basis)
 Get the number of nodes for the basis
 
 # Arguments:
-- `basis`:  basis to compute number of nodes
+
+  - `basis`:  basis to compute number of nodes
 
 # Returns:
-- Integer number of basis nodes
+
+  - integer number of basis nodes
 
 # Example:
+
 ```jldoctest
-# get number of nodes for basis
+# setup basis
 basis = TensorH1LagrangeBasis(4, 3, 2, 2);
 
-# note: either syntax works
-numbernodes = LFAToolkit.getnumbernodes(basis);
-numbernodes = basis.numbernodes;
-
-# verify
-@assert numbernodes == 4^2
+# verify number of nodes
+@assert basis.numbernodes == 4^2
 
 # output
 
@@ -346,40 +358,43 @@ getnodes(basis)
 
 Get nodes for basis
 
-# Returns:
-- Basis nodes array
-
 # Arguments:
-- `basis`:  basis to compute nodes
+
+  - `basis`:  basis to compute nodes
+
+# Returns:
+
+  - basis nodes array
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get basis quadrature weights
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    nodes = LFAToolkit.getnodes(basis);
-    nodes = basis.nodes;
-
-    # verify
-    truenodes1d = [-1, -√(1/5), √(1/5), 1];
-    truenodes = [];
+    # get true nodes
+    truenodes1d = [-1, -√(1 / 5), √(1 / 5), 1]
+    truenodes = []
     if dimension == 1
-        truenodes = truenodes1d;
+        truenodes = truenodes1d
     elseif dimension == 2
-        truenodes =
-            transpose(hcat([[[x, y] for x in truenodes1d, y in truenodes1d]...]...));
+        truenodes = transpose(hcat([[[x, y] for x in truenodes1d, y in truenodes1d]...]...))
     elseif dimension == 3
-        truenodes = transpose(hcat([[
-            [x, y, z] for x in truenodes1d, y in truenodes1d, z in truenodes1d
-        ]...]...));
+        truenodes = transpose(
+            hcat(
+                [
+                    [[x, y, z] for x in truenodes1d, y in truenodes1d, z in truenodes1d]...,
+                ]...,
+            ),
+        )
     end
 
-    @assert truenodes ≈ nodes
+    # verify basis nodes
+    @assert basis.nodes ≈ truenodes
 end
-    
+
 # output
 
 ```
@@ -425,23 +440,22 @@ getnumberquadraturepoints(basis)
 Get the number of quadrature points for the basis
 
 # Arguments:
-- `basis`:  basis to compute number of quadrature points
+
+  - `basis`:  basis to compute number of quadrature points
 
 # Returns:
-- Integer number of basis quadrature points
+
+  - integer number of basis quadrature points
 
 # Example:
+
 ```jldoctest
-# get number of quadrature points for basis
+# setup basis
 basis = TensorH1LagrangeBasis(4, 3, 2, 2);
 
-# note: either syntax works
-numberquadraturepoints = LFAToolkit.getnumberquadraturepoints(basis);
-numberquadraturepoints = basis.numberquadraturepoints;
-    
-# verify
-@assert numberquadraturepoints == 3^2
-    
+# verify number of quadrature points
+@assert basis.numberquadraturepoints == 3^2
+
 # output
 
 ```
@@ -457,44 +471,54 @@ getquadraturepoints(basis)
 
 Get quadrature points for basis
 
-# Returns:
-- Basis quadrature points array
-
 # Arguments:
-- `basis`: basis to compute quadrature points
+
+  - `basis`: basis to compute quadrature points
+
+# Returns:
+
+  - basis quadrature points array
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get basis quadrature weights
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    quadraturepoints = LFAToolkit.getquadraturepoints(basis);
-    quadraturepoints = basis.quadraturepoints;
-
-    # verify
-    truequadraturepoints1d = [-√(3/5), 0, √(3/5)];
-    truequadraturepoints = [];
+    # get true quadrature points
+    truequadraturepoints1d = [-√(3 / 5), 0, √(3 / 5)]
+    truequadraturepoints = []
     if dimension == 1
-        truequadraturepoints = truequadraturepoints1d;
+        truequadraturepoints = truequadraturepoints1d
     elseif dimension == 2
-        truequadraturepoints = transpose(hcat([[
-            [x, y] for x in truequadraturepoints1d, y in truequadraturepoints1d
-        ]...]...));
+        truequadraturepoints = transpose(
+            hcat(
+                [
+                    [
+                        [x, y] for x in truequadraturepoints1d, y in truequadraturepoints1d
+                    ]...,
+                ]...,
+            ),
+        )
     elseif dimension == 3
-        truequadraturepoints = transpose(hcat([[
-            [x, y, z]
-            for
-            x in truequadraturepoints1d,
-            y in truequadraturepoints1d, z in truequadraturepoints1d
-        ]...]...));
+        truequadraturepoints = transpose(
+            hcat(
+                [
+                    [
+                        [x, y, z] for x in truequadraturepoints1d,
+                        y in truequadraturepoints1d, z in truequadraturepoints1d
+                    ]...,
+                ]...,
+            ),
+        )
     end
 
-    @assert truequadraturepoints ≈ quadraturepoints
+    # verify quadrature points
+    @assert basis.quadraturepoints ≈ truequadraturepoints
 end
-    
+
 # output
 
 ```
@@ -547,37 +571,37 @@ getquadratureweights(basis)
 
 Get full quadrature weights vector for basis
 
-# Returns:
-- Basis quadrature weights vector
-
 # Arguments:
-- `basis`:  basis to compute quadrature weights
+
+  - `basis`:  basis to compute quadrature weights
+
+# Returns:
+
+  - basis quadrature weights vector
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get basis quadrature weights
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    quadratureweights = LFAToolkit.getquadratureweights(basis);
-    quadratureweights = basis.quadratureweights;
-
-    # verify
-    trueweights1d = [5/9, 8/9, 5/9];
-    trueweights = [];
+    # get true quadratrue weights
+    trueweights1d = [5 / 9, 8 / 9, 5 / 9]
+    trueweights = []
     if dimension == 1
-        trueweights = trueweights1d;
+        trueweights = trueweights1d
     elseif dimension == 2
-        trueweights = kron(trueweights1d, trueweights1d);
+        trueweights = kron(trueweights1d, trueweights1d)
     elseif dimension == 3
-        trueweights = kron(trueweights1d, trueweights1d, trueweights1d);
+        trueweights = kron(trueweights1d, trueweights1d, trueweights1d)
     end
 
-    @assert trueweights ≈ quadratureweights
+    # verify
+    @assert basis.quadratureweights ≈ trueweights
 end
-    
+
 # output
 
 ```
@@ -617,25 +641,27 @@ getinterpolation(basis)
 Get full interpolation matrix for basis
 
 # Arguments:
-- `basis`:  basis to compute interpolation matrix
+
+  - `basis`:  basis to compute interpolation matrix
 
 # Returns:
-- Basis interpolation matrix
+
+  - basis interpolation matrix
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get basis interpolation matrix
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    interpolation = LFAToolkit.getinterpolation(basis);
-    interpolation = basis.interpolation;
+    # get basis interpolation matrix
+    interpolation = basis.interpolation
 
     # verify
-    for i in 1:3^dimension
-        total = sum(interpolation[i, :]);
+    for i = 1:3^dimension
+        total = sum(interpolation[i, :])
         @assert total ≈ 1.0
     end
 end
@@ -684,25 +710,27 @@ getgradient(basis)
 Get full gradient matrix for basis
 
 # Arguments:
-- `basis`:  basis to compute gradient matrix
+
+  - `basis`:  basis to compute gradient matrix
 
 # Returns:
-- Basis gradient matrix
+
+  - basis gradient matrix
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get basis gradient matrix
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    gradient = LFAToolkit.getgradient(basis);
-    gradient = basis.gradient;
+    # get basis gradient matrix
+    gradient = basis.gradient
 
     # verify
-    for i in 1:dimension*3^dimension
-        total = sum(gradient[i, :]);
+    for i = 1:dimension*3^dimension
+        total = sum(gradient[i, :])
         @assert abs(total) < 1e-14
     end
 end
@@ -755,24 +783,23 @@ getnumbermodes(basis)
 Get number of modes for basis
 
 # Arguments:
-- `basis`:  basis to compute number of modes
+
+  - `basis`:  basis to compute number of modes
 
 # Returns:
-- Number of modes for basis
+
+  - number of modes for basis
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get number of basis modes
-    basis = TensorH1LagrangeBasis(4, 3, 2, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 2, dimension)
 
-    # note: either syntax works
-    numbermodes = LFAToolkit.getnumbermodes(basis);
-    numbermodes = basis.numbermodes;
-
-    # verify
-    @assert numbermodes == 2*3^dimension
+    # verify number of basis modes
+    @assert basis.numbermodes == 2 * 3^dimension
 end
 
 # output
@@ -797,41 +824,39 @@ getmodemap(basis)
 Get mode mapping vector for basis
 
 # Arguments:
-- `basis`:  basis to compute mode map vector
+
+  - `basis`:  basis to compute mode map vector
 
 # Returns:
-- Basis mode map vector
+
+  - basis mode map vector
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get mode map vector
-    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
+for dimension = 1:3
+    # setup basis
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension)
 
-    # note: either syntax works
-    modemap = LFAToolkit.getmodemap(basis);
-    modemap = basis.modemap;
-
-    # verify
-    truemodemap1d = [1, 2, 3, 1];
-    truemodemap = [];
+    # get true mode map
+    truemodemap1d = [1, 2, 3, 1]
+    truemodemap = []
     if dimension == 1
-        truemodemap = truemodemap1d;
+        truemodemap = truemodemap1d
     elseif dimension == 2
-        truemodemap = [[
-            i + (j - 1)*3 for i in truemodemap1d, j in truemodemap1d
-        ]...];
+        truemodemap = [[i + (j - 1) * 3 for i in truemodemap1d, j in truemodemap1d]...]
     elseif dimension == 3
-        truemodemap = [[
-            i +
-            (j - 1)*3 +
-            (k - 1)*3^2
-            for i in truemodemap1d, j in truemodemap1d, k in truemodemap1d
-        ]...];
+        truemodemap = [
+            [
+                i + (j - 1) * 3 + (k - 1) * 3^2 for i in truemodemap1d,
+                j in truemodemap1d, k in truemodemap1d
+            ]...,
+        ]
     end
 
-    @assert truemodemap == modemap
+    # verify
+    @assert basis.modemap == truemodemap
 end
 
 # output
@@ -891,34 +916,35 @@ getprimalnodes(basis)
 Get primal nodes for basis
 
 # Arguments:
-- `basis`:  basis to compute primal nodes
+
+  - `basis`:  basis to compute primal nodes
 
 # Returns:
-- Basis primal nodes vector
+
+  - basis primal nodes vector
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get mode map vector
+for dimension = 1:3
+    # setup basis
     p = 4
-    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension)
 
-    # note: either syntax works
-    primalnodes = LFAToolkit.getprimalnodes(basis);
-    primalnodes = basis.primalnodes;
-
-    # verify
+    # get true primal modes
     trueprimalnodes = []
     if dimension == 1
-        trueprimalnodes = [1, p];
+        trueprimalnodes = [1, p]
     elseif dimension == 2
-        trueprimalnodes = [1, p, p^2-p+1, p^2]
+        trueprimalnodes = [1, p, p^2 - p + 1, p^2]
     elseif dimension == 3
-        trueprimalnodes = [1, p, p^2-p+1, p^2, p^3-p^2+1, p^3-p^2+p, p^3-p+1, p^3]
+        trueprimalnodes =
+            [1, p, p^2 - p + 1, p^2, p^3 - p^2 + 1, p^3 - p^2 + p, p^3 - p + 1, p^3]
     end
 
-    @assert trueprimalnodes == primalnodes
+    # verify
+    @assert basis.primalnodes == trueprimalnodes
 end
 
 # output
@@ -964,32 +990,31 @@ getinterfacenodes(basis)
 Get interface nodes for basis
 
 # Arguments:
-- `basis`:  basis to compute primal nodes
+
+  - `basis`:  basis to compute primal nodes
 
 # Returns:
-- Basis primal nodes vector
+
+  - basis primal nodes vector
 
 # Example:
+
 ```jldoctest
 # test for all supported dimensions
-for dimension in 1:3
-    # get mode map vector
+for dimension = 1:3
+    # setup basis
     p = 4
-    basis = TensorH1LagrangeBasis(p, p, 1, dimension);
+    basis = TensorH1LagrangeBasis(p, p, 1, dimension)
 
-    # note: either syntax works
-    interfacenodes = LFAToolkit.getinterfacenodes(basis);
-    interfacenodes = basis.interfacenodes;
-
-    # verify
+    # get true interface nodes
     trueinterfacenodes = []
     if dimension == 1
-        trueinterfacenodes = [1, p];
+        trueinterfacenodes = [1, p]
     elseif dimension == 2
         trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
         for i = 1:p-2
-            push!(trueinterfacenodes, i*p+1)
-            push!(trueinterfacenodes, (i+1)*p)
+            push!(trueinterfacenodes, i * p + 1)
+            push!(trueinterfacenodes, (i + 1) * p)
         end
     elseif dimension == 3
         trueinterfacenodes = [1:p^2..., p^3-p^2+1:p^3...]
@@ -1002,7 +1027,8 @@ for dimension in 1:3
     end
     trueinterfacenodes = sort(trueinterfacenodes)
 
-    @assert trueinterfacenodes == interfacenodes
+    # verify
+    @assert basis.interfacenodes == trueinterfacenodes
 end
 
 # output
@@ -1058,22 +1084,21 @@ getnumberelements(basis)
 Get the number of elements for the basis
 
 # Arguments:
-- `basis`:  basis to compute number of micro-elements
+
+  - `basis`:  basis to compute number of micro-elements
 
 # Returns:
-- Integer number of basis micro-elements
+
+  - integer number of basis micro-elements
 
 # Example:
+
 ```jldoctest
 # get number of nodes for basis
 basis = TensorH1LagrangeMacroBasis(4, 4, 1, 2, 2);
 
-# note: either syntax works
-numbernodes = LFAToolkit.getnumberelements(basis);
-numbernodes = basis.numberelements;
-
-# verify
-@assert numbernodes == 2^2
+# verify number of elements
+@assert basis.numberelements == 2^2
 
 # output
 
@@ -1165,13 +1190,16 @@ getdXdxgradient(basis, mesh)
 Get gradient adjusted for mesh stretching
 
 # Arguments:
-- `basis`:  basis to compute gradient
-- `mesh`:   mesh to compute gradient
+
+  - `basis`:  basis to compute gradient
+  - `mesh`:   mesh to compute gradient
 
 # Returns:
-- gradient matrix multiplied by change of coordinates adjoint
+
+  - gradient matrix multiplied by change of coordinates adjoint
 
 # Example:
+
 ```jldoctest
 for dimension = 1:3
     # mesh
@@ -1185,34 +1213,34 @@ for dimension = 1:3
     end
 
     # basis
-    basis = TensorH1LagrangeBasis(4, 3, 1, dimension);
+    basis = TensorH1LagrangeBasis(4, 3, 1, dimension)
 
     # get gradient on mesh
-    gradient = LFAToolkit.getdXdxgradient(basis, mesh);
+    gradient = LFAToolkit.getdXdxgradient(basis, mesh)
 
     # verify
-    nodes = basis.nodes;
-    linearfunction = [];
-    truegradient = [];
+    nodes = basis.nodes
+    linearfunction = []
+    truegradient = []
     if dimension == 1
-        linearfunction = nodes;
-        truegradient = [1/2*ones(basis.numberquadraturepoints)...]
+        linearfunction = nodes
+        truegradient = [1 / 2 * ones(basis.numberquadraturepoints)...]
     elseif dimension == 2
-        linearfunction = (nodes[:, 1] + nodes[:, 2]);
+        linearfunction = (nodes[:, 1] + nodes[:, 2])
         truegradient = [
-            1/2*ones(basis.numberquadraturepoints)...
-            1/3*ones(basis.numberquadraturepoints)...
+            1 / 2 * ones(basis.numberquadraturepoints)...
+            1 / 3 * ones(basis.numberquadraturepoints)...
         ]
     elseif dimension == 3
-        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3]);
+        linearfunction = (nodes[:, 1] + nodes[:, 2] + nodes[:, 3])
         truegradient = [
-            1/2*ones(basis.numberquadraturepoints)...
-            1/3*ones(basis.numberquadraturepoints)...
-            1/4*ones(basis.numberquadraturepoints)...
+            1 / 2 * ones(basis.numberquadraturepoints)...
+            1 / 3 * ones(basis.numberquadraturepoints)...
+            1 / 4 * ones(basis.numberquadraturepoints)...
         ]
     end
 
-    @assert gradient*linearfunction ≈ truegradient
+    @assert gradient * linearfunction ≈ truegradient
 end
 
 # output
@@ -1265,13 +1293,16 @@ getdxdXquadratureweights(basis, mesh)
 Get quadrature weights adjusted for mesh stretching
 
 # Arguments:
-- `basis`:  basis to compute quadratureweights
-- `mesh`:   mesh to compute quadratureweights
+
+  - `basis`:  basis to compute quadratureweights
+  - `mesh`:   mesh to compute quadratureweights
 
 # Returns:
-- quadrature weights multiplied by change of coordinates adjoint
+
+  - quadrature weights multiplied by change of coordinates adjoint
 
 # Example:
+
 ```jldoctest
 mesh = Mesh1D(2.0)
 

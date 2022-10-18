@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 """
-Finite element operator preconditioner 
+Finite element operator preconditioner
 """
 abstract type AbstractPreconditioner end
 

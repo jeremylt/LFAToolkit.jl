@@ -4,46 +4,45 @@
 
 """
 ```julia
-OperatorField(
-    basis,
-    evaluationmodes
-)
+OperatorField(basis, evaluationmodes)
 ```
 
 Finite Element operator input or output, with a basis and evaluation mode
 
 # Arguments:
-- `basis`:            finite element basis for the field
-- `evaluationmodes`:  array of basis evaluation modes,
-                          note that quadrature weights must be listed in a
-                          separate operator field
+
+  - `basis`:            finite element basis for the field
+  - `evaluationmodes`:  array of basis evaluation modes; note: quadrature weights must be listed in a separate operator field
 
 # Returns:
-- Finite element operator field object
+
+  - finite element operator field object
 
 # Example:
+
 ```jldoctest
 # basis
 basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 
 # quadrature weights field, input only
-weightsfield = OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights");
+weightsfield =
+    OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights");
 
 # verify
 println(weightsfield)
 
 # input or output field
-inputfield = OperatorField(basis, [
-    EvaluationMode.interpolation,
-    EvaluationMode.gradient,
-    ],
-    "gradient of weak form input"
+inputfield = OperatorField(
+    basis,
+    [EvaluationMode.interpolation, EvaluationMode.gradient],
+    "gradient of weak form input",
 );
 
 # verify
 println(inputfield)
 
 # output
+
 operator field:
   name:
     quadrature weights 

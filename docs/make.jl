@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # documentation
 # ------------------------------------------------------------------------------
-using Documenter, DocumenterTools, Markdown, LFAToolkit
+using Documenter, DocumenterCitations, DocumenterTools, Markdown, LFAToolkit
 DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = true)
 
 # The DOCSARGS environment variable can be used to pass additional arguments to make.jl.
@@ -16,8 +16,14 @@ end
 # ------------------------------------------------------------------------------
 # make
 # ------------------------------------------------------------------------------
+bib = CitationBibliography(joinpath(@__DIR__, "src/references.bib"))
 makedocs(
+    bib,
     modules = [LFAToolkit],
+    clean = false,
+    strict = true,
+    sitename = "LFAToolkit.jl",
+    authors = "Jed Brown, Adeleke Bankole, and Jeremy L Thompson",
     format = Documenter.HTML(
         # Use clean URLs, unless built as a "local" build
         prettyurls = !("local" in ARGS),
@@ -33,10 +39,6 @@ makedocs(
         "Release Notes" => "release_notes.md",
         "References" => "references.md",
     ],
-    clean = false,
-    sitename = "LFAToolkit.jl",
-    authors = "Jeremy L Thompson",
-    linkcheck = !("skiplinks" in ARGS),
 )
 
 # ------------------------------------------------------------------------------

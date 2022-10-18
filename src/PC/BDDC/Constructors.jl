@@ -14,12 +14,15 @@ LumpedBDDC(operator)
 Lumped BDDC preconditioner for finite element operators
 
 # Arguments:
-- `operator`:  finite element operator to precondition
+
+  - `operator`:  finite element operator to precondition
 
 # Returns:
-- Lumped BDDC preconditioner object
+
+  - lumped BDDC preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -35,6 +38,7 @@ println(bddc)
 println(bddc.operator)
 
 # output
+
 lumped BDDC preconditioner
 finite element operator:
 2d mesh:
@@ -87,12 +91,15 @@ DirichletBDDC(operator)
 Dirichlet BDDC preconditioner for finite element operators
 
 # Arguments:
-- `operator`:  finite element operator to precondition
+
+  - `operator`:  finite element operator to precondition
 
 # Returns:
-- Dirichlet BDDC preconditioner object
+
+  - Dirichlet BDDC preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -108,6 +115,7 @@ println(bddc)
 println(bddc.operator)
 
 # output
+
 Dirichlet BDDC preconditioner
 finite element operator:
 2d mesh:

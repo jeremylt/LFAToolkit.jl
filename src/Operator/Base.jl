@@ -4,34 +4,31 @@
 
 """
 ```julia
-Operator(
-    weakform,
-    mesh,
-    inputs,
-    outputs
-)
+Operator(weakform, mesh, inputs, outputs)
 ```
 
 Finite element operator comprising of a weak form and bases
 
 # Arguments:
-- `weakform`:  user provided function that represents weak form at
-                   quadrature points
-- `mesh`:      mesh object with deformation in each dimension
-- `inputs`:    array of operator input fields
-- `outputs`:   array of operator output fields
+
+  - `weakform`:  user provided function that represents weak form at quadrature points
+  - `mesh`:      mesh object with deformation in each dimension
+  - `inputs`:    array of operator input fields
+  - `outputs`:   array of operator output fields
 
 # Returns:
-- Finite element operator object
+
+  - finite element operator object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 basis = TensorH1LagrangeBasis(4, 4, 1, 2);
 
 function massweakform(u::Array{Float64}, w::Array{Float64})
-    v = u*w[1]
+    v = u * w[1]
     return [v]
 end
 
@@ -47,6 +44,7 @@ mass = Operator(massweakform, mesh, inputs, outputs);
 println(mass)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -202,12 +200,15 @@ getdimension(operator)
 Retrieve the dimension of an operator
 
 # Arguments:
-- `operator`:  operator to retrieve the dimension
+
+  - `operator`:  operator to retrieve the dimension
 
 # Returns:
-- Dimension of the operator
+
+  - dimension of the operator
 
 # Example
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -233,25 +234,26 @@ getelementmatrix(operator)
 Compute or retrieve the element matrix of operator for computing the symbol
 
 # Arguments:
-- `operator`:  operator to compute element matrix
+
+  - `operator`:  operator to compute element matrix
 
 # Returns:
-- Assembled element matrix
+
+  - assembled element matrix
 
 # Mass matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
 
 # element matrix computation
-# note: either syntax works
-elementmatrix = LFAToolkit.getelementmatrix(mass);
 elementmatrix = mass.elementmatrix;
 
 # verify
-u = ones(4*4);
-v = elementmatrix*u;
+u = ones(4 * 4);
+v = elementmatrix * u;
 
 total = sum(v);
 @assert total ≈ 1.0
@@ -261,19 +263,18 @@ total = sum(v);
 ```
 
 # Diffusion matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 diffusion = GalleryOperator("diffusion", 4, 4, mesh);
 
 # element matrix computation
-# note: either syntax works
-elementmatrix = LFAToolkit.getelementmatrix(diffusion);
 elementmatrix = diffusion.elementmatrix;
 
 # verify
-u = ones(4*4);
-v = elementmatrix*u;
+u = ones(4 * 4);
+v = elementmatrix * u;
 
 total = sum(v);
 @assert abs(total) < 1e-14
@@ -473,23 +474,22 @@ getdiagonal(operator)
 Compute or retrieve the symbol matrix diagonal for an operator
 
 # Arguments:
-- `operator`:  operator to compute diagonal
+
+  - `operator`:  operator to compute diagonal
 
 # Returns:
-- Symbol matrix diagonal for the operator
+
+  - symbol matrix diagonal for the operator
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
-# note: either syntax works
-diagonal = LFAToolkit.getdiagonal(diffusion);
-diagonal = diffusion.diagonal;
-
-# verify
-@assert diagonal ≈ [7/6 0; 0 4/3]
+# verify diagonal
+@assert diffusion.diagonal ≈ [7/6 0; 0 4/3]
 
 # output
 
@@ -523,30 +523,33 @@ getmultiplicity(operator)
 Compute or retrieve the vector of node multiplicity for the operator
 
 # Arguments:
-- `operator`:  operator to compute node multiplicity
+
+  - `operator`:  operator to compute node multiplicity
 
 # Returns:
-- Vector of node multiplicity for the operator
+
+  - vector of node multiplicity for the operator
 
 # Example
+
 ```jldoctest
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 5, 5, mesh);
+    diffusion = GalleryOperator("diffusion", 5, 5, mesh)
 
     # compute multiplicity
-    multiplicity = diffusion.multiplicity;
+    multiplicity = diffusion.multiplicity
 
     # verify
-    multiplicity1D = [2. 1. 1. 1. 2.]';
+    multiplicity1D = [2.0 1.0 1.0 1.0 2.0]'
     if dimension == 1
         @assert multiplicity ≈ multiplicity1D
     elseif dimension == 2
@@ -555,6 +558,10 @@ for dimension in 1:3
         @assert multiplicity ≈ kron(multiplicity1D, multiplicity1D, multiplicity1D)
     end
 end
+
+# output
+
+```
 """
 function getmultiplicity(operator::Operator)
     # assemble if needed
@@ -603,23 +610,22 @@ getrowmodemap(operator)
 Compute or retrieve the matrix mapping the rows of the element matrix to the symbol matrix
 
 # Arguments:
-- `operator`:  operator to compute row mode map
+
+  - `operator`:  operator to compute row mode map
 
 # Returns:
-- Matrix mapping rows of element matrix to symbol matrix
+
+  - matrix mapping rows of element matrix to symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
 
-# note: either syntax works
-modemap = LFAToolkit.getrowmodemap(mass);
-modemap = mass.rowmodemap;
-
-# verify
-@assert modemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
+# verify row mode map
+@assert mass.rowmodemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
 
 # output
 
@@ -665,26 +671,25 @@ getcolumnmodemap(operator)
 ```
 
 Compute or retrieve the matrix mapping the columns of the element matrix to the
-  symbol matrix
+symbol matrix
 
 # Arguments:
-- `operator`:  operator to compute column mode map
+
+  - `operator`:  operator to compute column mode map
 
 # Returns:
-- Matrix mapping columns of element matrix to symbol matrix
+
+  - matrix mapping columns of element matrix to symbol matrix
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
 
-# note: either syntax works
-modemap = LFAToolkit.getcolumnmodemap(mass);
-modemap = mass.columnmodemap;
-
-# verify
-@assert modemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
+# verify column mode map
+@assert mass.columnmodemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
 
 # output
 
@@ -732,10 +737,12 @@ getinputcoordinates(operator)
 Compute or retrieve the array of input coordinates
 
 # Arguments:
-- `operator`:  operator to get input coordinates
+
+  - `operator`:  operator to get input coordinates
 
 # Returns:
-- Array of input coordinates
+
+  - array of input coordinates
 """
 function getinputcoordinates(operator::Operator)
     # assemble if needed
@@ -770,10 +777,12 @@ getoutputcoordinates(operator)
 Compute or retrieve the array of output coordinates
 
 # Arguments:
-- `operator`:  operator to get output coordinates
+
+  - `operator`:  operator to get output coordinates
 
 # Returns:
-- Array of output coordinates
+
+  - array of output coordinates
 """
 function getoutputcoordinates(operator::Operator)
     # assemble if needed
@@ -806,28 +815,26 @@ getnodecoordinatedifferences(operator)
 Compute or retrieve the array of differences in coordinates between nodes
 
 # Arguments:
-- `operator`:  operator to compute differences between node coordinates
+
+  - `operator`:  operator to compute differences between node coordinates
 
 # Returns:
-- Array of differences in coordinates between nodes
+
+  - array of differences in coordinates between nodes
 
 # Example:
-```jldoctest
-using FastGaussQuadrature
 
+```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 mass = GalleryOperator("mass", 4, 4, mesh);
 
-# note: either syntax works
-nodedifferences = LFAToolkit.getnodecoordinatedifferences(mass);
+# compute node coordinate differences
 nodedifferences = mass.nodecoordinatedifferences;
 
 # verify
-truenodes, = gausslobatto(4);
-truenodedifferences = [
-    (truenodes[j] - truenodes[i])/2.0 for i in 1:4, j in 1:4
-];
+truenodes = [-1, -√(1 / 5), √(1 / 5), 1];
+truenodedifferences = [(truenodes[j] - truenodes[i]) / 2.0 for i = 1:4, j = 1:4];
 @assert nodedifferences ≈ truenodedifferences
 
 # output
@@ -911,42 +918,45 @@ computesymbols(operator, θ)
 Compute the symbol matrix for an operator
 
 # Arguments:
-- `operator`:  finite element operator to compute symbol matrix for
-- `θ`:         Fourier mode frequency array (one frequency per dimension)
+
+  - `operator`:  finite element operator to compute symbol matrix for
+  - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the operator
+
+  - symbol matrix for the operator
 
 # Example:
+
 ```jldoctest
 using LinearAlgebra;
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
 
     # compute symbols
-    A = computesymbols(diffusion, π*ones(dimension));
+    A = computesymbols(diffusion, π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 1
         @assert minimum(eigenvalues) ≈ 1
-        @assert maximum(eigenvalues) ≈ 4/3
+        @assert maximum(eigenvalues) ≈ 4 / 3
     elseif dimension == 2
-        @assert minimum(eigenvalues) ≈ 2/3
-        @assert maximum(eigenvalues) ≈ 64/45
+        @assert minimum(eigenvalues) ≈ 2 / 3
+        @assert maximum(eigenvalues) ≈ 64 / 45
     elseif dimension == 3
-        @assert minimum(eigenvalues) ≈ 1/3
-        @assert maximum(eigenvalues) ≈ 256/225
+        @assert minimum(eigenvalues) ≈ 1 / 3
+        @assert maximum(eigenvalues) ≈ 256 / 225
     end
 end
 

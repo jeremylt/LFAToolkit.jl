@@ -14,16 +14,18 @@ Pmultigrid(fineoperator, coarseoperator, smoother, prolongation)
 P-Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:       finite element operator to precondition
-- `coarseoperator`:     coarse grid representation of finite element operator to
-                            precondition
-- `smoother`:           error relaxation operator, such as Jacobi
-- `prolongationbases`:  element prolongation bases from coarse to fine grid
+
+  - `fineoperator`:       finite element operator to precondition
+  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
+  - `smoother`:           error relaxation operator, such as Jacobi
+  - `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
-- P-multigrid preconditioner object
+
+  - p-multigrid preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -44,6 +46,7 @@ println(multigrid)
 println(multigrid.fineoperator)
 
 # output
+
 p-multigrid preconditioner
 finite element operator:
 2d mesh:
@@ -107,16 +110,18 @@ Hmultigrid(fineoperator, coarseoperator, smoother, prolongation)
 H-Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:       finite element operator to precondition
-- `coarseoperator`:     coarse grid representation of finite element operator to
-                            precondition
-- `smoother`:           error relaxation operator, such as Jacobi
-- `prolongationbases`:  element prolongation bases from coarse to fine grid
+
+  - `fineoperator`:       finite element operator to precondition
+  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
+  - `smoother`:           error relaxation operator, such as Jacobi
+  - `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
-- H-multigrid preconditioner object
+
+  - h-multigrid preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -124,7 +129,7 @@ ctofbasis = TensorH1LagrangeHProlongationBasis(2, 1, 2, 2);
 
 # operators
 function diffusionweakform(du::Array{Float64}, w::Array{Float64})
-    dv = du*w[1]
+    dv = du * w[1]
     return [dv]
 end
 # -- fine
@@ -155,6 +160,7 @@ println(multigrid)
 println(multigrid.fineoperator)
 
 # output
+
 h-multigrid preconditioner
 finite element operator:
 2d mesh:

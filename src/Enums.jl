@@ -8,11 +8,13 @@ module EvaluationMode
 Basis evaluation mode for operator inputs and outputs
 
 # Modes:
-- `interpolation`:      values interpolated to quadrature points
-- `gradient`:           derivatives evaluated at quadrature points
-- `quadratureweights`:  quadrature weights
+
+  - `interpolation`:      values interpolated to quadrature points
+  - `gradient`:           derivatives evaluated at quadrature points
+  - `quadratureweights`:  quadrature weights
 
 # Example:
+
 ```@jldoctest
 EvaluationMode.EvalMode
 
@@ -33,10 +35,12 @@ module MultigridType
 Multigrid types
 
 # Types:
-- `pmultigrid`:  p-multigrid
-- `hmultigrid`:  h-multigrid
+
+  - `pmultigrid`:  p-multigrid
+  - `hmultigrid`:  h-multigrid
 
 # Example:
+
 ```@jldoctest
 LFAToolkit.MultigridType.MgridType
 
@@ -56,10 +60,12 @@ module BDDCInjectionType
 BDDC injection types
 
 # Types:
-- `scaled`:    scaled injection
-- `harmonic`:  discrete harmonic extension
+
+  - `scaled`:    scaled injection
+  - `harmonic`:  discrete harmonic extension
 
 # Example
+
 ```@jldoctest
 LFAToolkit.BDDCInjectionType.BDDCInjectType
 

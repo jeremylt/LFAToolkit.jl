@@ -7,7 +7,7 @@
 [![Documentation](https://img.shields.io/badge/docs-stable-blue)](https://jeremylt.github.io/LFAToolkit.jl/stable/)
 [![DOI](https://zenodo.org/badge/291842028.svg)](https://zenodo.org/badge/latestdoi/291842028)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jeremylt/LFAToolkit.jl/main?filepath=examples%2Fjupyter)
-[![Run on Repl.it](https://repl.it/badge/github/jeremylt/LFAToolkit.jl)](https://replit.com/@jeremylt/LFAToolkitjl)
+[![Run on Repl.it](https://img.shields.io/badge/launch-replit-579aca?logo=replit)](https://replit.com/@jeremylt/LFAToolkitjl)
 
 Local Fourier Analysis for arbitrary order finite element type operators
 

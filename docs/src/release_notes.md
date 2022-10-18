@@ -4,10 +4,15 @@
 
 Current development includes:
 
+## v0.6.0
+
+This release includes conformal maps for bases, new operator convenience constructors, and small internal improvements.
+
 Enhancements:
 
 * Added conformal maps `sausage_transformation`, `kosloff_talezer_transformation`, and `hale_trefethen_strip_transformation` for basis quadrature spaces.
-* Add advection operator convenience constructor and examples.
+* Add advection and SUPG advection operator convenience constructor and examples.
+* Switch to `FastGaussQuadrature` package for computing nodes, quadrature points, and quadrature weights.
 
 Bugfixes:
 

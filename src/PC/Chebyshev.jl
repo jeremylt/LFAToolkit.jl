@@ -8,16 +8,18 @@ Chebyshev(operator)
 ```
 
 Chebyshev polynomial preconditioner for finite element operators.
-    The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``,
-    where ``D^{-1}`` is the inverse of the operator diagonal.
+The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``, where ``D^{-1}`` is the inverse of the operator diagonal.
 
 # Arguments:
-- `operator`:  finite element operator to precondition
+
+  - `operator`:  finite element operator to precondition
 
 # Returns:
-- Chebyshev preconditioner object
+
+  - Chebyshev preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -30,6 +32,7 @@ chebyshev = Chebyshev(mass);
 println(chebyshev)
 
 # output
+
 chebyshev preconditioner:
 eigenvalue estimates:
   estimated minimum 0.2500
@@ -86,31 +89,29 @@ end
 getoperatordiagonalinverse(preconditioner)
 ```
 
-Compute or retrieve the inverse of the symbol matrix diagonal for a Chebyshev
-    preconditioner
+Compute or retrieve the inverse of the symbol matrix diagonal for a Chebyshev preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute diagonal inverse
+
+  - `preconditioner`:  preconditioner to compute diagonal inverse
 
 # Returns:
-- Symbol matrix diagonal inverse for the operator
+
+  - symbol matrix diagonal inverse for the operator
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
 # preconditioner
-chebyshev = Chebyshev(diffusion)
+chebyshev = Chebyshev(diffusion);
 
-# note: either syntax works
-diagonalinverse = LFAToolkit.getoperatordiagonalinverse(chebyshev);
-diagonalinverse = chebyshev.operatordiagonalinverse;
+# verify operator diagonal inverse
+@assert chebyshev.operatordiagonalinverse ≈ [6/7 0; 0 3/4]
 
-# verify
-@assert diagonalinverse ≈ [6/7 0; 0 3/4]
- 
 # output
 
 ```
@@ -137,26 +138,26 @@ geteigenvalueestimates(preconditioner)
 Compute or retrieve the eigenvalue estimates for a Chebyshev preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute eigenvalue estimates
+
+  - `preconditioner`:  preconditioner to compute eigenvalue estimates
 
 # Returns:
-- Eigenvalue estimates for the operator
+
+  - eigenvalue estimates for the operator
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
 # preconditioner
-chebyshev = Chebyshev(diffusion)
+chebyshev = Chebyshev(diffusion);
 
-# estimate eigenvalues
-eigenvalueestimates = LFAToolkit.geteigenvalueestimates(chebyshev);
+# verify eigenvalue estimates
+@assert chebyshev.eigenvalueestimates ≈ [0, 15 / 7]
 
-# verify
-@assert eigenvalueestimates ≈ [0, 15/7]
- 
 # output
 
 ```
@@ -210,15 +211,17 @@ seteigenvalueestimatescaling(preconditioner, eigenvaluebounds)
 Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 
 # Arguments:
-- `preconditioner`:    preconditioner to set eigenvalue estimate scaling
-- `eigenvaluebounds`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
-                           and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
+
+  - `preconditioner`:    preconditioner to set eigenvalue estimate scaling
+  - `eigenvaluebounds`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
+    and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
 
 ``\\lambda_{\\text{min}}`` = a * estimated min + b * estimated max
 
 ``\\lambda_{\\text{max}}`` = c * estimated min + d * estimated max
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
@@ -232,8 +235,9 @@ chebyshev = Chebyshev(diffusion)
 #   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html
 seteigenvalueestimatescaling(chebyshev, [0.0, 0.1, 0.0, 1.1]);
 println(chebyshev)
- 
+
 # output
+
 chebyshev preconditioner:
 eigenvalue estimates:
   estimated minimum 0.0000
@@ -298,40 +302,43 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a Chebyshev preconditioned operator
 
 # Arguments:
-- `preconditioner`:  Chebyshev preconditioner to compute symbol matrix for
-- `ω`:               smoothing parameter array
-                         [degree], [degree, ``\\lambda_{\\text{max}}``], or
-                         [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
-- `θ`:               Fourier mode frequency array (one frequency per dimension)
+
+  - `preconditioner`:  Chebyshev preconditioner to compute symbol matrix for
+  - `ω`:               smoothing parameter array
+    [degree], [degree, ``\\lambda_{\\text{max}}``], or
+    [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
+  - `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the Chebyshev preconditioned operator
+
+  - symbol matrix for the Chebyshev preconditioned operator
 
 # Example:
+
 ```jldoctest
 using LinearAlgebra
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
 
     # preconditioner
-    chebyshev = Chebyshev(diffusion);
+    chebyshev = Chebyshev(diffusion)
 
     # compute symbols
-    A = computesymbols(chebyshev, [1], π*ones(dimension));
+    A = computesymbols(chebyshev, [1], π * ones(dimension))
 
     # verify
-    using LinearAlgebra;
-    eigenvalues = real(eigvals(A));
+    using LinearAlgebra
+    eigenvalues = real(eigvals(A))
     if dimension == 1
         @assert minimum(eigenvalues) ≈ 0.15151515151515105
         @assert maximum(eigenvalues) ≈ 0.27272727272727226

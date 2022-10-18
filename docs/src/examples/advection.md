@@ -25,7 +25,7 @@ In this weak formulation, boundary terms have been omitted, as they are not pres
 The advection operator is a classical test case to see dispersion spectrum inside LFAToolkit.
 Here we show the advection operator on a non-polynomial basis derived from the Hale-Trefethen strip transformation applied to a H1 Lagrange basis.
 
-For understanding about nonpolynomial bases, see paper Hale and Trefethen (2008) New quadrature formulas from conformal maps. https://doi.org/10.1137/07068607X
+For further discussion on non-polynomial bases, see [hale2008](@cite).
 
 ````@eval
 using Markdown

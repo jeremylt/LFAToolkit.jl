@@ -1,6 +1,6 @@
 # Mathematical Background
 
-Local Fourier Analysis (LFA) was first used by Brandt [1] to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
+Local Fourier Analysis (LFA) was first used in [brandt1977](@cite) to analyze the convergence of multi-level adaptive techniques for solving PDEs discretized with finite differences, but the technique has been adapted for multi-level and multi-grid techniques using finite element discretizations.
 While this library focuses on the finite element discretizations, finite difference discretizations of PDEs can often be recovered from finite element formulations by using linear finite elements on a structured grid.
 This fact makes LFAToolkit.jl an extremely flexible tool for LFA.
 
@@ -47,7 +47,7 @@ In this context, low frequencies are given by ``\theta \in T^{low} = \left[ - \p
 
 ## High Order Finite Elements
 
-Consider the specific case of a Topeliz operator representing a scalar PDE in 1D with the weak formulation given by Brown in [2],
+Consider the specific case of a Topeliz operator representing a scalar PDE in 1D with the weak formulation given by [brown2010](@cite),
 
 ```math
 \int_{\Omega} v \cdot f_0 \left( u, \nabla u \right) + \nabla v : f_1 \left( u, \nabla u \right) = \int_{\Omega} f v, \forall v \in V
@@ -63,7 +63,7 @@ Selecting a finite element basis, we can discretize the weak form and produce
 A u = b.
 ```
 
-Using the algebraic representation of PDE operators discussed in [2], the PDE operator ``A`` is of the form
+Using the algebraic representation of PDE operators discussed in [brown2010](@cite), the PDE operator ``A`` is of the form
 
 ```math
 A = P^T A_e P
@@ -205,7 +205,7 @@ If multiple pre or post-smoothing passes are used, we have
 where ``\nu`` is the number of smoothing passes.
 
 More sophisticated smoothers can be used, such as the Chebyshev semi-iterative method.
-For discussion of the error propegation of the Chebyshev semi-iteative method, see Gutknecht and Röllin [3].
+For discussion of the error propegation of the Chebyshev semi-iteative method, see [gutknecht2002](@cite).
 User defined smoothers are supported, where the user provides ``M^{-1}`` or a function computing ``M^{-1}`` based upon ``A``, and ``\tilde{M}^{-1}_h`` and ``\tilde{S}_h`` are automatically generated and used inside the multigrid symbol matrix.
 
 ### Grid Transfer Operators

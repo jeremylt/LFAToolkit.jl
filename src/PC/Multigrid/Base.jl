@@ -10,14 +10,15 @@ Multigrid(fineoperator, coarseoperator, smoother, prolongation, multigridtype)
 Multigrid preconditioner for finite element operators
 
 # Arguments:
-- `fineoperator`:       finite element operator to precondition
-- `coarseoperator`:     coarse grid representation of finite element operator to
-                            precondition
-- `smoother`:           error relaxation operator, such as Jacobi
-- `prolongationbases`:  element prolongation bases from coarse to fine grid
+
+  - `fineoperator`:       finite element operator to precondition
+  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
+  - `smoother`:           error relaxation operator, such as Jacobi
+  - `prolongationbases`:  element prolongation bases from coarse to fine grid
 
 # Returns:
-- Multigrid preconditioner object
+
+  - multigrid preconditioner object
 """
 mutable struct Multigrid <: AbstractPreconditioner
     # data never changed
@@ -91,10 +92,12 @@ getnodecoordinateddifferences(multigrid)
 Compute or retrieve the array of differences in coordinates between nodes
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute node coordinate differences
+
+  - `preconditioner`:  preconditioner to compute node coordinate differences
 
 # Returns:
-- Array of differences in coordinates between nodes
+
+  - array of differences in coordinates between nodes
 """
 function getnodecoordinatedifferences(multigrid::Multigrid)
     # assemble if needed
@@ -133,16 +136,19 @@ getprolongationmatrix(multigrid)
 Compute or retrieve the prolongation matrix
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute prolongation matrix
+
+  - `preconditioner`:  preconditioner to compute prolongation matrix
 
 # Returns:
-- Matrix prolonging from coarse grid to fine grid
+
+  - matrix prolonging from coarse grid to fine grid
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-ctofbasis = TensorH1LagrangeBasis(2, 3, 1, 2; collocatedquadrature=true);
+ctofbasis = TensorH1LagrangeBasis(2, 3, 1, 2; collocatedquadrature = true);
 
 # operators
 finediffusion = GalleryOperator("diffusion", 3, 3, mesh);
@@ -157,7 +163,7 @@ multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
 # verify
 u = ones(ctofbasis.numbernodes);
 v = multigrid.prolongationmatrix * u;
-@assert v' ≈ [4. 2. 4. 2. 1. 2. 4. 2. 4.].^-1
+@assert v' ≈ [4.0 2.0 4.0 2.0 1.0 2.0 4.0 2.0 4.0] .^ -1
 
 # output
 
@@ -212,14 +218,17 @@ computesymbolsprolongation(multigrid, θ)
 Compute the symbol matrix for a multigrid prolongation operator
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute prolongation symbol
+
+  - `preconditioner`:  preconditioner to compute prolongation symbol
 
 # Arguments:
-- `multigrid`: Multigrid operator to compute prolongation symbol matrix for
-- `θ`:         Fourier mode frequency array (one frequency per dimension)
+
+  - `multigrid`: Multigrid operator to compute prolongation symbol matrix for
+  - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the multigrid prolongation operator
+
+  - symbol matrix for the multigrid prolongation operator
 """
 function computesymbolsprolongation(multigrid::Multigrid, θ::Array)
     # setup
@@ -289,51 +298,54 @@ computesymbols(multigrid, p, v, θ)
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
-- `multigrid`:  multigrid preconditioner to compute symbol matrix for
-- `p`:          smoothing paramater array
-- `v`:          pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-- `θ`:          Fourier mode frequency array (one frequency per dimension)
+
+  - `multigrid`:  multigrid preconditioner to compute symbol matrix for
+  - `p`:          smoothing paramater array
+  - `v`:          pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+  - `θ`:          Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the multigrid preconditioned operator
+
+  - symbol matrix for the multigrid preconditioned operator
 
 # Example:
+
 ```jldoctest
 using LinearAlgebra
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature=true);
+    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature = true)
 
     # operators
-    finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
-    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh);
+    finediffusion = GalleryOperator("diffusion", 5, 5, mesh)
+    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh)
 
     # smoother
-    jacobi = Jacobi(finediffusion);
+    jacobi = Jacobi(finediffusion)
 
     # preconditioner
-    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
+    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
 
     # compute symbols
-    A = computesymbols(multigrid, [1.0], [1, 1], π*ones(dimension));
+    A = computesymbols(multigrid, [1.0], [1, 1], π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 1
-       @assert maximum(eigenvalues) ≈ 0.64
+        @assert maximum(eigenvalues) ≈ 0.64
     elseif dimension == 2
-       @assert maximum(eigenvalues) ≈ 0.9082562365654528
+        @assert maximum(eigenvalues) ≈ 0.9082562365654528
     elseif dimension == 3
-       @assert maximum(eigenvalues) ≈ 1.4359882222222669
+        @assert maximum(eigenvalues) ≈ 1.4359882222222669
     end
 end
 

@@ -63,7 +63,7 @@ supgmass = Operator(
     supgmassweakform,
     mesh,
     [
-        OperatorField(basis, [EvaluationMode.interpolation], "u_t"),
+        OperatorField(basis, [EvaluationMode.interpolation], "uₜ"),
         OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
     ],
     [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])],

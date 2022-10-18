@@ -8,62 +8,69 @@
 
 """
 ```julia
-computesymbolsoverrange(operator, numbersteps1d; mass = nothing, θ_min = -π/2, θ_band = 2π)
+computesymbolsoverrange(
+    operator,
+    numbersteps1d;
+    mass = nothing,
+    θ_min = -π / 2,
+    θ_band = 2π,
+)
 ```
 
-Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over
-  a range of θ from -π/2 to 3π/2
+Compute the eigenvalues and eigenvectors of the symbol matrix for an operator over a range of θ
 
 # Arguments:
-- `operator`:       Finite element operator to compute symbol matrices for
-- `numbersteps1d`:  Number of values of θ to sample in each dimension
-                        Note: numbersteps1d^dimension symbol matrices will be computed
+
+  - `operator`:       finite element operator to compute symbol matrices for
+  - `numbersteps1d`:  number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:   Mass operator to invert for comparison to analytic solution,
-                default: nothing
-- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
-                default: -π / 2
-- `θ_band`: θ_max = θ_min + θ_band
-                default: 2π
+
+  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
+  - `θ_band = 2π`:     θ_max = θ_min + θ_band
 
 # Returns:
-- Values of θ sampled
-- Eigenvalues of symbol matrix at θ sampled
-- Eigenvectors of symbol matrix at θ sampled
+
+tuple holding
+
+  - values of θ sampled
+  - eigenvalues of symbol matrix at θ sampled
+  - eigenvectors of symbol matrix at θ sampled
 
 # Examples:
+
 ```jldoctest
 using LFAToolkit;
 
 numbersteps1d = 5;
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
 
     # compute symbols
-    (_, eigenvalues, _) = computesymbolsoverrange(diffusion, numbersteps1d);
+    (_, eigenvalues, _) = computesymbolsoverrange(diffusion, numbersteps1d)
 
     # verify
-    eigenvalues = real(eigenvalues);
+    eigenvalues = real(eigenvalues)
     if dimension == 1
         @assert minimum(eigenvalues[4, :]) ≈ 1
-        @assert maximum(eigenvalues[4, :]) ≈ 4/3
+        @assert maximum(eigenvalues[4, :]) ≈ 4 / 3
     elseif dimension == 2
-        @assert minimum(eigenvalues[19, :]) ≈ 2/3
-        @assert maximum(eigenvalues[19, :]) ≈ 64/45
+        @assert minimum(eigenvalues[19, :]) ≈ 2 / 3
+        @assert maximum(eigenvalues[19, :]) ≈ 64 / 45
     elseif dimension == 3
-        @assert minimum(eigenvalues[94, :]) ≈ 1/3
-        @assert maximum(eigenvalues[94, :]) ≈ 256/225
+        @assert minimum(eigenvalues[94, :]) ≈ 1 / 3
+        @assert maximum(eigenvalues[94, :]) ≈ 256 / 225
     end
 end
 
@@ -84,12 +91,8 @@ mass = GalleryOperator("mass", p + 1, p + 1, mesh);
 diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh);
 
 # compute symbols
-(_, eigenvalues, _) = computesymbolsoverrange(
-    diffusion,
-    numbersteps1d;
-    mass = mass,
-    θ_min = -π
-);
+(_, eigenvalues, _) =
+    computesymbolsoverrange(diffusion, numbersteps1d; mass = mass, θ_min = -π);
 eigenvalues = real(eigenvalues);
 
 @assert minimum(eigenvalues[2, :]) ≈ π^2
@@ -144,55 +147,65 @@ end
 
 """
 ```julia
-computesymbolsoverrange(preconditioner, ω, numbersteps1d; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(
+    preconditioner,
+    ω,
+    numbersteps1d;
+    mass = nothing,
+    θ_min = -π / 2,
+    θ_band = 2π,
+)
 ```
 
-Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned
-  operator over a range of θ from -π/2 to 3π/2
+Compute the eigenvalues and eigenvectors of the symbol matrix for a preconditioned operator over a range of θ
 
 # Arguments:
-- `preconditioner`:  Preconditioner to compute symbol matries for
-- `ω`:               Smoothing parameter array
-- `numbersteps1d`:   Number of values of θ to sample in each dimension
-                         Note: numbersteps1d^dimension symbol matrices will be computed
+
+  - `preconditioner`:  preconditioner to compute symbol matries for
+  - `ω`:               smoothing parameter array
+  - `numbersteps1d`:   number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:   Mass operator to invert for comparison to analytic solution,
-                default: nothing
-- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
-                default: -π / 2
+
+  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
+  - `θ_band = 2π`:     θ_max = θ_min + θ_band
 
 # Returns:
-- Values of θ sampled
-- Eigenvalues of symbol matrix at θ sampled
-- Eigenvectors of symbol matrix at θ sampled
+
+tuple holding
+
+  - values of θ sampled
+  - eigenvalues of symbol matrix at θ sampled
+  - eigenvectors of symbol matrix at θ sampled
 
 # Example:
+
 ```jldoctest
 using LFAToolkit;
 
 numbersteps1d = 5;
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
 
     # preconditioner
-    chebyshev = Chebyshev(diffusion);
+    chebyshev = Chebyshev(diffusion)
 
     # compute symbols
-    (_, eigenvalues, _) = computesymbolsoverrange(chebyshev, [1], numbersteps1d);
+    (_, eigenvalues, _) = computesymbolsoverrange(chebyshev, [1], numbersteps1d)
 
     # verify
-    eigenvalues = real(eigenvalues);
+    eigenvalues = real(eigenvalues)
     if dimension == 1
         @assert minimum(eigenvalues[4, :]) ≈ 0.15151515151515105
         @assert maximum(eigenvalues[4, :]) ≈ 0.27272727272727226
@@ -215,11 +228,12 @@ function computesymbolsoverrange(
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
     θ_min::Float64 = -π / 2,
+    θ_band::Float64 = 2π,
 )
     # setup range
     dimension = preconditioner.operator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_max = θ_min + 2π
+    θ_max = θ_min + θ_band
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 
@@ -255,31 +269,42 @@ end
 
 """
 ```julia
-computesymbolsoverrange(multigrid, p, v, numbersteps1d; mass=nothing, θ_min=-π/2)
+computesymbolsoverrange(
+    multigrid,
+    p,
+    v,
+    numbersteps1d;
+    mass = nothing,
+    θ_min = -π / 2,
+    θ_band = 2π,
+)
 ```
 
-Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid
-  preconditioned operator over a range of θ from -π/2 to 3π/2
+Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid preconditioned operator over a range of θ
 
 # Arguments:
-- `multigrid`:      Preconditioner to compute symbol matries for
-- `p`:              Smoothing parameter array
-- `v`:              Pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-- `numbersteps1d`:  Number of values of θ to sample in each dimension
-                       Note: numbersteps1d^dimension symbol matrices will be computed
+
+  - `multigrid`:      preconditioner to compute symbol matries for
+  - `p`:              smoothing parameter array
+  - `v`:              pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+  - `numbersteps1d`:  number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
-- `mass`:   Mass operator to invert for comparison to analytic solution,
-                default: nothing
-- `θ_min`:  Bottom of range of θ, shifts range to [θ_min, θ_min + 2π],
-                default: -π / 2
+
+  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
+  - `θ_band = 2π`:     θ_max = θ_min + θ_band
 
 # Returns:
-- Values of θ sampled
-- Eigenvalues of symbol matrix at θ sampled
-- Eigenvectors of symbol matrix at θ sampled
+
+tuple holding
+
+  - values of θ sampled
+  - eigenvalues of symbol matrix at θ sampled
+  - eigenvectors of symbol matrix at θ sampled
 
 # Example:
+
 ```jldoctest
 using LFAToolkit;
 
@@ -287,39 +312,39 @@ numbersteps1d = 5;
 
 using LinearAlgebra
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature=true);
+    ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature = true)
 
     # operators
-    finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
-    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh);
+    finediffusion = GalleryOperator("diffusion", 5, 5, mesh)
+    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh)
 
     # smoother
-    jacobi = Jacobi(finediffusion);
+    jacobi = Jacobi(finediffusion)
 
     # preconditioner
-    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis]);
+    multigrid = PMultigrid(finediffusion, coarsediffusion, jacobi, [ctofbasis])
 
     # compute symbols
-    (_, eigenvalues, _) = computesymbolsoverrange(multigrid, [1.0], [1, 1], numbersteps1d);
+    (_, eigenvalues, _) = computesymbolsoverrange(multigrid, [1.0], [1, 1], numbersteps1d)
 
     # verify
     eigenvalues = real(eigenvalues)
     if dimension == 1
-       @assert maximum(eigenvalues[4, :]) ≈ 0.64
+        @assert maximum(eigenvalues[4, :]) ≈ 0.64
     elseif dimension == 2
-       @assert maximum(eigenvalues[19, :]) ≈ 0.9082562365654528
+        @assert maximum(eigenvalues[19, :]) ≈ 0.9082562365654528
     elseif dimension == 3
-       @assert maximum(eigenvalues[94, :]) ≈ 1.4359882222222669
+        @assert maximum(eigenvalues[94, :]) ≈ 1.4359882222222669
     end
 end
 
@@ -334,11 +359,12 @@ function computesymbolsoverrange(
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
     θ_min::Float64 = -π / 2,
+    θ_band::Float64 = 2π,
 )
     # setup range
     dimension = multigrid.fineoperator.dimension
     numbersteps = numbersteps1d^dimension
-    θ_max = θ_min + 2π
+    θ_max = θ_min + θ_band
     θ_range1d = LinRange(θ_min, θ_max, numbersteps1d)
     θ_range = zeros(numbersteps, dimension)
 

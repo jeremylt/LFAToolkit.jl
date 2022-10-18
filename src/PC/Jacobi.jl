@@ -10,12 +10,15 @@ Jacobi(operator)
 Jacobi diagonal preconditioner for finite element operators
 
 # Arguments:
-- `operator`:  finite element operator to precondition
+
+  - `operator`:  finite element operator to precondition
 
 # Returns:
-- Jacobi preconditioner object
+
+  - Jacobi preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -29,6 +32,7 @@ println(jacobi)
 println(jacobi.operator)
 
 # output
+
 jacobi preconditioner
 finite element operator:
 2d mesh:
@@ -90,30 +94,29 @@ getoperatordiagonalinverse(preconditioner)
 ```
 
 Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
-    preconditioner
+preconditioner
 
 # Arguments:
-- `preconditioner`:  preconditioner to compute diagonal inverse
+
+  - `preconditioner`:  preconditioner to compute diagonal inverse
 
 # Returns:
-- Symbol matrix diagonal inverse for the operator
+
+  - symbol matrix diagonal inverse for the operator
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
 diffusion = GalleryOperator("diffusion", 3, 3, mesh);
 
 # preconditioner
-jacobi = Jacobi(diffusion)
+jacobi = Jacobi(diffusion);
 
-# note: either syntax works
-diagonalinverse = LFAToolkit.getoperatordiagonalinverse(jacobi);
-diagonalinverse = jacobi.operatordiagonalinverse;
+# verify operator diagonal inverse
+@assert jacobi.operatordiagonalinverse ≈ [6/7 0; 0 3/4]
 
-# verify
-@assert diagonalinverse ≈ [6/7 0; 0 3/4]
- 
 # output
 
 ```
@@ -164,42 +167,45 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
-- `preconditioner`:  Jacobi preconditioner to compute symbol matrix for
-- `ω`:               smoothing weighting factor array
-- `θ`:               Fourier mode frequency array (one frequency per dimension)
+
+  - `preconditioner`:  Jacobi preconditioner to compute symbol matrix for
+  - `ω`:               smoothing weighting factor array
+  - `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the Jacobi preconditioned operator
+
+  - symbol matrix for the Jacobi preconditioned operator
 
 # Example:
+
 ```jldoctest
 using LinearAlgebra
 
-for dimension in 1:3
+for dimension = 1:3
     # setup
     mesh = []
     if dimension == 1
-        mesh = Mesh1D(1.0);
+        mesh = Mesh1D(1.0)
     elseif dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
 
     # preconditioner
-    jacobi = Jacobi(diffusion);
+    jacobi = Jacobi(diffusion)
 
     # compute symbols
-    A = computesymbols(jacobi, [1.0], π*ones(dimension));
+    A = computesymbols(jacobi, [1.0], π * ones(dimension))
 
     # verify
-    using LinearAlgebra;
-    eigenvalues = real(eigvals(A));
+    using LinearAlgebra
+    eigenvalues = real(eigvals(A))
     if dimension == 1
-        @assert maximum(eigenvalues) ≈ 1/7
+        @assert maximum(eigenvalues) ≈ 1 / 7
     elseif dimension == 2
-        @assert minimum(eigenvalues) ≈ -1/14
+        @assert minimum(eigenvalues) ≈ -1 / 14
     elseif dimension == 3
         @assert minimum(eigenvalues) ≈ -0.33928571428571486
     end

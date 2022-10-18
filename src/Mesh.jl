@@ -15,12 +15,15 @@ Mesh1D(dx)
 One dimensional regular background mesh
 
 # Arguments:
-- `dx`:  deformation in x dimension
+
+  - `dx`:  deformation in x dimension
 
 # Returns:
-- One dimensional mesh object
+
+  - one dimensional mesh object
 
 # Example:
+
 ```jldoctest
 # generate 1D mesh
 mesh = Mesh1D(1.0);
@@ -29,6 +32,7 @@ mesh = Mesh1D(1.0);
 println(mesh)
 
 # output
+
 1d mesh:
     dx: 1.0
 ```
@@ -69,13 +73,16 @@ Mesh2D(dx, dy)
 Two dimensional regular background mesh
 
 # Arguments:
-- `dx`:  deformation in x dimension
-- `dy`:  deformation in y dimension
+
+  - `dx`:  deformation in x dimension
+  - `dy`:  deformation in y dimension
 
 # Returns:
-- Two dimensional mesh object
+
+  - two dimensional mesh object
 
 # Example:
+
 ```jldoctest
 # generate 2D mesh
 mesh = Mesh2D(1.0, 0.5);
@@ -84,6 +91,7 @@ mesh = Mesh2D(1.0, 0.5);
 println(mesh)
 
 # output
+
 2d mesh:
     dx: 1.0
     dy: 0.5
@@ -128,14 +136,17 @@ Mesh3D(dx, dy, dz)
 Three dimensional regular background mesh
 
 # Arguments:
-- `dx`:  deformation in x dimension
-- `dy`:  deformation in y dimension
-- `dz`:  deformation in z dimension
+
+  - `dx`:  deformation in x dimension
+  - `dy`:  deformation in y dimension
+  - `dz`:  deformation in z dimension
 
 # Returns:
-- Three dimensional mesh object
+
+  - three dimensional mesh object
 
 # Example:
+
 ```jldoctest
 # generate 3D mesh
 mesh = Mesh3D(1.0, 0.5, 0.3);
@@ -144,11 +155,12 @@ mesh = Mesh3D(1.0, 0.5, 0.3);
 println(mesh)
 
 # output
+
 3d mesh:
     dx: 1.0
     dy: 0.5
     dz: 0.3
-``` 
+```
 """
 struct Mesh3D <: Mesh
     # data

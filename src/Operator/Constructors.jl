@@ -15,31 +15,31 @@ GalleryOperator(
     mesh;
     collocatedquadrature = false,
     mapping = nothing,
-    parameters = nothing
+    parameters = nothing,
 )
 ```
 
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`:                      string containing name of operator
-- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-- `mesh`:                      mesh for operator
+
+  - `name`:                      string containing name of operator
+  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+  - `mesh`:                      mesh for operator
 
 # Keyword Arguments:
-- `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points,
-                                       default: false, Gauss-Legendre-Lobatto
-- `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer,
-                                       or Hale-Trefethen strip transformation
-                                       default: nothing, no transformation
-- `parameters = nothing`:          named tuple of model parameters
-                                       default: nothing, default parameters
+
+  - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points
+  - `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `parameters = nothing`:          named tuple of model parameters
 
 # Returns:
-- Finite element operator object
+
+  - finite element operator object
 
 # Mass matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -49,6 +49,7 @@ mass = GalleryOperator("mass", 4, 4, mesh);
 println(mass)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -84,6 +85,7 @@ operator field:
 ```
 
 # Diffusion operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -93,6 +95,7 @@ diffusion = GalleryOperator("diffusion", 4, 4, mesh);
 println(diffusion)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -128,6 +131,7 @@ operator field:
 ```
 
 # Advection operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -173,13 +177,12 @@ operator field:
 ```
 
 # SUPG mass matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-parameters = (wind = [1., 1.], τ = 1.0);
-mapping = nothing;
-collocate = false;
-supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters = parameters, collocatedquadrature = collocate, mapping = mapping);
+parameters = (wind = [1.0, 1.0], τ = 1.0);
+supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgmass)
@@ -222,13 +225,12 @@ operator field:
 ```
 
 # SUPG advection operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
 parameters = nothing;
-mapping = nothing;
-collocate = false;
-supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters = parameters, collocatedquadrature = collocate, mapping = mapping);
+supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgadvection)
@@ -269,7 +271,6 @@ operator field:
   evaluation mode:
     gradient
 ```
-
 """
 function GalleryOperator(
     name::String,
@@ -307,16 +308,19 @@ GalleryVectorOperator(name, numbernodes1d, numberquadraturepoints1d, numbereleme
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`:                      string containing name of operator
-- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-- `numbercomponents`:          number of components
-- `mesh`:                      mesh for operator
+
+  - `name`:                      string containing name of operator
+  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+  - `numbercomponents`:          number of components
+  - `mesh`:                      mesh for operator
 
 # Returns:
-- Finite element operator object
+
+  - finite element operator object
 
 # Mass matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -326,6 +330,7 @@ mass = GalleryVectorOperator("mass", 4, 4, 3, mesh);
 println(mass)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -361,6 +366,7 @@ operator field:
 ```
 
 # Diffusion operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -370,6 +376,7 @@ diffusion = GalleryVectorOperator("diffusion", 4, 4, 3, mesh);
 println(diffusion)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -432,6 +439,7 @@ GalleryMacroElementOperator(
     numberquadraturepoints1d,
     numberelements1d,
     mesh;
+    mapping = nothing,
     parameters = nothing,
 )
 ```
@@ -439,20 +447,24 @@ GalleryMacroElementOperator(
 Finite element operator from a gallery of options
 
 # Arguments:
-- `name`:                      string containing name of operator
-- `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-- `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-- `numberelements1d`:          number of elements in macro-element
-- `mesh`:                      mesh for operator
+
+  - `name`:                      string containing name of operator
+  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
+  - `numberelements1d`:          number of elements in macro-element
+  - `mesh`:                      mesh for operator
 
 # Keyword Arguments:
-- `parameters` = nothing:      named tuple of model parameters
-                                   default: nothing, default parameters
+
+  - `mapping = nothing`:         quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `parameters` = nothing:      named tuple of model parameters
 
 # Returns:
-- Finite element operator object
+
+  - finite element operator object
 
 # Mass matrix example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -462,6 +474,7 @@ mass = GalleryMacroElementOperator("mass", 4, 4, 2, mesh);
 println(mass)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -500,6 +513,7 @@ operator field:
 ```
 
 # Diffusion operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -509,6 +523,7 @@ diffusion = GalleryMacroElementOperator("diffusion", 4, 4, 2, mesh);
 println(diffusion)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -547,6 +562,7 @@ operator field:
 ```
 
 # Advection operator example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -607,6 +623,7 @@ function GalleryMacroElementOperator(
             1,
             mesh.dimension,
             numberelements1d,
+            mapping = mapping,
         )
         if isnothing(parameters)
             return operatorgallery[name](basis, mesh)
@@ -630,20 +647,24 @@ massoperator(basis, mesh; parameters)
 Convenience constructor for mass operator
 
 # Weak form:
-- ``\\int v u``
+
+  - ``\\int v u``
 
 # Arguments:
-- `basis`:  basis for all operator fields to use
-- `mesh`:   mesh for operator
+
+  - `basis`:  basis for all operator fields to use
+  - `mesh`:   mesh for operator
 
 # Keyword Arguments:
-- `parameters = nothing`:  named tuple of model parameters
-                               default: nothing, no parameters
+
+  - `parameters = nothing`:  named tuple of model parameters
 
 # Returns:
-- Mass matrix operator with basis on mesh
+
+  - mass matrix operator with basis on mesh
 
 # Example:
+
 ```jldoctest
 # mass operator
 mesh = Mesh2D(1.0, 1.0);
@@ -654,6 +675,7 @@ mass = LFAToolkit.massoperator(basis, mesh);
 println(mass)
 
 # output
+
 finite element operator:
 2d mesh:
     dx: 1.0
@@ -715,20 +737,24 @@ diffusionoperator(basis, mesh; parameters)
 Convenience constructor for diffusion operator
 
 # Weak form:
-- ``\\int \\nabla v \\nabla u``
+
+  - ``\\int \\nabla v \\nabla u``
 
 # Arguments:
-- `basis`:  basis for all operator fields to use
-- `mesh`:   mesh for operator
+
+  - `basis`:  basis for all operator fields to use
+  - `mesh`:   mesh for operator
 
 # Keyword Arguments:
-- `parameters = nothing`:  named tuple of model parameters
-                               default: nothing, no parameters
+
+  - `parameters = nothing`:  named tuple of model parameters
 
 # Returns:
-- Diffusion operator with basis on mesh
+
+  - diffusion operator with basis on mesh
 
 # Example:
+
 ```jldoctest
 # diffusion operator
 mesh = Mesh2D(1.0, 1.0);
@@ -797,29 +823,34 @@ end
 ```julia
 advectionoperator(basis, mesh; parameters)
 ```
+
 Convenience constructor for advection operator
 
 # Weak form:
-- ``\\int \\nabla v u``
+
+  - ``\\int \\nabla v u``
 
 # Arguments:
-- `basis`:  basis for all operator fields to use
-- `mesh`:   mesh for operator
+
+  - `basis`:  basis for all operator fields to use
+  - `mesh`:   mesh for operator
 
 # Keyword Arguments:
-- `parameters = ([wind = [1., 1.],)`:  named tuple of model parameters, defines wind speed
-                                           default: wind speed = [1.0, 1.0]
+
+  - `parameters = ([wind = [1., 1.],)`:  named tuple of model parameters, defines wind speed
 
 # Returns:
-- Advection operator with basis on mesh
+
+  - advection operator with basis on mesh
 
 # Example:
+
 ```jldoctest
 # advection operator
 mesh = Mesh2D(1.0, 1.0);
 mapping = hale_trefethen_strip_transformation(1.4);
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
-parameters = (wind = [1., 1.],);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, mapping = mapping);
+parameters = (wind = [1.0, 1.0],);
 advection = LFAToolkit.advectionoperator(basis, mesh; parameters = parameters);
 
 # verify
@@ -903,29 +934,33 @@ end
 ```julia
 supgmassoperator(basis, mesh; parameters)
 ```
+
 Convenience constructor for SUPG mass matrix operator
 
 # Weak form: Left hand side
-- ``\\int v u_t + wind τ u_t \\nabla v``
+
+  - ``\\int v u_t + wind τ u_t \\nabla v``
 
 # Arguments:
-- `basis`:  basis for all operator fields to use
-- `mesh`:   mesh for operator
+
+  - `basis`:  basis for all operator fields to use
+  - `mesh`:   mesh for operator
 
 # Keyword Arguments:
-- `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
-                                                   default: wind speed = [1.0, 1.0], τ = 1.0
+
+  - `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
 
 # Returns:
-- SUPG mass matrix operator with basis on mesh
+
+  - SUPG mass matrix operator with basis on mesh
 
 # Example:
+
 ```jldoctest
 # supg mass matrix operator
 mesh = Mesh2D(1.0, 1.0);
-mapping = nothing;
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
-parameters = (wind = [1., 1.], τ = 1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension);
+parameters = (wind = [1.0, 1.0], τ = 1.0);
 supgmass = LFAToolkit.supgmassoperator(basis, mesh; parameters = parameters);
 
 # verify
@@ -1016,29 +1051,33 @@ end
 ```julia
 supgadvectionoperator(basis, mesh; parameters)
 ```
+
 Convenience constructor for SUPG advection operator
 
 # Weak form: Right hand side
-- ``\\int wind \\nabla v u - wind wind τ \\nabla v \\nabla u``
+
+  - ``\\int wind \\nabla v u - wind wind τ \\nabla v \\nabla u``
 
 # Arguments:
-- `basis`:  basis for all operator fields to use
-- `mesh`:   mesh for operator
+
+  - `basis`:  basis for all operator fields to use
+  - `mesh`:   mesh for operator
 
 # Keyword Arguments:
-- `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
-                                                   default: wind speed = [1.0, 1.0], τ = 1.0
+
+  - `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
 
 # Returns:
-- SUPG advection operator with basis on mesh
+
+  - SUPG advection operator with basis on mesh
 
 # Example:
+
 ```jldoctest
 # supg advection operator
 mesh = Mesh2D(1.0, 1.0);
-mapping = nothing;
-basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension, collocatedquadrature = false, mapping = mapping);
-parameters = (wind = [1., 1.], τ = 1.0);
+basis = TensorH1LagrangeBasis(3, 4, 1, mesh.dimension);
+parameters = (wind = [1.0, 1.0], τ = 1.0);
 supgadvection = LFAToolkit.supgadvectionoperator(basis, mesh; parameters = parameters);
 
 # verify

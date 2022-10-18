@@ -9,6 +9,6 @@ using JuliaFormatter
 # run JuliaFormatter
 # ------------------------------------------------------------------------------
 
-format(["src", "test", "examples", "docs"])
+format(["src", "test", "examples", "docs"], format_docstrings = true)
 
 # ------------------------------------------------------------------------------

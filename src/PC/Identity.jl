@@ -10,9 +10,11 @@ IdentityPC()
 Identity preconditioner to investigate multigrid without smoother
 
 # Returns:
-- Identity preconditioner object
+
+  - identity preconditioner object
 
 # Example:
+
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
@@ -25,6 +27,7 @@ identity = IdentityPC(mass);
 println(identity)
 
 # output
+
 identity preconditioner
 ```
 """
@@ -63,14 +66,17 @@ computesymbols(preconditioner, ω, θ)
 Compute or retrieve the symbol matrix for a identity preconditioned operator
 
 # Arguments:
-- `preconditioner`:  Identity preconditioner to compute symbol matrix for
-- `ω`:               smoothing weighting factor array
-- `θ`:               Fourier mode frequency array (one frequency per dimension)
+
+  - `preconditioner`:  Identity preconditioner to compute symbol matrix for
+  - `ω`:               smoothing weighting factor array
+  - `θ`:               Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
-- Symbol matrix for the identity preconditioner (I)
+
+  - symbol matrix for the identity preconditioner (I)
 
 # Example:
+
 ```jldoctest
 using LinearAlgebra
 

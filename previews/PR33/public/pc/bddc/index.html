@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/public/pc/bddc/"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">LFAToolkit.jl</span></div><form class="docs-search" action="../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../">Introduction</a></li><li><a class="tocitem" href="../../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../../examples/">Examples</a></li><li><a class="tocitem" href="../../">Public API</a></li><li><a class="tocitem" href="../../../private/">Private API</a></li><li><a class="tocitem" href="../../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/master/docs/src/public/pc/bddc.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Preconditioner:-BDDC"><a class="docs-heading-anchor" href="#Preconditioner:-BDDC">Preconditioner: BDDC</a><a id="Preconditioner:-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Preconditioner:-BDDC" title="Permalink"></a></h2><p>LFAToolkit supports lumped and Dirichlet BDDC preconditioners.</p><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.BDDCInjectionType.BDDCInjectType" href="#LFAToolkit.BDDCInjectionType.BDDCInjectType"><code>LFAToolkit.BDDCInjectionType.BDDCInjectType</code></a> — <span class="docstring-category">Type</span></header><section><div><p>BDDC injection types</p><p><strong>Types:</strong></p><ul><li><code>scaled</code>:    scaled injection</li><li><code>harmonic</code>:  discrete harmonic extension</li></ul><p><strong>Example</strong></p><pre><code class="language-">LFAToolkit.BDDCInjectionType.BDDCInjectType
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><script data-outdated-warner src="../../../assets/warner.js"></script><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/public/pc/bddc/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../../">LFAToolkit.jl</a></span></div><form class="docs-search" action="../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../">Introduction</a></li><li><a class="tocitem" href="../../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../../examples/">Examples</a></li><li><a class="tocitem" href="../../">Public API</a></li><li><a class="tocitem" href="../../../private/">Private API</a></li><li><a class="tocitem" href="../../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/main/docs/src/public/pc/bddc.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Preconditioner:-BDDC"><a class="docs-heading-anchor" href="#Preconditioner:-BDDC">Preconditioner: BDDC</a><a id="Preconditioner:-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Preconditioner:-BDDC" title="Permalink"></a></h2><p>LFAToolkit supports lumped and Dirichlet BDDC preconditioners.</p><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.BDDCInjectionType.BDDCInjectType" href="#LFAToolkit.BDDCInjectionType.BDDCInjectType"><code>LFAToolkit.BDDCInjectionType.BDDCInjectType</code></a> — <span class="docstring-category">Type</span></header><section><div><p>BDDC injection types</p><p><strong>Types:</strong></p><ul><li><code>scaled</code>:    scaled injection</li><li><code>harmonic</code>:  discrete harmonic extension</li></ul><p><strong>Example</strong></p><pre><code class="language- hljs">LFAToolkit.BDDCInjectionType.BDDCInjectType
 
 # output
 Enum LFAToolkit.BDDCInjectionType.BDDCInjectType:
 scaled = 0
-harmonic = 1</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/e78188b54cd0d5bcb84141137a4f630c117b2a06/src/Enums.jl#L55-L71">source</a></section></article><h3 id="Lumped-BDDC"><a class="docs-heading-anchor" href="#Lumped-BDDC">Lumped BDDC</a><a id="Lumped-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Lumped-BDDC" title="Permalink"></a></h3><h4 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h4><p>This is an example of a simple lumped BDDC preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+harmonic = 1</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/af1b547f1481129e8a056af6408e93641de349e4/src/Enums.jl#L59-L77">source</a></section></article><h3 id="Lumped-BDDC"><a class="docs-heading-anchor" href="#Lumped-BDDC">Lumped BDDC</a><a id="Lumped-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Lumped-BDDC" title="Permalink"></a></h3><h4 id="Examples"><a class="docs-heading-anchor" href="#Examples">Examples</a><a id="Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Examples" title="Permalink"></a></h4><p>This is an example of a simple lumped BDDC preconditioner.</p><pre><code class="language-julia hljs"># ------------------------------------------------------------------------------
 # lumped BDDC example
 # ------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../../img/221_lumped_bddc_spectral_radius_3_2d.png" alt/></p><p>This is an example of a simple lumped BDDC preconditioner on a macro-element patch.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+</code></pre><p><img src="../../../img/221_lumped_bddc_spectral_radius_3_2d.png" alt/></p><p>This is an example of a simple lumped BDDC preconditioner on a macro-element patch.</p><pre><code class="language-julia hljs"># ------------------------------------------------------------------------------
 # lumped BDDC on macro elements example
 # ------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../../img/222_lumped_bddc_spectral_radius_4_elem_2d.png" alt/></p><h4 id="Documentation"><a class="docs-heading-anchor" href="#Documentation">Documentation</a><a id="Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#Documentation" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.LumpedBDDC" href="#LFAToolkit.LumpedBDDC"><code>LFAToolkit.LumpedBDDC</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">LumpedBDDC(operator)</code></pre><p>Lumped BDDC preconditioner for finite element operators</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:  finite element operator to precondition</li></ul><p><strong>Returns:</strong></p><ul><li>Lumped BDDC preconditioner object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+</code></pre><p><img src="../../../img/222_lumped_bddc_spectral_radius_4_elem_2d.png" alt/></p><h4 id="Documentation"><a class="docs-heading-anchor" href="#Documentation">Documentation</a><a id="Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#Documentation" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.LumpedBDDC" href="#LFAToolkit.LumpedBDDC"><code>LFAToolkit.LumpedBDDC</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">LumpedBDDC(operator)</code></pre><p>Lumped BDDC preconditioner for finite element operators</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:  finite element operator to precondition</li></ul><p><strong>Returns:</strong></p><ul><li>lumped BDDC preconditioner object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia hljs"># setup
 mesh = Mesh2D(1.0, 1.0);
 
 # operator
@@ -63,6 +63,7 @@ println(bddc)
 println(bddc.operator)
 
 # output
+
 lumped BDDC preconditioner
 finite element operator:
 2d mesh:
@@ -95,24 +96,24 @@ operator field:
     numbercomponents: 1
     dimension: 2
   evaluation mode:
-    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/e78188b54cd0d5bcb84141137a4f630c117b2a06/src/PC/BDDC/Constructors.jl#L9-L72">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbols-Tuple{BDDC, Array, Array}" href="#LFAToolkit.computesymbols-Tuple{BDDC, Array, Array}"><code>LFAToolkit.computesymbols</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">computesymbols(bddc, θ)</code></pre><p>Compute the symbol matrix for a BDDC preconditioned operator</p><p><strong>Arguments:</strong></p><ul><li><code>bddc</code>:  BDDC preconditioner to compute symbol matrix for</li><li><code>θ</code>:     Fourier mode frequency array (one frequency per dimension)</li></ul><p><strong>Returns:</strong></p><ul><li>Symbol matrix for the BDDC preconditioned operator</li></ul><p><strong>Lumped BDDC Example:</strong></p><pre><code class="language-julia">using LinearAlgebra;
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/af1b547f1481129e8a056af6408e93641de349e4/src/PC/BDDC/Constructors.jl#L9-L76">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.computesymbols-Tuple{BDDC, Array, Array}" href="#LFAToolkit.computesymbols-Tuple{BDDC, Array, Array}"><code>LFAToolkit.computesymbols</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">computesymbols(bddc, θ)</code></pre><p>Compute the symbol matrix for a BDDC preconditioned operator</p><p><strong>Arguments:</strong></p><ul><li><code>bddc</code>:  BDDC preconditioner to compute symbol matrix for</li><li><code>θ</code>:     Fourier mode frequency array (one frequency per dimension)</li></ul><p><strong>Returns:</strong></p><ul><li>symbol matrix for the BDDC preconditioned operator</li></ul><p><strong>Lumped BDDC Example:</strong></p><pre><code class="language-julia hljs">using LinearAlgebra;
 
-for dimension in 2:3
+for dimension = 2:3
     # setup
     mesh = []
     if dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh)
     bddc = LumpedBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, [0.2], π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 2
         @assert minimum(eigenvalues) ≈ 0.43999999999999995
         @assert maximum(eigenvalues) ≈ 0.8
@@ -123,24 +124,24 @@ for dimension in 2:3
 end
 
 # output
-</code></pre><p><strong>Dirichlet BDDC Example:</strong></p><pre><code class="language-julia">using LinearAlgebra;
+</code></pre><p><strong>Dirichlet BDDC Example:</strong></p><pre><code class="language-julia hljs">using LinearAlgebra;
 
-for dimension in 2:3
+for dimension = 2:3
     # setup
     mesh = []
     if dimension == 2
-        mesh = Mesh2D(1.0, 1.0);
+        mesh = Mesh2D(1.0, 1.0)
     elseif dimension == 3
-        mesh = Mesh3D(1.0, 1.0, 1.0);
+        mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh);
+    diffusion = GalleryOperator(&quot;diffusion&quot;, 3, 3, mesh)
     bddc = DirichletBDDC(diffusion)
 
     # compute symbols
-    A = computesymbols(bddc, [0.2], π*ones(dimension));
+    A = computesymbols(bddc, [0.2], π * ones(dimension))
 
     # verify
-    eigenvalues = real(eigvals(A));
+    eigenvalues = real(eigvals(A))
     if dimension == 2
         @assert minimum(eigenvalues) ≈ 0.7999999999999998
         @assert maximum(eigenvalues) ≈ 0.8
@@ -151,7 +152,7 @@ for dimension in 2:3
 end
 
 # output
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/e78188b54cd0d5bcb84141137a4f630c117b2a06/src/PC/BDDC/Base.jl#L1146-L1225">source</a></section></article><h3 id="Dirichlet-BDDC"><a class="docs-heading-anchor" href="#Dirichlet-BDDC">Dirichlet BDDC</a><a id="Dirichlet-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Dirichlet-BDDC" title="Permalink"></a></h3><h4 id="Examples-2"><a class="docs-heading-anchor" href="#Examples-2">Examples</a><a class="docs-heading-anchor-permalink" href="#Examples-2" title="Permalink"></a></h4><p>This is an example of a simple Dirichlet BDDC preconditioner.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/af1b547f1481129e8a056af6408e93641de349e4/src/PC/BDDC/Base.jl#L1148-L1231">source</a></section></article><h3 id="Dirichlet-BDDC"><a class="docs-heading-anchor" href="#Dirichlet-BDDC">Dirichlet BDDC</a><a id="Dirichlet-BDDC-1"></a><a class="docs-heading-anchor-permalink" href="#Dirichlet-BDDC" title="Permalink"></a></h3><h4 id="Examples-2"><a class="docs-heading-anchor" href="#Examples-2">Examples</a><a class="docs-heading-anchor-permalink" href="#Examples-2" title="Permalink"></a></h4><p>This is an example of a simple Dirichlet BDDC preconditioner.</p><pre><code class="language-julia hljs"># ------------------------------------------------------------------------------
 # Dirichlet BDDC example
 # ------------------------------------------------------------------------------
 
@@ -173,7 +174,7 @@ A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../../img/223_dirichlet_bddc_spectral_radius_3_2d.png" alt/></p><p>This is an example of a simple Dirichlet BDDC preconditioner on a macro-element patch.</p><pre><code class="language-julia"># ------------------------------------------------------------------------------
+</code></pre><p><img src="../../../img/223_dirichlet_bddc_spectral_radius_3_2d.png" alt/></p><p>This is an example of a simple Dirichlet BDDC preconditioner on a macro-element patch.</p><pre><code class="language-julia hljs"># ------------------------------------------------------------------------------
 # lumped BDDC on macro elements example
 # ------------------------------------------------------------------------------
 
@@ -196,7 +197,7 @@ A = computesymbols(bddc, [0.2], [π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre><p><img src="../../../img/224_dirichlet_bddc_spectral_radius_4_elem_2d.png" alt/></p><h4 id="Documentation-2"><a class="docs-heading-anchor" href="#Documentation-2">Documentation</a><a class="docs-heading-anchor-permalink" href="#Documentation-2" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.DirichletBDDC" href="#LFAToolkit.DirichletBDDC"><code>LFAToolkit.DirichletBDDC</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia">DirichletBDDC(operator)</code></pre><p>Dirichlet BDDC preconditioner for finite element operators</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:  finite element operator to precondition</li></ul><p><strong>Returns:</strong></p><ul><li>Dirichlet BDDC preconditioner object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia"># setup
+</code></pre><p><img src="../../../img/224_dirichlet_bddc_spectral_radius_4_elem_2d.png" alt/></p><h4 id="Documentation-2"><a class="docs-heading-anchor" href="#Documentation-2">Documentation</a><a class="docs-heading-anchor-permalink" href="#Documentation-2" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.DirichletBDDC" href="#LFAToolkit.DirichletBDDC"><code>LFAToolkit.DirichletBDDC</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">DirichletBDDC(operator)</code></pre><p>Dirichlet BDDC preconditioner for finite element operators</p><p><strong>Arguments:</strong></p><ul><li><code>operator</code>:  finite element operator to precondition</li></ul><p><strong>Returns:</strong></p><ul><li>Dirichlet BDDC preconditioner object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia hljs"># setup
 mesh = Mesh2D(1.0, 1.0);
 
 # operator
@@ -210,6 +211,7 @@ println(bddc)
 println(bddc.operator)
 
 # output
+
 Dirichlet BDDC preconditioner
 finite element operator:
 2d mesh:
@@ -242,4 +244,4 @@ operator field:
     numbercomponents: 1
     dimension: 2
   evaluation mode:
-    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/e78188b54cd0d5bcb84141137a4f630c117b2a06/src/PC/BDDC/Constructors.jl#L82-L145">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 21 June 2022 17:21">Tuesday 21 June 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/af1b547f1481129e8a056af6408e93641de349e4/src/PC/BDDC/Constructors.jl#L86-L153">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 18 October 2022 20:36">Tuesday 18 October 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

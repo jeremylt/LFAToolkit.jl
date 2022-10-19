@@ -92,6 +92,7 @@ mutable struct Operator
     multiplicity::AbstractArray{Float64}
     rowmodemap::AbstractArray{Float64,2}
     columnmodemap::AbstractArray{Float64,2}
+    qtbtd::AbstractArray{Float64,2}
     inputcoordinates::AbstractArray{Float64}
     outputcoordinates::AbstractArray{Float64}
     nodecoordinatedifferences::AbstractArray{Float64}
@@ -729,6 +730,188 @@ function getcolumnmodemap(operator::Operator)
     return getfield(operator, :columnmodemap)
 end
 
+function getqtbtd(operator::Operator)
+    # assemble if needed
+    if !isdefined(operator, :qtbtd)
+        # collect info on operator
+        weakforminputs = []
+        numbernodes = 0
+        numberdofsinput = 0
+        numberdofsoutput = 0
+        numbernodeinputs = 0
+        numbernodeoutputs = 0
+        numberquadraturepoints = 0
+        numberquadratureinputs = 0
+        numberquadratureoutputs = 0
+        numberfieldsin = Int[]
+        numberfieldsout = Int[]
+        weightinputindex = 0
+        quadratureweights = []
+        Bblocks = []
+        Btblocks = []
+
+        # inputs
+        for input in operator.inputs
+            # number of nodes
+            if input.evaluationmodes[1] != EvaluationMode.quadratureweights
+                numbernodes += input.basis.numbernodes
+                numberdofsinput += input.basis.numbernodes * input.basis.numbercomponents
+            end
+
+            # number of quadrature points
+            if numberquadraturepoints == 0
+                numberquadraturepoints = input.basis.numberquadraturepoints
+            else
+                @assert numberquadraturepoints == input.basis.numberquadraturepoints
+            end
+
+            # input evaluation modes
+            if input.evaluationmodes[1] == EvaluationMode.quadratureweights
+                push!(weakforminputs, zeros(1))
+                weightinputindex = findfirst(isequal(input), operator.inputs)
+            else
+                numberfields = 0
+                Bcurrent = []
+                for mode in input.evaluationmodes
+                    if mode == EvaluationMode.interpolation
+                        numberfields += 1
+                        numbernodeinputs += input.basis.numbercomponents
+                        numberquadratureinputs += input.basis.numbercomponents
+                        Bcurrent =
+                            Bcurrent == [] ? input.basis.interpolation :
+                            [Bcurrent; input.basis.interpolation]
+                    elseif mode == EvaluationMode.gradient
+                        numberfields += input.basis.dimension
+                        numbernodeinputs += input.basis.numbercomponents
+                        numberquadratureinputs +=
+                            input.basis.dimension * input.basis.numbercomponents
+                        gradient = getdXdxgradient(input.basis, operator.mesh)
+                        Bcurrent = Bcurrent == [] ? gradient : [Bcurrent; gradient]
+                    end
+                end
+                push!(Bblocks, Bcurrent)
+                push!(weakforminputs, zeros(numberfields, input.basis.numbercomponents))
+                push!(numberfieldsin, numberfields * input.basis.numbercomponents)
+            end
+        end
+
+        # input basis matrix
+        B = spzeros(numberquadratureinputs * numberquadraturepoints, numberdofsinput)
+
+        currentrow = 1
+        currentcolumn = 1
+        for Bblock in Bblocks
+            B[
+                currentrow:currentrow+size(Bblock)[1]-1,
+                currentcolumn:currentcolumn+size(Bblock)[2]-1,
+            ] = Bblock
+            currentrow += size(Bblock)[1]
+            currentcolumn += size(Bblock)[2]
+        end
+
+        # quadrature weight input index
+        if weightinputindex != 0
+            quadratureweights = getdxdXquadratureweights(
+                operator.inputs[weightinputindex].basis,
+                operator.mesh,
+            )
+        end
+
+        # outputs
+        for output in operator.outputs
+            # output evaluation modes
+            if output.evaluationmodes[1] != EvaluationMode.quadratureweights
+                numberdofsoutput += output.basis.numbernodes * output.basis.numbercomponents
+            end
+            numberfields = 0
+            Btcurrent = []
+            for mode in output.evaluationmodes
+                if mode == EvaluationMode.interpolation
+                    numberfields += output.basis.numbercomponents
+                    numbernodeoutputs += output.basis.numbercomponents
+                    numberquadratureoutputs += output.basis.numbercomponents
+                    Btcurrent =
+                        Btcurrent == [] ? output.basis.interpolation :
+                        [Btcurrent; output.basis.intepolation]
+                elseif mode == EvaluationMode.gradient
+                    numberfields += output.basis.dimension * output.basis.numbercomponents
+                    numbernodeoutputs += output.basis.numbercomponents
+                    numberquadratureoutputs +=
+                        output.basis.dimension * output.basis.numbercomponents
+                    gradient = getdXdxgradient(output.basis, operator.mesh)
+                    Btcurrent = Btcurrent == [] ? gradient : [Btcurrent; gradient]
+                    # note: quadrature weights checked in constructor
+                end
+            end
+            push!(Btblocks, Btcurrent)
+            push!(numberfieldsout, numberfields)
+        end
+
+        # output basis matrix
+        Bt = spzeros(numberquadratureoutputs * numberquadraturepoints, numberdofsoutput)
+        currentrow = 1
+        currentcolumn = 1
+        for Btblock in Btblocks
+            Bt[
+                currentrow:currentrow+size(Btblock)[1]-1,
+                currentcolumn:currentcolumn+size(Btblock)[2]-1,
+            ] = Btblock
+            currentrow += size(Btblock)[1]
+            currentcolumn += size(Btblock)[2]
+        end
+        Bt = Bt'
+
+        # QFunction matrix
+        D = spzeros(
+            numberquadratureoutputs * numberquadraturepoints,
+            numberquadratureinputs * numberquadraturepoints,
+        )
+        # loop over inputs
+        currentfieldin = 0
+        for i = 1:length(operator.inputs)
+            input = operator.inputs[i]
+            if input.evaluationmodes[1] == EvaluationMode.quadratureweights
+                continue
+            end
+
+            # loop over quadrature points
+            for q = 1:numberquadraturepoints
+                # set quadrature weight
+                if weightinputindex != 0
+                    weakforminputs[weightinputindex][1] = quadratureweights[q]
+                end
+
+                # fill sparse matrix
+                for j = 1:numberfieldsin[i]
+                    # run user weak form function
+                    weakforminputs[i][j] = 1.0
+                    outputs = operator.weakform(weakforminputs...)
+                    weakforminputs[i][j] = 0.0
+
+                    # store outputs
+                    currentfieldout = 0
+                    for k = 1:length(operator.outputs)
+                        for l = 1:numberfieldsout[k]
+                            D[
+                                currentfieldout*numberquadraturepoints+q,
+                                (currentfieldin+j-1)*numberquadraturepoints+q,
+                            ] = outputs[k][l]
+                            currentfieldout += 1
+                        end
+                    end
+                end
+            end
+            currentfieldin += numberfieldsin[i]
+        end
+
+        # multiply rowmodemap B^T D  and store
+        operator.qtbtd = operator.rowmodemap * Bt * D
+    end
+
+    # return
+    return getfield(operator, :qtbtd)
+end
+
 """
 ```julia
 getinputcoordinates(operator)
@@ -887,6 +1070,8 @@ function Base.getproperty(operator::Operator, f::Symbol)
         return getrowmodemap(operator)
     elseif f == :columnmodemap
         return getcolumnmodemap(operator)
+    elseif f == :qtbtd
+        return getqtbtd(operator)
     elseif f == :inputcoordinates
         return getinputcoordinates(operator)
     elseif f == :outputcoordinates
@@ -989,6 +1174,39 @@ function computesymbols(operator::Operator, θ::Array)
 
     # return
     return symbolmatrixmodes
+end
+
+# ------------------------------------------------------------------------------
+# compute wave number transformation symbol matrix
+# ------------------------------------------------------------------------------
+
+function computewavenumbersymbol(operator::Operator, θ::Array)
+    # validity check
+    dimension = length(θ)
+    if dimension != operator.inputs[1].basis.dimension
+        throw(ArgumentError("Must provide as many values of θ as the mesh has dimensions")) # COV_EXCL_LINE
+    end
+
+    # setup
+    qtbtd = operator.qtbtd
+    numberrows, numbercolumns = size(elementmatrix)
+    nodecoordinatedifferences = operator.nodecoordinatedifferences
+    ß = zeros(ComplexF64, numberrows, numbercolumns)
+
+    # compute ß
+    for i = 1:numberrows, j = 1:numbercolumns
+        ß[i, j] =
+            ℯ^(
+                im * sum([
+                    θ[k] - 2 * sign(θ) * k * π * nodecoordinatedifferences[i, j, k] for
+                    k = 1:dimension
+                ])
+            )
+    end
+    symbolmatrixharmonics = qtbtd * ß
+
+    # return symbol matrix in harmonics
+    return symbolmatrixharmonics
 end
 
 # ------------------------------------------------------------------------------

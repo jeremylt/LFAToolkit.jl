@@ -39,5 +39,5 @@ The finite element operator can be defined from a user defined weak form or from
 
 ```@docs
 Operator
-computesymbols(::Operator, ::Array)
+computesymbols(::Operator, ::Array{<:Real})
 ```

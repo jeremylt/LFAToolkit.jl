@@ -259,7 +259,7 @@ mutable struct NonTensorBasis <: AbstractBasis
             )
             # COV_EXCL_STOP
         end;
-        if size(gradient) != (q * dimension, numbernodes)
+        if size(gradient) != (numberquadraturepoints * dimension, numbernodes)
             # COV_EXCL_START
             error(
                 "gradient matrix must have dimensions (numberquadraturepoints*dimension, numbernodes)",
@@ -326,10 +326,6 @@ getnumbernodes(basis)
 
 Get the number of nodes for the basis
 
-# Arguments:
-
-  - `basis`:  basis to compute number of nodes
-
 # Returns:
 
   - integer number of basis nodes
@@ -357,10 +353,6 @@ getnodes(basis)
 ```
 
 Get nodes for basis
-
-# Arguments:
-
-  - `basis`:  basis to compute nodes
 
 # Returns:
 
@@ -439,10 +431,6 @@ getnumberquadraturepoints(basis)
 
 Get the number of quadrature points for the basis
 
-# Arguments:
-
-  - `basis`:  basis to compute number of quadrature points
-
 # Returns:
 
   - integer number of basis quadrature points
@@ -470,10 +458,6 @@ getquadraturepoints(basis)
 ```
 
 Get quadrature points for basis
-
-# Arguments:
-
-  - `basis`: basis to compute quadrature points
 
 # Returns:
 
@@ -571,10 +555,6 @@ getquadratureweights(basis)
 
 Get full quadrature weights vector for basis
 
-# Arguments:
-
-  - `basis`:  basis to compute quadrature weights
-
 # Returns:
 
   - basis quadrature weights vector
@@ -640,10 +620,6 @@ getinterpolation(basis)
 
 Get full interpolation matrix for basis
 
-# Arguments:
-
-  - `basis`:  basis to compute interpolation matrix
-
 # Returns:
 
   - basis interpolation matrix
@@ -708,10 +684,6 @@ getgradient(basis)
 ```
 
 Get full gradient matrix for basis
-
-# Arguments:
-
-  - `basis`:  basis to compute gradient matrix
 
 # Returns:
 
@@ -782,10 +754,6 @@ getnumbermodes(basis)
 
 Get number of modes for basis
 
-# Arguments:
-
-  - `basis`:  basis to compute number of modes
-
 # Returns:
 
   - number of modes for basis
@@ -822,10 +790,6 @@ getmodemap(basis)
 ```
 
 Get mode mapping vector for basis
-
-# Arguments:
-
-  - `basis`:  basis to compute mode map vector
 
 # Returns:
 
@@ -915,10 +879,6 @@ getprimalnodes(basis)
 
 Get primal nodes for basis
 
-# Arguments:
-
-  - `basis`:  basis to compute primal nodes
-
 # Returns:
 
   - basis primal nodes vector
@@ -988,10 +948,6 @@ getinterfacenodes(basis)
 ```
 
 Get interface nodes for basis
-
-# Arguments:
-
-  - `basis`:  basis to compute primal nodes
 
 # Returns:
 
@@ -1082,10 +1038,6 @@ getnumberelements(basis)
 ```
 
 Get the number of elements for the basis
-
-# Arguments:
-
-  - `basis`:  basis to compute number of micro-elements
 
 # Returns:
 
@@ -1191,8 +1143,8 @@ Get gradient adjusted for mesh stretching
 
 # Arguments:
 
-  - `basis`:  basis to compute gradient
-  - `mesh`:   mesh to compute gradient
+  - `basis::TensorBasis`:  basis to compute gradient
+  - `mesh::Mesh`:          mesh to compute gradient
 
 # Returns:
 
@@ -1281,7 +1233,7 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
     end
 end
 
-function getdXdxgradient(basis::NonTensorBasis, mesh::Mesh)
+function getdXdxgradient(_::NonTensorBasis, _::Mesh)
     throw(error("dXdxgradient unimplemented for non-tensor bases"))
 end
 
@@ -1294,8 +1246,8 @@ Get quadrature weights adjusted for mesh stretching
 
 # Arguments:
 
-  - `basis`:  basis to compute quadratureweights
-  - `mesh`:   mesh to compute quadratureweights
+  - `basis::TensorBasis`:  basis to compute quadratureweights
+  - `mesh::Mesh`:          mesh to compute quadratureweights
 
 # Returns:
 

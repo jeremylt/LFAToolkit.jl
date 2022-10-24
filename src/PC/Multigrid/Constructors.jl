@@ -8,17 +8,17 @@
 
 """
 ```julia
-Pmultigrid(fineoperator, coarseoperator, smoother, prolongation)
+Pmultigrid(fineoperator, coarseoperator, smoother, prolongationbases)
 ```
 
 P-Multigrid preconditioner for finite element operators
 
 # Arguments:
 
-  - `fineoperator`:       finite element operator to precondition
-  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
-  - `smoother`:           error relaxation operator, such as Jacobi
-  - `prolongationbases`:  element prolongation bases from coarse to fine grid
+  - `fineoperator::Operator`:                             finite element operator to precondition
+  - `coarseoperator::Union{Operator,Multigrid}`:          coarse grid representation of finite element operator to precondition
+  - `smoother::AbstractPreconditioner`:                   error relaxation operator, such as Jacobi
+  - `prolongationbases::AbstractArray{<:AbstractBasis}`:  element prolongation bases from coarse to fine grid
 
 # Returns:
 
@@ -84,9 +84,9 @@ operator field:
 """
 function PMultigrid(
     fineoperator::Operator,
-    coarseoperator::Any,
+    coarseoperator::Union{Operator,Multigrid},
     smoother::AbstractPreconditioner,
-    prolongationbases::AbstractArray,
+    prolongationbases::AbstractArray{<:AbstractBasis},
 )
     # common constructor
     return Multigrid(
@@ -104,17 +104,17 @@ end
 
 """
 ```julia
-Hmultigrid(fineoperator, coarseoperator, smoother, prolongation)
+Hmultigrid(fineoperator, coarseoperator, smoother, prolongationbases)
 ```
 
 H-Multigrid preconditioner for finite element operators
 
 # Arguments:
 
-  - `fineoperator`:       finite element operator to precondition
-  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
-  - `smoother`:           error relaxation operator, such as Jacobi
-  - `prolongationbases`:  element prolongation bases from coarse to fine grid
+  - `fineoperator::Operator`:                             finite element operator to precondition
+  - `coarseoperator::Union{Operator,Multigrid}`:          coarse grid representation of finite element operator to precondition
+  - `smoother::AbstractPreconditioner`:                   error relaxation operator, such as Jacobi
+  - `prolongationbases::AbstractArray{<:AbstractBasis}`:  element prolongation bases from coarse to fine grid
 
 # Returns:
 
@@ -201,9 +201,9 @@ operator field:
 """
 function HMultigrid(
     fineoperator::Operator,
-    coarseoperator::Any,
+    coarseoperator::Union{Operator,Multigrid},
     smoother::AbstractPreconditioner,
-    prolongationbases::AbstractArray,
+    prolongationbases::AbstractArray{<:AbstractBasis},
 )
     # check for h-multigrid
     for input in fineoperator.inputs
@@ -211,7 +211,7 @@ function HMultigrid(
             # COV_EXCL_START
             throw(
                 DomainError(
-                    field.basis.numberelements,
+                    input.basis.numberelements,
                     "must use macro elements in the fine operator for h-multigrid",
                 ),
             )

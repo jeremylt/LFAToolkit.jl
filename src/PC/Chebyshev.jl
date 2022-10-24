@@ -12,7 +12,7 @@ The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``, where
 
 # Arguments:
 
-  - `operator`:  finite element operator to precondition
+  - `operator::Operator`:  finite element operator to precondition
 
 # Returns:
 
@@ -61,22 +61,22 @@ end
 
 # printing
 # COV_EXCL_START
-function Base.show(io::IO, preconditioner::Chebyshev)
+function Base.show(io::IO, chebyshev::Chebyshev)
     print(io, "chebyshev preconditioner:")
 
     # eigenvalue estimates
     print(io, "\neigenvalue estimates:")
-    @printf(io, "\n  estimated minimum %.4f", preconditioner.eigenvalueestimates[1])
-    @printf(io, "\n  estimated maximum %.4f", preconditioner.eigenvalueestimates[2])
+    @printf(io, "\n  estimated minimum %.4f", chebyshev.eigenvalueestimates[1])
+    @printf(io, "\n  estimated maximum %.4f", chebyshev.eigenvalueestimates[2])
 
     # estimate scaling
     print(io, "\nestimate scaling:")
     print(io, "\n  λ_min = a * estimated min + b * estimated max")
     print(io, "\n  λ_max = c * estimated min + d * estimated max")
-    @printf(io, "\n  a = %.4f", preconditioner.eigenvaluebounds[1])
-    @printf(io, "\n  b = %.4f", preconditioner.eigenvaluebounds[2])
-    @printf(io, "\n  c = %.4f", preconditioner.eigenvaluebounds[3])
-    @printf(io, "\n  d = %.4f", preconditioner.eigenvaluebounds[4])
+    @printf(io, "\n  a = %.4f", chebyshev.eigenvaluebounds[1])
+    @printf(io, "\n  b = %.4f", chebyshev.eigenvaluebounds[2])
+    @printf(io, "\n  c = %.4f", chebyshev.eigenvaluebounds[3])
+    @printf(io, "\n  d = %.4f", chebyshev.eigenvaluebounds[4])
 end
 # COV_EXCL_STOP
 
@@ -86,14 +86,10 @@ end
 
 """
 ```julia
-getoperatordiagonalinverse(preconditioner)
+getoperatordiagonalinverse(chebyshev)
 ```
 
 Compute or retrieve the inverse of the symbol matrix diagonal for a Chebyshev preconditioner
-
-# Arguments:
-
-  - `preconditioner`:  preconditioner to compute diagonal inverse
 
 # Returns:
 
@@ -116,30 +112,26 @@ chebyshev = Chebyshev(diffusion);
 
 ```
 """
-function getoperatordiagonalinverse(preconditioner::Chebyshev)
+function getoperatordiagonalinverse(chebyshev::Chebyshev)
     # assemble if needed
-    if !isdefined(preconditioner, :operatordiagonalinverse)
+    if !isdefined(chebyshev, :operatordiagonalinverse)
         # retrieve diagonal and invert
-        diagonalinverse = preconditioner.operator.diagonal^-1
+        diagonalinverse = chebyshev.operator.diagonal^-1
 
         # store
-        preconditioner.operatordiagonalinverse = diagonalinverse
+        chebyshev.operatordiagonalinverse = diagonalinverse
     end
 
     # return
-    return getfield(preconditioner, :operatordiagonalinverse)
+    return getfield(chebyshev, :operatordiagonalinverse)
 end
 
 """
 ```julia
-geteigenvalueestimates(preconditioner)
+geteigenvalueestimates(chebyshev)
 ```
 
 Compute or retrieve the eigenvalue estimates for a Chebyshev preconditioner
-
-# Arguments:
-
-  - `preconditioner`:  preconditioner to compute eigenvalue estimates
 
 # Returns:
 
@@ -162,10 +154,10 @@ chebyshev = Chebyshev(diffusion);
 
 ```
 """
-function geteigenvalueestimates(preconditioner::Chebyshev)
+function geteigenvalueestimates(chebyshev::Chebyshev)
     # assemble if needed
-    if !isdefined(preconditioner, :eigenvalueestimates)
-        dimension = preconditioner.operator.dimension
+    if !isdefined(chebyshev, :eigenvalueestimates)
+        dimension = chebyshev.operator.dimension
         λ_min = 1
         λ_max = 0
         θ_step = 2π / 4
@@ -174,47 +166,46 @@ function geteigenvalueestimates(preconditioner::Chebyshev)
         # compute eigenvalues
         if dimension == 1
             for θ_x in θ_range
-                A = computesymbols(preconditioner.operator, [θ_x])
-                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                A = computesymbols(chebyshev.operator, [θ_x])
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 2
             for θ_x in θ_range, θ_y in θ_range
-                A = computesymbols(preconditioner.operator, [θ_x, θ_y])
-                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                A = computesymbols(chebyshev.operator, [θ_x, θ_y])
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 3
             for θ_x in θ_range, θ_y in θ_range, θ_z in θ_range
-                A = computesymbols(preconditioner.operator, [θ_x, θ_y, θ_z])
-                eigenvalues = abs.(eigvals(preconditioner.operatordiagonalinverse * A),)
+                A = computesymbols(chebyshev.operator, [θ_x, θ_y, θ_z])
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end
         end
 
         # store
-        preconditioner.eigenvalueestimates = [λ_min, λ_max]
+        chebyshev.eigenvalueestimates = [λ_min, λ_max]
     end
 
     # return
-    return getfield(preconditioner, :eigenvalueestimates)
+    return getfield(chebyshev, :eigenvalueestimates)
 end
 
 """
 ```julia
-seteigenvalueestimatescaling(preconditioner, eigenvaluebounds)
+seteigenvalueestimatescaling(chebyshev, eigenvaluebounds)
 ```
 
 Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 
 # Arguments:
 
-  - `preconditioner`:    preconditioner to set eigenvalue estimate scaling
-  - `eigenvaluebounds`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}``
-    and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
+  - `chebyshev::Chebyshev`:                preconditioner to set eigenvalue estimate scaling
+  - `eigenvaluebounds::Array{Float64,1}`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}`` and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
 
 ``\\lambda_{\\text{min}}`` = a * estimated min + b * estimated max
 
@@ -252,18 +243,18 @@ estimate scaling:
 ```
 """
 function seteigenvalueestimatescaling(
-    preconditioner::Chebyshev,
+    chebyshev::Chebyshev,
     eigenvaluebounds::Array{Float64,1},
 )
     if length(eigenvaluebounds) != 4
-        Throw(error("exactly four transformation arguments are required")) # COV_EXCL_LINE
+        throw(error("exactly four transformation arguments are required")) # COV_EXCL_LINE
     end
 
-    preconditioner.eigenvaluebounds[1] = eigenvaluebounds[1]
-    preconditioner.eigenvaluebounds[2] = eigenvaluebounds[2]
-    preconditioner.eigenvaluebounds[3] = eigenvaluebounds[3]
-    preconditioner.eigenvaluebounds[4] = eigenvaluebounds[4]
-    preconditioner
+    chebyshev.eigenvaluebounds[1] = eigenvaluebounds[1]
+    chebyshev.eigenvaluebounds[2] = eigenvaluebounds[2]
+    chebyshev.eigenvaluebounds[3] = eigenvaluebounds[3]
+    chebyshev.eigenvaluebounds[4] = eigenvaluebounds[4]
+    chebyshev
 end
 
 # ------------------------------------------------------------------------------
@@ -296,18 +287,16 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ)
+computesymbols(chebyshev, ω, θ)
 ```
 
 Compute or retrieve the symbol matrix for a Chebyshev preconditioned operator
 
 # Arguments:
 
-  - `preconditioner`:  Chebyshev preconditioner to compute symbol matrix for
-  - `ω`:               smoothing parameter array
-    [degree], [degree, ``\\lambda_{\\text{max}}``], or
-    [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
-  - `θ`:               Fourier mode frequency array (one frequency per dimension)
+  - `chebyshev::Chebyshev`:  Chebyshev preconditioner to compute symbol matrix for
+  - `ω::Array{Real}`:        smoothing parameter array [degree], [degree, ``\\lambda_{\\text{max}}``], or [degree, ``\\lambda_{\\text{min}}``, ``\\lambda_{\\text{max}}``]
+  - `θ::Array{Real}`:        Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 
@@ -355,41 +344,37 @@ end
 
 ```
 """
-function computesymbols(preconditioner::Chebyshev, ω::Array, θ::Array)
+function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Real})
     # validate number of parameters
     if length(ω) < 1
-        Throw(error("at least one parameter required for Chebyshev smoothing")) # COV_EXCL_LINE
+        throw(error("at least one parameter required for Chebyshev smoothing")) # COV_EXCL_LINE
     elseif length(ω) > 3
-        Throw(error("no more than three parameters allowed for Chebyshev smoothing")) # COV_EXCL_LINE
+        throw(error("no more than three parameters allowed for Chebyshev smoothing")) # COV_EXCL_LINE
     end
     if (ω[1] % 1) > 1E-14 || ω[1] < 1
-        Throw(error("first parameter must be degree of Chebyshev smoother")) # COV_EXCL_LINE
+        throw(error("first parameter must be degree of Chebyshev smoother")) # COV_EXCL_LINE
     end
 
     # get operator symbol
-    A = computesymbols(preconditioner.operator, θ)
+    A = computesymbols(chebyshev.operator, θ)
 
     # set eigenvalue estimates
     λ_min = 0
     λ_max = 0
     if length(ω) == 1
-        λ_min = preconditioner.eigenvalueestimates[1]
-        λ_max = preconditioner.eigenvalueestimates[2]
+        λ_min = chebyshev.eigenvalueestimates[1]
+        λ_max = chebyshev.eigenvalueestimates[2]
     elseif length(ω) == 2
         λ_max = ω[2]
     else
         λ_min = ω[2]
         λ_max = ω[3]
     end
-    lower =
-        λ_min * preconditioner.eigenvaluebounds[1] +
-        λ_max * preconditioner.eigenvaluebounds[2]
-    upper =
-        λ_min * preconditioner.eigenvaluebounds[3] +
-        λ_max * preconditioner.eigenvaluebounds[4]
+    lower = λ_min * chebyshev.eigenvaluebounds[1] + λ_max * chebyshev.eigenvaluebounds[2]
+    upper = λ_min * chebyshev.eigenvaluebounds[3] + λ_max * chebyshev.eigenvaluebounds[4]
 
     # compute Chebyshev smoother of given degree
-    D_inv = preconditioner.operatordiagonalinverse
+    D_inv = chebyshev.operatordiagonalinverse
     D_inv_A = D_inv * A
     k = ω[1] # degree of Chebyshev smoother
     α = (upper + lower) / 2

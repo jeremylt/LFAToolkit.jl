@@ -38,7 +38,7 @@ $(read("../../../../examples/ex222_lumped_bddc.jl", String))
 
 ```@docs
 LumpedBDDC
-computesymbols(::BDDC, ::Array, ::Array)
+computesymbols(::BDDC, ::Array{<:Real}, ::Array{<:Real})
 ```
 
 ### Dirichlet BDDC

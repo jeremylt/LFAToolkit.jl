@@ -8,53 +8,11 @@ module LFAToolkit
 # standard libraries
 # ------------------------------------------------------------------------------
 
-using FastGaussQuadrature
-using LinearAlgebra
-using Printf
-using SparseArrays
-
-# ------------------------------------------------------------------------------
-# user available types and methods
-# ------------------------------------------------------------------------------
-
-export EvaluationMode, MultigridType, BDDCInjectionType
-# mesh
-export Mesh1D, Mesh2D, Mesh3D
-# bases
-export TensorBasis,
-    NonTensorBasis,
-    TensorH1LagrangeBasis,
-    TensorH1UniformBasis,
-    TensorMacroElementBasisFrom1D,
-    TensorH1LagrangeMacroBasis,
-    TensorH1UniformMacroBasis,
-    TensorHProlongationBasis,
-    TensorH1LagrangeHProlongationBasis,
-    TensorH1UniformHProlongationBasis,
-    TensorH1LagrangePProlongationBasis,
-    TensorHProlongationMacroBasisFrom1D,
-    TensorH1LagrangeHProlongationMacroBasis,
-    TensorH1UniformHProlongationMacroBasis,
-    transformquadrature,
-    sausage_transformation,
-    kosloff_talezer_transformation,
-    hale_trefethen_strip_transformation
-# operator fields
-export OperatorField
-# operators
-export Operator,
-    GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, computesymbols
-# preconditioners
-export AbstractPreconditioner
-export IdentityPC
-export Jacobi
-export Chebyshev, seteigenvalueestimatescaling
-# -- multigrid
-export Multigrid, PMultigrid, HMultigrid
-# -- BDDC
-export BDDC, LumpedBDDC, DirichletBDDC
-# -- Utils
-export computesymbolsoverrange
+using FastGaussQuadrature: gausslegendre, gausslobatto
+using LinearAlgebra: Diagonal, eigen, eigvals, I, kron
+using Polynomials: Polynomial, derivative
+using Printf: @printf
+using SparseArrays: dropzeros!, spzeros
 
 # ------------------------------------------------------------------------------
 # imports
@@ -82,8 +40,49 @@ include("PC/Multigrid/Constructors.jl")
 # -- BDDC
 include("PC/BDDC/Base.jl")
 include("PC/BDDC/Constructors.jl")
-# -- Utils
+# utils
 include("Utilities.jl")
+
+# ------------------------------------------------------------------------------
+# user available types and methods
+# ------------------------------------------------------------------------------
+
+export EvaluationMode, MultigridType, BDDCInjectionType
+# mesh
+export Mesh1D, Mesh2D, Mesh3D
+# bases
+export TensorBasis,
+    NonTensorBasis,
+    TensorH1LagrangeBasis,
+    TensorH1UniformBasis,
+    TensorMacroElementBasisFrom1D,
+    TensorH1LagrangeMacroBasis,
+    TensorH1UniformMacroBasis,
+    TensorHProlongationBasis,
+    TensorH1LagrangeHProlongationBasis,
+    TensorH1UniformHProlongationBasis,
+    TensorH1LagrangePProlongationBasis,
+    TensorH1LagrangeHProlongationMacroBasis,
+    TensorH1UniformHProlongationMacroBasis,
+    sausage_transformation,
+    kosloff_talezer_transformation,
+    hale_trefethen_strip_transformation
+# operator fields
+export OperatorField
+# operators
+export Operator,
+    GalleryOperator, GalleryVectorOperator, GalleryMacroElementOperator, computesymbols
+# preconditioners
+export AbstractPreconditioner
+export IdentityPC
+export Jacobi
+export Chebyshev, seteigenvalueestimatescaling
+# -- multigrid
+export Multigrid, PMultigrid, HMultigrid
+# -- BDDC
+export BDDC, LumpedBDDC, DirichletBDDC
+# -- Utils
+export computesymbolsoverrange
 
 end # module
 

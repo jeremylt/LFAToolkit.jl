@@ -44,7 +44,7 @@ Example plot for the symbol of multilevel p-multigrid with a cubic Chebyshev smo
 
 ```@docs
 PMultigrid
-computesymbols(::Multigrid, ::Array, ::Array{Int}, ::Array)
+computesymbols(::Multigrid, ::Array{<:Real}, ::Array{Int}, ::Array{<:Real})
 ```
 
 ### H-Multigrid

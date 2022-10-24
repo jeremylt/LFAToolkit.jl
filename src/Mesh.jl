@@ -16,7 +16,7 @@ One dimensional regular background mesh
 
 # Arguments:
 
-  - `dx`:  deformation in x dimension
+  - `dx::Float64`:  deformation in x dimension
 
 # Returns:
 
@@ -74,8 +74,8 @@ Two dimensional regular background mesh
 
 # Arguments:
 
-  - `dx`:  deformation in x dimension
-  - `dy`:  deformation in y dimension
+  - `dx::Float64`:  deformation in x dimension
+  - `dy::Float64`:  deformation in y dimension
 
 # Returns:
 
@@ -137,9 +137,9 @@ Three dimensional regular background mesh
 
 # Arguments:
 
-  - `dx`:  deformation in x dimension
-  - `dy`:  deformation in y dimension
-  - `dz`:  deformation in z dimension
+  - `dx::Float64`:  deformation in x dimension
+  - `dy::Float64`:  deformation in y dimension
+  - `dz::Float64`:  deformation in z dimension
 
 # Returns:
 

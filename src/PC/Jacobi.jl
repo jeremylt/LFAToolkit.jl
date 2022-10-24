@@ -11,7 +11,7 @@ Jacobi diagonal preconditioner for finite element operators
 
 # Arguments:
 
-  - `operator`:  finite element operator to precondition
+  - `operator::Operator`:  finite element operator to precondition
 
 # Returns:
 
@@ -81,7 +81,7 @@ end
 
 # printing
 # COV_EXCL_START
-Base.show(io::IO, preconditioner::Jacobi) = print(io, "jacobi preconditioner")
+Base.show(io::IO, _::Jacobi) = print(io, "jacobi preconditioner")
 # COV_EXCL_STOP
 
 # ------------------------------------------------------------------------------
@@ -94,11 +94,6 @@ getoperatordiagonalinverse(preconditioner)
 ```
 
 Compute or retrieve the inverse of the symbol matrix diagonal for a Jacobi
-preconditioner
-
-# Arguments:
-
-  - `preconditioner`:  preconditioner to compute diagonal inverse
 
 # Returns:
 
@@ -121,37 +116,37 @@ jacobi = Jacobi(diffusion);
 
 ```
 """
-function getoperatordiagonalinverse(preconditioner::Jacobi)
+function getoperatordiagonalinverse(jacobi::Jacobi)
     # assemble if needed
-    if !isdefined(preconditioner, :operatordiagonalinverse)
+    if !isdefined(jacobi, :operatordiagonalinverse)
         # retrieve diagonal and invert
-        diagonalinverse = preconditioner.operator.diagonal^-1
+        diagonalinverse = jacobi.operator.diagonal^-1
 
         # store
-        preconditioner.operatordiagonalinverse = diagonalinverse
+        jacobi.operatordiagonalinverse = diagonalinverse
     end
 
     # return
-    return getfield(preconditioner, :operatordiagonalinverse)
+    return getfield(jacobi, :operatordiagonalinverse)
 end
 
 # ------------------------------------------------------------------------------
 # get/set property
 # ------------------------------------------------------------------------------
 
-function Base.getproperty(preconditioner::Jacobi, f::Symbol)
+function Base.getproperty(jacobi::Jacobi, f::Symbol)
     if f == :operatordiagonalinverse
-        return getoperatordiagonalinverse(preconditioner)
+        return getoperatordiagonalinverse(jacobi)
     else
-        return getfield(preconditioner, f)
+        return getfield(jacobi, f)
     end
 end
 
-function Base.setproperty!(preconditioner::Jacobi, f::Symbol, value)
+function Base.setproperty!(jacobi::Jacobi, f::Symbol, value)
     if f == :operator
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     else
-        return setfield!(preconditioner, f, value)
+        return setfield!(jacobi, f, value)
     end
 end
 
@@ -161,16 +156,16 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ)
+computesymbols(jacobi, ω, θ)
 ```
 
 Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
 
-  - `preconditioner`:  Jacobi preconditioner to compute symbol matrix for
-  - `ω`:               smoothing weighting factor array
-  - `θ`:               Fourier mode frequency array (one frequency per dimension)
+  - `jacobi::Jacobi`:   Jacobi preconditioner to compute symbol matrix for
+  - `ω::Array{Real}`:   smoothing weighting factor array
+  - `θ::Array{Real}`:   Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 
@@ -215,17 +210,14 @@ end
 
 ```
 """
-function computesymbols(preconditioner::Jacobi, ω::Array, θ::Array)
+function computesymbols(jacobi::Jacobi, ω::Array{<:Real}, θ::Array{<:Real})
     # validate number of parameters
     if length(ω) != 1
-        Throw(error("exactly one parameter required for Jacobi smoothing")) # COV_EXCL_LINE
+        throw(error("exactly one parameter required for Jacobi smoothing")) # COV_EXCL_LINE
     end
 
     # return
-    return I -
-           ω[1] *
-           preconditioner.operatordiagonalinverse *
-           computesymbols(preconditioner.operator, θ)
+    return I - ω[1] * jacobi.operatordiagonalinverse * computesymbols(jacobi.operator, θ)
 end
 
 # ------------------------------------------------------------------------------

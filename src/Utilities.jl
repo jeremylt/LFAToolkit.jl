@@ -132,7 +132,7 @@ function computesymbolsoverrange(
     for (step, θ) in enumerate(rangeiterator)
         θ = collect(θ)
         A = computesymbols(operator, θ)
-        if mass !== nothing
+        if !isnothing(mass)
             A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)
@@ -254,7 +254,7 @@ function computesymbolsoverrange(
     for (step, θ) in enumerate(rangeiterator)
         θ = collect(θ)
         A = computesymbols(preconditioner, ω, θ)
-        if mass !== nothing
+        if !isnothing(mass)
             A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)
@@ -385,7 +385,7 @@ function computesymbolsoverrange(
     for (step, θ) in enumerate(rangeiterator)
         θ = [abs(θ_i) > 1000 * eps() ? θ_i : 1000 * eps() for θ_i in θ]
         A = computesymbols(multigrid, p, v, θ)
-        if mass !== nothing
+        if !isnothing(mass)
             A = computesymbols(mass, θ) \ A
         end
         currenteigen = eigen(A)

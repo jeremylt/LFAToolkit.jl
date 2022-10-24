@@ -21,14 +21,14 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for an operator ov
 
 # Arguments:
 
-  - `operator`:       finite element operator to compute symbol matrices for
-  - `numbersteps1d`:  number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
+  - `operator::Operator`:  finite element operator to compute symbol matrices for
+  - `numbersteps1d::Int`:  number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
 
-  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
-  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
-  - `θ_band = 2π`:     θ_max = θ_min + θ_band
+  - `mass::Union{Operator,Nothing} = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min::Real = -π / 2`:                     bottom of range of θ, shifts range to `[θ_min, θ_min + θ_band]`
+  - `θ_band::Real = 2π`:                        `θ_max = θ_min + θ_band`
 
 # Returns:
 
@@ -105,8 +105,8 @@ function computesymbolsoverrange(
     operator::Operator,
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
-    θ_min::Float64 = -π / 2,
-    θ_band::Float64 = 2π,
+    θ_min::Real = -π / 2,
+    θ_band::Real = 2π,
 )
     # setup range
     dimension = operator.dimension
@@ -161,15 +161,15 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a precondition
 
 # Arguments:
 
-  - `preconditioner`:  preconditioner to compute symbol matries for
-  - `ω`:               smoothing parameter array
-  - `numbersteps1d`:   number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
+  - `preconditioner::AbstractPreconditioner`:  preconditioner to compute symbol matries for
+  - `ω::Array`:                                smoothing parameter array
+  - `numbersteps1d::Int`:                      number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
 
-  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
-  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
-  - `θ_band = 2π`:     θ_max = θ_min + θ_band
+  - `mass::Union{Operator,Nothing} = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min::Real = -π / 2`:                     bottom of range of θ, shifts range to `[θ_min, θ_min + θ_band]`
+  - `θ_band::Real = 2π`:                        `θ_max = θ_min + θ_band`
 
 # Returns:
 
@@ -227,8 +227,8 @@ function computesymbolsoverrange(
     ω::Array,
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
-    θ_min::Float64 = -π / 2,
-    θ_band::Float64 = 2π,
+    θ_min::Real = -π / 2,
+    θ_band::Real = 2π,
 )
     # setup range
     dimension = preconditioner.operator.dimension
@@ -284,16 +284,16 @@ Compute the eigenvalues and eigenvectors of the symbol matrix for a multigrid pr
 
 # Arguments:
 
-  - `multigrid`:      preconditioner to compute symbol matries for
-  - `p`:              smoothing parameter array
-  - `v`:              pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-  - `numbersteps1d`:  number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
+  - `multigrid::Multigrid`:  preconditioner to compute symbol matries for
+  - `p::Array{Real}`:        smoothing parameter array
+  - `v::Array{Int}`:         pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+  - `numbersteps1d::Int`:    number of values of θ to sample in each dimension; note: `numbersteps1d`^`dimension` symbol matrices will be computed
 
 # Keyword Arguments:
 
-  - `mass = nothing`:  mass operator to invert for comparison to analytic solution
-  - `θ_min = -π / 2`:  bottom of range of θ, shifts range to [θ_min, θ_min + θ_band]
-  - `θ_band = 2π`:     θ_max = θ_min + θ_band
+  - `mass::Union{Operator,Nothing} = nothing`:  mass operator to invert for comparison to analytic solution
+  - `θ_min::Real = -π / 2`:                     bottom of range of θ, shifts range to `[θ_min, θ_min + θ_band]`
+  - `θ_band::Real = 2π`:                        `θ_max = θ_min + θ_band`
 
 # Returns:
 
@@ -354,12 +354,12 @@ end
 """
 function computesymbolsoverrange(
     multigrid::Multigrid,
-    p::Array,
-    v::Array,
+    p::Array{<:Real},
+    v::Array{Int},
     numbersteps1d::Int;
     mass::Union{Operator,Nothing} = nothing,
-    θ_min::Float64 = -π / 2,
-    θ_band::Float64 = 2π,
+    θ_min::Real = -π / 2,
+    θ_band::Real = 2π,
 )
     # setup range
     dimension = multigrid.fineoperator.dimension

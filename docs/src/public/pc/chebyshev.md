@@ -24,5 +24,5 @@ Plot for the symbol a cubic Chebyshev smoother for the 2D scalar diffusion probl
 ```@docs
 Chebyshev
 seteigenvalueestimatescaling
-computesymbols(::Chebyshev, ::Array, ::Array)
+computesymbols(::Chebyshev, ::Array{<:Real}, ::Array{<:Real})
 ```

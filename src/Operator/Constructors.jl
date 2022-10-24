@@ -23,16 +23,16 @@ Finite element operator from a gallery of options
 
 # Arguments:
 
-  - `name`:                      string containing name of operator
-  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-  - `mesh`:                      mesh for operator
+  - `name::String`:                   string containing name of operator
+  - `numbernodes1d::Int`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in one dimension for basis
+  - `mesh::Mesh`:                     mesh for operator
 
 # Keyword Arguments:
 
-  - `collocatedquadrature = false`:  Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points
-  - `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
-  - `parameters = nothing`:          named tuple of model parameters
+  - `collocatedquadrature::Bool = false`:                        Gauss-Legendre or Gauss-Legendre-Lobatto quadrature points
+  - `mappingUnion{Tuple{Function,Function},Nothing} = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `parametersUnion{NamedTuple,Nothing} = nothing`:             named tuple of model parameters
 
 # Returns:
 
@@ -182,7 +182,7 @@ operator field:
 # setup
 mesh = Mesh2D(1.0, 1.0);
 parameters = (wind = [1.0, 1.0], τ = 1.0);
-supgmass = GalleryOperator("supgmass", 4, 4, mesh, parameters = parameters);
+supgmass = GalleryOperator("supg mass", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgmass)
@@ -230,7 +230,7 @@ operator field:
 # setup
 mesh = Mesh2D(1.0, 1.0);
 parameters = nothing;
-supgadvection = GalleryOperator("supgadvection", 4, 4, mesh, parameters = parameters);
+supgadvection = GalleryOperator("supg advection", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgadvection)
@@ -309,11 +309,11 @@ Finite element operator from a gallery of options
 
 # Arguments:
 
-  - `name`:                      string containing name of operator
-  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-  - `numbercomponents`:          number of components
-  - `mesh`:                      mesh for operator
+  - `name::String`:                   string containing name of operator
+  - `numbernodes1d::Int`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in one dimension for basis
+  - `numbercomponents::Int`:          number of components
+  - `mesh::Mesh`:                     mesh for operator
 
 # Returns:
 
@@ -448,16 +448,16 @@ Finite element operator from a gallery of options
 
 # Arguments:
 
-  - `name`:                      string containing name of operator
-  - `numbernodes1d`:             polynomial order of TensorH1LagrangeBasis
-  - `numberquadraturepoints1d`:  number of quadrature points in one dimension for basis
-  - `numberelements1d`:          number of elements in macro-element
-  - `mesh`:                      mesh for operator
+  - `name::String`:                   string containing name of operator
+  - `numbernodes1d::Int`:             polynomial order of TensorH1LagrangeBasis
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in one dimension for basis
+  - `numberelements1d::Int`:          number of elements in macro-element
+  - `mesh::Mesh`:                     mesh for operator
 
 # Keyword Arguments:
 
-  - `mapping = nothing`:         quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
-  - `parameters` = nothing:      named tuple of model parameters
+  - `mapping::Union{Tuple{Function,Function},Nothing} = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `parameters::Union{NamedTuple,Nothing}` = nothing:             named tuple of model parameters
 
 # Returns:
 
@@ -641,7 +641,7 @@ end
 
 """
 ```julia
-massoperator(basis, mesh; parameters)
+massoperator(basis, mesh)
 ```
 
 Convenience constructor for mass operator
@@ -652,12 +652,8 @@ Convenience constructor for mass operator
 
 # Arguments:
 
-  - `basis`:  basis for all operator fields to use
-  - `mesh`:   mesh for operator
-
-# Keyword Arguments:
-
-  - `parameters = nothing`:  named tuple of model parameters
+  - `basis::AbstractBasis`:  basis for all operator fields to use
+  - `mesh::Mesh`:            mesh for operator
 
 # Returns:
 
@@ -710,7 +706,7 @@ operator field:
     interpolation
 ```
 """
-function massoperator(basis::AbstractBasis, mesh::Mesh; parameters = nothing)
+function massoperator(basis::AbstractBasis, mesh::Mesh; _...)
     # setup
     function massweakform(u::Array{Float64}, w::Array{Float64})
         v = u * w[1]
@@ -731,7 +727,7 @@ end
 
 """
 ```julia
-diffusionoperator(basis, mesh; parameters)
+diffusionoperator(basis, mesh)
 ```
 
 Convenience constructor for diffusion operator
@@ -742,12 +738,8 @@ Convenience constructor for diffusion operator
 
 # Arguments:
 
-  - `basis`:  basis for all operator fields to use
-  - `mesh`:   mesh for operator
-
-# Keyword Arguments:
-
-  - `parameters = nothing`:  named tuple of model parameters
+  - `basis::AbstractBasis`:  basis for all operator fields to use
+  - `mesh::Mesh`:            mesh for operator
 
 # Returns:
 
@@ -800,7 +792,7 @@ operator field:
     gradient
 ```
 """
-function diffusionoperator(basis::AbstractBasis, mesh::Mesh; parameters = nothing)
+function diffusionoperator(basis::AbstractBasis, mesh::Mesh; _...)
     # setup
     function diffusionweakform(du::Array{Float64}, w::Array{Float64})
         dv = du * w[1]
@@ -832,12 +824,12 @@ Convenience constructor for advection operator
 
 # Arguments:
 
-  - `basis`:  basis for all operator fields to use
-  - `mesh`:   mesh for operator
+  - `basis::AbstractBasis`:  basis for all operator fields to use
+  - `mesh::Mesh`:            mesh for operator
 
 # Keyword Arguments:
 
-  - `parameters = ([wind = [1., 1.],)`:  named tuple of model parameters, defines wind speed
+  - `parameters::NamedTuple = ([wind = [1., 1.],)`:  named tuple of model parameters, defines wind speed
 
 # Returns:
 
@@ -943,12 +935,12 @@ Convenience constructor for SUPG mass matrix operator
 
 # Arguments:
 
-  - `basis`:  basis for all operator fields to use
-  - `mesh`:   mesh for operator
+  - `basis::AbstractBasis`:  basis for all operator fields to use
+  - `mesh::Mesh`:            mesh for operator
 
 # Keyword Arguments:
 
-  - `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
+  - `parameters::NamedTuple = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
 
 # Returns:
 
@@ -1060,12 +1052,12 @@ Convenience constructor for SUPG advection operator
 
 # Arguments:
 
-  - `basis`:  basis for all operator fields to use
-  - `mesh`:   mesh for operator
+  - `basis::AbstractBasis`:  basis for all operator fields to use
+  - `mesh::Mesh`:            mesh for operator
 
 # Keyword Arguments:
 
-  - `parameters = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
+  - `parameters::NamedTuple = ([wind = [1., 1.], τ = 1.0)`:  named tuple of model parameters, defines wind speed and SUPG scaling
 
 # Returns:
 
@@ -1175,8 +1167,8 @@ operatorgallery = Dict(
     "mass" => massoperator,
     "diffusion" => diffusionoperator,
     "advection" => advectionoperator,
-    "supgmass" => supgmassoperator,
-    "supgadvection" => supgadvectionoperator,
+    "supg mass" => supgmassoperator,
+    "supg advection" => supgadvectionoperator,
 )
 
 # ------------------------------------------------------------------------------

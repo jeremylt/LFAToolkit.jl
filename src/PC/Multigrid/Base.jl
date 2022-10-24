@@ -11,10 +11,11 @@ Multigrid preconditioner for finite element operators
 
 # Arguments:
 
-  - `fineoperator`:       finite element operator to precondition
-  - `coarseoperator`:     coarse grid representation of finite element operator to precondition
-  - `smoother`:           error relaxation operator, such as Jacobi
-  - `prolongationbases`:  element prolongation bases from coarse to fine grid
+  - `fineoperator::Operator`:                             finite element operator to precondition
+  - `coarseoperator::Union{Operator,Multigrid}`:          coarse grid representation of finite element operator to precondition
+  - `smoother::AbstractPreconditioner`:                   error relaxation operator, such as Jacobi
+  - `prolongationbases::AbstractArray{<:AbstractBasis}`:  element prolongation bases from coarse to fine grid
+  - `multigridtype::MultigridType`:                       multigrid type, h-multigrid or p-multigrid
 
 # Returns:
 
@@ -23,7 +24,7 @@ Multigrid preconditioner for finite element operators
 mutable struct Multigrid <: AbstractPreconditioner
     # data never changed
     fineoperator::Operator
-    coarseoperator::Any
+    coarseoperator::Union{Operator,Multigrid}
     smoother::AbstractPreconditioner
     prolongationbases::AbstractArray{AbstractBasis}
     multigridtype::MultigridType.MgridType
@@ -35,19 +36,14 @@ mutable struct Multigrid <: AbstractPreconditioner
     # inner constructor
     Multigrid(
         fineoperator::Operator,
-        coarseoperator::Any,
+        coarseoperator::Union{Operator,Multigrid},
         smoother::AbstractPreconditioner,
-        prolongationbases::AbstractArray,
+        prolongationbases::AbstractArray{<:AbstractBasis},
         multigridtype::MultigridType.MgridType,
     ) = (
         # check smoother for fine grid
         if fineoperator != smoother.operator
             error("smoother must be for fine grid operator") # COV_EXCL_LINE
-        end;
-
-        # check coarse operator is operator or Multigrid
-        if !isa(coarseoperator, Operator) && !isa(coarseoperator, Multigrid)
-            error("coarse operator must be an operator or multigrid") # COV_EXCL_LINE
         end;
 
         # check agreement in number of fields
@@ -70,10 +66,10 @@ end
 
 # printing
 # COV_EXCL_START
-function Base.show(io::IO, preconditioner::Multigrid)
-    if preconditioner.multigridtype == MultigridType.hmultigrid
+function Base.show(io::IO, multigrid::Multigrid)
+    if multigrid.multigridtype == MultigridType.hmultigrid
         print(io, "h")
-    elseif preconditioner.multigridtype == MultigridType.pmultigrid
+    elseif multigrid.multigridtype == MultigridType.pmultigrid
         print(io, "p")
     end
     print(io, "-multigrid preconditioner")
@@ -90,10 +86,6 @@ getnodecoordinateddifferences(multigrid)
 ```
 
 Compute or retrieve the array of differences in coordinates between nodes
-
-# Arguments:
-
-  - `preconditioner`:  preconditioner to compute node coordinate differences
 
 # Returns:
 
@@ -134,10 +126,6 @@ getprolongationmatrix(multigrid)
 ```
 
 Compute or retrieve the prolongation matrix
-
-# Arguments:
-
-  - `preconditioner`:  preconditioner to compute prolongation matrix
 
 # Returns:
 
@@ -219,10 +207,6 @@ Compute the symbol matrix for a multigrid prolongation operator
 
 # Arguments:
 
-  - `preconditioner`:  preconditioner to compute prolongation symbol
-
-# Arguments:
-
   - `multigrid`: Multigrid operator to compute prolongation symbol matrix for
   - `θ`:         Fourier mode frequency array (one frequency per dimension)
 
@@ -299,10 +283,10 @@ Compute or retrieve the symbol matrix for a Jacobi preconditioned operator
 
 # Arguments:
 
-  - `multigrid`:  multigrid preconditioner to compute symbol matrix for
-  - `p`:          smoothing paramater array
-  - `v`:          pre and post smooths iteration count array, 0 indicates no pre or post smoothing
-  - `θ`:          Fourier mode frequency array (one frequency per dimension)
+  - `multigrid::Multigrid`:  multigrid preconditioner to compute symbol matrix for
+  - `p::Array{Real}`:        smoothing paramater array
+  - `v::Array{Int}`:         pre and post smooths iteration count array, 0 indicates no pre or post smoothing
+  - `θ::Array{Real}`:        Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 
@@ -353,10 +337,15 @@ end
 
 ```
 """
-function computesymbols(multigrid::Multigrid, p::Array, v::Array{Int}, θ::Array)
+function computesymbols(
+    multigrid::Multigrid,
+    p::Array{<:Real},
+    v::Array{Int},
+    θ::Array{<:Real},
+)
     # validate number of parameters
     if length(v) != 2
-        Throw(error("must specify number of pre and post smooths")) # COV_EXCL_LINE
+        throw(error("must specify number of pre and post smooths")) # COV_EXCL_LINE
     end
 
     # compute component symbols
@@ -373,7 +362,7 @@ function computesymbols(multigrid::Multigrid, p::Array, v::Array{Int}, θ::Array
         A_c = computesymbols(multigrid.coarseoperator.fineoperator, θ)
         A_c_inv = (I - computesymbols(multigrid.coarseoperator, p, v, θ)) * A_c^-1
     else
-        Throw(error("coarse operator not supported")) # COV_EXCL_LINE
+        throw(error("coarse operator not supported")) # COV_EXCL_LINE
     end
 
     # return

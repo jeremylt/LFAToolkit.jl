@@ -15,7 +15,7 @@ Lumped BDDC preconditioner for finite element operators
 
 # Arguments:
 
-  - `operator`:  finite element operator to precondition
+  - `operator::Operator`:  finite element operator to precondition
 
 # Returns:
 
@@ -92,7 +92,7 @@ Dirichlet BDDC preconditioner for finite element operators
 
 # Arguments:
 
-  - `operator`:  finite element operator to precondition
+  - `operator::Operator`:  finite element operator to precondition
 
 # Returns:
 

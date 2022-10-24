@@ -11,8 +11,12 @@ Finite Element operator input or output, with a basis and evaluation mode
 
 # Arguments:
 
-  - `basis`:            finite element basis for the field
-  - `evaluationmodes`:  array of basis evaluation modes; note: quadrature weights must be listed in a separate operator field
+  - `basis::AbstractBasis`:                           finite element basis for the field
+  - `evaluationmodes::AbstractArray{EvaluationMode`:  array of basis evaluation modes; note: quadrature weights must be listed in a separate operator field
+
+# Optional Agrument:
+
+  - `name::String`:  name of operator field
 
 # Returns:
 

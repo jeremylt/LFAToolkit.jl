@@ -41,15 +41,15 @@ end
 
 # printing
 # COV_EXCL_START
-Base.show(io::IO, preconditioner::IdentityPC) = print(io, "identity preconditioner")
+Base.show(io::IO, _::IdentityPC) = print(io, "identity preconditioner")
 # COV_EXCL_STOP
 
 # COV_EXCL_START
-function Base.setproperty!(pc::IdentityPC, f::Symbol, value)
+function Base.setproperty!(preconditioner::IdentityPC, f::Symbol, value)
     if f == :operator
         throw(ReadOnlyMemoryError())
     else
-        return setfield!(operator, f, value)
+        return setfield!(preconditioner, f, value)
     end
 end
 # COV_EXCL_STOP
@@ -60,16 +60,16 @@ end
 
 """
 ```julia
-computesymbols(preconditioner, ω, θ)
+computesymbols(identity, ω, θ)
 ```
 
 Compute or retrieve the symbol matrix for a identity preconditioned operator
 
 # Arguments:
 
-  - `preconditioner`:  Identity preconditioner to compute symbol matrix for
-  - `ω`:               smoothing weighting factor array
-  - `θ`:               Fourier mode frequency array (one frequency per dimension)
+  - `identity::IdentityPC`:  Identity preconditioner to compute symbol matrix for
+  - `ω::Array`:              smoothing weighting factor array
+  - `θ::Array`:              Fourier mode frequency array (one frequency per dimension)
 
 # Returns:
 
@@ -97,7 +97,7 @@ A = computesymbols(identity, [], []);
 
 ```
 """
-function computesymbols(preconditioner::IdentityPC, ω::Array, θ::Array)
+function computesymbols(_::IdentityPC, _::Array, _::Array)
     # return
     return I
 end

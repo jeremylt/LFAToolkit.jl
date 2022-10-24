@@ -23,5 +23,5 @@ Plot for the symbol of a Jacobi smoother for the 2D scalar diffusion problem wit
 
 ```@docs
 Jacobi
-computesymbols(::Jacobi, ::Array, ::Array)
+computesymbols(::Jacobi, ::Array{<:Real}, ::Array{<:Real})
 ```

@@ -2,8 +2,6 @@
 # finite element bases
 # ------------------------------------------------------------------------------
 
-using Polynomials
-
 # ------------------------------------------------------------------------------
 # conformal map functions for generating transformed polynomial bases
 # ------------------------------------------------------------------------------
@@ -18,7 +16,7 @@ See Figure 4.1 of Hale and Trefethen (2008).
 
 # Arguments:
 
-  - `d`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
+  - `d::Int`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
 
@@ -44,7 +42,7 @@ truegonrange = [
 
 ```
 """
-function sausage_transformation(d)
+function sausage_transformation(d::Int)
     c = zeros(d + 1)
     c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
     c /= sum(c)
@@ -66,7 +64,7 @@ Compute the Kosloff and Tal-Ezer conformal map derived from the inverse sine fun
 
 # Arguments:
 
-  - `α`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
+  - `α::Float64`:  polynomial degree of truncated Taylor series expansion of arcsin(s).
 
 # Returns:
 
@@ -86,7 +84,7 @@ truegonrange = [-1.0, -0.39494881426787537, 0.0, 0.39494881426787537, 1.0];
 
 ```
 """
-function kosloff_talezer_transformation(α)
+function kosloff_talezer_transformation(α::Float64)
     g(s) = asin(α * s) / asin(α)
     gprime(s) = α / (asin(α) * sqrt(1 - (α * s)^2))
     g, gprime
@@ -101,7 +99,7 @@ Compute the Hale and Trefethen strip transformation
 
 # Arguments:
 
-  - `ρ`:  sum of the semiminor and semimajor axis
+  - `ρ::Float64`:  sum of the semiminor and semimajor axis
 
 # Returns:
 
@@ -121,7 +119,7 @@ truegonrange = [-1.0, -0.36812132798370184, 0.0, 0.36812132798370184, 1.0];
 
 ```
 """
-function hale_trefethen_strip_transformation(ρ)
+function hale_trefethen_strip_transformation(ρ::Float64)
     τ = π / log(ρ)
     d = 0.5 + 1 / (exp(τ * π) + 1)
     π2 = π / 2
@@ -139,16 +137,16 @@ end
 
 """
 ```julia
-transformquadrature(points, weights, mapping)
+transformquadrature(points, weights = nothing, mapping = nothing)
 ```
 
 Transformed quadrature by applying a smooth mapping = (g, gprime) from the original domain.
 
 # Arguments:
 
-  - `points`:   array of quadrature points
-  - `weights`:  optional array of weights to transform
-  - `mapping`:  choice of conformal map
+  - `points::AbstractArray{Float64}`:                              array of quadrature points
+  - `weights::Union{AbstractArray{Float64},Nothing} = nothing`:    optional array of weights to transform
+  - `mapping::Union{Tuple{Function,Function},Nothing} = nothing`:  choice of conformal map
 
 # Returns:
 
@@ -174,7 +172,7 @@ quadratureweights = [
 ];
 mapping = sausage_transformation(9);
 mappedpoints, mappedweights =
-    transformquadrature(quadraturepoints, quadratureweights, mapping);
+    LFAToolkit.transformquadrature(quadraturepoints, quadratureweights, mapping);
 
 # verify:
 weightsum = sum(mappedweights);
@@ -185,8 +183,8 @@ weightsum = sum(mappedweights);
 ```
 """
 function transformquadrature(
-    points,
-    weights = nothing,
+    points::AbstractArray{Float64},
+    weights::Union{AbstractArray{Float64},Nothing} = nothing,
     mapping::Union{Tuple{Function,Function},Nothing} = nothing,
 )
     if isnothing(mapping)
@@ -212,15 +210,15 @@ end
 
 """
 ```julia
-buildinterpolationandgradient(nodes, quadraturepoints)
+buildinterpolationandgradient(nodes1d, quadraturepoints1d)
 ```
 
 Build one dimensional interpolation and gradient matrices, from Fornberg 1998
 
 # Arguments:
 
-  - `nodes`:             1d basis nodes
-  - `quadraturepoints`:  1d basis quadrature points
+  - `nodes1d::AbstractArray{Float64}`:             1d basis nodes
+  - `quadraturepoints1d::AbstractArray{Float64}`:  1d basis quadrature points
 
 # Returns:
 
@@ -265,7 +263,7 @@ function buildinterpolationandgradient(
     if numbernodes1d < 2
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numbernodes1d,
                 "length of nodes1d must be greater than or equal to 2",
             ),
@@ -275,7 +273,7 @@ function buildinterpolationandgradient(
     if numbernodes1d < 2
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numbernodes1d,
                 "length of quadraturepoints1d must be greater than or equal to 2",
             ),
@@ -338,15 +336,15 @@ Tensor product basis on Gauss-Legendre-Lobatto points with Gauss-Legendre (defau
 
 # Arguments:
 
-  - `numbernodes1d`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
-  - `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
-  - `numbercomponents`:          number of components
-  - `dimension`:                 dimension of basis
+  - `numbernodes1d::Int`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in 1 dimension
+  - `numbercomponents::Int`:          number of components
+  - `dimension::Int`:                 dimension of basis
 
 # Keyword Arguments:
 
-  - `collocatedquadrature = false`:   Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
-  - `mapping = nothing`:              quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `collocatedquadrature::Bool = false`:                          Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
+  - `mapping::Union{Tuple{Function,Function},Nothing} = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
 
 # Returns:
 
@@ -381,12 +379,16 @@ function TensorH1LagrangeBasis(
 )
     # check inputs
     if numbernodes1d < 2
-        throw(DomanError(numbernodes1d, "numbernodes1d must be greater than or equal to 2")) # COV_EXCL_LINE
+        # COV_EXCL_START
+        throw(
+            DomainError(numbernodes1d, "numbernodes1d must be greater than or equal to 2"),
+        )
+        # COV_EXCL_STOP
     end
     if numberquadraturepoints1d < 1
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numberquadraturepoints1d,
                 "numberquadraturepoints1d must be greater than or equal to 1",
             ),
@@ -394,7 +396,7 @@ function TensorH1LagrangeBasis(
         # COV_EXCL_STOP
     end
     if dimension < 1 || dimension > 3
-        throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
+        throw(DomainError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
 
     # get nodes, quadrature points, and weights
@@ -441,10 +443,10 @@ Tensor product basis on uniformly spaced points with Gauss-Legendre quadrature p
 
 # Arguments:
 
-  - `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
-  - `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
-  - `numbercomponents`:          number of components
-  - `dimension`:                 dimension of basis
+  - `numbernodes1d::Int`:             number of uniformly spaced nodes in 1 dimension
+  - `numberquadraturepoints1d::Int`:  number of Gauss-Legendre quadrature points in 1 dimension
+  - `numbercomponents::Int`:          number of components
+  - `dimension::Int`:                 dimension of basis
 
 # Returns:
 
@@ -476,12 +478,16 @@ function TensorH1UniformBasis(
 )
     # check inputs
     if numbernodes1d < 2
-        throw(DomanError(numbernodes1d, "numbernodes1d must be greater than or equal to 2")) # COV_EXCL_LINE
+        # COV_EXCL_START
+        throw(
+            DomainError(numbernodes1d, "numbernodes1d must be greater than or equal to 2"),
+        )
+        # COV_EXCL_STOP
     end
     if numberquadraturepoints1d < 1
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numberquadraturepoints1d,
                 "numberquadraturepoints1d must be greater than or equal to 1",
             ),
@@ -489,7 +495,7 @@ function TensorH1UniformBasis(
         # COV_EXCL_STOP
     end
     if dimension < 1 || dimension > 3
-        throw(DomanError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
+        throw(DomainError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
     end
 
     # get nodes, quadrature points, and weights
@@ -534,16 +540,16 @@ Tensor product macro-element basis from 1d single element tensor product basis
 
 # Arguments:
 
-  - `numbernodes1d`:             number of basis nodes in 1 dimension
-  - `numberquadraturepoints1d`:  number of quadrature points in 1 dimension
-  - `numbercomponents`:          number of components
-  - `dimension`:                 dimension of basis
-  - `numberelements1d`:          number of elements in macro-element
-  - `basis1dmicro`:              1d micro element basis to replicate
+  - `numbernodes1d::Int`:             number of basis nodes in 1 dimension
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in 1 dimension
+  - `numbercomponents::Int`:          number of components
+  - `dimension::Int`:                 dimension of basis
+  - `numberelements1d::Int`:          number of elements in macro-element
+  - `basis1dmicro::TensorBasis`:      1d micro element basis to replicate
 
 # Keyword Arguments:
 
-  - `overlapquadraturepoints = false`:  overlap quadrature points between elements, for prolongation
+  - `overlapquadraturepoints::Bool = false`:  overlap quadrature points between elements, for prolongation
 
 # Returns:
 
@@ -561,7 +567,10 @@ function TensorMacroElementBasisFrom1D(
     if numberelements1d < 2
         # COV_EXCL_START
         throw(
-            DomanError(numberelements1d, "macro-elements must contain at least 2 elements"),
+            DomainError(
+                numberelements1d,
+                "macro-elements must contain at least 2 elements",
+            ),
         )
         # COV_EXCL_STOP
     end
@@ -635,7 +644,7 @@ TensorH1LagrangeMacroBasis(
     numberquadraturepoints1d,
     numbercomponents,
     dimension,
-    numberelements1d;
+    numberelements1;
     collocatedquadrature = false,
     mapping = nothing,
 )
@@ -645,16 +654,16 @@ Tensor product macro-element basis on Gauss-Legendre-Lobatto points with Gauss-L
 
 # Arguments:
 
-  - `numbernodes1d`:                 number of Gauss-Legendre-Lobatto nodes in 1 dimension
-  - `numberquadraturepoints1d`:      number of quadrature points in 1 dimension
-  - `numbercomponents`:              number of components
-  - `dimension`:                     dimension of basis
-  - `numberelements1d`:              number of elements in macro-element
+  - `numbernodes1d::Int`:             number of Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberquadraturepoints1d::Int`:  number of quadrature points in 1 dimension
+  - `numbercomponents::Int`:          number of components
+  - `dimension::Int`:                 dimension of basis
+  - `numberelements1d::Int`:          number of elements in macro-element
 
 # Keyword Arguments:
 
-  - `collocatedquadrature = false`:  Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
-  - `mapping = nothing`:             quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
+  - `collocatedquadrature::Bool = false`:                          Gauss-Legendre (`false`) or Gauss-Legendre-Lobatto (`true`) quadrature points
+  - `mapping::Union{Tuple{Function,Function},Nothing} = nothing`:  quadrature point mapping - sausage, Kosloff-Talezer, Hale-Trefethen strip, or no transformation
 
 # Returns:
 
@@ -725,11 +734,11 @@ Tensor product macro-element basis on uniformly points with Gauss-Legendre quadr
 
 # Arguments:
 
-  - `numbernodes1d`:             number of uniformly spaced nodes in 1 dimension
-  - `numberquadraturepoints1d`:  number of Gauss-Legendre quadrature points in 1 dimension
-  - `numbercomponents`:          number of components
-  - `dimension`:                 dimension of basis
-  - `numberelements1d`:          number of elements in macro-element
+  - `numbernodes1d::Int`:             number of uniformly spaced nodes in 1 dimension
+  - `numberquadraturepoints1d::Int`:  number of Gauss-Legendre quadrature points in 1 dimension
+  - `numbercomponents::Int`:          number of components
+  - `dimension::Int`:                 dimension of basis
+  - `numberelements1d::Int`:          number of elements in macro-element
 
 # Returns:
 
@@ -792,10 +801,10 @@ Tensor product p-prolongation basis on Gauss-Legendre-Lobatto points
 
 # Arguments:
 
-  - `numbercoarsenodes1d`:  number of coarse grid Gauss-Legendre-Lobatto nodes in 1 dimension
-  - `numberfinenodes1d`:    number of fine grid Gauss-Legendre-Lobatto nodes in 1 dimension
-  - `numbercomponents`:     number of components
-  - `dimension`:            dimension of basis
+  - `numbercoarsenodes1d::Int`:  number of coarse grid Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numberfinenodes1d::Int`:    number of fine grid Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numbercomponents::Int`:     number of components
+  - `dimension::Int`:            dimension of basis
 
 # Returns:
 
@@ -853,11 +862,11 @@ Tensor product h-prolongation basis
 
 # Arguments:
 
-  - `coarsenodes1d`:         coarse grid node coordinates in 1 dimension
-  - `finenodes1d`:           fine grid node coordinates in 1 dimension
-  - `numbercomponents`:      number of components
-  - `dimension`:             dimension of basis
-  - `numberfineelements1d`:  number of fine grid elements
+  - `coarsenodes1d::AbstractArray{Float64,1}`:  coarse grid node coordinates in 1 dimension
+  - `finenodes1d::AbstractArray{Float64,1}`:    fine grid node coordinates in 1 dimension
+  - `numbercomponents::Int`:                    number of components
+  - `dimension::Int`:                           dimension of basis
+  - `numberfineelements1d::Int`:                number of fine grid elements
 
 # Returns:
 
@@ -904,10 +913,10 @@ Tensor product h-prolongation basis on Gauss-Legendre-Lobatto points
 
 # Arguments:
 
-  - `numbernodes1d`:         number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
-  - `numbercomponents`:      number of components
-  - `dimension`:             dimension of basis
-  - `numberfineelements1d`:  number of fine grid elements
+  - `numbernodes1d::Int`:         number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
+  - `numbercomponents::Int`:      number of components
+  - `dimension::Int`:             dimension of basis
+  - `numberfineelements1d::Int`:  number of fine grid elements
 
 # Returns:
 
@@ -970,10 +979,10 @@ Tensor product h-prolongation basis on uniformly spaced points
 
 # Arguments:
 
-  - `numbernodes1d`:         number of uniformly spaced nodes per element
-  - `numbercomponents`:      number of components
-  - `dimension`:             dimension of basis
-  - `numberfineelements1d`:  number of fine grid elements
+  - `numbernodes1d::Int`:         number of uniformly spaced nodes per element
+  - `numbercomponents::Int`:      number of components
+  - `dimension::Int`:             dimension of basis
+  - `numberfineelements1d::Int`:  number of fine grid elements
 
 # Returns:
 
@@ -1037,11 +1046,11 @@ Tensor product macro-element h-prolongation basis on Gauss-Legendre-Lobatto poin
 
 # Arguments:
 
-  - `numbernodes1d`:           number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
-  - `numbercomponents`:        number of components
-  - `dimension`:               dimension of basis
-  - `numbercoarseelements1d`:  number of coarse grid elements in macro-element
-  - `numberfineelements1d`:    number of fine grid elements in macro-element
+  - `numbernodes1d::Int`:           number of Gauss-Legendre-Lobatto nodes in 1 dimension per element
+  - `numbercomponents::Int`:        number of components
+  - `dimension::Int`:               dimension of basis
+  - `numbercoarseelements1d::Int`:  number of coarse grid elements in macro-element
+  - `numberfineelements1d::Int`:    number of fine grid elements in macro-element
 
 # Returns:
 
@@ -1077,7 +1086,7 @@ function TensorH1LagrangeHProlongationMacroBasis(
     if numberfineelements1d % numbercoarseelements1d != 0
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numberfineelements1d,
                 "numberfineelements1d must be a multiple of numbercoarseelements1d",
             ),
@@ -1103,7 +1112,7 @@ function TensorH1LagrangeHProlongationMacroBasis(
 end
 
 """
-```
+```julia
 TensorH1UniformHProlongationMacroBasis(
     numbernodes1d,
     numbercomponents,
@@ -1117,11 +1126,11 @@ Tensor product macro-element h-prolongation basis on uniformly spaced points
 
 # Arguments:
 
-  - `numbernodes1d`:           number of uniformly spaced nodes per element
-  - `numbercomponents`:        number of components
-  - `dimension`:               dimension of basis
-  - `numbercoarseelements1d`:  number of coarse grid elements in macro-element
-  - `numberfineelements1d`:    number of fine grid elements in macro-element
+  - `numbernodes1d::Int`:           number of uniformly spaced nodes per element
+  - `numbercomponents::Int`:        number of components
+  - `dimension::Int`:               dimension of basis
+  - `numbercoarseelements1d::Int`:  number of coarse grid elements in macro-element
+  - `numberfineelements1d::Int`:    number of fine grid elements in macro-element
 
 # Returns:
 
@@ -1157,7 +1166,7 @@ function TensorH1UniformHProlongationMacroBasis(
     if numberfineelements1d % numbercoarseelements1d != 0
         # COV_EXCL_START
         throw(
-            DomanError(
+            DomainError(
                 numberfineelements1d,
                 "numberfineelements1d must be a multiple of numbercoarseelements1d",
             ),

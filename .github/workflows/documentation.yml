@@ -7,10 +7,12 @@ on:
   pull_request:
 
 jobs:
-  # documenter
-  documenter:
-    name: Documenter
-    runs-on: ubuntu-latest
+  documentation:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        julia-version: ['1']
     steps:
       - name: Environment setup
         uses: actions/checkout@v3

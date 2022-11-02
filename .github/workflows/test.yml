@@ -27,7 +27,7 @@ jobs:
       - name: Process coverage
         uses: julia-actions/julia-processcoverage@latest
       - name: Post coverage
-        uses: codecov/codecov-action@latest
+        uses: codecov/codecov-action@v3
         with:
           files: lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}

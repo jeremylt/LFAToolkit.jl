@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/examples/hyperelasticity/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LFAToolkit.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../">Examples</a></li><li><a class="tocitem" href="../../public/">Public API</a></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/main/docs/src/examples/hyperelasticity.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Neo-Hookean-hyperelasticity"><a class="docs-heading-anchor" href="#Neo-Hookean-hyperelasticity">Neo-Hookean hyperelasticity</a><a id="Neo-Hookean-hyperelasticity-1"></a><a class="docs-heading-anchor-permalink" href="#Neo-Hookean-hyperelasticity" title="Permalink"></a></h2><p>This is an example of a p-multigrid preconditioner with Chebyshev smoothing for the 3D Neo-Hookean hyperelasticity problem.</p><h3 id="Problem-formulation"><a class="docs-heading-anchor" href="#Problem-formulation">Problem formulation</a><a id="Problem-formulation-1"></a><a class="docs-heading-anchor-permalink" href="#Problem-formulation" title="Permalink"></a></h3><p>The strong form of the static balance of linear-momentum at finite strain is given by</p><p class="math-container">\[-\nabla_x \cdot \bold{P} - \rho_0 \bold{g} = \bold{0}\]</p><p>where <span>$-\nabla_k$</span> is the gradient with respect to the reference configuration, <span>$\bold{P}$</span> is the first Piola-Kirchhoff stress tensor, <span>$\rho_0$</span> is the reference mass density, and <span>$\bold{g}$</span> is the forcing function.</p><p>The first Piola-Kirchhoff stress tensor is given by</p><p class="math-container">\[\bold{P} = \bold{F} \bold{S}\]</p><p>where <span>$\bold{F}$</span> is the deformation gradient and <span>$\bold{S}$</span> is the second Piola-Kirchhoff stress tensor. In this example, the second Piola-Kirchhoff stress tensor is given by the Neo-Hookean model.</p><p>For a full discussion of the formulation of the 3D Neo-Hookean hyperelasticity problem, see the <a href="https://libceed.readthedocs.io/en/latest/examples/solids/">libCEED documentation</a>.</p><h3 id="LFAToolkit-code"><a class="docs-heading-anchor" href="#LFAToolkit-code">LFAToolkit code</a><a id="LFAToolkit-code-1"></a><a class="docs-heading-anchor-permalink" href="#LFAToolkit-code" title="Permalink"></a></h3><pre><code class="language-julia hljs"># ------------------------------------------------------------------------------
+# hyperelasticity example
+# ------------------------------------------------------------------------------
+
+using LFAToolkit
+using LinearAlgebra
+
+# setup
+mesh = Mesh3D(1.0, 1.0, 1.0)
+finep = 2
+coarsep = 1
+numbercomponents = 3
+dimension = 3
+finebasis = TensorH1LagrangeBasis(finep + 1, finep + 1, numbercomponents, dimension)
+coarsebasis = TensorH1LagrangeBasis(coarsep + 1, finep + 1, numbercomponents, dimension)
+ctofbasis = TensorH1LagrangeBasis(
+    coarsep + 1,
+    finep + 1,
+    numbercomponents,
+    dimension,
+    collocatedquadrature = true,
+)
+
+# constants
+E = 1E6                             # Young&#39;s modulus
+ν = 0.3                             # Poisson&#39;s ratio
+K = E / (3 * (1 - 2 * ν))           # bulk modulus
+λ = E * ν / ((1 + ν) * (1 - 2 * ν)) # Lamé parameters
+μ = E / (2 * (1 + ν))
+
+# state
+gradu = [1; 2; 3] * ones(1, 3);
+
+function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
+    # dP = dF S + F dS
+
+    # deformation gradient
+    F = gradu + I
+    J = det(F)
+    # Green-Lagrange strain tensor
+    E = (gradu * gradu&#39; + gradu&#39; * gradu) / 2
+    # right Cauchy-Green tensor
+    C = 2 * E + I
+    C_inv = C^-1
+    # second Piola-Kirchhoff
+    S = λ * log(J) * C_inv + 2 * μ * C_inv * E
+
+    # delta du
+    deltadu = deltadu&#39;
+    # dF
+    dF = deltadu + I
+    # deltaE
+    deltaE = (deltadu * deltadu&#39; + deltadu&#39; * deltadu) / 2
+    # dS
+    dS = λ * sum(C_inv .* deltaE) * C_inv + 2 * (μ - λ * log(J)) * C_inv * deltaE * C_inv
+    # dP
+    dP = (dF * S + F * dS) * w[1]
+
+    return [dP&#39;]
+end
+
+# linearized Neo-Hookean operators
+function makeoperator(basis::TensorBasis)
+    inputs = [
+        OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation&quot;),
+        OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+    ]
+    outputs = [
+        OperatorField(
+            basis,
+            [EvaluationMode.gradient],
+            &quot;test function gradient of deformation&quot;,
+        ),
+    ]
+    return Operator(neohookeanweakform, mesh, inputs, outputs)
+end
+fineoperator = makeoperator(finebasis)
+coarseoperator = makeoperator(coarsebasis)
+
+# Chebyshev smoother
+chebyshev = Chebyshev(fineoperator)
+
+# p-multigrid preconditioner
+multigrid = PMultigrid(fineoperator, coarseoperator, chebyshev, [ctofbasis])
+
+# compute operator symbols
+A = computesymbols(multigrid, [3], [1, 1], [π, π, π])
+eigenvalues = real(eigvals(A))
+
+# ------------------------------------------------------------------------------
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Wednesday 2 November 2022 18:24">Wednesday 2 November 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,6 +1,7 @@
 # ------------------------------------------------------------------------------
 # documentation
 # ------------------------------------------------------------------------------
+
 using Documenter, DocumenterCitations, DocumenterTools, Markdown, LFAToolkit
 DocMeta.setdocmeta!(LFAToolkit, :DocTestSetup, :(using LFAToolkit); recursive = true)
 
@@ -16,6 +17,7 @@ end
 # ------------------------------------------------------------------------------
 # make
 # ------------------------------------------------------------------------------
+
 bib = CitationBibliography(joinpath(@__DIR__, "src/references.bib"))
 makedocs(
     bib,
@@ -44,6 +46,7 @@ makedocs(
 # ------------------------------------------------------------------------------
 # deploy
 # ------------------------------------------------------------------------------
+
 deploydocs(
     repo = "github.com/jeremylt/LFAToolkit.jl.git",
     devbranch = "main",

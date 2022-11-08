@@ -2,7 +2,7 @@ name: CompatHelper
 
 on:
   schedule:
-    - cron: 0 0 * * *
+    - cron: 1 2 * * 3
   workflow_dispatch:
 
 jobs:

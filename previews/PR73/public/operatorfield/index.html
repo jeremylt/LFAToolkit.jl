@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/public/operatorfield/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LFAToolkit.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../../examples/">Examples</a></li><li><a class="tocitem" href="../">Public API</a></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/main/docs/src/public/operatorfield.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Operator-Field"><a class="docs-heading-anchor" href="#Operator-Field">Operator Field</a><a id="Operator-Field-1"></a><a class="docs-heading-anchor-permalink" href="#Operator-Field" title="Permalink"></a></h2><p>The operator field object represents the different inputs and outputs for the finite element operator weak form. In a Galerkin operator, inputs represent the finite element basis for unknown values and the basis evaluation modes, while the outputs represent the finite element basis for the test functions and their basis evaluation modes.</p><article class="docstring"><header><a class="docstring-binding" id="LFAToolkit.OperatorField" href="#LFAToolkit.OperatorField"><code>LFAToolkit.OperatorField</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">OperatorField(basis, evaluationmodes)</code></pre><p>Finite Element operator input or output, with a basis and evaluation mode</p><p><strong>Arguments:</strong></p><ul><li><code>basis::AbstractBasis</code>:                           finite element basis for the field</li><li><code>evaluationmodes::AbstractArray{EvaluationMode</code>:  array of basis evaluation modes; note: quadrature weights must be listed in a separate operator field</li></ul><p><strong>Optional Agrument:</strong></p><ul><li><code>name::String</code>:  name of operator field</li></ul><p><strong>Returns:</strong></p><ul><li>finite element operator field object</li></ul><p><strong>Example:</strong></p><pre><code class="language-julia hljs"># basis
+basis = TensorH1LagrangeBasis(4, 3, 2, 1);
+
+# quadrature weights field, input only
+weightsfield =
+    OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;);
+
+# verify
+println(weightsfield)
+
+# input or output field
+inputfield = OperatorField(
+    basis,
+    [EvaluationMode.interpolation, EvaluationMode.gradient],
+    &quot;gradient of weak form input&quot;,
+);
+
+# verify
+println(inputfield)
+
+# output
+
+operator field:
+  name:
+    quadrature weights 
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    numbercomponents: 2
+    dimension: 1
+  evaluation mode:
+    quadratureweights
+operator field:
+  name:
+    gradient of weak form input
+  tensor product basis:
+    numbernodes1d: 4
+    numberquadraturepoints1d: 3
+    numbercomponents: 2
+    dimension: 1
+  evaluation modes:
+    interpolation
+    gradient</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jeremylt/LFAToolkit.jl/blob/4423308ed6cea075483a3f5d20f1d87de41ffe27/src/OperatorField.jl#L5-L72">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 22 November 2022 23:21">Tuesday 22 November 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

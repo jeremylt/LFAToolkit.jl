@@ -23,13 +23,13 @@ This package provides a toolkit for analyzing the performance of preconditioners
 To install a development version, run
 
 ```
-julia --project -e 'using Pkg; Pkg.build();'
+$ julia --project -e 'using Pkg; Pkg.build();'
 ```
 
 To install and test, run
 
 ```
-julia --project -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit")'
+$ julia --project -e 'using Pkg; Pkg.build(); Pkg.test("LFAToolkit")'
 ```
 
 ## Examples
@@ -42,13 +42,13 @@ Documentation can be found at the url listed above.
 To build the documentation locally, run
 
 ```
-julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build()'
+$ julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build()'
 ```
 
 followed by
 
 ```
-DOCSARGS=local julia --project=docs/ docs/make.jl
+$ DOCSARGS=local julia --project=docs/ docs/make.jl
 ```
 
 ## Online Demos

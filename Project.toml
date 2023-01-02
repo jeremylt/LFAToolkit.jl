@@ -1,7 +1,7 @@
 name = "LFAToolkit"
 uuid = "3f92b583-c0aa-4596-8bdf-f02f6c0a52df"
 authors = ["Jed Brown <jed@jedbrown.org>", "Adeleke Bankoe <AdelekeBankole@colorado.edu>", "Jeremy L Thompson <jeremy@jeremylt.org>"]
-version = "0.6.0"
+version = "0.6.1"
 
 [deps]
 FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"

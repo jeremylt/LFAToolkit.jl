@@ -4,6 +4,11 @@
 
 Current development includes:
 
+## v0.6.1
+
+This release fixes static analysis warnings and minor style/formatting inconsistencies.
+
+
 ## v0.6.0
 
 This release includes conformal maps for bases, new operator convenience constructors, and small internal improvements.

@@ -14,24 +14,24 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh1D(1.0)
-P = 2;
-Q = P;
+p = 2;
+q = p;
 collocate = false
 mapping = nothing
 basis =
-    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+    TensorH1LagrangeBasis(p, q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up
 numbersteps = 100
 θ_min = 0
-θ_max = (P - 1) * π
+θ_max = (p - 1) * π
 θ = LinRange(θ_min, θ_max, numbersteps)
 
 # associated phase speed
 c = 1.0
 
 # Tau scaling for SUPG
-τ = 0.5 / (P - 1) # 0 returns Galerkin method; empirically, 0.25 is too big for P=3 (quadratic)
+τ = 0.5 / (p - 1) # 0 returns Galerkin method; empirically, 0.25 is too big for p = 3 (quadratic)
 
 # weak form for SUPG advection
 function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})

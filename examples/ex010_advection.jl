@@ -14,17 +14,17 @@ using LinearAlgebra
 
 # setup
 mesh = Mesh1D(1.0)
-P = 4;
-Q = P;
+p = 4;
+q = p;
 collocate = false
 mapping = hale_trefethen_strip_transformation(1.4)
 basis =
-    TensorH1LagrangeBasis(P, Q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+    TensorH1LagrangeBasis(p, q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
 
 # frequency set up
 numbersteps = 100
 θ_min = 0
-θ_max = (P - 1) * π
+θ_max = (p - 1) * π
 θ = LinRange(θ_min, θ_max, numbersteps)
 
 # associated phase speed
@@ -44,7 +44,7 @@ inputs = [
 outputs = [OperatorField(basis, [EvaluationMode.gradient])]
 advection = Operator(advectionweakform, mesh, inputs, outputs)
 mass =
-    GalleryOperator("mass", P, Q, mesh, collocatedquadrature = collocate, mapping = mapping)
+    GalleryOperator("mass", p, q, mesh, collocatedquadrature = collocate, mapping = mapping)
 
 # compute operator symbols
 function advection_symbol(θ)

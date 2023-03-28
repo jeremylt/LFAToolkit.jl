@@ -312,10 +312,7 @@ estimate scaling:
   d = 1.0000
 ```
 """
-function setchebyshevtype(
-    chebyshev::Chebyshev,
-    chebyshevtype::ChebyshevType.ChebyType,
-)
+function setchebyshevtype(chebyshev::Chebyshev, chebyshevtype::ChebyshevType.ChebyType)
 
     chebyshev.chebyshevtype = chebyshevtype
     chebyshev
@@ -363,12 +360,12 @@ function getbetas(k)
         ]
     elseif k == 6
         return [
-         1.00128517255940
-         1.01304293035233
-         1.04678215124113
-         1.11616489419675
-         1.23829020218444
-         1.43524297106744
+            1.00128517255940
+            1.01304293035233
+            1.04678215124113
+            1.11616489419675
+            1.23829020218444
+            1.43524297106744
         ]
     elseif k == 7
         return [
@@ -676,7 +673,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
         W_n = I
         betas = getbetas(k)
         append!(betas, 0)
-        P_k = (1-betas[1]) * W_0 + (betas[1] - betas[2])/3 * W_1
+        P_k = (1 - betas[1]) * W_0 + (betas[1] - betas[2]) / 3 * W_1
         for n = 2:k
             W_n = 2 * argument * W_1 - W_0
             P_k = P_k + (betas[n] - betas[n+1]) / (2 * n + 1) * W_n

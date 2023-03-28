@@ -13,6 +13,7 @@ The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``, where
 # Arguments:
 
   - `operator::Operator`:  finite element operator to precondition
+  - `chebyshevtype::ChebyshevType`: Chebyshev type, first, fourth, or opt. fourth kind
 
 # Returns:
 
@@ -34,6 +35,7 @@ println(chebyshev)
 # output
 
 chebyshev preconditioner:
+1st-kind Chebyshev
 eigenvalue estimates:
   estimated minimum 0.2500
   estimated maximum 1.3611
@@ -50,19 +52,29 @@ mutable struct Chebyshev <: AbstractPreconditioner
     # data never changed
     operator::Operator
     eigenvaluebounds::Array{Float64,1}
+    chebyshevtype::ChebyshevType.ChebyType
 
     # data empty until assembled
     eigenvalueestimates::Array{Float64,1}
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    Chebyshev(operator::Operator) = new(operator, [0.0, 0.1, 0.0, 1.0])
+    Chebyshev(operator::Operator) = new(operator, [0.0, 0.1, 0.0, 1.0], ChebyshevType.first)
 end
 
 # printing
 # COV_EXCL_START
 function Base.show(io::IO, chebyshev::Chebyshev)
     print(io, "chebyshev preconditioner:")
+
+    # chebyshev type
+    if chebyshev.chebyshevtype == ChebyshevType.first
+        print(io, "\n1st-kind Chebyshev")
+    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+        print(io, "\n4th-kind Chebyshev")
+    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+        print(io, "\nOpt. 4th-kind Chebyshev")
+    end
 
     # eigenvalue estimates
     print(io, "\neigenvalue estimates:")
@@ -230,6 +242,7 @@ println(chebyshev)
 # output
 
 chebyshev preconditioner:
+1st-kind Chebyshev
 eigenvalue estimates:
   estimated minimum 0.0000
   estimated maximum 2.1429
@@ -255,6 +268,256 @@ function seteigenvalueestimatescaling(
     chebyshev.eigenvaluebounds[3] = eigenvaluebounds[3]
     chebyshev.eigenvaluebounds[4] = eigenvaluebounds[4]
     chebyshev
+end
+
+"""
+```julia
+setchebyshevtype(chebyshev, chebyshevtype)
+```
+
+Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
+
+# Arguments:
+
+  - `chebyshev::Chebyshev`:                preconditioner to set eigenvalue estimate scaling
+  - `chebyshevtype::ChebyshevType.ChebyType`:  type of Chebyshev polynomial to use
+
+# Example:
+
+```jldoctest
+# setup
+mesh = Mesh1D(1.0);
+diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+
+# preconditioner
+chebyshev = Chebyshev(diffusion)
+
+# set chebyshev polynomial type
+setchebyshevtype(chebyshev, ChebyshevType.fourth);
+println(chebyshev)
+
+# output
+
+chebyshev preconditioner:
+4th-kind Chebyshev
+eigenvalue estimates:
+  estimated minimum 0.0000
+  estimated maximum 2.1429
+estimate scaling:
+  λ_min = a * estimated min + b * estimated max
+  λ_max = c * estimated min + d * estimated max
+  a = 0.0000
+  b = 0.1000
+  c = 0.0000
+  d = 1.0000
+```
+"""
+function setchebyshevtype(
+    chebyshev::Chebyshev,
+    chebyshevtype::ChebyshevType.ChebyType,
+)
+
+    chebyshev.chebyshevtype = chebyshevtype
+    chebyshev
+end
+
+"""
+```julia
+getbetas(k)
+```
+
+Compute beta coefficients associated with fourth/optimal fourth-kind Chebyshev polynomials
+
+# Returns:
+
+  - beta coefficients associated with fourth/optimal fourth-kind Chebyshev polynomials
+"""
+function getbetas(k)
+    if k == 1
+        return [1.12500000000000]
+    elseif k == 2
+        return [
+            1.02387287570313
+            1.26408905371085
+        ]
+    elseif k == 3
+        return [
+            1.00842544782028
+            1.08867839208730
+            1.33753125909618
+        ]
+    elseif k == 4
+        return [
+            1.00391310427285
+            1.04035811188593
+            1.14863498546254
+            1.38268869241000
+        ]
+    elseif k == 5
+        return [
+            1.00212930146164
+            1.02173711549260
+            1.07872433192603
+            1.19810065292663
+            1.41322542791682
+        ]
+    elseif k == 6
+        return [
+         1.00128517255940
+         1.01304293035233
+         1.04678215124113
+         1.11616489419675
+         1.23829020218444
+         1.43524297106744
+        ]
+    elseif k == 7
+        return [
+            1.00083464397912
+            1.00843949430122
+            1.03008707768713
+            1.07408384092003
+            1.15036186707366
+            1.27116474046139
+            1.45186658649364
+        ]
+    elseif k == 8
+        return [
+            1.00057246631197
+            1.00577427662415
+            1.02050187922941
+            1.05019803444565
+            1.10115572984941
+            1.18086042806856
+            1.29838585382576
+            1.46486073151099
+        ]
+    elseif k == 9
+        return [
+            1.00040960072832
+            1.00412439506106
+            1.01460212148266
+            1.03561113626671
+            1.07139972529194
+            1.12688273710962
+            1.20785219140729
+            1.32121930716746
+            1.47529642820699
+        ]
+    elseif k == 10
+        return [
+            1.00030312229652
+            1.00304840660796
+            1.01077022715387
+            1.02619011597640
+            1.05231724933755
+            1.09255743207549
+            1.15083376663972
+            1.23172250870894
+            1.34060802024460
+            1.48386124407011
+        ]
+    elseif k == 11
+        return [
+            1.00023058595209
+            1.00231675024028
+            1.00817245396304
+            1.01982986566342
+            1.03950210235324
+            1.06965042700541
+            1.11305754295742
+            1.17290876275564
+            1.25288300576792
+            1.35725579919519
+            1.49101672564139
+        ]
+    elseif k == 12
+        return [
+            1.00017947200828
+            1.00180189139619
+            1.00634861907307
+            1.01537864566306
+            1.03056942830760
+            1.05376019693943
+            1.08699862592072
+            1.13259183097913
+            1.19316273358172
+            1.27171293675110
+            1.37169337969799
+            1.49708418575562
+        ]
+    elseif k == 13
+        return [
+            1.00014241921559
+            1.00142906932629
+            1.00503028986298
+            1.01216910518495
+            1.02414874342792
+            1.04238158880820
+            1.06842008128700
+            1.10399010936759
+            1.15102748242645
+            1.21171811910125
+            1.28854264865128
+            1.38432619380991
+            1.50229418757368
+        ]
+    elseif k == 14
+        return [
+            1.00011490538261
+            1.00115246376914
+            1.00405357333264
+            1.00979590573153
+            1.01941300472994
+            1.03401425035436
+            1.05480599606629
+            1.08311420301813
+            1.12040891660892
+            1.16833095655446
+            1.22872122288238
+            1.30365305707817
+            1.39546814053678
+            1.50681646209583
+        ]
+    elseif k == 15
+        return [
+            1.00009404750752
+            1.00094291696343
+            1.00331449056444
+            1.00800294833816
+            1.01584236259140
+            1.02772083317705
+            1.04459535422831
+            1.06750761206125
+            1.09760092545889
+            1.13613855366157
+            1.18452361426236
+            1.24432087304475
+            1.31728069083392
+            1.40536543893560
+            1.51077872501845
+        ]
+    elseif k == 16
+        return [
+            1.00007794828179
+            1.00078126847253
+            1.00274487974401
+            1.00662291017015
+            1.01309858836971
+            1.02289448329337
+            1.03678321409983
+            1.05559875719896
+            1.08024848405560
+            1.11172607131497
+            1.15112543431072
+            1.19965584614973
+            1.25865841744946
+            1.32962412656664
+            1.41421360695576
+            1.51427891730346
+        ]
+    end
+
+    throw(ArgumentError()) # COV_EXCL_LINE
 end
 
 # ------------------------------------------------------------------------------
@@ -377,23 +640,52 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
     D_inv = chebyshev.operatordiagonalinverse
     D_inv_A = D_inv * A
     k = ω[1] # degree of Chebyshev smoother
-    α = (upper + lower) / 2
-    c = (upper - lower) / 2
-    β_0 = -c^2 / (2 * α)
-    γ_1 = -(α + β_0)
-    E_0 = I
-    E_1 = I - (1 / α) * D_inv_A * E_0
-    E_n = I
-    for _ = 2:k
-        E_n = (D_inv_A * E_1 - α * E_1 - β_0 * E_0) / γ_1
-        β_0 = (c / 2)^2 / γ_1
+    if chebyshev.chebyshevtype == ChebyshevType.first
+        α = (upper + lower) / 2
+        c = (upper - lower) / 2
+        β_0 = -c^2 / (2 * α)
         γ_1 = -(α + β_0)
-        E_0 = E_1
-        E_1 = E_n
+        E_0 = I
+        E_1 = I - (1 / α) * D_inv_A * E_0
+        E_n = I
+        for _ = 2:k
+            E_n = (D_inv_A * E_1 - α * E_1 - β_0 * E_0) / γ_1
+            β_0 = (c / 2)^2 / γ_1
+            γ_1 = -(α + β_0)
+            E_0 = E_1
+            E_1 = E_n
+        end
+        # return
+        return E_1
+    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+        argument = I - 2 * D_inv_A / upper
+        W_0 = I
+        W_1 = 2 * argument + I
+        W_n = I
+        for _ = 2:k
+            W_n = 2 * argument * W_1 - W_0
+            W_0 = W_1
+            W_1 = W_n
+        end
+        # return
+        return W_1 / (2 * k + 1)
+    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+        argument = I - 2 * D_inv_A / upper
+        W_0 = I
+        W_1 = 2 * argument + I
+        W_n = I
+        betas = getbetas(k)
+        append!(betas, 0)
+        P_k = (1-betas[1]) * W_0 + (betas[1] - betas[2])/3 * W_1
+        for n = 2:k
+            W_n = 2 * argument * W_1 - W_0
+            P_k = P_k + (betas[n] - betas[n+1]) / (2 * n + 1) * W_n
+            W_0 = W_1
+            W_1 = W_n
+        end
+        # return
+        return P_k
     end
-
-    # return
-    return E_1
 end
 
 # ------------------------------------------------------------------------------

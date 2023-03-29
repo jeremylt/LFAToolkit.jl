@@ -69,11 +69,18 @@ end
 end
 
 # ------------------------------------------------------------------------------
-# Chebyshev smoother example
+# Chebyshev smoother examples
 # ------------------------------------------------------------------------------
 
 @testset "  ex111: Chebyshev example                   " begin
     include("../examples/ex111_chebyshev.jl")
+
+    @test minimum(eigenvalues) ≈ -0.272875736279538
+    @test maximum(eigenvalues) ≈ 0.26048711552603726
+end
+
+@testset "  ex112: Chebyshev fourth kind example       " begin
+    include("../examples/ex112_chebyshev_fourth.jl")
 
     @test minimum(eigenvalues) ≈ -0.2301200211798214
     @test maximum(eigenvalues) ≈ 0.1306886015364882

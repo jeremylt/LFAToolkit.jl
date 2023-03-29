@@ -76,7 +76,7 @@ export Operator,
 export AbstractPreconditioner
 export IdentityPC
 export Jacobi
-export Chebyshev, seteigenvalueestimatescaling, setchebyshevtype
+export Chebyshev, seteigenvalueestimatescaling
 # -- multigrid
 export Multigrid, PMultigrid, HMultigrid
 # -- BDDC

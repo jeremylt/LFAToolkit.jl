@@ -275,54 +275,6 @@ end
 
 """
 ```julia
-setchebyshevtype(chebyshev, chebyshevtype)
-```
-
-Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
-
-# Arguments:
-
-  - `chebyshev::Chebyshev`:                preconditioner to set eigenvalue estimate scaling
-  - `chebyshevtype::ChebyshevType.ChebyType`:  type of Chebyshev polynomial to use
-
-# Example:
-
-```jldoctest
-# setup
-mesh = Mesh1D(1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
-
-# preconditioner
-chebyshev = Chebyshev(diffusion)
-
-# set chebyshev polynomial type
-setchebyshevtype(chebyshev, ChebyshevType.fourth);
-println(chebyshev)
-
-# output
-
-chebyshev preconditioner:
-4th-kind Chebyshev
-eigenvalue estimates:
-  estimated minimum 0.0000
-  estimated maximum 2.1429
-estimate scaling:
-  λ_min = a * estimated min + b * estimated max
-  λ_max = c * estimated min + d * estimated max
-  a = 0.0000
-  b = 0.1000
-  c = 0.0000
-  d = 1.0000
-```
-"""
-function setchebyshevtype(chebyshev::Chebyshev, chebyshevtype::ChebyshevType.ChebyType)
-
-    chebyshev.chebyshevtype = chebyshevtype
-    chebyshev
-end
-
-"""
-```julia
 getbetas(k)
 ```
 

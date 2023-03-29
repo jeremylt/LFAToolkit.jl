@@ -13,8 +13,7 @@ p = 3
 diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh)
 
 # Chebyshev smoother
-chebyshev = Chebyshev(diffusion)
-setchebyshevtype(chebyshev, ChebyshevType.fourth)
+chebyshev = Chebyshev(diffusion, ChebyshevType.fourth)
 
 # compute operator symbols
 A = computesymbols(chebyshev, [3], [π, π])

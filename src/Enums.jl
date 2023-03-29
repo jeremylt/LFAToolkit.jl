@@ -79,4 +79,31 @@ harmonic = 1
 
 end # submodule
 
+module ChebyshevType
+
+"""
+Chebyshev types
+
+# Types:
+
+  - `first`:  1st-kind Chebyshev
+  - `fourth`:  4th-kind Chebyshev
+  - `opt_fourth`:  optimized 4th-kind Chebyshev
+
+# Example:
+
+```@jldoctest
+LFAToolkit.ChebyshevType.ChebyshevType
+
+# output
+Enum LFAToolkit.ChebyshevType.ChebyType:
+first = 0
+fourth = 1
+opt_fourth = 2
+```
+"""
+@enum ChebyType first fourth opt_fourth
+
+end # submodule
+
 # ------------------------------------------------------------------------------

@@ -47,7 +47,7 @@ include("Utilities.jl")
 # user available types and methods
 # ------------------------------------------------------------------------------
 
-export EvaluationMode, MultigridType, BDDCInjectionType
+export EvaluationMode, MultigridType, BDDCInjectionType, ChebyshevType
 # mesh
 export Mesh1D, Mesh2D, Mesh3D
 # bases

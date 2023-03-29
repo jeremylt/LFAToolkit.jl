@@ -59,7 +59,10 @@ mutable struct Chebyshev <: AbstractPreconditioner
     operatordiagonalinverse::AbstractArray{Float64}
 
     # inner constructor
-    Chebyshev(operator::Operator) = new(operator, [0.0, 0.1, 0.0, 1.0], ChebyshevType.first)
+    Chebyshev(
+        operator::Operator,
+        chebyshevtype::ChebyshevType.ChebyType = ChebyshevType.first,
+    ) = new(operator, [0.0, 0.1, 0.0, 1.0], chebyshevtype)
 end
 
 # printing

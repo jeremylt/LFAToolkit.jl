@@ -1,7 +1,15 @@
 ## Preconditioner: Chebyshev
 
 This smoother provides Chekyshev polynomial smoothing of a runtime specified order.
+
+### Chebyshev Type
+
+Different Chebyshev smoother types may be selected.
 See [lottes2022](@cite) and [phillips2022](@cite) for discussion of Chebyshev smoother types for multigrid V-cycles.
+
+```@docs
+ChebyshevType.ChebyType
+```
 
 ### Example
 
@@ -24,6 +32,5 @@ Plot for the symbol a cubic Chebyshev smoother for the 2D scalar diffusion probl
 
 ```@docs
 Chebyshev
-seteigenvalueestimatescaling
 computesymbols(::Chebyshev, ::Array{<:Real}, ::Array{<:Real})
 ```

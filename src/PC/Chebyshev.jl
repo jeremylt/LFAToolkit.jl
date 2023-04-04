@@ -284,7 +284,7 @@ Compute beta coefficients associated with fourth/optimal fourth-kind Chebyshev p
 
   - beta coefficients associated with fourth/optimal fourth-kind Chebyshev polynomials
 """
-function getbetas(k)
+function getbetas(k::Real)
     if k == 1
         return [1.12500000000000]
     elseif k == 2
@@ -543,7 +543,6 @@ for dimension = 1:3
     A = computesymbols(chebyshev, [1], π * ones(dimension))
 
     # verify
-    using LinearAlgebra
     eigenvalues = real(eigvals(A))
     if dimension == 1
         @assert minimum(eigenvalues) ≈ 0.15151515151515105

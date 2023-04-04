@@ -4,10 +4,11 @@
 
 Current development includes:
 
+* Added Chebyshev polynomials of the 4th kind
+
 ## v0.6.1
 
 This release fixes static analysis warnings and minor style/formatting inconsistencies.
-
 
 ## v0.6.0
 

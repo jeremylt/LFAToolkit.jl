@@ -195,7 +195,6 @@ for dimension = 1:3
     A = computesymbols(jacobi, [1.0], π * ones(dimension))
 
     # verify
-    using LinearAlgebra
     eigenvalues = real(eigvals(A))
     if dimension == 1
         @assert maximum(eigenvalues) ≈ 1 / 7

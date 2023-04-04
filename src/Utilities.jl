@@ -41,8 +41,6 @@ tuple holding
 # Examples:
 
 ```jldoctest
-using LFAToolkit;
-
 numbersteps1d = 5;
 
 for dimension = 1:3
@@ -79,8 +77,6 @@ end
 ```
 
 ```jldoctest
-using LFAToolkit;
-
 # setup
 numbersteps1d = 3;
 mesh = Mesh2D(0.5, 0.5);
@@ -182,8 +178,6 @@ tuple holding
 # Example:
 
 ```jldoctest
-using LFAToolkit;
-
 numbersteps1d = 5;
 
 for dimension = 1:3
@@ -306,11 +300,7 @@ tuple holding
 # Example:
 
 ```jldoctest
-using LFAToolkit;
-
 numbersteps1d = 5;
-
-using LinearAlgebra
 
 for dimension = 1:3
     # setup

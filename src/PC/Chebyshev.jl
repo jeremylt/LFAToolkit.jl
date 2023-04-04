@@ -52,7 +52,7 @@ mutable struct Chebyshev <: AbstractPreconditioner
     # data never changed
     operator::Operator
     eigenvaluebounds::Array{Float64,1}
-    chebyshevtype::ChebyshevType.ChebyType
+    type::ChebyshevType.ChebyType
 
     # data empty until assembled
     eigenvalueestimates::Array{Float64,1}
@@ -71,11 +71,11 @@ function Base.show(io::IO, chebyshev::Chebyshev)
     print(io, "chebyshev preconditioner:")
 
     # chebyshev type
-    if chebyshev.chebyshevtype == ChebyshevType.first
+    if chebyshev.type == ChebyshevType.first
         print(io, "\n1st-kind Chebyshev")
-    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+    elseif chebyshev.type == ChebyshevType.fourth
         print(io, "\n4th-kind Chebyshev")
-    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+    elseif chebyshev.type == ChebyshevType.opt_fourth
         print(io, "\nOpt. 4th-kind Chebyshev")
     end
 
@@ -238,7 +238,7 @@ chebyshev = Chebyshev(diffusion)
 
 # set eigenvalue estimate scaling
 # PETSc default is to use 1.1, 0.1 of max eigenvalue estimate
-#   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html\
+#   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html
 chebyshev.eigenvaluescaling = [0.0, 0.1, 0.0, 1.1];
 println(chebyshev)
 
@@ -594,7 +594,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
     D_inv = chebyshev.operatordiagonalinverse
     D_inv_A = D_inv * A
     k = ω[1] # degree of Chebyshev smoother
-    if chebyshev.chebyshevtype == ChebyshevType.first
+    if chebyshev.type == ChebyshevType.first
         α = (upper + lower) / 2
         c = (upper - lower) / 2
         β_0 = -c^2 / (2 * α)
@@ -611,7 +611,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
         end
         # return
         return E_1
-    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+    elseif chebyshev.type == ChebyshevType.fourth
         argument = I - 2 * D_inv_A / upper
         W_0 = I
         W_1 = 2 * argument + I
@@ -623,7 +623,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
         end
         # return
         return W_1 / (2 * k + 1)
-    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+    elseif chebyshev.type == ChebyshevType.opt_fourth
         argument = I - 2 * D_inv_A / upper
         W_0 = I
         W_1 = 2 * argument + I

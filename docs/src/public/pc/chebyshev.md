@@ -1,6 +1,7 @@
 ## Preconditioner: Chebyshev
 
 This smoother provides Chekyshev polynomial smoothing of a runtime specified order.
+See [lottes2022](@cite) and [phillips2022](@cite) for discussion of Chebyshev smoother types for multigrid V-cycles.
 
 ### Example
 

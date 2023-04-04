@@ -52,7 +52,7 @@ mutable struct Chebyshev <: AbstractPreconditioner
     # data never changed
     operator::Operator
     eigenvaluebounds::Array{Float64,1}
-    chebyshevtype::ChebyshevType.ChebyType
+    type::ChebyshevType.ChebyType
 
     # data empty until assembled
     eigenvalueestimates::Array{Float64,1}
@@ -71,11 +71,11 @@ function Base.show(io::IO, chebyshev::Chebyshev)
     print(io, "chebyshev preconditioner:")
 
     # chebyshev type
-    if chebyshev.chebyshevtype == ChebyshevType.first
+    if chebyshev.type == ChebyshevType.first
         print(io, "\n1st-kind Chebyshev")
-    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+    elseif chebyshev.type == ChebyshevType.fourth
         print(io, "\n4th-kind Chebyshev")
-    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+    elseif chebyshev.type == ChebyshevType.opt_fourth
         print(io, "\nOpt. 4th-kind Chebyshev")
     end
 
@@ -212,7 +212,7 @@ end
 
 """
 ```julia
-seteigenvalueestimatescaling(chebyshev, eigenvaluebounds)
+seteigenvalueestimatescaling(chebyshev, eigenvaluescaling)
 ```
 
 Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
@@ -220,7 +220,7 @@ Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 # Arguments:
 
   - `chebyshev::Chebyshev`:                preconditioner to set eigenvalue estimate scaling
-  - `eigenvaluebounds::Array{Float64,1}`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}`` and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
+  - `eigenvaluescaling::Array{Float64,1}`:  array of 4 scaling factors to use when setting ``\\lambda_{\\text{min}}`` and ``\\lambda_{\\text{max}}`` based on eigenvalue estimates
 
 ``\\lambda_{\\text{min}}`` = a * estimated min + b * estimated max
 
@@ -239,7 +239,7 @@ chebyshev = Chebyshev(diffusion)
 # set eigenvalue estimate scaling
 # PETSc default is to use 1.1, 0.1 of max eigenvalue estimate
 #   https://www.mcs.anl.gov/petsc/petsc-3.3/docs/manualpages/KSP/KSPChebyshevSetEstimateEigenvalues.html
-seteigenvalueestimatescaling(chebyshev, [0.0, 0.1, 0.0, 1.1]);
+chebyshev.eigenvaluescaling = [0.0, 0.1, 0.0, 1.1];
 println(chebyshev)
 
 # output
@@ -260,17 +260,17 @@ estimate scaling:
 """
 function seteigenvalueestimatescaling(
     chebyshev::Chebyshev,
-    eigenvaluebounds::Array{Float64,1},
+    eigenvaluescaling::Array{Float64,1},
 )
-    if length(eigenvaluebounds) != 4
+    if length(eigenvaluescaling) != 4
         throw(error("exactly four transformation arguments are required")) # COV_EXCL_LINE
     end
 
-    chebyshev.eigenvaluebounds[1] = eigenvaluebounds[1]
-    chebyshev.eigenvaluebounds[2] = eigenvaluebounds[2]
-    chebyshev.eigenvaluebounds[3] = eigenvaluebounds[3]
-    chebyshev.eigenvaluebounds[4] = eigenvaluebounds[4]
-    chebyshev
+    chebyshev.eigenvaluebounds[1] = eigenvaluescaling[1]
+    chebyshev.eigenvaluebounds[2] = eigenvaluescaling[2]
+    chebyshev.eigenvaluebounds[3] = eigenvaluescaling[3]
+    chebyshev.eigenvaluebounds[4] = eigenvaluescaling[4]
+    eigenvaluescaling
 end
 
 """
@@ -491,6 +491,8 @@ function Base.setproperty!(preconditioner::Chebyshev, f::Symbol, value)
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
     elseif f == :eigenvaluebounds
         throw(ReadOnlyMemoryError()) # COV_EXCL_LINE
+    elseif f == :eigenvaluescaling
+        return seteigenvalueestimatescaling(preconditioner, value)
     else
         return setfield!(preconditioner, f, value)
     end
@@ -592,7 +594,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
     D_inv = chebyshev.operatordiagonalinverse
     D_inv_A = D_inv * A
     k = ω[1] # degree of Chebyshev smoother
-    if chebyshev.chebyshevtype == ChebyshevType.first
+    if chebyshev.type == ChebyshevType.first
         α = (upper + lower) / 2
         c = (upper - lower) / 2
         β_0 = -c^2 / (2 * α)
@@ -609,7 +611,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
         end
         # return
         return E_1
-    elseif chebyshev.chebyshevtype == ChebyshevType.fourth
+    elseif chebyshev.type == ChebyshevType.fourth
         argument = I - 2 * D_inv_A / upper
         W_0 = I
         W_1 = 2 * argument + I
@@ -621,7 +623,7 @@ function computesymbols(chebyshev::Chebyshev, ω::Array{<:Real}, θ::Array{<:Rea
         end
         # return
         return W_1 / (2 * k + 1)
-    elseif chebyshev.chebyshevtype == ChebyshevType.opt_fourth
+    elseif chebyshev.type == ChebyshevType.opt_fourth
         argument = I - 2 * D_inv_A / upper
         W_0 = I
         W_1 = 2 * argument + I

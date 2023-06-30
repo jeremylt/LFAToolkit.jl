@@ -8,6 +8,34 @@ authors:
   - family-names: Thompson
     given-names: Jeremy L
     orcid: 0000-0003-2980-0899
+  - family-names: Bankole
+    given-names: Adeleke O
+    orcid: 0000-0003-2804-5457
+  - family-names: Brown
+    given-names: Jed
+    orcid: 0000-0002-9945-0639
 doi: "10.5281/zenodo.5064056"
 url: "https://jeremylt.github.io/LFAToolkit.jl/stable/"
 repository: "https://github.com/jeremylt/LFAToolkit.jl"
+references:
+  - type: article
+    title: "Local Fourier Analysis of p-Multigrid for High-Order Finite Element Operators"
+    authors:
+      - family-names: Thompson
+        given-names: Jeremy L
+        orcid: 0000-0003-2980-0899
+      - family-names: Brown
+        given-names: Jed
+        orcid: 0000-0002-9945-0639
+      - family-names: He
+        given-names: Yunhui
+        orcid: 0000-0003-3476-2487
+    journal: "SIAM Journal on Scientific Computing"
+    year: 2023
+    publisher:
+      - name: "Society for Industrial and Applied Mathematics"
+        website: "https://epubs.siam.org"
+    volume: 45
+    number: 3
+    start: S351
+    doi: 10.1137/21M1431199

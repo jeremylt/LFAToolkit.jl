@@ -13,7 +13,12 @@ using LFAToolkit
 using LinearAlgebra
 
 # setup
-mesh = Mesh1D(1.0)
+Δx = 1.0
+mesh = Mesh1D(Δx)
+dxdξ = Δx / 2 # 2 comes from quadrature domain of [-1,1]
+dξdx = 1 / dxdξ
+det_dxdξ = dxdξ # Determinant of mapping Jacobian
+
 p = 2;
 q = p;
 collocate = false
@@ -37,7 +42,7 @@ c = 1.0
 function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
     u = U[1, :]
     du = U[2, :]
-    dv = (c * u - c * τ * (c * du)) * w[1]
+    dv = dξdx * (c * u - c * τ * (c * du * dξdx)) * w[1] * det_dxdξ
     return [dv]
 end
 
@@ -56,8 +61,8 @@ supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
 
 # supg mass operator
 function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
-    v = udot * w[1]
-    dv = c * τ * udot * w[1]
+    v = udot * w[1] * det_dxdξ
+    dv = dξdx * c * τ * udot * w[1] * det_dxdξ
     return ([v; dv],)
 end
 supgmass = Operator(
@@ -72,7 +77,7 @@ supgmass = Operator(
 
 # compute operator symbols
 function advection_supg_symbol(θ)
-    A = computesymbols(supgadvection, [θ]) * 2 # transform from reference to physical on dx=1 grid
+    A = computesymbols(supgadvection, [θ]) # transform from reference to physical on dx=1 grid
     M = computesymbols(supgmass, [θ]) # mass matrix
     return sort(imag.(eigvals(-M \ A)))
 end

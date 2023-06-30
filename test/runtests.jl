@@ -54,7 +54,7 @@ end
     include("../examples/ex011_advection_supg.jl")
 
     @test min(eigenvalues...) ≈ 0.0000000000000000
-    @test max(eigenvalues...) ≈ 2.0998054953673844
+    @test max(eigenvalues...) ≈ 3.190216788544891
 end
 
 # ------------------------------------------------------------------------------

@@ -14,7 +14,12 @@ using LFAToolkit
 using LinearAlgebra
 
 # setup
-mesh = Mesh1D(1.0)
+Δx = 1.0
+mesh = Mesh1D(Δx)
+dxdξ = Δx / 2 # 2 comes from quadrature domain of [-1,1]
+dξdx = 1 / dxdξ
+det_dxdξ = dxdξ # Determinant of mapping Jacobian
+
 p = 2;
 q = p;
 collocate = false
@@ -38,7 +43,7 @@ c = 1.0
 function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
     u = U[1, :]
     du = U[2, :]
-    dv = (c * u - c * τ * (c * du)) * w[1]
+    dv = dξdx * (c * u - c * τ * (c * du * dξdx)) * w[1] * det_dxdξ
     return [dv]
 end
 
@@ -57,8 +62,8 @@ supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
 
 # supg mass operator
 function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
-    v = udot * w[1]
-    dv = c * τ * udot * w[1]
+    v = udot * w[1] * det_dxdξ
+    dv = dξdx * c * τ * udot * w[1] * det_dxdξ
     return ([v; dv],)
 end
 supgmass = Operator(
@@ -73,7 +78,7 @@ supgmass = Operator(
 
 # compute operator symbols
 function advection_supg_symbol(θ)
-    A = computesymbols(supgadvection, [θ]) * 2 # transform from reference to physical on dx=1 grid
+    A = computesymbols(supgadvection, [θ]) # transform from reference to physical on dx=1 grid
     M = computesymbols(supgmass, [θ]) # mass matrix
     return sort(imag.(eigvals(-M \ A)))
 end
@@ -81,4 +86,4 @@ end
 eigenvalues = hcat(advection_supg_symbol.(θ)...)&#39;
 
 # ---------------------------------------------------------------
-</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 4 April 2023 20:37">Tuesday 4 April 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Friday 30 June 2023 14:43">Friday 30 June 2023</span>. Using Julia version 1.9.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

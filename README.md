@@ -59,3 +59,23 @@ The Binder with interactive Jupyter notebooks takes a long time to start due to 
 
 The repl.it often reports a System Error with `Disk quota exceeded`.
 Clicking 'Run' again will typically clear the issue within a few attempts.
+
+## Contact
+
+You can reach the LFAToolkit.jl by leaving a comment in the [issue tracker](https://github.com/jeremylt/LFAToolkit.jl/issues).
+
+## How to Cite
+
+If you utilize LFAToolkit.jl please cite:
+
+```bibtex
+@software{LFAToolkit_jl,
+  author  = {Thompson, Jeremy L and Bankole, Adeleke O and Brown, Jed},
+  title   = {{LFAToolkit.jl}},
+  version = {0.6.1},
+  month   = jan,
+  year    = {2023},
+  url     = {https://jeremylt.github.io/LFAToolkit.jl/stable/},
+  doi     = {10.5281/zenodo.5064056},
+}
+```

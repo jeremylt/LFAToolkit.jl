@@ -1,6 +1,6 @@
 # LFAToolkit
 
-[![CI Status](https://github.com/jeremylt/LFAToolkit.jl/workflows/Tests/badge.svg)](https://github.com/jeremylt/LFAToolkit.jl/actions)
+[![CI Status](https://github.com/jeremylt/LFAToolkit.jl/actions/workflows/test.yml/badge.svg)](https://github.com/jeremylt/LFAToolkit.jl/actions)
 [![CodeCov](https://codecov.io/gh/jeremylt/LFAToolkit.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/jeremylt/LFAToolkit.jl)
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![Documentation](https://img.shields.io/badge/docs-dev-blue)](https://jeremylt.github.io/LFAToolkit.jl/dev/)

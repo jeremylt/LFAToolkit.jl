@@ -4,6 +4,12 @@
 
 Current development includes:
 
+## v0.7.0
+
+This release updates the minimum supported version of Julia and updates the Chebyshev preconditioner.
+
+Enhancements:
+
 * Added Chebyshev polynomials of the 4th kind
 
 ## v0.6.1

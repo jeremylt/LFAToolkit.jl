@@ -13,10 +13,12 @@ jobs:
         julia-version: ['1']
     steps:
       - name: Environment setup
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Julia setup
         uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
+      - name: Julia cache
+        uses: julia-actions/cache@v1
       - name: Check style
         run: julia .Style.jl --color=yes && git diff --exit-code src test examples docs

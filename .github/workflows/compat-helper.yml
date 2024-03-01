@@ -17,6 +17,8 @@ jobs:
         uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
+      - name: Julia cache
+        uses: julia-actions/cache@v1
       - name: CompatHelper setup
         run: |
           import Pkg

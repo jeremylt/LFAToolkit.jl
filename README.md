@@ -72,9 +72,9 @@ If you utilize LFAToolkit.jl please cite:
 @software{LFAToolkit_jl,
   author  = {Thompson, Jeremy L and Bankole, Adeleke O and Brown, Jed},
   title   = {{LFAToolkit.jl}},
-  version = {0.6.1},
-  month   = jan,
-  year    = {2023},
+  version = {0.7.0},
+  month   = mar,
+  year    = {2024},
   url     = {https://jeremylt.github.io/LFAToolkit.jl/stable/},
   doi     = {10.5281/zenodo.5064056},
 }

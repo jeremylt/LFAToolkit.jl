@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · LFAToolkit.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://jeremylt.github.io/LFAToolkit.jl/stable/examples/advection_supg/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">LFAToolkit.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Introduction</a></li><li><a class="tocitem" href="../../background/">Mathematical Background</a></li><li><a class="tocitem" href="../">Examples</a></li><li><a class="tocitem" href="../../public/">Public API</a></li><li><a class="tocitem" href="../../private/">Private API</a></li><li><a class="tocitem" href="../../release_notes/">Release Notes</a></li><li><a class="tocitem" href="../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jeremylt/LFAToolkit.jl/blob/main/docs/src/examples/advection_supg.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h2 id="Streamline-Upwind/Petrov-Galerkin-(SUPG)-advection-operator"><a class="docs-heading-anchor" href="#Streamline-Upwind/Petrov-Galerkin-(SUPG)-advection-operator">Streamline-Upwind/Petrov-Galerkin (SUPG) advection operator</a><a id="Streamline-Upwind/Petrov-Galerkin-(SUPG)-advection-operator-1"></a><a class="docs-heading-anchor-permalink" href="#Streamline-Upwind/Petrov-Galerkin-(SUPG)-advection-operator" title="Permalink"></a></h2><p>This is an example of the 1D scalar SUPG advection problem.</p><h3 id="Problem-formulation"><a class="docs-heading-anchor" href="#Problem-formulation">Problem formulation</a><a id="Problem-formulation-1"></a><a class="docs-heading-anchor-permalink" href="#Problem-formulation" title="Permalink"></a></h3><p>The advection problem is given by</p><p class="math-container">\[\dfrac{\partial u}{\partial t} + c \dfrac{\partial u}{\partial x} = 0\]</p><p>where <span>$u = u(x,t)$</span> and <span>$c$</span> is its associated phase speed.</p><p>The SUPG advection weak form is given by</p><p class="math-container">\[\int_\Omega v \left(\dfrac{\partial u}{\partial t} \right) dV - \int_\Omega \dfrac{\partial v}{\partial x} \left(c u - c τ \left( \dfrac{\partial u}{\partial t} + c \dfrac{\partial u}{\partial x} \right) \right) dV = 0, \forall v \in V\]</p><p>for an appropriate test space <span>$V \subseteq H^1 \left( \Omega \right)$</span> on the domain. In this weak formulation, boundary terms have been omitted, as they are not present on the infinite grid for Local Fourier Analysis. The SUPG stabilization is controlled by the parameter <span>$τ$</span>, where <span>$τ = 0$</span> gives the classical Galerkin formulation and <span>$τ = \dfrac{h}{2}$</span> gives a nodally exact solution to the steady advection equation with source when using linear elements (this can be extended to advection-diffusion with a further scaling that depends on the cell Péclet number).</p><p>For discussion on SUPG, see <a href="../../references/#hughes1979">Thomas JR Hughes (1979)</a>, <a href="../../references/#brooks1982">Alexander N Brooks, Thomas JR Hughes (1982)</a>, and <a href="../../references/#whiting2003">Christian H Whiting, Kenneth E Jansen, Saikat Dey (2003)</a>.</p><h3 id="LFAToolkit-code"><a class="docs-heading-anchor" href="#LFAToolkit-code">LFAToolkit code</a><a id="LFAToolkit-code-1"></a><a class="docs-heading-anchor-permalink" href="#LFAToolkit-code" title="Permalink"></a></h3><p>The symbol of the continuous advection operator <span>$u_t + c u_x = 0$</span> applied to the Fourier mode <span>$e^{i\theta x}$</span> is <span>$i\theta$</span>. The finite element discretization yields <span>$M u_t + A u = 0$</span>, and thus we are interested in the symbol of <span>$-M^{-1} A$</span>. One may compare the continuous spectrum with the discrete symbol, which is necessarily periodic on <span>$[-\pi, \pi)$</span>, to understand the behavior for high wave numbers, including the high frequencies that will limit stable time steps. To understand dispersion within the resolved frequencies, we instead plot the phase speed <span>$\lambda/\theta$</span>, which should be very close to <span>$c$</span> through the resolved frequencies. Here we show the SUPG advection operator on <span>$H^1$</span> Lagrange basis.</p><pre><code class="language-julia hljs"># ---------------------------------------------------------------
+# SUPG advection example following Melvin, Staniforth and Thuburn
+# Q.J:R. Meteorol. Soc. 138: 1934-1947, Oct (2012)
+# non polynomial advection example using transplanted (transformed)
+# quadrature formulas from conformal maps following Hale and
+# Trefethen (2008) SIAM J. NUMER. ANAL. Vol. 46, No. 2
+# In this example, we can call other mapping options available
+# i.e, sausage_transformation(9), kosloff_talezer_transformation(0.98)
+# otherwise, run without mapping
+# ---------------------------------------------------------------
+
+using LFAToolkit
+using LinearAlgebra
+
+# setup
+Δx = 1.0
+mesh = Mesh1D(Δx)
+dxdξ = Δx / 2 # 2 comes from quadrature domain of [-1,1]
+dξdx = 1 / dxdξ
+det_dxdξ = dxdξ # Determinant of mapping Jacobian
+
+p = 2;
+q = p;
+collocate = false
+mapping = nothing
+basis =
+    TensorH1LagrangeBasis(p, q, 1, 1, collocatedquadrature = collocate, mapping = mapping)
+
+# frequency set up
+numbersteps = 100
+θ_min = 0
+θ_max = (p - 1) * π
+θ = LinRange(θ_min, θ_max, numbersteps)
+
+# associated phase speed
+c = 1.0
+
+# Tau scaling for SUPG
+τ = 0.5 / (p - 1) # 0 returns Galerkin method; empirically, 0.25 is too big for p = 3 (quadratic)
+
+# weak form for SUPG advection
+function supgadvectionweakform(U::Matrix{Float64}, w::Array{Float64})
+    u = U[1, :]
+    du = U[2, :]
+    dv = dξdx * (c * u - c * τ * (c * du * dξdx)) * w[1] * det_dxdξ
+    return [dv]
+end
+
+# supg advection operator
+inputs = [
+    OperatorField(
+        basis,
+        [EvaluationMode.interpolation, EvaluationMode.gradient],
+        &quot;advected field&quot;,
+    ),
+    OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+]
+outputs = [OperatorField(basis, [EvaluationMode.gradient])]
+
+supgadvection = Operator(supgadvectionweakform, mesh, inputs, outputs)
+
+# supg mass operator
+function supgmassweakform(udot::Array{Float64}, w::Array{Float64})
+    v = udot * w[1] * det_dxdξ
+    dv = dξdx * c * τ * udot * w[1] * det_dxdξ
+    return ([v; dv],)
+end
+supgmass = Operator(
+    supgmassweakform,
+    mesh,
+    [
+        OperatorField(basis, [EvaluationMode.interpolation], &quot;uₜ&quot;),
+        OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+    ],
+    [OperatorField(basis, [EvaluationMode.interpolation, EvaluationMode.gradient])],
+)
+
+# compute operator symbols
+function advection_supg_symbol(θ)
+    A = computesymbols(supgadvection, [θ]) # transform from reference to physical on dx=1 grid
+    M = computesymbols(supgmass, [θ]) # mass matrix
+    return sort(imag.(eigvals(-M \ A)))
+end
+
+eigenvalues = hcat(advection_supg_symbol.(θ)...)&#39;
+
+# ---------------------------------------------------------------
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 1 March 2024 18:20">Friday 1 March 2024</span>. Using Julia version 1.10.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -76,6 +76,6 @@ If you utilize LFAToolkit.jl please cite:
   month   = mar,
   year    = {2024},
   url     = {https://jeremylt.github.io/LFAToolkit.jl/stable/},
-  doi     = {10.5281/zenodo.5064056},
+  doi     = {10.5281/zenodo.4659283},
 }
 ```

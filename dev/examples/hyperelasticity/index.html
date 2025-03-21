@@ -61,22 +61,24 @@ function neohookeanweakform(deltadu::Array{Float64}, w::Array{Float64})
 end
 
 # linearized Neo-Hookean operators
-function makeoperator(basis::TensorBasis)
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation&quot;),
-        OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
-    ]
-    outputs = [
-        OperatorField(
-            basis,
-            [EvaluationMode.gradient],
-            &quot;test function gradient of deformation&quot;,
-        ),
-    ]
-    return Operator(neohookeanweakform, mesh, inputs, outputs)
+begin
+    local function makeoperator(basis::TensorBasis)
+        inputs = [
+            OperatorField(basis, [EvaluationMode.gradient], &quot;gradent of deformation&quot;),
+            OperatorField(basis, [EvaluationMode.quadratureweights], &quot;quadrature weights&quot;),
+        ]
+        outputs = [
+            OperatorField(
+                basis,
+                [EvaluationMode.gradient],
+                &quot;test function gradient of deformation&quot;,
+            ),
+        ]
+        return Operator(neohookeanweakform, mesh, inputs, outputs)
+    end
+    fineoperator = makeoperator(finebasis)
+    coarseoperator = makeoperator(coarsebasis)
 end
-fineoperator = makeoperator(finebasis)
-coarseoperator = makeoperator(coarsebasis)
 
 # Chebyshev smoother
 chebyshev = Chebyshev(fineoperator)
@@ -89,4 +91,4 @@ A = computesymbols(multigrid, [3], [1, 1], [π, π, π])
 eigenvalues = real(eigvals(A))
 
 # ------------------------------------------------------------------------------
-</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 1 March 2024 18:32">Friday 1 March 2024</span>. Using Julia version 1.10.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Friday 21 March 2025 17:44">Friday 21 March 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

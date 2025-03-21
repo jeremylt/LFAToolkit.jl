@@ -23,7 +23,7 @@ makedocs(
     bib,
     modules = [LFAToolkit],
     clean = false,
-    # strict = true, Bug: https://github.com/JuliaDocs/Documenter.jl/issues/1883
+    strict = true,
     sitename = "LFAToolkit.jl",
     authors = "Jed Brown, Adeleke Bankole, and Jeremy L Thompson",
     format = Documenter.HTML(

@@ -46,22 +46,24 @@ function linearelasticityweakform(deltadu::Array{Float64}, w::Array{Float64})
 end
 
 # linear elasticity operators
-function makeoperator(basis::TensorBasis)
-    inputs = [
-        OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation"),
-        OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
-    ]
-    outputs = [
-        OperatorField(
-            basis,
-            [EvaluationMode.gradient],
-            "test function gradient of deformation",
-        ),
-    ]
-    return Operator(linearelasticityweakform, mesh, inputs, outputs)
+begin
+    local function makeoperator(basis::TensorBasis)
+        inputs = [
+            OperatorField(basis, [EvaluationMode.gradient], "gradent of deformation"),
+            OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights"),
+        ]
+        outputs = [
+            OperatorField(
+                basis,
+                [EvaluationMode.gradient],
+                "test function gradient of deformation",
+            ),
+        ]
+        return Operator(linearelasticityweakform, mesh, inputs, outputs)
+    end
+    fineoperator = makeoperator(finebasis)
+    coarseoperator = makeoperator(coarsebasis)
 end
-fineoperator = makeoperator(finebasis)
-coarseoperator = makeoperator(coarsebasis)
 
 # Chebyshev smoother
 chebyshev = Chebyshev(fineoperator)

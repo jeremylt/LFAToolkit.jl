@@ -180,15 +180,15 @@ function getprolongationmatrix(multigrid::Multigrid)
         currentcolumn = 1
         for Pblock in Pblocks
             prolongationmatrix[
-                currentrow:currentrow+size(Pblock)[1]-1,
-                currentcolumn:currentcolumn+size(Pblock)[2]-1,
+                currentrow:(currentrow+size(Pblock)[1]-1),
+                currentcolumn:(currentcolumn+size(Pblock)[2]-1),
             ] = Pblock
             currentrow += size(Pblock)[1]
             currentcolumn += size(Pblock)[2]
         end
 
         # store
-        prolongationmatrix[abs.(prolongationmatrix).<10*eps()] .= 0
+        prolongationmatrix[abs.(prolongationmatrix) .< 10*eps()] .= 0
         dropzeros!(prolongationmatrix)
         multigrid.prolongationmatrix =
             Diagonal(multigrid.fineoperator.multiplicity)^-1 * prolongationmatrix

@@ -408,8 +408,8 @@ function getnodes(basis::TensorBasis)
                 hcat(
                     [
                         [
-                            [x, y, z] for x in basis.nodes1d, y in basis.nodes1d,
-                            z in basis.nodes1d
+                            [x, y, z] for
+                            x in basis.nodes1d, y in basis.nodes1d, z in basis.nodes1d
                         ]...,
                     ]...,
                 ),
@@ -492,7 +492,8 @@ for dimension = 1:3
                 [
                     [
                         [x, y, z] for x in truequadraturepoints1d,
-                        y in truequadraturepoints1d, z in truequadraturepoints1d
+                        y in truequadraturepoints1d,
+                        z in truequadraturepoints1d
                     ]...,
                 ]...,
             ),
@@ -520,8 +521,8 @@ function getquadraturepoints(basis::TensorBasis)
                 hcat(
                     [
                         [
-                            [x, y] for x in basis.quadraturepoints1d,
-                            y in basis.quadraturepoints1d
+                            [x, y] for
+                            x in basis.quadraturepoints1d, y in basis.quadraturepoints1d
                         ]...,
                     ]...,
                 ),
@@ -533,7 +534,8 @@ function getquadraturepoints(basis::TensorBasis)
                     [
                         [
                             [x, y, z] for x in basis.quadraturepoints1d,
-                            y in basis.quadraturepoints1d, z in basis.quadraturepoints1d
+                            y in basis.quadraturepoints1d,
+                            z in basis.quadraturepoints1d
                         ]...,
                     ]...,
                 ),
@@ -636,7 +638,7 @@ for dimension = 1:3
     interpolation = basis.interpolation
 
     # verify
-    for i = 1:3^dimension
+    for i = 1:(3^dimension)
         total = sum(interpolation[i, :])
         @assert total ≈ 1.0
     end
@@ -701,7 +703,7 @@ for dimension = 1:3
     gradient = basis.gradient
 
     # verify
-    for i = 1:dimension*3^dimension
+    for i = 1:(dimension*3^dimension)
         total = sum(gradient[i, :])
         @assert abs(total) < 1e-14
     end
@@ -813,8 +815,8 @@ for dimension = 1:3
     elseif dimension == 3
         truemodemap = [
             [
-                i + (j - 1) * 3 + (k - 1) * 3^2 for i in truemodemap1d,
-                j in truemodemap1d, k in truemodemap1d
+                i + (j - 1) * 3 + (k - 1) * 3^2 for
+                i in truemodemap1d, j in truemodemap1d, k in truemodemap1d
             ]...,
         ]
     end
@@ -840,8 +842,8 @@ function getmodemap(basis::TensorBasis)
             # 2D
             modemap = [
                 [
-                    i + (j - 1) * (basis.numbernodes1d - 1) for i in modemap1d,
-                    j in modemap1d
+                    i + (j - 1) * (basis.numbernodes1d - 1) for
+                    i in modemap1d, j in modemap1d
                 ]...,
             ]
         elseif basis.dimension == 3
@@ -850,8 +852,8 @@ function getmodemap(basis::TensorBasis)
                 [
                     i +
                     (j - 1) * (basis.numbernodes1d - 1) +
-                    (k - 1) * (basis.numbernodes1d - 1)^2 for i in modemap1d,
-                    j in modemap1d, k in modemap1d
+                    (k - 1) * (basis.numbernodes1d - 1)^2 for
+                    i in modemap1d, j in modemap1d, k in modemap1d
                 ]...,
             ]
         else
@@ -967,18 +969,18 @@ for dimension = 1:3
     if dimension == 1
         trueinterfacenodes = [1, p]
     elseif dimension == 2
-        trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
-        for i = 1:p-2
+        trueinterfacenodes = [1:p..., (p^2-p+1):(p^2)...]
+        for i = 1:(p-2)
             push!(trueinterfacenodes, i * p + 1)
             push!(trueinterfacenodes, (i + 1) * p)
         end
     elseif dimension == 3
-        trueinterfacenodes = [1:p^2..., p^3-p^2+1:p^3...]
-        for i = 1:p-2
-            push!(trueinterfacenodes, i*p^2+1:i*p^2+p...)
-            push!(trueinterfacenodes, (i+1)*p^2-p+1:(i+1)*p^2...)
-            push!(trueinterfacenodes, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
-            push!(trueinterfacenodes, i*p^2+2*p:p:(i+1)*p^2-p...)
+        trueinterfacenodes = [1:(p^2)..., (p^3-p^2+1):(p^3)...]
+        for i = 1:(p-2)
+            push!(trueinterfacenodes, (i*p^2+1):(i*p^2+p)...)
+            push!(trueinterfacenodes, ((i+1)*p^2-p+1):((i+1)*p^2)...)
+            push!(trueinterfacenodes, (i*p^2+p+1):p:((i+1)*p^2-2*p+1)...)
+            push!(trueinterfacenodes, (i*p^2+2*p):p:((i+1)*p^2-p)...)
         end
     end
     trueinterfacenodes = sort(trueinterfacenodes)
@@ -1001,19 +1003,19 @@ function getinterfacenodes(basis::TensorBasis)
             interfacenodes1component = [1, p]
         elseif basis.dimension == 2
             # 2D
-            interfacenodes1component = [1:p..., p^2-p+1:p^2...]
-            for i = 1:p-2
+            interfacenodes1component = [1:p..., (p^2-p+1):(p^2)...]
+            for i = 1:(p-2)
                 push!(interfacenodes1component, i * p + 1)
                 push!(interfacenodes1component, (i + 1) * p)
             end
         elseif basis.dimension == 3
             # 3D
-            interfacenodes1component = [1:p^2..., p^3-p^2+1:p^3...]
-            for i = 1:p-2
-                push!(interfacenodes1component, i*p^2+1:i*p^2+p...)
-                push!(interfacenodes1component, (i+1)*p^2-p+1:(i+1)*p^2...)
-                push!(interfacenodes1component, i*p^2+p+1:p:(i+1)*p^2-2*p+1...)
-                push!(interfacenodes1component, i*p^2+2*p:p:(i+1)*p^2-p...)
+            interfacenodes1component = [1:(p^2)..., (p^3-p^2+1):(p^3)...]
+            for i = 1:(p-2)
+                push!(interfacenodes1component, (i*p^2+1):(i*p^2+p)...)
+                push!(interfacenodes1component, ((i+1)*p^2-p+1):((i+1)*p^2)...)
+                push!(interfacenodes1component, (i*p^2+p+1):p:((i+1)*p^2-2*p+1)...)
+                push!(interfacenodes1component, (i*p^2+2*p):p:((i+1)*p^2-p)...)
             end
         else
             throw(DomainError(basis.dimension, "Dimension must be less than or equal to 3")) # COV_EXCL_LINE
@@ -1220,15 +1222,15 @@ function getdXdxgradient(basis::TensorBasis, mesh::Mesh)
         numberquadraturepoints = basis.numberquadraturepoints
         return [
             gradient[1:numberquadraturepoints, :] / mesh.dx
-            gradient[numberquadraturepoints+1:end, :] / mesh.dy
+            gradient[(numberquadraturepoints+1):end, :] / mesh.dy
         ]
     elseif dimension == 3
         # 3D
         numberquadraturepoints = basis.numberquadraturepoints
         return [
             gradient[1:numberquadraturepoints, :] / mesh.dx
-            gradient[numberquadraturepoints+1:2*numberquadraturepoints, :] / mesh.dy
-            gradient[2*numberquadraturepoints+1:end, :] / mesh.dz
+            gradient[(numberquadraturepoints+1):(2*numberquadraturepoints), :] / mesh.dy
+            gradient[(2*numberquadraturepoints+1):end, :] / mesh.dz
         ]
     end
 end

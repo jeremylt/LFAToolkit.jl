@@ -144,7 +144,7 @@ diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled nodes
-@assert bddc.subassemblednodes == setdiff(1:p^2, [1, p, p^2 - p + 1, p^2])
+@assert bddc.subassemblednodes == setdiff(1:(p^2), [1, p, p^2 - p + 1, p^2])
 
 # output
 
@@ -184,8 +184,8 @@ diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface nodes
-trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
-for i = 1:p-2
+trueinterfacenodes = [1:p..., (p^2-p+1):(p^2)...]
+for i = 1:(p-2)
     push!(trueinterfacenodes, i * p + 1)
     push!(trueinterfacenodes, (i + 1) * p)
 end
@@ -243,8 +243,8 @@ diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface nodes
-trueinterfacenodes = [1:p..., p^2-p+1:p^2...]
-for i = 1:p-2
+trueinterfacenodes = [1:p..., (p^2-p+1):(p^2)...]
+for i = 1:(p-2)
     push!(trueinterfacenodes, i * p + 1)
     push!(trueinterfacenodes, (i + 1) * p)
 end
@@ -338,7 +338,7 @@ diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled modes
-@assert bddc.subassembledmodes == setdiff(1:(p-1)^2, [1])
+@assert bddc.subassembledmodes == setdiff(1:((p-1)^2), [1])
 
 # output
 
@@ -378,8 +378,8 @@ diffusion = GalleryOperator("diffusion", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface modes
-trueinterfacemodes = [1:p-1...]
-for i = 1:p-2
+trueinterfacemodes = [1:(p-1)...]
+for i = 1:(p-2)
     push!(trueinterfacemodes, i * (p - 1) + 1)
 end
 trueinterfacemodes = sort(trueinterfacemodes)
@@ -907,7 +907,7 @@ function getJDT(bddc::BDDC)
             end
         end
         J_D_T_mixed = spzeros(numbermixed, numbermixed)
-        J_D_T_mixed[numberprimalmodes+1:end, numberprimalmodes+1:end] =
+        J_D_T_mixed[(numberprimalmodes+1):end, (numberprimalmodes+1):end] =
             J_D_T_nodes[bddc.subassemblednodes, bddc.subassemblednodes]
 
         # store
@@ -990,7 +990,7 @@ function computesymbolsinjection(bddc::BDDC, θ::Array)
         end
         𝓗_T = A_ΓI_nodes * A_II_inv_nodes
         𝓗_T_mixed = spzeros(ComplexF64, numbermixed, numbermixed)
-        𝓗_T_mixed[numberprimalmodes+1:end, numberprimalmodes+1:end] =
+        𝓗_T_mixed[(numberprimalmodes+1):end, (numberprimalmodes+1):end] =
             𝓗_T[bddc.subassemblednodes, bddc.subassemblednodes]
 
         # -- jump mapping

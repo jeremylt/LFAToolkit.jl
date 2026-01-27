@@ -44,7 +44,7 @@ truegonrange = [
 """
 function sausage_transformation(d::Int)
     c = zeros(d + 1)
-    c[2:2:end] = [1, cumprod(1:2:d-2) ./ cumprod(2:2:d-1)...] ./ (1:2:d)
+    c[2:2:end] = [1, cumprod(1:2:(d-2)) ./ cumprod(2:2:(d-1))...] ./ (1:2:d)
     c /= sum(c)
     gp = Polynomial(c)
     gprimep = derivative(gp)
@@ -293,7 +293,7 @@ function buildinterpolationandgradient(
             c2 = 1.0
             c4 = c3
             c3 = nodes1d[j] - quadraturepoints1d[i]
-            for k = 1:j-1
+            for k = 1:(j-1)
                 dx = nodes1d[j] - nodes1d[k]
                 c2 *= dx
                 if k == j - 1
@@ -587,7 +587,7 @@ function TensorMacroElementBasisFrom1D(
     nodes1dmacro = zeros(numbernodes1dmacro)
     micronodes = (basis1dmicro.nodes1d .- lower) ./ numberelements1d
     for i = 1:numberelements1d
-        nodes1dmacro[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
+        nodes1dmacro[((i-1)*numbernodes1d-i+2):(i*numbernodes1d-i+1)] =
             micronodes .+ lower .+ width / numberelements1d * (i - 1)
     end
 
@@ -603,7 +603,7 @@ function TensorMacroElementBasisFrom1D(
     microquadraturepoints = (basis1dmicro.quadraturepoints1d .- lower) ./ numberelements1d
     for i = 1:numberelements1d
         offset = overlapquadraturepoints ? -i + 1 : 0
-        quadraturepoints1dmacro[(i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset] =
+        quadraturepoints1dmacro[((i-1)*numberquadraturepoints1d+offset+1):(i*numberquadraturepoints1d+offset)] =
             microquadraturepoints .+ lower .+ width / numberelements1d * (i - 1)
     end
 
@@ -613,12 +613,12 @@ function TensorMacroElementBasisFrom1D(
     for i = 1:numberelements1d
         offset = overlapquadraturepoints ? -i + 1 : 0
         interpolation1dmacro[
-            (i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset,
-            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
+            ((i-1)*numberquadraturepoints1d+offset+1):(i*numberquadraturepoints1d+offset),
+            ((i-1)*numbernodes1d-i+2):(i*numbernodes1d-i+1),
         ] = basis1dmicro.interpolation1d
         gradient1dmacro[
-            (i-1)*numberquadraturepoints1d+offset+1:i*numberquadraturepoints1d+offset,
-            (i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1,
+            ((i-1)*numberquadraturepoints1d+offset+1):(i*numberquadraturepoints1d+offset),
+            ((i-1)*numbernodes1d-i+2):(i*numbernodes1d-i+1),
         ] = basis1dmicro.gradient1d
     end
 
@@ -950,7 +950,7 @@ function TensorH1LagrangeHProlongationBasis(
     nodescoarse1d, = gausslobatto(numbernodes1d)
     nodesfine1d = zeros((numbernodes1d - 1) * numberfineelements1d + 1)
     for i = 1:numberfineelements1d
-        nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
+        nodesfine1d[((i-1)*numbernodes1d-i+2):(i*numbernodes1d-i+1)] =
             nodescoarse1d ./ numberfineelements1d .+
             ((2 * (i - 1) + 1) / numberfineelements1d - 1)
     end
@@ -1016,7 +1016,7 @@ function TensorH1UniformHProlongationBasis(
     nodescoarse1d = [-1.0:(2.0/(numbernodes1d-1)):1.0...]
     nodesfine1d = [-1.0:(2.0/((numbernodes1d-1)*numberfineelements1d)):1.0...]
     for i = 1:numberfineelements1d
-        nodesfine1d[(i-1)*numbernodes1d-i+2:i*numbernodes1d-i+1] =
+        nodesfine1d[((i-1)*numbernodes1d-i+2):(i*numbernodes1d-i+1)] =
             nodescoarse1d ./ numberfineelements1d .+
             ((2 * (i - 1) + 1) / numberfineelements1d - 1)
     end

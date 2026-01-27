@@ -176,27 +176,27 @@ function geteigenvalueestimates(chebyshev::Chebyshev)
         λ_min = 1
         λ_max = 0
         θ_step = 2π / 4
-        θ_range = -π/2:θ_step:3π/2-θ_step
+        θ_range = (-π/2):θ_step:(3π/2-θ_step)
 
         # compute eigenvalues
         if dimension == 1
             for θ_x in θ_range
                 A = computesymbols(chebyshev.operator, [θ_x])
-                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A))
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 2
             for θ_x in θ_range, θ_y in θ_range
                 A = computesymbols(chebyshev.operator, [θ_x, θ_y])
-                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A))
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end
         elseif dimension == 3
             for θ_x in θ_range, θ_y in θ_range, θ_z in θ_range
                 A = computesymbols(chebyshev.operator, [θ_x, θ_y, θ_z])
-                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A),)
+                eigenvalues = abs.(eigvals(chebyshev.operatordiagonalinverse * A))
                 λ_min = minimum([λ_min, eigenvalues...])
                 λ_max = maximum([λ_max, eigenvalues...])
             end

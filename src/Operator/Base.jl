@@ -347,8 +347,8 @@ function getelementmatrix(operator::Operator)
         currentcolumn = 1
         for Bblock in Bblocks
             B[
-                currentrow:currentrow+size(Bblock)[1]-1,
-                currentcolumn:currentcolumn+size(Bblock)[2]-1,
+                currentrow:(currentrow+size(Bblock)[1]-1),
+                currentcolumn:(currentcolumn+size(Bblock)[2]-1),
             ] = Bblock
             currentrow += size(Bblock)[1]
             currentcolumn += size(Bblock)[2]
@@ -398,8 +398,8 @@ function getelementmatrix(operator::Operator)
         currentcolumn = 1
         for Btblock in Btblocks
             Bt[
-                currentrow:currentrow+size(Btblock)[1]-1,
-                currentcolumn:currentcolumn+size(Btblock)[2]-1,
+                currentrow:(currentrow+size(Btblock)[1]-1),
+                currentcolumn:(currentcolumn+size(Btblock)[2]-1),
             ] = Btblock
             currentrow += size(Btblock)[1]
             currentcolumn += size(Btblock)[2]
@@ -558,7 +558,7 @@ function getmultiplicity(operator::Operator)
         currentnode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
+                for i = 1:(input.basis.numbernodes*input.basis.numbercomponents)
                     multiplicity_sum[input.basis.modemap[i]+currentnode] += 1
                 end
                 currentnode += input.basis.numbernodes
@@ -570,7 +570,7 @@ function getmultiplicity(operator::Operator)
         multiplicity = spzeros(numbernodes)
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
+                for i = 1:(input.basis.numbernodes*input.basis.numbercomponents)
                     multiplicity[i+currentnode] =
                         multiplicity_sum[input.basis.modemap[i]+currentnode]
                 end
@@ -629,7 +629,7 @@ function getrowmodemap(operator::Operator)
         currentmode = 0
         for output in operator.outputs
             if output.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:output.basis.numbernodes*output.basis.numbercomponents
+                for i = 1:(output.basis.numbernodes*output.basis.numbercomponents)
                     rowmodemap[output.basis.modemap[i]+currentmode, i+currentnode] = 1
                 end
                 currentnode += output.basis.numbernodes
@@ -688,7 +688,7 @@ function getcolumnmodemap(operator::Operator)
         currentmode = 0
         for input in operator.inputs
             if input.evaluationmodes[1] != EvaluationMode.quadratureweights
-                for i = 1:input.basis.numbernodes*input.basis.numbercomponents
+                for i = 1:(input.basis.numbernodes*input.basis.numbercomponents)
                     columnmodemap[i+currentnode, input.basis.modemap[i]+currentmode] = 1
                 end
                 currentnode += input.basis.numbernodes

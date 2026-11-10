@@ -32,8 +32,8 @@ mesh = Mesh2D(1.0, 1.0);
 ctofbasis = TensorH1LagrangePProlongationBasis(3, 5, 1, 2);
 
 # operators
-finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
-coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh);
+finediffusion = GalleryOperator(\"diffusion\", 5, 5, mesh);
+coarsediffusion = GalleryOperator(\"diffusion\", 3, 5, mesh);
 
 # smoother
 jacobi = Jacobi(finediffusion);

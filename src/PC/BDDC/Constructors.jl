@@ -28,7 +28,7 @@ Lumped BDDC preconditioner for finite element operators
 mesh = Mesh2D(1.0, 1.0);
 
 # operator
-finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
+finediffusion = GalleryOperator(\"diffusion\", 5, 5, mesh);
 
 # preconditioner
 bddc = LumpedBDDC(finediffusion);
@@ -105,7 +105,7 @@ Dirichlet BDDC preconditioner for finite element operators
 mesh = Mesh2D(1.0, 1.0);
 
 # operator
-finediffusion = GalleryOperator("diffusion", 5, 5, mesh);
+finediffusion = GalleryOperator(\"diffusion\", 5, 5, mesh);
 
 # preconditioner
 bddc = DirichletBDDC(finediffusion);

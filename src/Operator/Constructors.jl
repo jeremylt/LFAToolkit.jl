@@ -43,7 +43,7 @@ Finite element operator from a gallery of options
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # verify
 println(mass)
@@ -89,7 +89,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 4, 4, mesh);
+diffusion = GalleryOperator(\"diffusion\", 4, 4, mesh);
 
 # verify
 println(diffusion)
@@ -135,7 +135,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-advection = GalleryOperator("advection", 4, 4, mesh);
+advection = GalleryOperator(\"advection\", 4, 4, mesh);
 
 # verify
 println(advection)
@@ -182,7 +182,7 @@ operator field:
 # setup
 mesh = Mesh2D(1.0, 1.0);
 parameters = (wind = [1.0, 1.0], τ = 1.0);
-supgmass = GalleryOperator("supg mass", 4, 4, mesh, parameters = parameters);
+supgmass = GalleryOperator(\"supg mass\", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgmass)
@@ -230,7 +230,7 @@ operator field:
 # setup
 mesh = Mesh2D(1.0, 1.0);
 parameters = nothing;
-supgadvection = GalleryOperator("supg advection", 4, 4, mesh, parameters = parameters);
+supgadvection = GalleryOperator(\"supg advection\", 4, 4, mesh, parameters = parameters);
 
 # verify
 println(supgadvection)
@@ -324,7 +324,7 @@ Finite element operator from a gallery of options
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryVectorOperator("mass", 4, 4, 3, mesh);
+mass = GalleryVectorOperator(\"mass\", 4, 4, 3, mesh);
 
 # verify
 println(mass)
@@ -370,7 +370,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryVectorOperator("diffusion", 4, 4, 3, mesh);
+diffusion = GalleryVectorOperator(\"diffusion\", 4, 4, 3, mesh);
 
 # verify
 println(diffusion)
@@ -468,7 +468,7 @@ Finite element operator from a gallery of options
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryMacroElementOperator("mass", 4, 4, 2, mesh);
+mass = GalleryMacroElementOperator(\"mass\", 4, 4, 2, mesh);
 
 # verify
 println(mass)
@@ -517,7 +517,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryMacroElementOperator("diffusion", 4, 4, 2, mesh);
+diffusion = GalleryMacroElementOperator(\"diffusion\", 4, 4, 2, mesh);
 
 # verify
 println(diffusion)
@@ -566,7 +566,7 @@ operator field:
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-advection = GalleryVectorOperator("advection", 4, 4, 1, mesh);
+advection = GalleryVectorOperator(\"advection\", 4, 4, 1, mesh);
 
 # verify
 println(advection)

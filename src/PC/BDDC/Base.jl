@@ -91,7 +91,7 @@ Compute or retrieve the primal nodes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify primal nodes
@@ -140,7 +140,7 @@ Compute or retrieve the subassembled nodes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled nodes
@@ -180,7 +180,7 @@ Compute or retrieve the interface nodes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface nodes
@@ -239,7 +239,7 @@ Compute or retrieve the interior nodes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface nodes
@@ -286,7 +286,7 @@ Compute or retrieve the primal modes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify primal nodes
@@ -334,7 +334,7 @@ Compute or retrieve the subassembled modes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled modes
@@ -374,7 +374,7 @@ Compute or retrieve the interface modes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # get true interface modes
@@ -432,7 +432,7 @@ Compute or retrieve the interior modes for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify interior modes
@@ -470,7 +470,7 @@ Compute or retrieve the solver for subdomain for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled inverse
@@ -513,7 +513,7 @@ Compute or retrieve the solver for subdomain interior for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify interior inverse
@@ -555,7 +555,7 @@ Compute or retrieve the Schur complement matrix for a BDDC preconditioner
 # setup
 mesh = Mesh2D(1.0, 1.0);
 p = 4
-diffusion = GalleryOperator("diffusion", p, p, mesh);
+diffusion = GalleryOperator(\"diffusion\", p, p, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify Schur complement
@@ -602,7 +602,7 @@ Compute or retrieve the matrix mapping the rows of the primal BDDC matrix to the
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify primal row mode map
@@ -641,7 +641,7 @@ Compute or retrieve the matrix mapping the columns of the primal BDDC matrix to 
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify primal column mode map
@@ -681,7 +681,7 @@ Compute or retrieve the matrix mapping the rows of the subassembled BDDC matrix 
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled row mode map
@@ -722,7 +722,7 @@ Compute or retrieve the matrix mapping the columns of the subassembled BDDC matr
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 bddc = LumpedBDDC(diffusion);
 
 # verify subassembled column mode map
@@ -1095,7 +1095,7 @@ for dimension = 2:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
     bddc = LumpedBDDC(diffusion)
 
     # compute symbols
@@ -1129,7 +1129,7 @@ for dimension = 2:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
     bddc = DirichletBDDC(diffusion)
 
     # compute symbols

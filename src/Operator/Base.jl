@@ -208,7 +208,7 @@ Retrieve the dimension of an operator
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # verify
 @assert mass.dimension == 2
@@ -238,7 +238,7 @@ Compute or retrieve the element matrix of operator for computing the symbol
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # element matrix computation
 elementmatrix = mass.elementmatrix;
@@ -259,7 +259,7 @@ total = sum(v);
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-diffusion = GalleryOperator("diffusion", 4, 4, mesh);
+diffusion = GalleryOperator(\"diffusion\", 4, 4, mesh);
 
 # element matrix computation
 elementmatrix = diffusion.elementmatrix;
@@ -474,7 +474,7 @@ Compute or retrieve the symbol matrix diagonal for an operator
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 
 # verify diagonal
 @assert diffusion.diagonal ≈ [7/6 0; 0 4/3]
@@ -527,7 +527,7 @@ for dimension = 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 5, 5, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 5, 5, mesh)
 
     # compute multiplicity
     multiplicity = diffusion.multiplicity
@@ -602,7 +602,7 @@ Compute or retrieve the matrix mapping the rows of the element matrix to the sym
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # verify row mode map
 @assert mass.rowmodemap ≈ [1 0 0 1; 0 1 0 0; 0 0 1 0]
@@ -661,7 +661,7 @@ Compute or retrieve the matrix mapping the columns of the element matrix to the 
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # verify column mode map
 @assert mass.columnmodemap ≈ [1 0 0; 0 1 0; 0 0 1; 1 0 0]
@@ -790,7 +790,7 @@ Compute or retrieve the array of differences in coordinates between nodes
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # compute node coordinate differences
 nodedifferences = mass.nodecoordinatedifferences;
@@ -904,7 +904,7 @@ for dimension = 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
 
     # compute symbols
     A = computesymbols(diffusion, π * ones(dimension))

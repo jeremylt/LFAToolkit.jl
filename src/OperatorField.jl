@@ -30,7 +30,7 @@ basis = TensorH1LagrangeBasis(4, 3, 2, 1);
 
 # quadrature weights field, input only
 weightsfield =
-    OperatorField(basis, [EvaluationMode.quadratureweights], "quadrature weights");
+    OperatorField(basis, [EvaluationMode.quadratureweights], \"quadrature weights\");
 
 # verify
 println(weightsfield)
@@ -39,7 +39,7 @@ println(weightsfield)
 inputfield = OperatorField(
     basis,
     [EvaluationMode.interpolation, EvaluationMode.gradient],
-    "gradient of weak form input",
+    \"gradient of weak form input\",
 );
 
 # verify

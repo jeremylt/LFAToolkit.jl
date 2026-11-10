@@ -24,7 +24,7 @@ The Chebyshev semi-iterative method is applied to the matrix ``D^{-1} A``, where
 ```jldoctest
 # setup
 mesh = Mesh2D(1.0, 1.0);
-mass = GalleryOperator("mass", 4, 4, mesh);
+mass = GalleryOperator(\"mass\", 4, 4, mesh);
 
 # preconditioner
 chebyshev = Chebyshev(mass);
@@ -115,7 +115,7 @@ Compute or retrieve the inverse of the symbol matrix diagonal for a Chebyshev pr
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 
 # preconditioner
 chebyshev = Chebyshev(diffusion);
@@ -157,7 +157,7 @@ Compute or retrieve the eigenvalue estimates for a Chebyshev preconditioner
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 
 # preconditioner
 chebyshev = Chebyshev(diffusion);
@@ -231,7 +231,7 @@ Set the scaling of the eigenvalue estimates for a Chebyshev preconditioner
 ```jldoctest
 # setup
 mesh = Mesh1D(1.0);
-diffusion = GalleryOperator("diffusion", 3, 3, mesh);
+diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh);
 
 # preconditioner
 chebyshev = Chebyshev(diffusion)
@@ -534,7 +534,7 @@ for dimension = 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
 
     # preconditioner
     chebyshev = Chebyshev(diffusion)

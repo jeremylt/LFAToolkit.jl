@@ -53,7 +53,7 @@ for dimension = 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
 
     # compute symbols
     (_, eigenvalues, _) = computesymbolsoverrange(diffusion, numbersteps1d)
@@ -83,8 +83,8 @@ mesh = Mesh2D(0.5, 0.5);
 p = 6;
 
 # operators
-mass = GalleryOperator("mass", p + 1, p + 1, mesh);
-diffusion = GalleryOperator("diffusion", p + 1, p + 1, mesh);
+mass = GalleryOperator(\"mass\", p + 1, p + 1, mesh);
+diffusion = GalleryOperator(\"diffusion\", p + 1, p + 1, mesh);
 
 # compute symbols
 (_, eigenvalues, _) =
@@ -190,7 +190,7 @@ for dimension = 1:3
     elseif dimension == 3
         mesh = Mesh3D(1.0, 1.0, 1.0)
     end
-    diffusion = GalleryOperator("diffusion", 3, 3, mesh)
+    diffusion = GalleryOperator(\"diffusion\", 3, 3, mesh)
 
     # preconditioner
     chebyshev = Chebyshev(diffusion)
@@ -315,8 +315,8 @@ for dimension = 1:3
     ctofbasis = TensorH1LagrangeBasis(3, 5, 1, dimension; collocatedquadrature = true)
 
     # operators
-    finediffusion = GalleryOperator("diffusion", 5, 5, mesh)
-    coarsediffusion = GalleryOperator("diffusion", 3, 5, mesh)
+    finediffusion = GalleryOperator(\"diffusion\", 5, 5, mesh)
+    coarsediffusion = GalleryOperator(\"diffusion\", 3, 5, mesh)
 
     # smoother
     jacobi = Jacobi(finediffusion)

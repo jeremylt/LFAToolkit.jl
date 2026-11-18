@@ -12,6 +12,7 @@ using FastGaussQuadrature: gausslegendre, gausslobatto
 using LinearAlgebra: Diagonal, eigen, eigvals, I, kron
 using Polynomials: Polynomial, derivative
 using Printf: @printf
+using Random: rand
 using SparseArrays: dropzeros!, spzeros
 
 # ------------------------------------------------------------------------------

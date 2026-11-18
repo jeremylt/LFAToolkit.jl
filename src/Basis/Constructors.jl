@@ -519,6 +519,100 @@ function TensorH1UniformBasis(
     )
 end
 
+"""
+```julia
+H1MPMBasis(numbernodes1d, numbermaterialpoints, numbercomponents, dimension)
+```
+
+Tensor product basis on Gauss-Legendre-Lobatto points with randomly placed material (quadrature) points
+
+# Arguments:
+
+  - `numbernodes1d::Int`:         number of Gauss-Legendre-Lobatto nodes in 1 dimension
+  - `numbermaterialpoints::Int`:  number of material (quadrature) points in cell
+  - `numbercomponents::Int`:      number of components
+  - `dimension::Int`:             dimension of basis
+
+# Returns:
+
+  - H1 basis on Gauss-Legendre-Lobatto nodes with randomly spaced material (quadrature) points
+
+# Example:
+
+```jldoctest
+# generate H1 Lagrange tensor product basis on uniformly spaced nodes
+basis = H1MPMBasis(4, 3, 2, 1);
+
+# verify
+println(basis)
+
+# output
+
+tensor product basis:
+    numbernodes: 4
+    numberquadraturepoints: 3
+    numbercomponents: 2
+    dimension: 1
+```
+"""
+function H1MPMBasis(
+    numbernodes1d::Int,
+    numbermaterialpoints::Int,
+    numbercomponents::Int,
+    dimension::Int,
+)
+    # check inputs
+    if numbernodes1d < 2
+        # COV_EXCL_START
+        throw(
+            DomainError(numbernodes1d, "numbernodes1d must be greater than or equal to 2"),
+        )
+        # COV_EXCL_STOP
+    end
+    if numbermaterialpoints < 1
+        # COV_EXCL_START
+        throw(
+            DomainError(
+                numberquadraturepoints1d,
+                "numbermaterialpoints must be greater than or equal to 1",
+            ),
+        )
+        # COV_EXCL_STOP
+    end
+    if dimension < 1 || dimension > 3
+        throw(DomainError(dimension, "only 1D, 2D, or 3D bases are supported")) # COV_EXCL_LINE
+    end
+
+    # get nodes and H1 Lagrange quadrature points
+    nodes1d, = gausslobatto(numbernodes1d)
+    quadraturepoints1d, _ = gausslegendre(numbernodes1d)
+
+    # build 1D interpolation matrix
+    interpolation1d, _ = buildinterpolationandgradient(nodes1d, quadraturepoints1d)
+
+    # build random material points, dummy quadrature weights
+    numbernodes = numbernodes1d^dimension
+    materialpoints = rand!(fill(0.0, (dimension * numbermaterialpoints))) * 2.0 .- 1.0
+    quadratureweights = fill(1.0, (numbermaterialpoints))
+
+    # build nD interpolation, gradient matrices
+    interpolation = []
+    gradient = []
+
+    # use basic constructor
+    return NonTensorBasis(
+        numbernodes,
+        numbermaterialpoints,
+        numbercomponents,
+        dimension,
+        nodes,
+        materialpoints,
+        quadratureweights,
+        interpolation,
+        gradient,
+    )
+end
+
 # ------------------------------------------------------------------------------
 # -- marco element bases
 # ------------------------------------------------------------------------------
